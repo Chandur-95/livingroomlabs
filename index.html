@@ -12,7 +12,7 @@
 
 <style>
 /* ============================================================
-   TOKENS & SYSTEM
+   DESIGN TOKENS & THEMES
    ============================================================ */
 :root{
   --paper:#FFFFFF;
@@ -21,7 +21,9 @@
   --rule-soft:rgba(0,0,0,.06);
   --glow:#FFC24B;
   --glow-rgb:255, 194, 75;
-  --laser-color: 0, 229, 255;
+
+  /* Red Optical Scan Tokens */
+  --laser-red: 255, 36, 0;
 
   --nav-h:68px;
   --pad:clamp(16px, 4vw, 56px);
@@ -62,7 +64,7 @@ body{
   transition:background .35s ease, color .35s ease;
 }
 
-/* Anti-Download Protection */
+/* Anti-Download Shield */
 img{
   display:block;
   max-width:100%;
@@ -82,7 +84,7 @@ em{
   letter-spacing:-0.01em;
 }
 
-/* Pull Cord Light Flux */
+/* Light Pull Cord Pulse */
 body.power-flux{animation:powerPulse .32s ease-in-out forwards}
 @keyframes powerPulse{
   0%{filter:brightness(1)}
@@ -119,7 +121,9 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   letter-spacing:.08em;
 }
 
-/* Corner Frame Brackets */
+/* ============================================================
+   CORNER BRACKETS
+   ============================================================ */
 .frame{position:fixed;inset:0;z-index:60;pointer-events:none}
 .frame svg{position:absolute;width:28px;height:28px;overflow:visible}
 .frame svg path{
@@ -134,7 +138,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
 @keyframes drawBracket{to{stroke-dashoffset:0}}
 
 /* ============================================================
-   NAVBAR & LOGO
+   NAVBAR
    ============================================================ */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
@@ -146,21 +150,18 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   border-bottom:1px solid var(--rule);
   transition:background .35s ease, border-color .35s ease;
 }
-.brand{display:flex;align-items:center;gap:14px}
+.brand{display:flex;align-items:center;gap:14px;color:var(--ink)}
 .brand .mark{
   display:flex;align-items:center;
   height:44px;
 }
-.brand .mark img{
+.brand .mark svg{
   height:44px;
   width:auto;
-  object-fit:contain;
+  display:block;
   transition:transform .3s var(--ease);
 }
-html[data-theme="dark"] .brand .mark img{
-  filter:invert(1) brightness(1.05);
-}
-.brand:hover .mark img{transform:scale(1.05)}
+.brand:hover .mark svg{transform:scale(1.05)}
 
 .brand .wordmark{
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
@@ -176,7 +177,7 @@ html[data-theme="dark"] .brand .mark img{
 }
 .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
 
-/* Spring-Loaded Pull Cord */
+/* Spring-Loaded Pull Cord Switch */
 .pull{
   --len:28px;
   position:relative;flex:none;
@@ -282,7 +283,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
 /* ============================================================
-   WORK GRID (STRICT PAINT CONTAINMENT)
+   WORK GRID (STRICT PAINT CONTAINMENT - RED SCANLINE)
    ============================================================ */
 .grid{display:flex;flex-direction:column;gap:var(--gap)}
 .row{display:flex;gap:var(--gap);align-items:flex-start}
@@ -308,14 +309,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .plate img.ready{opacity:1}
 .shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.04)}
 
-/* Electric Cyan Laser Scanline */
+/* Red Laser Scanline (Strictly Contained) */
 .plate .scanner{
   position:absolute;
   left:0;right:0;
-  height:2px;
+  height:2.5px;
   top:0;
-  background:rgba(var(--laser-color), 0.95);
-  box-shadow:0 0 14px 2px rgba(var(--laser-color), 0.8), 0 0 4px rgba(255,255,255, 0.9);
+  background:rgba(var(--laser-red), 0.95);
+  box-shadow:0 0 14px 2px rgba(var(--laser-red), 0.85), 0 0 4px rgba(255, 255, 255, 0.9);
   pointer-events:none;
   opacity:0;
   z-index:2;
@@ -336,14 +337,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   background:transparent;
 }
 
-/* Reticle Corners */
+/* Red Viewfinder Reticle Corners */
 .corners{position:absolute;inset:8px;pointer-events:none;z-index:4}
 .corners i{
   position:absolute;width:14px;height:14px;
-  border:0 solid rgba(var(--laser-color), 0.9);
+  border:0 solid rgba(var(--laser-red), 0.95);
   opacity:0;transform:scale(.7);
   transition:opacity .25s var(--ease),transform .25s var(--ease);
-  box-shadow:0 0 8px rgba(var(--laser-color),.5);
+  box-shadow:0 0 8px rgba(var(--laser-red),.6);
 }
 .corners i:nth-child(1){top:0;left:0;border-top-width:2px;border-left-width:2px}
 .corners i:nth-child(2){top:0;right:0;border-top-width:2px;border-right-width:2px}
@@ -355,7 +356,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   position:absolute;bottom:8px;right:8px;z-index:4;
   font-family:"JetBrains Mono",monospace;
   font-size:.58rem;
-  color:rgb(var(--laser-color));
+  color:rgb(var(--laser-red));
   background:rgba(0,0,0,.85);
   padding:2px 6px;
   letter-spacing:.12em;
@@ -444,25 +445,24 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .foot ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
 .foot a:hover,.foot a:focus-visible{text-decoration:underline;text-underline-offset:3px}
 
+/* Footer Lockup Presentation */
 .lockup-wrap{
   margin-top:clamp(36px, 6vw, 72px);
   padding-bottom:clamp(40px, 6vw, 84px);
   display:flex;justify-content:center;
+  color:var(--ink);
 }
-.lockup-wrap img{
+.lockup-wrap svg{
   width:100%;
   max-width:min(440px, 88vw);
   height:auto;
   display:block;
   transition:transform .3s var(--ease);
 }
-html[data-theme="dark"] .lockup-wrap img{
-  filter:invert(1) brightness(1.05);
-}
-.lockup-wrap:hover img{transform:scale(1.02)}
+.lockup-wrap:hover svg{transform:scale(1.02)}
 
 /* ============================================================
-   LIGHTBOX (SHUTTER APERTURE ZOOM)
+   LIGHTBOX
    ============================================================ */
 .lb{
   position:fixed;inset:0;z-index:120;
@@ -524,8 +524,8 @@ html[data-theme="dark"] .lockup-wrap img{
 .lb-frame .corners{inset:-12px}
 .lb-frame .corners i{
   opacity:1;transform:scale(1);width:20px;height:20px;
-  border-color:rgb(var(--laser-color));
-  box-shadow:0 0 10px rgba(var(--laser-color),.6);
+  border-color:rgb(var(--laser-red));
+  box-shadow:0 0 10px rgba(var(--laser-red),.7);
 }
 
 .lb-cap{
@@ -562,7 +562,7 @@ html[data-theme="dark"] .lockup-wrap img{
   .nav{padding-inline:calc(var(--pad) + 6px)}
   .wrap{padding-inline:calc(var(--pad) + 6px)}
   .brand .mark{height:36px}
-  .brand .mark img{height:36px}
+  .brand .mark svg{height:36px}
   .brand .wordmark{display:none}
   .nav-links{gap:12px}
   .foot{grid-template-columns:1fr;gap:24px}
@@ -594,7 +594,36 @@ html[data-theme="dark"] .lockup-wrap img{
 
 <nav class="nav">
   <a class="brand" href="#top" aria-label="Living Room Labs">
-    <span class="mark" data-logo-nav></span>
+    <span class="mark">
+      <!-- Direct Inline Vector Camera Mark -->
+      <svg viewBox="0 0 540 380" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <g stroke-width="9">
+          <path d="M150 78 h36 v-10 h-36 Z" fill="currentColor"/>
+          <path d="M176 78 L208 42 h56 L298 78"/>
+          <path d="M176 78 H134 c-14 0 -18 10 -18 24 v102 c0 14 6 22 20 22 h42"/>
+          <rect x="132" y="110" width="14" height="68" rx="7" stroke-width="6"/>
+          <path d="M298 78 c36 0 68 18 68 56 c0 34 -28 50 -60 50"/>
+          <path d="M320 180 c16 22 36 54 62 44"/>
+          <circle cx="238" cy="142" r="76" stroke-width="11"/>
+          <polygon points="232,96 244,96 286,188 190,188" fill="var(--glow)" opacity="0.45" stroke="none"/>
+          <line x1="238" y1="68" x2="238" y2="90" stroke-width="3.5"/>
+          <path d="M230 90 h16 l7 10 h-30 Z" fill="currentColor"/>
+          <circle cx="238" cy="102" r="3.5" fill="var(--glow)" stroke="none"/>
+          <rect x="214" y="152" width="48" height="34" rx="7" fill="currentColor"/>
+          <rect x="208" y="174" width="60" height="15" rx="4" fill="currentColor"/>
+          <rect x="202" y="162" width="12" height="27" rx="5" fill="currentColor"/>
+          <rect x="262" y="162" width="12" height="27" rx="5" fill="currentColor"/>
+          <line x1="213" y1="188" x2="209" y2="197" stroke-width="3"/>
+          <line x1="263" y1="188" x2="267" y2="197" stroke-width="3"/>
+          <polygon points="276,184 292,184 288,197 280,197" fill="currentColor"/>
+          <path d="M284 184 Q283 154 284 145" stroke-width="2.5"/>
+          <ellipse cx="278" cy="167" rx="5" ry="3" transform="rotate(-30 278 167)" fill="currentColor"/>
+          <ellipse cx="290" cy="159" rx="5" ry="3" transform="rotate(30 290 159)" fill="currentColor"/>
+          <ellipse cx="279" cy="151" rx="5" ry="3" transform="rotate(-25 279 151)" fill="currentColor"/>
+          <line x1="180" y1="197" x2="302" y2="197" stroke-width="3.5"/>
+        </g>
+      </svg>
+    </span>
     <span class="wordmark" data-name></span>
   </a>
   <div class="nav-right">
@@ -669,7 +698,47 @@ html[data-theme="dark"] .lockup-wrap img{
       </div>
     </div>
 
-    <div class="lockup-wrap" data-logo-lockup></div>
+    <div class="lockup-wrap">
+      <!-- Direct Inline Full Vector Lockup -->
+      <svg viewBox="0 0 540 380" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+        <g stroke-width="9">
+          <path d="M150 78 h36 v-10 h-36 Z" fill="currentColor"/>
+          <path d="M176 78 L208 42 h56 L298 78"/>
+          <path d="M176 78 H134 c-14 0 -18 10 -18 24 v102 c0 14 6 22 20 22 h42"/>
+          <rect x="132" y="110" width="14" height="68" rx="7" stroke-width="6"/>
+          <path d="M298 78 c36 0 68 18 68 56 c0 34 -28 50 -60 50"/>
+          <path d="M320 180 c16 22 36 54 62 44"/>
+          <circle cx="238" cy="142" r="76" stroke-width="11"/>
+          <polygon points="232,96 244,96 286,188 190,188" fill="var(--glow)" opacity="0.45" stroke="none"/>
+          <line x1="238" y1="68" x2="238" y2="90" stroke-width="3.5"/>
+          <path d="M230 90 h16 l7 10 h-30 Z" fill="currentColor"/>
+          <circle cx="238" cy="102" r="3.5" fill="var(--glow)" stroke="none"/>
+          <rect x="214" y="152" width="48" height="34" rx="7" fill="currentColor"/>
+          <rect x="208" y="174" width="60" height="15" rx="4" fill="currentColor"/>
+          <rect x="202" y="162" width="12" height="27" rx="5" fill="currentColor"/>
+          <rect x="262" y="162" width="12" height="27" rx="5" fill="currentColor"/>
+          <line x1="213" y1="188" x2="209" y2="197" stroke-width="3"/>
+          <line x1="263" y1="188" x2="267" y2="197" stroke-width="3"/>
+          <polygon points="276,184 292,184 288,197 280,197" fill="currentColor"/>
+          <path d="M284 184 Q283 154 284 145" stroke-width="2.5"/>
+          <ellipse cx="278" cy="167" rx="5" ry="3" transform="rotate(-30 278 167)" fill="currentColor"/>
+          <ellipse cx="290" cy="159" rx="5" ry="3" transform="rotate(30 290 159)" fill="currentColor"/>
+          <ellipse cx="279" cy="151" rx="5" ry="3" transform="rotate(-25 279 151)" fill="currentColor"/>
+          <line x1="180" y1="197" x2="302" y2="197" stroke-width="3.5"/>
+        </g>
+        <g stroke="none" fill="currentColor">
+          <path d="M50 252 L26 252 L26 276" stroke="currentColor" stroke-width="3.8" fill="none"/>
+          <path d="M490 252 L514 252 L514 276" stroke="currentColor" stroke-width="3.8" fill="none"/>
+          <path d="M26 304 L26 328 L50 328" stroke="currentColor" stroke-width="3.8" fill="none"/>
+          <path d="M514 304 L514 328 L490 328" stroke="currentColor" stroke-width="3.8" fill="none"/>
+          <text x="270" y="298" text-anchor="middle" font-family="'Space Grotesk', sans-serif" font-weight="700" font-size="34" letter-spacing="0.26em">LIVING ROOM LABS</text>
+          <text x="270" y="348" text-anchor="middle" font-family="'Space Grotesk', sans-serif" font-weight="600" font-size="13" letter-spacing="0.34em">CAPTURE . CREATE . INSPIRE</text>
+          <line x1="210" y1="370" x2="246" y2="370" stroke="currentColor" stroke-width="3"/>
+          <circle cx="270" cy="370" r="5.5" fill="currentColor"/>
+          <line x1="294" y1="370" x2="330" y2="370" stroke="currentColor" stroke-width="3"/>
+        </g>
+      </svg>
+    </div>
   </section>
 </main>
 
@@ -704,12 +773,7 @@ html[data-theme="dark"] .lockup-wrap img{
 </div>
 
 <script>
-/* ============================================================
-   EMBEDDED HIGH-RES LOGO (DIRECT BASE64 - 100% FAIL-SAFE)
-   ============================================================ */
-var LOGO_DATA = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 380' width='100%' height='100%' fill='none'><g stroke='%23000000' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'><path d='M150 78 h36 v-10 h-36 Z' fill='%23000000'/><path d='M176 78 L208 42 h56 L298 78'/><path d='M176 78 H134 c-14 0 -18 10 -18 24 v102 c0 14 6 22 20 22 h42'/><rect x='132' y='110' width='14' height='68' rx='7' stroke-width='6'/><path d='M298 78 c36 0 68 18 68 56 c0 34 -28 50 -60 50'/><path d='M320 180 c16 22 36 54 62 44'/><circle cx='238' cy='142' r='76' stroke-width='11'/><polygon points='232,96 244,96 286,188 190,188' fill='%23FFC24B' opacity='0.45' stroke='none'/><line x1='238' y1='68' x2='238' y2='90' stroke-width='3.5'/><path d='M230 90 h16 l7 10 h-30 Z' fill='%23000000'/><circle cx='238' cy='102' r='3.5' fill='%23FFC24B' stroke='none'/><rect x='214' y='152' width='48' height='34' rx='7' fill='%23000000'/><rect x='208' y='174' width='60' height='15' rx='4' fill='%23000000'/><rect x='202' y='162' width='12' height='27' rx='5' fill='%23000000'/><rect x='262' y='162' width='12' height='27' rx='5' fill='%23000000'/><line x1='213' y1='188' x2='209' y2='197' stroke-width='3'/><line x1='263' y1='188' x2='267' y2='197' stroke-width='3'/><polygon points='276,184 292,184 288,197 280,197' fill='%23000000'/><path d='M284 184 Q283 154 284 145' stroke-width='2.5'/><ellipse cx='278' cy='167' rx='5' ry='3' transform='rotate(-30 278 167)' fill='%23000000'/><ellipse cx='290' cy='159' rx='5' ry='3' transform='rotate(30 290 159)' fill='%23000000'/><ellipse cx='279' cy='151' rx='5' ry='3' transform='rotate(-25 279 151)' fill='%23000000'/><line x1='180' y1='197' x2='302' y2='197' stroke-width='3.5'/></g><g stroke='none' fill='%23000000'><path d='M50 252 L26 252 L26 276' stroke='%23000000' stroke-width='3.8' fill='none'/><path d='M490 252 L514 252 L514 276' stroke='%23000000' stroke-width='3.8' fill='none'/><path d='M26 304 L26 328 L50 328' stroke='%23000000' stroke-width='3.8' fill='none'/><path d='M514 304 L514 328 L490 328' stroke='%23000000' stroke-width='3.8' fill='none'/><text x='270' y='298' text-anchor='middle' font-family=\"'Space Grotesk', sans-serif\" font-weight='700' font-size='34' letter-spacing='0.26em'>LIVING ROOM LABS</text><text x='270' y='348' text-anchor='middle' font-family=\"'Space Grotesk', sans-serif\" font-weight='600' font-size='13' letter-spacing='0.34em'>CAPTURE . CREATE . INSPIRE</text><line x1='210' y1='370' x2='246' y2='370' stroke='%23000000' stroke-width='3'/><circle cx='270' cy='370' r='5.5' fill='%23000000'/><line x1='294' y1='370' x2='330' y2='370' stroke='%23000000' stroke-width='3'/></g></svg>";
-
-/* Baseline Database */
+/* Built-in Baseline Database */
 var SITE = {
   name: "Living Room Labs",
   tagline: "CAPTURE . CREATE . INSPIRE",
@@ -878,7 +942,7 @@ function renderGrid(){
       return '<button class="shot" style="--sw:'+slot.w+'px" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                '<span class="plate" style="--sh:'+row.h+'px">'+
                  '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'">'+
-                 '<span class="scanner"></span>'+
+                 '<span class="scanner" aria-hidden="true"></span>'+
                  '<span class="guard"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
                  '<span class="telemetry">REC // '+paddedNum+'</span>'+
@@ -957,7 +1021,7 @@ lb.addEventListener("touchend", function(e){
   if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
 }, {passive:true});
 
-/* Pull Cord Physics & Voltage Pulse */
+/* Pull Cord Switch */
 var pull = $("#theme");
 pull.addEventListener("click", function(){
   var wasDark = document.documentElement.getAttribute("data-theme") === "dark";
@@ -996,12 +1060,7 @@ document.addEventListener("keydown", function(e){
 });
 
 function renderContent(){
-  /* Render Logo Directly into DOM Elements */
-  var navMark = $("[data-logo-nav]");
-  if(navMark) navMark.innerHTML = '<img src="' + LOGO_DATA + '" alt="Living Room Labs">';
-
-  var lockup = $("[data-logo-lockup]");
-  if(lockup) lockup.innerHTML = '<img src="' + LOGO_DATA + '" alt="Living Room Labs">';
+  /* Static SVG Logos are already directly in the HTML. No dynamic injection. */
 
   $$("[data-name]").forEach(function(n){ n.textContent = SITE.name; });
   $$("[data-tagline]").forEach(function(n){ n.textContent = SITE.tagline; });
