@@ -12,7 +12,7 @@
 
 <style>
 /* ============================================================
-   DESIGN TOKENS & SYSTEM
+   TOKENS & SYSTEM
    ============================================================ */
 :root{
   --paper:#FFFFFF;
@@ -21,8 +21,6 @@
   --rule-soft:rgba(0,0,0,.06);
   --glow:#FFC24B;
   --glow-rgb:255, 194, 75;
-
-  /* Laser Beam Color: Electric Cyan */
   --laser-color: 0, 229, 255;
 
   --nav-h:68px;
@@ -64,7 +62,7 @@ body{
   transition:background .35s ease, color .35s ease;
 }
 
-/* Anti-Download Shield */
+/* Anti-Download Protection */
 img{
   display:block;
   max-width:100%;
@@ -84,7 +82,7 @@ em{
   letter-spacing:-0.01em;
 }
 
-/* Power Pulse for Pull Cord */
+/* Pull Cord Light Flux */
 body.power-flux{animation:powerPulse .32s ease-in-out forwards}
 @keyframes powerPulse{
   0%{filter:brightness(1)}
@@ -121,9 +119,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   letter-spacing:.08em;
 }
 
-/* ============================================================
-   VIEWPORT CORNER BRACKETS
-   ============================================================ */
+/* Corner Frame Brackets */
 .frame{position:fixed;inset:0;z-index:60;pointer-events:none}
 .frame svg{position:absolute;width:28px;height:28px;overflow:visible}
 .frame svg path{
@@ -138,7 +134,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
 @keyframes drawBracket{to{stroke-dashoffset:0}}
 
 /* ============================================================
-   NAVBAR
+   NAVBAR & LOGO
    ============================================================ */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
@@ -180,7 +176,7 @@ html[data-theme="dark"] .brand .mark img{
 }
 .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
 
-/* Spring-Loaded Pull Cord Switch */
+/* Spring-Loaded Pull Cord */
 .pull{
   --len:28px;
   position:relative;flex:none;
@@ -286,7 +282,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
 /* ============================================================
-   WORK GRID (ISOLATED SCANNER + RETICLES)
+   WORK GRID (STRICT PAINT CONTAINMENT)
    ============================================================ */
 .grid{display:flex;flex-direction:column;gap:var(--gap)}
 .row{display:flex;gap:var(--gap);align-items:flex-start}
@@ -299,7 +295,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .plate{
   position:relative;
   overflow:hidden !important;
-  contain:paint !important; /* Prevents overflow from escaping into lower DOM nodes */
+  contain:paint !important;
   background:var(--rule-soft);
   width:100%;
   height:var(--sh,300px);
@@ -312,7 +308,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .plate img.ready{opacity:1}
 .shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.04)}
 
-/* Electric Cyan Laser Scanline (Strictly Contained) */
+/* Electric Cyan Laser Scanline */
 .plate .scanner{
   position:absolute;
   left:0;right:0;
@@ -335,7 +331,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   100%{top:100%;opacity:0}
 }
 
-/* Invisible Anti-Save Guard */
 .guard{
   position:absolute;inset:0;z-index:3;
   background:transparent;
@@ -449,7 +444,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .foot ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
 .foot a:hover,.foot a:focus-visible{text-decoration:underline;text-underline-offset:3px}
 
-/* Footer Lockup Presentation */
 .lockup-wrap{
   margin-top:clamp(36px, 6vw, 72px);
   padding-bottom:clamp(40px, 6vw, 84px);
@@ -468,7 +462,7 @@ html[data-theme="dark"] .lockup-wrap img{
 .lockup-wrap:hover img{transform:scale(1.02)}
 
 /* ============================================================
-   LIGHTBOX (CAMERA SHUTTER APERTURE ZOOM)
+   LIGHTBOX (SHUTTER APERTURE ZOOM)
    ============================================================ */
 .lb{
   position:fixed;inset:0;z-index:120;
@@ -600,9 +594,7 @@ html[data-theme="dark"] .lockup-wrap img{
 
 <nav class="nav">
   <a class="brand" href="#top" aria-label="Living Room Labs">
-    <span class="mark">
-      <img src="/logo.png" alt="Living Room Labs">
-    </span>
+    <span class="mark" data-logo-nav></span>
     <span class="wordmark" data-name></span>
   </a>
   <div class="nav-right">
@@ -677,9 +669,7 @@ html[data-theme="dark"] .lockup-wrap img{
       </div>
     </div>
 
-    <div class="lockup-wrap">
-      <img src="/logo.png" alt="Living Room Labs">
-    </div>
+    <div class="lockup-wrap" data-logo-lockup></div>
   </section>
 </main>
 
@@ -714,7 +704,12 @@ html[data-theme="dark"] .lockup-wrap img{
 </div>
 
 <script>
-/* Built-in Baseline Database */
+/* ============================================================
+   EMBEDDED HIGH-RES LOGO (DIRECT BASE64 - 100% FAIL-SAFE)
+   ============================================================ */
+var LOGO_DATA = "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 540 380' width='100%' height='100%' fill='none'><g stroke='%23000000' stroke-width='9' stroke-linecap='round' stroke-linejoin='round'><path d='M150 78 h36 v-10 h-36 Z' fill='%23000000'/><path d='M176 78 L208 42 h56 L298 78'/><path d='M176 78 H134 c-14 0 -18 10 -18 24 v102 c0 14 6 22 20 22 h42'/><rect x='132' y='110' width='14' height='68' rx='7' stroke-width='6'/><path d='M298 78 c36 0 68 18 68 56 c0 34 -28 50 -60 50'/><path d='M320 180 c16 22 36 54 62 44'/><circle cx='238' cy='142' r='76' stroke-width='11'/><polygon points='232,96 244,96 286,188 190,188' fill='%23FFC24B' opacity='0.45' stroke='none'/><line x1='238' y1='68' x2='238' y2='90' stroke-width='3.5'/><path d='M230 90 h16 l7 10 h-30 Z' fill='%23000000'/><circle cx='238' cy='102' r='3.5' fill='%23FFC24B' stroke='none'/><rect x='214' y='152' width='48' height='34' rx='7' fill='%23000000'/><rect x='208' y='174' width='60' height='15' rx='4' fill='%23000000'/><rect x='202' y='162' width='12' height='27' rx='5' fill='%23000000'/><rect x='262' y='162' width='12' height='27' rx='5' fill='%23000000'/><line x1='213' y1='188' x2='209' y2='197' stroke-width='3'/><line x1='263' y1='188' x2='267' y2='197' stroke-width='3'/><polygon points='276,184 292,184 288,197 280,197' fill='%23000000'/><path d='M284 184 Q283 154 284 145' stroke-width='2.5'/><ellipse cx='278' cy='167' rx='5' ry='3' transform='rotate(-30 278 167)' fill='%23000000'/><ellipse cx='290' cy='159' rx='5' ry='3' transform='rotate(30 290 159)' fill='%23000000'/><ellipse cx='279' cy='151' rx='5' ry='3' transform='rotate(-25 279 151)' fill='%23000000'/><line x1='180' y1='197' x2='302' y2='197' stroke-width='3.5'/></g><g stroke='none' fill='%23000000'><path d='M50 252 L26 252 L26 276' stroke='%23000000' stroke-width='3.8' fill='none'/><path d='M490 252 L514 252 L514 276' stroke='%23000000' stroke-width='3.8' fill='none'/><path d='M26 304 L26 328 L50 328' stroke='%23000000' stroke-width='3.8' fill='none'/><path d='M514 304 L514 328 L490 328' stroke='%23000000' stroke-width='3.8' fill='none'/><text x='270' y='298' text-anchor='middle' font-family=\"'Space Grotesk', sans-serif\" font-weight='700' font-size='34' letter-spacing='0.26em'>LIVING ROOM LABS</text><text x='270' y='348' text-anchor='middle' font-family=\"'Space Grotesk', sans-serif\" font-weight='600' font-size='13' letter-spacing='0.34em'>CAPTURE . CREATE . INSPIRE</text><line x1='210' y1='370' x2='246' y2='370' stroke='%23000000' stroke-width='3'/><circle cx='270' cy='370' r='5.5' fill='%23000000'/><line x1='294' y1='370' x2='330' y2='370' stroke='%23000000' stroke-width='3'/></g></svg>";
+
+/* Baseline Database */
 var SITE = {
   name: "Living Room Labs",
   tagline: "CAPTURE . CREATE . INSPIRE",
@@ -883,7 +878,7 @@ function renderGrid(){
       return '<button class="shot" style="--sw:'+slot.w+'px" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                '<span class="plate" style="--sh:'+row.h+'px">'+
                  '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'">'+
-                 '<span class="scanner" aria-hidden="true"></span>'+
+                 '<span class="scanner"></span>'+
                  '<span class="guard"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
                  '<span class="telemetry">REC // '+paddedNum+'</span>'+
@@ -962,7 +957,7 @@ lb.addEventListener("touchend", function(e){
   if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
 }, {passive:true});
 
-/* Pull Cord Physics & Filament Pulse */
+/* Pull Cord Physics & Voltage Pulse */
 var pull = $("#theme");
 pull.addEventListener("click", function(){
   var wasDark = document.documentElement.getAttribute("data-theme") === "dark";
@@ -1001,6 +996,13 @@ document.addEventListener("keydown", function(e){
 });
 
 function renderContent(){
+  /* Render Logo Directly into DOM Elements */
+  var navMark = $("[data-logo-nav]");
+  if(navMark) navMark.innerHTML = '<img src="' + LOGO_DATA + '" alt="Living Room Labs">';
+
+  var lockup = $("[data-logo-lockup]");
+  if(lockup) lockup.innerHTML = '<img src="' + LOGO_DATA + '" alt="Living Room Labs">';
+
   $$("[data-name]").forEach(function(n){ n.textContent = SITE.name; });
   $$("[data-tagline]").forEach(function(n){ n.textContent = SITE.tagline; });
   var pl1 = $("[data-place]"); if(pl1) pl1.textContent = SITE.city;
