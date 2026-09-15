@@ -1,0 +1,44 @@
+backend:
+  name: git-gateway
+  branch: main
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "website"
+    label: "Website Content"
+    files:
+      - file: "content.json"
+        label: "Settings & Portfolio"
+        name: "content"
+        fields:
+          - { label: "Site Name", name: "name", widget: "string" }
+          - { label: "Tagline", name: "tagline", widget: "string" }
+          - { label: "City", name: "city", widget: "string" }
+          - { label: "Email", name: "email", widget: "string" }
+          - label: "Body Font"
+            name: "bodyFont"
+            widget: "select"
+            options: ["Archivo", "Inter", "Playfair Display", "Cinzel", "Space Grotesk"]
+          - { label: "Hero Lines", name: "hero", widget: "list" }
+          - { label: "Statement", name: "statement", widget: "string" }
+          - { label: "Statement Attribution", name: "statementBy", widget: "string" }
+          - label: "Photos & Videos"
+            name: "photos"
+            widget: "list"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Client", name: "client", widget: "string" }
+              - label: "Category / Folder"
+                name: "category"
+                widget: "select"
+                options: ["Food", "Pets", "Real Estate", "Events", "Portraits"]
+              - { label: "Image", name: "src", widget: "image" }
+              - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
+              - { label: "Caption", name: "caption", widget: "string", required: false }
+              - { label: "Grid Width (3-8)", name: "w", widget: "number", default: 4, min: 1, max: 12 }
+              - label: "Aspect Ratio"
+                name: "ratio"
+                widget: "select"
+                options: ["4/5", "1/1", "3/4", "3/2", "16/9"]
