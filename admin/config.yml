@@ -60,7 +60,7 @@ collections:
               - { label: "Image File", name: "src", widget: "image" }
               - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
               - { label: "Caption / Description", name: "caption", widget: "string", required: false }
-              - { label: "Width Weight (3 to 8)", name: "w", widget: "number", value_type: "int", default: 4, min: 1, max: 12 }
+              - { label: "Width Weight (1 to 8)", name: "w", widget: "number", value_type: "int", default: 4, min: 1, max: 12 }
               - label: "Aspect Ratio"
                 name: "ratio"
                 widget: "select"
