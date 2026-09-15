@@ -11,9 +11,6 @@ backend:
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
 
-media_library:
-  max_file_size: 15728640
-
 collections:
   - name: "website"
     label: "Website Content"
@@ -27,7 +24,7 @@ collections:
           - { label: "City", name: "city", widget: "string" }
           - { label: "Email", name: "email", widget: "string" }
 
-          # PHOTOS & PORTFOLIO (TOP OF LIST)
+          # PHOTOS & PORTFOLIO
           - label: "Photos & Portfolio"
             name: "photos"
             widget: "list"
