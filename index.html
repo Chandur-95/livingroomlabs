@@ -61,7 +61,7 @@ body{
   transition:background .35s ease, color .35s ease;
 }
 
-/* Anti-Download Shield & Disable Selection */
+/* Anti-Download Shield */
 img{
   display:block;
   max-width:100%;
@@ -70,7 +70,6 @@ img{
   user-select:none;
   -webkit-user-select:none;
   -webkit-touch-callout:none;
-  pointer-events:auto;
 }
 
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
@@ -152,18 +151,13 @@ body.power-flux{animation:powerPulse .28s ease-in-out forwards}
   display:flex;align-items:center;
   height:44px;
 }
-.brand .mark img{
+.brand .mark svg{
   height:44px;
   width:auto;
-  object-fit:contain;
-  mix-blend-mode:multiply;
+  display:block;
   transition:transform .3s var(--ease);
 }
-html[data-theme="dark"] .brand .mark img{
-  filter:invert(1);
-  mix-blend-mode:screen;
-}
-.brand:hover .mark img{transform:scale(1.05)}
+.brand:hover .mark svg{transform:scale(1.05)}
 
 .brand .wordmark{
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
@@ -296,7 +290,8 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .plate{
   position:relative;
-  overflow:hidden;
+  overflow:hidden !important;
+  contain:paint;
   background:var(--rule-soft);
   width:100%;
   height:var(--sh,300px);
@@ -307,30 +302,15 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   opacity:0;
 }
 .plate img.ready{opacity:1}
-.shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.04)}
+.shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.035)}
 
-/* Anti-Save Transparent Guard Overlay */
+/* Anti-Save Guard */
 .guard{
   position:absolute;inset:0;z-index:2;
   background:transparent;
 }
 
-.plate .scan{
-  position:absolute;inset:0;
-  background:linear-gradient(180deg, transparent 0%, rgba(var(--glow-rgb), 0.25) 48%, rgba(var(--glow-rgb), 0.8) 50%, transparent 52%);
-  transform:translateY(-100%);
-  pointer-events:none;
-  opacity:0;
-}
-.shot:hover .plate .scan{
-  opacity:1;
-  animation:containedScan .75s cubic-bezier(.22, 1, .36, 1) forwards;
-}
-@keyframes containedScan{
-  0%{transform:translateY(-100%)}
-  100%{transform:translateY(100%)}
-}
-
+/* Contained Viewfinder Reticles */
 .corners{position:absolute;inset:8px;pointer-events:none;z-index:3}
 .corners i{
   position:absolute;width:14px;height:14px;
@@ -346,7 +326,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .shot:hover .corners i,.shot:focus-visible .corners i{opacity:1;transform:none}
 
 .telemetry{
-  position:absolute;bottom:10px;right:10px;z-index:3;
+  position:absolute;bottom:8px;right:8px;z-index:3;
   font-family:"JetBrains Mono",monospace;
   font-size:.58rem;
   color:var(--glow);
@@ -443,21 +423,17 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-bottom:clamp(40px, 5vw, 80px);
   display:flex;justify-content:center;
 }
-.lockup-wrap .lockup-img{
+.lockup-wrap svg{
   width:100%;
   max-width:min(420px, 85vw);
   height:auto;
-  mix-blend-mode:multiply;
+  display:block;
   transition:transform .3s var(--ease);
 }
-html[data-theme="dark"] .lockup-wrap .lockup-img{
-  filter:invert(1);
-  mix-blend-mode:screen;
-}
-.lockup-wrap:hover .lockup-img{transform:scale(1.02)}
+.lockup-wrap:hover svg{transform:scale(1.02)}
 
 /* ============================================================
-   LIGHTBOX WITH CAMERA SHUTTER APERTURE ZOOM
+   LIGHTBOX
    ============================================================ */
 .lb{
   position:fixed;inset:0;z-index:120;
@@ -557,7 +533,7 @@ html[data-theme="dark"] .lockup-wrap .lockup-img{
   .nav{padding-inline:calc(var(--pad) + 6px)}
   .wrap{padding-inline:calc(var(--pad) + 6px)}
   .brand .mark{height:36px}
-  .brand .mark img{height:36px}
+  .brand .mark svg{height:36px}
   .brand .wordmark{display:none}
   .nav-links{gap:12px}
   .foot{grid-template-columns:1fr;gap:24px}
@@ -572,7 +548,6 @@ html[data-theme="dark"] .lockup-wrap .lockup-img{
   .line-inner{transform:none;opacity:1}
   .frame svg path{stroke-dashoffset:0}
   .plate img{opacity:1}
-  .plate .scan{display:none}
 }
 </style>
 </head>
@@ -701,12 +676,77 @@ html[data-theme="dark"] .lockup-wrap .lockup-img{
 </div>
 
 <script>
-/* High-Fidelity Transparent Logo Encoding */
-const LOGO = {
-  mark: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150' fill='none' stroke='%23000' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'><path d='M65 42 h20 v-5 h-20 Z' fill='%23000'/><path d='M75 42 L88 26 h24 L125 42'/><path d='M75 42 H56 a8 8 0 0 0 -8 8 v56 a8 8 0 0 0 8 8 h22'/><rect x='54' y='58' width='8' height='38' rx='4' stroke-width='3'/><path d='M125 42 c18 0 35 8 35 28 c0 16 -14 24 -30 24'/><path d='M135 92 c8 10 18 25 32 20'/><circle cx='100' cy='72' r='38' stroke-width='5.5'/><polygon points='97,52 103,52 126,98 74,98' fill='%23FFC24B' opacity='0.45' stroke='none'/><line x1='100' y1='38' x2='100' y2='48' stroke-width='2'/><path d='M96 48 h8 l4 6 h-16 Z' fill='%23000'/><circle cx='100' cy='54' r='2' fill='%23FFC24B' stroke='none'/><rect x='89' y='76' width='22' height='16' rx='3' fill='%23000'/><rect x='86' y='87' width='28' height='7' rx='2' fill='%23000'/><rect x='83' y='81' width='5' height='13' rx='2' fill='%23000'/><rect x='112' y='81' width='5' height='13' rx='2' fill='%23000'/><line x1='89' y1='94' x2='87' y2='98' stroke-width='1.5'/><line x1='111' y1='94' x2='113' y2='98' stroke-width='1.5'/><polygon points='117,91 125,91 123,98 119,98' fill='%23000'/><path d='M121 91 Q120.5 76 121 72' stroke-width='1.5'/><ellipse cx='118' cy='83' rx='2.5' ry='1.5' transform='rotate(-30 118 83)' fill='%23000'/><ellipse cx='124' cy='79' rx='2.5' ry='1.5' transform='rotate(30 124 79)' fill='%23000'/><ellipse cx='119' cy='75' rx='2.5' ry='1.5' transform='rotate(-25 119 75)' fill='%23000'/><line x1='72' y1='98' x2='128' y2='98' stroke-width='2'/></svg>",
+/* ============================================================
+   CLEAN VECTOR LOGO GENERATORS (ZERO ATTRIBUTE ESCAPING BUGS)
+   ============================================================ */
+function getMarkSVG() {
+  return '<svg viewBox="0 0 200 150" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">' +
+    '<path d="M65 42 h20 v-5 h-20 Z" fill="currentColor"/>' +
+    '<path d="M75 42 L88 26 h24 L125 42"/>' +
+    '<path d="M75 42 H56 a8 8 0 0 0 -8 8 v56 a8 8 0 0 0 8 8 h22"/>' +
+    '<rect x="54" y="58" width="8" height="38" rx="4" stroke-width="3"/>' +
+    '<path d="M125 42 c18 0 35 8 35 28 c0 16 -14 24 -30 24"/>' +
+    '<path d="M135 92 c8 10 18 25 32 20"/>' +
+    '<circle cx="100" cy="72" r="38" stroke-width="5.5"/>' +
+    '<polygon points="97,52 103,52 126,98 74,98" fill="var(--glow)" opacity="0.45" stroke="none"/>' +
+    '<line x1="100" y1="38" x2="100" y2="48" stroke-width="2"/>' +
+    '<path d="M96 48 h8 l4 6 h-16 Z" fill="currentColor"/>' +
+    '<circle cx="100" cy="54" r="2" fill="var(--glow)" stroke="none"/>' +
+    '<rect x="89" y="76" width="22" height="16" rx="3" fill="currentColor"/>' +
+    '<rect x="86" y="87" width="28" height="7" rx="2" fill="currentColor"/>' +
+    '<rect x="83" y="81" width="5" height="13" rx="2" fill="currentColor"/>' +
+    '<rect x="112" y="81" width="5" height="13" rx="2" fill="currentColor"/>' +
+    '<line x1="89" y1="94" x2="87" y2="98" stroke-width="1.5"/>' +
+    '<line x1="111" y1="94" x2="113" y2="98" stroke-width="1.5"/>' +
+    '<polygon points="117,91 125,91 123,98 119,98" fill="currentColor"/>' +
+    '<path d="M121 91 Q120.5 76 121 72" stroke-width="1.5"/>' +
+    '<ellipse cx="118" cy="83" rx="2.5" ry="1.5" transform="rotate(-30 118 83)" fill="currentColor"/>' +
+    '<ellipse cx="124" cy="79" rx="2.5" ry="1.5" transform="rotate(30 124 79)" fill="currentColor"/>' +
+    '<ellipse cx="119" cy="75" rx="2.5" ry="1.5" transform="rotate(-25 119 75)" fill="currentColor"/>' +
+    '<line x1="72" y1="98" x2="128" y2="98" stroke-width="2"/>' +
+  '</svg>';
+}
 
-  lockup: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 330' fill='none' stroke='%23000' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'><g transform='translate(80, 20)'><path d='M65 42 h20 v-5 h-20 Z' fill='%23000'/><path d='M75 42 L88 26 h24 L125 42'/><path d='M75 42 H56 a8 8 0 0 0 -8 8 v56 a8 8 0 0 0 8 8 h22'/><rect x='54' y='58' width='8' height='38' rx='4' stroke-width='3'/><path d='M125 42 c18 0 35 8 35 28 c0 16 -14 24 -30 24'/><path d='M135 92 c8 10 18 25 32 20'/><circle cx='100' cy='72' r='38' stroke-width='5.5'/><polygon points='97,52 103,52 126,98 74,98' fill='%23FFC24B' opacity='0.45' stroke='none'/><line x1='100' y1='38' x2='100' y2='48' stroke-width='2'/><path d='M96 48 h8 l4 6 h-16 Z' fill='%23000'/><circle cx='100' cy='54' r='2' fill='%23FFC24B' stroke='none'/><rect x='89' y='76' width='22' height='16' rx='3' fill='%23000'/><rect x='86' y='87' width='28' height='7' rx='2' fill='%23000'/><rect x='83' y='81' width='5' height='13' rx='2' fill='%23000'/><rect x='112' y='81' width='5' height='13' rx='2' fill='%23000'/><line x1='89' y1='94' x2='87' y2='98' stroke-width='1.5'/><line x1='111' y1='94' x2='113' y2='98' stroke-width='1.5'/><polygon points='117,91 125,91 123,98 119,98' fill='%23000'/><path d='M121 91 Q120.5 76 121 72' stroke-width='1.5'/><ellipse cx='118' cy='83' rx='2.5' ry='1.5' transform='rotate(-30 118 83)' fill='%23000'/><ellipse cx='124' cy='79' rx='2.5' ry='1.5' transform='rotate(30 124 79)' fill='%23000'/><ellipse cx='119' cy='75' rx='2.5' ry='1.5' transform='rotate(-25 119 75)' fill='%23000'/><line x1='72' y1='98' x2='128' y2='98' stroke-width='2'/></g><g stroke='none' fill='%23000'><path d='M46 208 L30 208 L30 224' stroke='%23000' stroke-width='2.4' fill='none'/><path d='M314 208 L330 208 L330 224' stroke='%23000' stroke-width='2.4' fill='none'/><path d='M30 244 L30 260 L46 260' stroke='%23000' stroke-width='2.4' fill='none'/><path d='M330 244 L330 260 L314 260' stroke='%23000' stroke-width='2.4' fill='none'/><text x='180' y='240' text-anchor='middle' font-family=\"'Space Grotesk', sans-serif\" font-weight='700' font-size='22.5' letter-spacing='0.24em'>LIVING ROOM LABS</text><text x='180' y='280' text-anchor='middle' font-family=\"'Space Grotesk', sans-serif\" font-weight='500' font-size='9.5' letter-spacing='0.3em'>CAPTURE . CREATE . INSPIRE</text><line x1='145' y1='302' x2='168' y2='302' stroke='%23000' stroke-width='2'/><circle cx='180' cy='302' r='3.5' fill='%23000'/><line x1='192' y1='302' x2='215' y2='302' stroke='%23000' stroke-width='2'/></g></svg>"
-};
+function getLockupSVG() {
+  return '<svg viewBox="0 0 360 330" fill="none" stroke="currentColor" stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round">' +
+    '<g transform="translate(80, 20)">' +
+      '<path d="M65 42 h20 v-5 h-20 Z" fill="currentColor"/>' +
+      '<path d="M75 42 L88 26 h24 L125 42"/>' +
+      '<path d="M75 42 H56 a8 8 0 0 0 -8 8 v56 a8 8 0 0 0 8 8 h22"/>' +
+      '<rect x="54" y="58" width="8" height="38" rx="4" stroke-width="3"/>' +
+      '<path d="M125 42 c18 0 35 8 35 28 c0 16 -14 24 -30 24"/>' +
+      '<path d="M135 92 c8 10 18 25 32 20"/>' +
+      '<circle cx="100" cy="72" r="38" stroke-width="5.5"/>' +
+      '<polygon points="97,52 103,52 126,98 74,98" fill="var(--glow)" opacity="0.45" stroke="none"/>' +
+      '<line x1="100" y1="38" x2="100" y2="48" stroke-width="2"/>' +
+      '<path d="M96 48 h8 l4 6 h-16 Z" fill="currentColor"/>' +
+      '<circle cx="100" cy="54" r="2" fill="var(--glow)" stroke="none"/>' +
+      '<rect x="89" y="76" width="22" height="16" rx="3" fill="currentColor"/>' +
+      '<rect x="86" y="87" width="28" height="7" rx="2" fill="currentColor"/>' +
+      '<rect x="83" y="81" width="5" height="13" rx="2" fill="currentColor"/>' +
+      '<rect x="112" y="81" width="5" height="13" rx="2" fill="currentColor"/>' +
+      '<line x1="89" y1="94" x2="87" y2="98" stroke-width="1.5"/>' +
+      '<line x1="111" y1="94" x2="113" y2="98" stroke-width="1.5"/>' +
+      '<polygon points="117,91 125,91 123,98 119,98" fill="currentColor"/>' +
+      '<path d="M121 91 Q120.5 76 121 72" stroke-width="1.5"/>' +
+      '<ellipse cx="118" cy="83" rx="2.5" ry="1.5" transform="rotate(-30 118 83)" fill="currentColor"/>' +
+      '<ellipse cx="124" cy="79" rx="2.5" ry="1.5" transform="rotate(30 124 79)" fill="currentColor"/>' +
+      '<ellipse cx="119" cy="75" rx="2.5" ry="1.5" transform="rotate(-25 119 75)" fill="currentColor"/>' +
+      '<line x1="72" y1="98" x2="128" y2="98" stroke-width="2"/>' +
+    '</g>' +
+    '<g stroke="none" fill="currentColor">' +
+      '<path d="M46 208 L30 208 L30 224" stroke="currentColor" stroke-width="2.4" fill="none"/>' +
+      '<path d="M314 208 L330 208 L330 224" stroke="currentColor" stroke-width="2.4" fill="none"/>' +
+      '<path d="M30 244 L30 260 L46 260" stroke="currentColor" stroke-width="2.4" fill="none"/>' +
+      '<path d="M330 244 L330 260 L314 260" stroke="currentColor" stroke-width="2.4" fill="none"/>' +
+      '<text x="180" y="240" text-anchor="middle" font-family="\'Space Grotesk\', sans-serif" font-weight="700" font-size="22.5" letter-spacing="0.24em">LIVING ROOM LABS</text>' +
+      '<text x="180" y="280" text-anchor="middle" font-family="\'Space Grotesk\', sans-serif" font-weight="500" font-size="9.5" letter-spacing="0.3em">CAPTURE . CREATE . INSPIRE</text>' +
+      '<line x1="145" y1="302" x2="168" y2="302" stroke="currentColor" stroke-width="2"/>' +
+      '<circle cx="180" cy="302" r="3.5" fill="currentColor"/>' +
+      '<line x1="192" y1="302" x2="215" y2="302" stroke="currentColor" stroke-width="2"/>' +
+    '</g>' +
+  '</svg>';
+}
 
 /* Baseline Database */
 var SITE = {
@@ -878,7 +918,6 @@ function renderGrid(){
                '<span class="plate" style="--sh:'+row.h+'px">'+
                  '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'">'+
                  '<span class="guard"></span>'+
-                 '<span class="scan" aria-hidden="true"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
                  '<span class="telemetry">REC // '+paddedNum+'</span>'+
                '</span>'+
@@ -913,10 +952,9 @@ function stepLB(d){
   if(!state.visible.length) return;
   state.index = (state.index + d + state.visible.length) % state.visible.length;
   
-  /* Retrigger Aperture Snap on Image Step */
   var img = $("#lb-img");
   img.style.animation = "none";
-  img.offsetHeight; /* Trigger reflow */
+  img.offsetHeight;
   img.style.animation = "";
   
   paintLB();
@@ -972,9 +1010,7 @@ pull.addEventListener("click", function(){
   }, 320);
 });
 
-/* ============================================================
-   ANTI-DOWNLOAD PROTECTION
-   ============================================================ */
+/* Anti-Download Protection */
 document.addEventListener("contextmenu", function(e){
   if (e.target.nodeName === "IMG" || e.target.classList.contains("guard")) {
     e.preventDefault();
@@ -987,19 +1023,17 @@ document.addEventListener("dragstart", function(e){
 });
 
 function renderContent(){
-  $$("[data-logo]").forEach(function(n){
-    n.innerHTML = '<img src="' + LOGO.mark + '" alt="Living Room Labs">';
-  });
-  $$("[data-lockup]").forEach(function(n){
-    n.innerHTML = '<img class="lockup-img" src="' + LOGO.lockup + '" alt="' + esc(SITE.name) + '">';
-  });
+  var logoHost = $("[data-logo]");
+  if(logoHost) logoHost.innerHTML = getMarkSVG();
+
+  var lockupHost = $("[data-lockup]");
+  if(lockupHost) lockupHost.innerHTML = getLockupSVG();
 
   $$("[data-name]").forEach(function(n){ n.textContent = SITE.name; });
   $$("[data-tagline]").forEach(function(n){ n.textContent = SITE.tagline; });
   var pl1 = $("[data-place]"); if(pl1) pl1.textContent = SITE.city;
   var pl2 = $("[data-place2]"); if(pl2) pl2.textContent = SITE.city;
 
-  /* Headline Animation with Playfair Display */
   var heroEl = $("[data-hero]");
   if(heroEl){
     heroEl.innerHTML = (SITE.hero || []).map(function(lineStr, i){
