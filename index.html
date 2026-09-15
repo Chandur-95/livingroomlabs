@@ -7,7 +7,7 @@
 <meta name="description" content="Living Room Labs is a photography team in Hyderabad. Food, pets, real estate, events and portraits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
 <style>
@@ -20,8 +20,9 @@
   --rule:rgba(0,0,0,.15);
   --rule-soft:rgba(0,0,0,.06);
   --glow:#FFC24B;
+  --glow-rgb:255, 194, 75;
 
-  --nav-h:64px;
+  --nav-h:68px;
   --pad:clamp(16px, 4vw, 56px);
   --gap:clamp(10px, 1.2vw, 16px);
   --sec:clamp(56px, 8vw, 130px);
@@ -36,7 +37,7 @@
   --safe-right:env(safe-area-inset-right, 0px);
 }
 html[data-theme="dark"]{
-  --paper:#0A0A0A;
+  --paper:#080808;
   --ink:#FFFFFF;
   --rule:rgba(255,255,255,.22);
   --rule-soft:rgba(255,255,255,.08);
@@ -52,17 +53,42 @@ body{
   margin:0;
   background:var(--paper);
   color:var(--ink);
-  font-family:"Archivo",system-ui,sans-serif;
+  font-family:"Inter",system-ui,sans-serif;
   font-size:clamp(.92rem, .3vw + .85rem, 1.02rem);
   line-height:1.55;
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
   transition:background .35s ease, color .35s ease;
 }
-img{display:block;max-width:100%;height:auto}
+
+/* Anti-Download Shield & Disable Selection */
+img{
+  display:block;
+  max-width:100%;
+  height:auto;
+  -webkit-user-drag:none;
+  user-select:none;
+  -webkit-user-select:none;
+  -webkit-touch-callout:none;
+  pointer-events:auto;
+}
+
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 a{color:inherit;text-decoration:none}
-em{font-family:"Bodoni Moda",Georgia,serif;font-style:italic;font-weight:400}
+em{
+  font-family:"Playfair Display",Georgia,serif;
+  font-style:italic;
+  font-weight:500;
+  letter-spacing:-0.01em;
+}
+
+body.power-flux{animation:powerPulse .28s ease-in-out forwards}
+@keyframes powerPulse{
+  0%{filter:brightness(1)}
+  35%{filter:brightness(1.5) contrast(1.1)}
+  70%{filter:brightness(.85)}
+  100%{filter:brightness(1)}
+}
 
 :focus-visible{
   outline:2px solid var(--ink);
@@ -121,8 +147,24 @@ em{font-family:"Bodoni Moda",Georgia,serif;font-style:italic;font-weight:400}
   border-bottom:1px solid var(--rule);
   transition:background .35s ease, border-color .35s ease;
 }
-.brand{display:flex;align-items:center;gap:12px}
-.brand svg{display:block;width:38px;height:38px;overflow:visible}
+.brand{display:flex;align-items:center;gap:14px}
+.brand .mark{
+  display:flex;align-items:center;
+  height:44px;
+}
+.brand .mark img{
+  height:44px;
+  width:auto;
+  object-fit:contain;
+  mix-blend-mode:multiply;
+  transition:transform .3s var(--ease);
+}
+html[data-theme="dark"] .brand .mark img{
+  filter:invert(1);
+  mix-blend-mode:screen;
+}
+.brand:hover .mark img{transform:scale(1.05)}
+
 .brand .wordmark{
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
   text-transform:uppercase;font-weight:600;white-space:nowrap;
@@ -137,7 +179,7 @@ em{font-family:"Bodoni Moda",Georgia,serif;font-style:italic;font-weight:400}
 }
 .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
 
-/* Lamp Pull Switch */
+/* Lamp Pull Cord */
 .pull{
   --len:28px;
   position:relative;flex:none;
@@ -148,22 +190,22 @@ em{font-family:"Bodoni Moda",Georgia,serif;font-style:italic;font-weight:400}
   position:absolute;top:0;left:50%;
   width:1px;height:var(--len);
   background:var(--ink);
-  transition:height .3s var(--ease);
+  transition:height .32s cubic-bezier(.34, 1.56, .64, 1);
 }
 .pull .bead{
   position:absolute;top:var(--len);left:50%;
-  width:11px;height:11px;margin-left:-5.5px;
-  border:1px solid var(--ink);border-radius:50%;
+  width:12px;height:12px;margin-left:-6px;
+  border:1.2px solid var(--ink);border-radius:50%;
   background:var(--glow);
-  transition:top .3s var(--ease),background .35s ease,box-shadow .35s ease;
-  box-shadow:0 0 8px rgba(255,194,75,.45);
+  transition:top .32s cubic-bezier(.34, 1.56, .64, 1), background .35s ease, box-shadow .35s ease;
+  box-shadow:0 0 10px rgba(var(--glow-rgb),.5);
 }
 html[data-theme="dark"] .pull .bead{background:transparent;box-shadow:none}
-.pull:hover,.pull:focus-visible{--len:34px}
-.pull.tug{--len:44px;transition-duration:.1s}
+.pull:hover,.pull:focus-visible{--len:35px}
+.pull.tug{--len:48px;transition:none}
 
 /* ============================================================
-   HERO (SMOOTH CURTAIN MASK RISE)
+   HERO
    ============================================================ */
 main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .wrap{padding-inline:calc(var(--pad) + 12px)}
@@ -171,23 +213,22 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .hero{padding-block:clamp(44px, 8vw, 110px) clamp(30px, 5vw, 64px)}
 .hero h1{
   margin:0;
+  font-family:"Space Grotesk", sans-serif;
   font-size:clamp(2.1rem, 6.8vw, 6.2rem);
   line-height:.98;
-  font-weight:600;
+  font-weight:700;
   letter-spacing:-.03em;
 }
 .hero h1 em{letter-spacing:-.005em}
 
-.line-mask{display:block;overflow:hidden;padding-bottom:.12em;margin-bottom:-.12em}
+.line-mask{display:block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
 .line-inner{
   display:block;
   transform:translateY(115%);
   opacity:0;
-  animation:curtainRise .85s var(--ease) forwards;
+  animation:curtainRise .9s var(--ease) forwards;
 }
-@keyframes curtainRise{
-  to{transform:translateY(0);opacity:1}
-}
+@keyframes curtainRise{to{transform:translateY(0);opacity:1}}
 
 .hero-foot{
   margin-top:clamp(24px, 3.5vw, 48px);
@@ -235,7 +276,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   text-transform:uppercase;font-weight:600;
   transition:background .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease;
 }
-.chip:hover{border-color:var(--ink);box-shadow:0 0 10px rgba(255,194,75,.2)}
+.chip:hover{border-color:var(--ink);box-shadow:0 0 10px rgba(var(--glow-rgb),.25)}
 .chip .n{font-weight:400;opacity:.5}
 .chip .dot{width:5px;height:5px;background:var(--glow);opacity:0;transition:opacity .2s ease}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
@@ -262,27 +303,61 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .plate img{
   width:100%;height:100%;object-fit:cover;
-  transition:transform .65s var(--ease),opacity .4s ease;
+  transition:transform .7s var(--ease),opacity .4s ease;
   opacity:0;
 }
 .plate img.ready{opacity:1}
-.shot:hover .plate img,.shot:focus-visible .plate img{
-  transform:scale(1.035);
+.shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.04)}
+
+/* Anti-Save Transparent Guard Overlay */
+.guard{
+  position:absolute;inset:0;z-index:2;
+  background:transparent;
 }
 
-/* Subtle Reticle Focus on Hover */
-.corners{position:absolute;inset:8px;pointer-events:none}
+.plate .scan{
+  position:absolute;inset:0;
+  background:linear-gradient(180deg, transparent 0%, rgba(var(--glow-rgb), 0.25) 48%, rgba(var(--glow-rgb), 0.8) 50%, transparent 52%);
+  transform:translateY(-100%);
+  pointer-events:none;
+  opacity:0;
+}
+.shot:hover .plate .scan{
+  opacity:1;
+  animation:containedScan .75s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+@keyframes containedScan{
+  0%{transform:translateY(-100%)}
+  100%{transform:translateY(100%)}
+}
+
+.corners{position:absolute;inset:8px;pointer-events:none;z-index:3}
 .corners i{
   position:absolute;width:14px;height:14px;
   border:0 solid var(--glow);
-  opacity:0;transform:scale(.8);
+  opacity:0;transform:scale(.75);
   transition:opacity .25s var(--ease),transform .25s var(--ease);
+  box-shadow:0 0 6px rgba(var(--glow-rgb),.4);
 }
 .corners i:nth-child(1){top:0;left:0;border-top-width:1.8px;border-left-width:1.8px}
 .corners i:nth-child(2){top:0;right:0;border-top-width:1.8px;border-right-width:1.8px}
 .corners i:nth-child(3){bottom:0;left:0;border-bottom-width:1.8px;border-left-width:1.8px}
 .corners i:nth-child(4){bottom:0;right:0;border-bottom-width:1.8px;border-right-width:1.8px}
 .shot:hover .corners i,.shot:focus-visible .corners i{opacity:1;transform:none}
+
+.telemetry{
+  position:absolute;bottom:10px;right:10px;z-index:3;
+  font-family:"JetBrains Mono",monospace;
+  font-size:.58rem;
+  color:var(--glow);
+  background:rgba(0,0,0,.8);
+  padding:2px 6px;
+  letter-spacing:.12em;
+  opacity:0;transform:translateY(4px);
+  transition:opacity .25s ease, transform .25s ease;
+  pointer-events:none;
+}
+.shot:hover .telemetry{opacity:1;transform:none}
 
 .cap{
   display:flex;justify-content:space-between;gap:12px;
@@ -368,29 +443,45 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-bottom:clamp(40px, 5vw, 80px);
   display:flex;justify-content:center;
 }
-.lockup-wrap svg{
+.lockup-wrap .lockup-img{
   width:100%;
-  max-width:min(440px, 90vw);
+  max-width:min(420px, 85vw);
   height:auto;
-  overflow:visible;
+  mix-blend-mode:multiply;
+  transition:transform .3s var(--ease);
 }
+html[data-theme="dark"] .lockup-wrap .lockup-img{
+  filter:invert(1);
+  mix-blend-mode:screen;
+}
+.lockup-wrap:hover .lockup-img{transform:scale(1.02)}
 
 /* ============================================================
-   LIGHTBOX
+   LIGHTBOX WITH CAMERA SHUTTER APERTURE ZOOM
    ============================================================ */
 .lb{
   position:fixed;inset:0;z-index:120;
-  background:var(--paper);
+  background:rgba(6, 6, 6, .97);
+  color:#FFF;
   display:none;flex-direction:column;
   padding:calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
+  backdrop-filter:blur(24px);
 }
-.lb[open],.lb.on{display:flex}
+.lb[open],.lb.on{
+  display:flex;
+  animation:shutterFade .35s var(--ease) forwards;
+}
+@keyframes shutterFade{
+  0%{opacity:0;backdrop-filter:blur(0px)}
+  100%{opacity:1;backdrop-filter:blur(24px)}
+}
+
 .lb-top{
   display:flex;justify-content:space-between;align-items:center;gap:14px;
-  padding-bottom:12px;border-bottom:1px solid var(--rule);
+  padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.18);
 }
 .lb-count{font-size:var(--fs-label);letter-spacing:.14em;font-weight:600}
-.lb-close{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600}
+.lb-close{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;color:#FFF}
 .lb-close svg{width:13px;height:13px}
 
 .lb-stage{
@@ -399,30 +490,51 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-block:clamp(10px, 2vw, 20px);
 }
 .lb-nav{
-  width:42px;height:42px;flex:none;
+  width:44px;height:44px;flex:none;
   display:grid;place-items:center;
-  border:1px solid var(--rule);border-radius:50%;
-  transition:background .2s ease,color .2s ease,border-color .2s ease;
+  border:1px solid rgba(255,255,255,.2);border-radius:50%;
+  color:#FFF;
+  transition:background .2s ease, color .2s ease, transform .2s ease;
 }
-.lb-nav:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.lb-nav:hover{background:#FFF;color:#000;transform:scale(1.08)}
 .lb-nav svg{width:14px;height:14px}
 .lb-figure{flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:center}
-.lb-frame{position:relative;display:block;line-height:0}
+
+.lb-frame{
+  position:relative;display:block;line-height:0;
+  box-shadow:0 0 40px rgba(0,0,0,.9);
+}
 .lb-frame img{
   display:block;width:auto;height:auto;
   max-width:calc(100vw - 120px - var(--safe-left) - var(--safe-right));
   max-height:calc(100vh - 180px - var(--safe-top) - var(--safe-bottom));
+  animation:apertureSnap .4s cubic-bezier(.16, 1, .3, 1) forwards;
 }
-.lb-frame .corners{inset:-10px}
-.lb-frame .corners i{opacity:1;transform:none;width:18px;height:18px;border-color:var(--glow)}
+@keyframes apertureSnap{
+  0%{transform:scale(0.88);opacity:0;filter:blur(4px)}
+  60%{transform:scale(1.015);filter:blur(0)}
+  100%{transform:scale(1);opacity:1}
+}
+
+.lb-frame .corners{inset:-12px}
+.lb-frame .corners i{
+  opacity:1;transform:none;width:20px;height:20px;
+  border-color:var(--glow);
+  box-shadow:0 0 10px rgba(var(--glow-rgb),.6);
+}
 
 .lb-cap{
   display:grid;grid-template-columns:1fr auto;gap:6px 20px;align-items:baseline;
-  border-top:1px solid var(--rule);padding-top:12px;
+  border-top:1px solid rgba(255,255,255,.18);padding-top:12px;
+  animation:capSlide .45s var(--ease) forwards;
 }
-.lb-cap .t{font-weight:600;font-size:clamp(.95rem, 1.6vw, 1.25rem)}
-.lb-cap .m{opacity:.6;font-size:.82rem;text-align:right}
-.lb-cap .d{grid-column:1/-1;opacity:.7;font-size:.86rem;max-width:70ch}
+@keyframes capSlide{
+  from{opacity:0;transform:translateY(8px)}
+  to{opacity:1;transform:translateY(0)}
+}
+.lb-cap .t{font-weight:600;font-size:clamp(.95rem, 1.6vw, 1.25rem);color:#FFF}
+.lb-cap .m{opacity:.6;font-size:.82rem;text-align:right;color:#FFF}
+.lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
 
 /* ============================================================
    RESPONSIVE
@@ -433,17 +545,19 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   .foot{grid-template-columns:1fr 1fr}
 }
 @media (max-width:840px) and (orientation:landscape){
-  :root{--nav-h:50px}
+  :root{--nav-h:54px}
   .hero{padding-block:20px 18px}
   .band{height:180px}
   .lb-frame img{max-height:calc(100vh - 110px);max-width:calc(100vw - 80px)}
   .lb-stage{padding-block:4px}
 }
 @media (max-width:640px){
-  :root{--nav-h:56px}
+  :root{--nav-h:60px}
   .frame svg{width:22px;height:22px}
   .nav{padding-inline:calc(var(--pad) + 6px)}
   .wrap{padding-inline:calc(var(--pad) + 6px)}
+  .brand .mark{height:36px}
+  .brand .mark img{height:36px}
   .brand .wordmark{display:none}
   .nav-links{gap:12px}
   .foot{grid-template-columns:1fr;gap:24px}
@@ -458,6 +572,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   .line-inner{transform:none;opacity:1}
   .frame svg path{stroke-dashoffset:0}
   .plate img{opacity:1}
+  .plate .scan{display:none}
 }
 </style>
 </head>
@@ -570,6 +685,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
     <figure class="lb-figure">
       <span class="lb-frame">
         <img id="lb-img" alt="">
+        <span class="guard" aria-hidden="true"></span>
         <span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
       </span>
     </figure>
@@ -585,72 +701,20 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 </div>
 
 <script>
-/* ==================================================================
-   CLEAN VECTOR LOGO GENERATOR (NO DATA-URI ENCODING QUIRKS)
-   ================================================================== */
-function getLogoSVG(showText) {
-  var h = showText ? 510 : 320;
-  var vb = showText ? "0 0 500 510" : "0 0 500 320";
-  var textSvg = showText ? `
-    <g stroke="none" fill="currentColor">
-      <path d="M 65 365 L 45 365 L 45 388" stroke="currentColor" stroke-width="3" fill="none"/>
-      <path d="M 435 365 L 455 365 L 455 388" stroke="currentColor" stroke-width="3" fill="none"/>
-      <path d="M 45 412 L 45 435 L 65 435" stroke="currentColor" stroke-width="3" fill="none"/>
-      <path d="M 455 412 L 455 435 L 435 435" stroke="currentColor" stroke-width="3" fill="none"/>
+/* High-Fidelity Transparent Logo Encoding */
+const LOGO = {
+  mark: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 200 150' fill='none' stroke='%23000' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'><path d='M65 42 h20 v-5 h-20 Z' fill='%23000'/><path d='M75 42 L88 26 h24 L125 42'/><path d='M75 42 H56 a8 8 0 0 0 -8 8 v56 a8 8 0 0 0 8 8 h22'/><rect x='54' y='58' width='8' height='38' rx='4' stroke-width='3'/><path d='M125 42 c18 0 35 8 35 28 c0 16 -14 24 -30 24'/><path d='M135 92 c8 10 18 25 32 20'/><circle cx='100' cy='72' r='38' stroke-width='5.5'/><polygon points='97,52 103,52 126,98 74,98' fill='%23FFC24B' opacity='0.45' stroke='none'/><line x1='100' y1='38' x2='100' y2='48' stroke-width='2'/><path d='M96 48 h8 l4 6 h-16 Z' fill='%23000'/><circle cx='100' cy='54' r='2' fill='%23FFC24B' stroke='none'/><rect x='89' y='76' width='22' height='16' rx='3' fill='%23000'/><rect x='86' y='87' width='28' height='7' rx='2' fill='%23000'/><rect x='83' y='81' width='5' height='13' rx='2' fill='%23000'/><rect x='112' y='81' width='5' height='13' rx='2' fill='%23000'/><line x1='89' y1='94' x2='87' y2='98' stroke-width='1.5'/><line x1='111' y1='94' x2='113' y2='98' stroke-width='1.5'/><polygon points='117,91 125,91 123,98 119,98' fill='%23000'/><path d='M121 91 Q120.5 76 121 72' stroke-width='1.5'/><ellipse cx='118' cy='83' rx='2.5' ry='1.5' transform='rotate(-30 118 83)' fill='%23000'/><ellipse cx='124' cy='79' rx='2.5' ry='1.5' transform='rotate(30 124 79)' fill='%23000'/><ellipse cx='119' cy='75' rx='2.5' ry='1.5' transform='rotate(-25 119 75)' fill='%23000'/><line x1='72' y1='98' x2='128' y2='98' stroke-width='2'/></svg>",
 
-      <text x="250" y="408" text-anchor="middle" font-family="'Archivo', sans-serif" font-weight="700" font-size="30" letter-spacing="0.26em">LIVING ROOM LABS</text>
-      <text x="250" y="462" text-anchor="middle" font-family="'Archivo', sans-serif" font-weight="500" font-size="12" letter-spacing="0.32em">CAPTURE . CREATE . INSPIRE</text>
+  lockup: "data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 360 330' fill='none' stroke='%23000' stroke-width='4.5' stroke-linecap='round' stroke-linejoin='round'><g transform='translate(80, 20)'><path d='M65 42 h20 v-5 h-20 Z' fill='%23000'/><path d='M75 42 L88 26 h24 L125 42'/><path d='M75 42 H56 a8 8 0 0 0 -8 8 v56 a8 8 0 0 0 8 8 h22'/><rect x='54' y='58' width='8' height='38' rx='4' stroke-width='3'/><path d='M125 42 c18 0 35 8 35 28 c0 16 -14 24 -30 24'/><path d='M135 92 c8 10 18 25 32 20'/><circle cx='100' cy='72' r='38' stroke-width='5.5'/><polygon points='97,52 103,52 126,98 74,98' fill='%23FFC24B' opacity='0.45' stroke='none'/><line x1='100' y1='38' x2='100' y2='48' stroke-width='2'/><path d='M96 48 h8 l4 6 h-16 Z' fill='%23000'/><circle cx='100' cy='54' r='2' fill='%23FFC24B' stroke='none'/><rect x='89' y='76' width='22' height='16' rx='3' fill='%23000'/><rect x='86' y='87' width='28' height='7' rx='2' fill='%23000'/><rect x='83' y='81' width='5' height='13' rx='2' fill='%23000'/><rect x='112' y='81' width='5' height='13' rx='2' fill='%23000'/><line x1='89' y1='94' x2='87' y2='98' stroke-width='1.5'/><line x1='111' y1='94' x2='113' y2='98' stroke-width='1.5'/><polygon points='117,91 125,91 123,98 119,98' fill='%23000'/><path d='M121 91 Q120.5 76 121 72' stroke-width='1.5'/><ellipse cx='118' cy='83' rx='2.5' ry='1.5' transform='rotate(-30 118 83)' fill='%23000'/><ellipse cx='124' cy='79' rx='2.5' ry='1.5' transform='rotate(30 124 79)' fill='%23000'/><ellipse cx='119' cy='75' rx='2.5' ry='1.5' transform='rotate(-25 119 75)' fill='%23000'/><line x1='72' y1='98' x2='128' y2='98' stroke-width='2'/></g><g stroke='none' fill='%23000'><path d='M46 208 L30 208 L30 224' stroke='%23000' stroke-width='2.4' fill='none'/><path d='M314 208 L330 208 L330 224' stroke='%23000' stroke-width='2.4' fill='none'/><path d='M30 244 L30 260 L46 260' stroke='%23000' stroke-width='2.4' fill='none'/><path d='M330 244 L330 260 L314 260' stroke='%23000' stroke-width='2.4' fill='none'/><text x='180' y='240' text-anchor='middle' font-family=\"'Space Grotesk', sans-serif\" font-weight='700' font-size='22.5' letter-spacing='0.24em'>LIVING ROOM LABS</text><text x='180' y='280' text-anchor='middle' font-family=\"'Space Grotesk', sans-serif\" font-weight='500' font-size='9.5' letter-spacing='0.3em'>CAPTURE . CREATE . INSPIRE</text><line x1='145' y1='302' x2='168' y2='302' stroke='%23000' stroke-width='2'/><circle cx='180' cy='302' r='3.5' fill='%23000'/><line x1='192' y1='302' x2='215' y2='302' stroke='%23000' stroke-width='2'/></g></svg>"
+};
 
-      <line x1="205" y1="492" x2="238" y2="492" stroke="currentColor" stroke-width="2.5"/>
-      <circle cx="250" cy="492" r="4.5" fill="currentColor"/>
-      <line x1="262" y1="492" x2="295" y2="492" stroke="currentColor" stroke-width="2.5"/>
-    </g>
-  ` : '';
-
-  return `<svg viewBox="${vb}" width="100%" height="100%" style="color:var(--ink)">
-    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M 152 104 L 172 104 L 172 112 L 152 112 Z" fill="currentColor" stroke="none"/>
-      <path d="M 180 114 L 216 72 L 284 72 L 320 114" stroke-width="12"/>
-      <path d="M 180 114 L 138 114 C 122 114 116 122 116 138 L 116 250 C 116 264 124 272 138 272 L 195 272" stroke-width="12"/>
-      <rect x="132" y="146" width="16" height="88" rx="8" stroke-width="8"/>
-      <path d="M 320 114 C 362 114 402 132 402 178 C 402 216 368 234 326 234" stroke-width="12"/>
-      <path d="M 342 228 C 360 252 386 288 418 276" stroke-width="12"/>
-      <circle cx="250" cy="180" r="82" stroke-width="14"/>
-
-      <!-- Warm Lamp Beam -->
-      <polygon points="244,130 256,130 308,242 192,242" fill="var(--glow)" opacity="0.35" stroke="none"/>
-      <line x1="250" y1="98" x2="250" y2="122" stroke-width="3"/>
-      <path d="M 241 122 L 259 122 L 267 134 L 233 134 Z" fill="currentColor" stroke="none"/>
-      <circle cx="250" cy="134" r="3.5" fill="var(--glow)" stroke="none"/>
-
-      <!-- Armchair -->
-      <rect x="226" y="192" width="48" height="34" rx="8" fill="currentColor" stroke="none"/>
-      <rect x="220" y="214" width="60" height="15" rx="4" fill="currentColor" stroke="none"/>
-      <rect x="214" y="202" width="12" height="27" rx="5" fill="currentColor" stroke="none"/>
-      <rect x="274" y="202" width="12" height="27" rx="5" fill="currentColor" stroke="none"/>
-      <line x1="225" y1="229" x2="221" y2="238" stroke-width="3"/>
-      <line x1="275" y1="229" x2="279" y2="238" stroke-width="3"/>
-
-      <!-- Plant -->
-      <polygon points="288,225 304,225 300,238 292,238" fill="currentColor" stroke="none"/>
-      <path d="M 296 225 Q 295 195 296 186" stroke-width="2.5"/>
-      <ellipse cx="290" cy="208" rx="5" ry="3" transform="rotate(-30 290 208)" fill="currentColor" stroke="none"/>
-      <ellipse cx="302" cy="200" rx="5" ry="3" transform="rotate(30 302 200)" fill="currentColor" stroke="none"/>
-      <ellipse cx="291" cy="192" rx="5" ry="3" transform="rotate(-25 291 192)" fill="currentColor" stroke="none"/>
-      <ellipse cx="296" cy="184" rx="3.5" ry="5" fill="currentColor" stroke="none"/>
-      <line x1="188" y1="238" x2="312" y2="238" stroke-width="3.5"/>
-    </g>
-    ${textSvg}
-  </svg>`;
-}
-
-/* Built-in Baseline Database */
+/* Baseline Database */
 var SITE = {
   name: "Living Room Labs",
   tagline: "CAPTURE . CREATE . INSPIRE",
   city: "Hyderabad, India",
   email: "livingroomlabs@outlook.com",
-  bodyFont: "Archivo",
+  bodyFont: "Inter",
   socials: [
     { name: "Instagram", url: "https://instagram.com/livingroomlabs" },
     { name: "Behance", url: "https://behance.net/livingroomlabs" },
@@ -809,10 +873,14 @@ function renderGrid(){
   grid.innerHTML = rows.map(function(row){
     return '<div class="row">' + row.items.map(function(slot){
       var p = slot.ref, i = n++;
+      var paddedNum = String(i+1).padStart(2, "0");
       return '<button class="shot" style="--sw:'+slot.w+'px" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                '<span class="plate" style="--sh:'+row.h+'px">'+
                  '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'">'+
+                 '<span class="guard"></span>'+
+                 '<span class="scan" aria-hidden="true"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
+                 '<span class="telemetry">REC // '+paddedNum+'</span>'+
                '</span>'+
                '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
              '</button>';
@@ -844,6 +912,13 @@ function closeLB(){
 function stepLB(d){
   if(!state.visible.length) return;
   state.index = (state.index + d + state.visible.length) % state.visible.length;
+  
+  /* Retrigger Aperture Snap on Image Step */
+  var img = $("#lb-img");
+  img.style.animation = "none";
+  img.offsetHeight; /* Trigger reflow */
+  img.style.animation = "";
+  
   paintLB();
 }
 function paintLB(){
@@ -876,29 +951,55 @@ lb.addEventListener("touchend", function(e){
   if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
 }, {passive:true});
 
-/* Pull Lamp Toggle */
+/* Pull Cord Physics */
 var pull = $("#theme");
 pull.addEventListener("click", function(){
   var wasDark = document.documentElement.getAttribute("data-theme") === "dark";
   var nowDark = !wasDark;
-  document.documentElement.setAttribute("data-theme", nowDark ? "dark" : "light");
-  pull.setAttribute("aria-pressed", String(nowDark));
-  pull.setAttribute("aria-label", nowDark ? "Turn the lamp on" : "Turn the lamp off");
+  
   pull.classList.add("tug");
-  setTimeout(function(){ pull.classList.remove("tug"); }, 140);
+  document.body.classList.add("power-flux");
+
+  setTimeout(function(){
+    document.documentElement.setAttribute("data-theme", nowDark ? "dark" : "light");
+    pull.setAttribute("aria-pressed", String(nowDark));
+    pull.setAttribute("aria-label", nowDark ? "Turn the lamp on" : "Turn the lamp off");
+  }, 90);
+
+  setTimeout(function(){
+    pull.classList.remove("tug");
+    document.body.classList.remove("power-flux");
+  }, 320);
+});
+
+/* ============================================================
+   ANTI-DOWNLOAD PROTECTION
+   ============================================================ */
+document.addEventListener("contextmenu", function(e){
+  if (e.target.nodeName === "IMG" || e.target.classList.contains("guard")) {
+    e.preventDefault();
+  }
+});
+document.addEventListener("dragstart", function(e){
+  if (e.target.nodeName === "IMG") {
+    e.preventDefault();
+  }
 });
 
 function renderContent(){
-  /* Inject Pure Vectors for Nav and Footer */
-  $$("[data-logo]").forEach(function(n){ n.innerHTML = getLogoSVG(false); });
-  $$("[data-lockup]").forEach(function(n){ n.innerHTML = getLogoSVG(true); });
+  $$("[data-logo]").forEach(function(n){
+    n.innerHTML = '<img src="' + LOGO.mark + '" alt="Living Room Labs">';
+  });
+  $$("[data-lockup]").forEach(function(n){
+    n.innerHTML = '<img class="lockup-img" src="' + LOGO.lockup + '" alt="' + esc(SITE.name) + '">';
+  });
 
   $$("[data-name]").forEach(function(n){ n.textContent = SITE.name; });
   $$("[data-tagline]").forEach(function(n){ n.textContent = SITE.tagline; });
   var pl1 = $("[data-place]"); if(pl1) pl1.textContent = SITE.city;
   var pl2 = $("[data-place2]"); if(pl2) pl2.textContent = SITE.city;
 
-  /* Headline: High-End Smooth Editorial Mask Curtain */
+  /* Headline Animation with Playfair Display */
   var heroEl = $("[data-hero]");
   if(heroEl){
     heroEl.innerHTML = (SITE.hero || []).map(function(lineStr, i){
@@ -972,9 +1073,6 @@ function initApp(){
     })
     .then(function(data){
       SITE = Object.assign({}, SITE, data);
-      if(SITE.bodyFont){
-        document.body.style.fontFamily = `"${SITE.bodyFont}", sans-serif`;
-      }
       renderContent();
     })
     .catch(function(err){
