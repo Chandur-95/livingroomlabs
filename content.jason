@@ -1,0 +1,47 @@
+{
+  "name": "Living Room Labs",
+  "tagline": "CAPTURE . CREATE . INSPIRE",
+  "city": "Hyderabad, India",
+  "email": "livingroomlabs@outlook.com",
+  "bodyFont": "Archivo",
+  "socials": [
+    { "name": "Instagram", "url": "https://instagram.com/livingroomlabs" },
+    { "name": "Behance", "url": "https://behance.net/livingroomlabs" },
+    { "name": "WhatsApp", "url": "https://wa.me/910000000000" }
+  ],
+  "hero": [
+    "Hot food, restless",
+    "*animals*, empty rooms,",
+    "and people halfway",
+    "through a *laugh*."
+  ],
+  "band": {
+    "src": "https://picsum.photos/seed/lrl-band/2400/1100",
+    "alt": "A table being photographed under a pendant lamp"
+  },
+  "statement": "A portfolio is not a *promise*. It is a receipt.",
+  "statementBy": "Everything on this page was shot by us, for someone who needed it.",
+  "niches": [
+    { "name": "Food", "line": "Menus, delivery listings, and the plate as it actually arrives." },
+    { "name": "Pets", "line": "Fast shutter, floor-level angles, treats on hand." },
+    { "name": "Real Estate", "line": "Rooms shot wide and straight, in the light they actually get." },
+    { "name": "Events", "line": "Setup to last song, edited and delivered within the week." },
+    { "name": "Portraits", "line": "Headshots and personal work, in studio or wherever you already are." }
+  ],
+  "contactNote": "Tell us what you are shooting, roughly when, and where. We reply within a day.",
+  "photos": [
+    { "src": "https://picsum.photos/seed/lrl-food-1/1200/1500", "title": "Sunday Roast", "client": "Olive & Oak", "category": "Food", "caption": "Shot at five, so the steam still reads.", "w": 5, "ratio": "4/5", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-food-2/1200/1200", "title": "Cold Brew, Hot Day", "client": "Kettle Room", "category": "Food", "caption": "The condensation is the entire photograph.", "w": 4, "ratio": "1/1", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-food-3/1100/1460", "title": "Thali, Overhead", "client": "Banjara House", "category": "Food", "caption": "Twelve bowls, one frame, nothing cropped out.", "w": 3, "ratio": "3/4", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-pets-1/1600/1070", "title": "Mango Refuses to Sit", "client": "Private", "category": "Pets", "caption": "1/2000s and still a blur of tail.", "w": 6, "ratio": "3/2", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-re-1/1800/1010", "title": "Two-Bed, North Light", "client": "Casa Listings", "category": "Real Estate", "caption": "Shot at nine, for the light a buyer will get.", "w": 6, "ratio": "16/9", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-pets-2/1200/1500", "title": "Rooftop Cat", "client": "Private", "category": "Pets", "caption": "He picked the light. We only turned up.", "w": 3, "ratio": "4/5", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-re-2/1200/1500", "title": "Stairwell", "client": "Vertex Homes", "category": "Real Estate", "caption": "Verticals kept vertical, no lens correction.", "w": 4, "ratio": "4/5", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-food-4/1600/1070", "title": "Proof at Midnight", "client": "Flour & Salt", "category": "Food", "caption": "Bakery light only. No flash in the room.", "w": 5, "ratio": "3/2", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-pets-3/1200/1200", "title": "Three Still Minutes", "client": "Paws & Co.", "category": "Pets", "caption": "Seamless white, one assistant, many treats.", "w": 3, "ratio": "1/1", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-re-3/1600/1070", "title": "Empty, On Purpose", "client": "Vertex Homes", "category": "Real Estate", "caption": "Staged down rather than up.", "w": 6, "ratio": "3/2", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-food-5/1100/1460", "title": "Chai, Second Pour", "client": "Kettle Room", "category": "Food", "caption": "Backlit steam, no smoke tricks.", "w": 3, "ratio": "3/4", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-re-4/1800/1010", "title": "Balcony, 14th Floor", "client": "Casa Listings", "category": "Real Estate", "caption": "Blue hour outside, interiors lit to match.", "w": 6, "ratio": "16/9", "videoUrl": "" },
+    { "src": "https://picsum.photos/seed/lrl-food-6/1800/1010", "title": "Kitchen Pass", "client": "Olive & Oak", "category": "Food", "caption": "Mid-service. Nobody posed for anything.", "w": 8, "ratio": "16/9", "videoUrl": "" }
+  ]
+}
