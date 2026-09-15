@@ -1,9 +1,18 @@
 backend:
   name: git-gateway
   branch: main
+  commit_messages:
+    create: 'Create {{collection}} “{{slug}}”'
+    update: 'Update {{collection}} “{{slug}}”'
+    delete: 'Delete {{collection}} “{{slug}}”'
+    uploadMedia: 'Upload “{{path}}”'
+    deleteMedia: 'Delete “{{path}}”'
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
+
+media_library:
+  max_file_size: 15728640
 
 collections:
   - name: "website"
@@ -17,36 +26,8 @@ collections:
           - { label: "Tagline", name: "tagline", widget: "string" }
           - { label: "City", name: "city", widget: "string" }
           - { label: "Email", name: "email", widget: "string" }
-          - label: "Body Font"
-            name: "bodyFont"
-            widget: "select"
-            options: ["Inter", "Archivo", "Playfair Display", "Space Grotesk"]
-            default: "Inter"
-          - label: "Social Media Links"
-            name: "socials"
-            widget: "list"
-            fields:
-              - { label: "Platform Name", name: "name", widget: "string" }
-              - { label: "URL", name: "url", widget: "string" }
-          - label: "Hero Headline Lines"
-            name: "hero"
-            widget: "list"
-            field: { label: "Line", name: "line", widget: "string" }
-          - label: "Hero Banner Shoot"
-            name: "band"
-            widget: "object"
-            fields:
-              - { label: "Banner Image", name: "src", widget: "image" }
-              - { label: "Alt Description", name: "alt", widget: "string", required: false }
-          - { label: "Statement Headline", name: "statement", widget: "string" }
-          - { label: "Statement Attribution", name: "statementBy", widget: "string" }
-          - label: "What We Shoot (Niches)"
-            name: "niches"
-            widget: "list"
-            fields:
-              - { label: "Niche Name", name: "name", widget: "string" }
-              - { label: "Description Line", name: "line", widget: "string" }
-          - { label: "Contact Note", name: "contactNote", widget: "text" }
+
+          # PHOTOS & PORTFOLIO (TOP OF LIST)
           - label: "Photos & Portfolio"
             name: "photos"
             widget: "list"
@@ -60,9 +41,38 @@ collections:
               - { label: "Image File", name: "src", widget: "image" }
               - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
               - { label: "Caption / Description", name: "caption", widget: "string", required: false }
-              - { label: "Width Weight (1 to 8)", name: "w", widget: "number", value_type: "int", default: 4, min: 1, max: 12 }
+              - { label: "Grid Width Weight (1-8)", name: "w", widget: "number", value_type: "int", default: 4, min: 1, max: 12 }
               - label: "Aspect Ratio"
                 name: "ratio"
                 widget: "select"
                 options: ["4/5", "1/1", "3/4", "3/2", "16/9"]
                 default: "4/5"
+
+          # BANNER & NICHES
+          - label: "Hero Banner Shoot"
+            name: "band"
+            widget: "object"
+            fields:
+              - { label: "Banner Image", name: "src", widget: "image" }
+              - { label: "Alt Description", name: "alt", widget: "string", required: false }
+          - label: "What We Shoot (Niches)"
+            name: "niches"
+            widget: "list"
+            fields:
+              - { label: "Niche Name", name: "name", widget: "string" }
+              - { label: "Description Line", name: "line", widget: "string" }
+
+          # COPY & SOCIAL
+          - label: "Hero Headline Lines"
+            name: "hero"
+            widget: "list"
+            field: { label: "Line", name: "line", widget: "string" }
+          - { label: "Statement Headline", name: "statement", widget: "string" }
+          - { label: "Statement Attribution", name: "statementBy", widget: "string" }
+          - { label: "Contact Note", name: "contactNote", widget: "text" }
+          - label: "Social Media Links"
+            name: "socials"
+            widget: "list"
+            fields:
+              - { label: "Platform Name", name: "name", widget: "string" }
+              - { label: "URL", name: "url", widget: "string" }
