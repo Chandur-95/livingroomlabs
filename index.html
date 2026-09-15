@@ -7,7 +7,7 @@
 <meta name="description" content="Living Room Labs is a photography team in Hyderabad. Food, pets, real estate, events and portraits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Cinzel:wght@400;600;700&family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,600;1,400&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,400;0,500;0,600;0,700;1,400&family=Bodoni+Moda:ital,opsz,wght@1,6..96,400;1,6..96,500&family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
 <style>
@@ -17,19 +17,18 @@
 :root{
   --paper:#FFFFFF;
   --ink:#000000;
-  --rule:rgba(0,0,0,.17);
-  --rule-soft:rgba(0,0,0,.08);
+  --rule:rgba(0,0,0,.15);
+  --rule-soft:rgba(0,0,0,.06);
   --glow:#FFC24B;
-  --glow-rgb: 255, 194, 75;
 
   --nav-h:64px;
   --pad:clamp(16px, 4vw, 56px);
-  --gap:clamp(8px, 1.2vw, 14px);
-  --sec:clamp(56px, 8vw, 140px);
+  --gap:clamp(10px, 1.2vw, 16px);
+  --sec:clamp(56px, 8vw, 130px);
 
   --fs-label:.7rem;
   --tr-label:.24em;
-  --ease:cubic-bezier(.16,1,.3,1);
+  --ease:cubic-bezier(.16, 1, .3, 1);
 
   --safe-top:env(safe-area-inset-top, 0px);
   --safe-bottom:env(safe-area-inset-bottom, 0px);
@@ -37,9 +36,9 @@
   --safe-right:env(safe-area-inset-right, 0px);
 }
 html[data-theme="dark"]{
-  --paper:#050505;
+  --paper:#0A0A0A;
   --ink:#FFFFFF;
-  --rule:rgba(255,255,255,.24);
+  --rule:rgba(255,255,255,.22);
   --rule-soft:rgba(255,255,255,.08);
 }
 
@@ -65,22 +64,10 @@ button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:poin
 a{color:inherit;text-decoration:none}
 em{font-family:"Bodoni Moda",Georgia,serif;font-style:italic;font-weight:400}
 
-/* Power-flux flicker effect for lamp switch */
-body.power-surge{
-  animation:cyberFlicker .32s ease-in-out forwards;
-}
-@keyframes cyberFlicker{
-  0%{opacity:1;filter:brightness(1)}
-  25%{opacity:.7;filter:brightness(1.8) contrast(1.2)}
-  50%{opacity:.95;filter:brightness(.8)}
-  75%{opacity:.8;filter:brightness(1.5)}
-  100%{opacity:1;filter:brightness(1)}
-}
-
 :focus-visible{
   outline:2px solid var(--ink);
   outline-offset:3px;
-  box-shadow:0 0 0 6px var(--glow);
+  box-shadow:0 0 0 5px var(--glow);
   border-radius:1px;
 }
 
@@ -90,6 +77,7 @@ body.power-surge{
   background:var(--ink);color:var(--paper);
   padding:10px 16px;
   font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;
+  transition:transform .2s ease;
 }
 .skip:focus{transform:none}
 
@@ -105,23 +93,23 @@ body.power-surge{
 }
 
 /* ============================================================
-   FUTURISTIC CORNER BRACKETS
+   CORNER BRACKETS
    ============================================================ */
 .frame{position:fixed;inset:0;z-index:60;pointer-events:none}
-.frame svg{position:absolute;width:30px;height:30px;overflow:visible}
+.frame svg{position:absolute;width:28px;height:28px;overflow:visible}
 .frame svg path{
   fill:none;stroke:var(--ink);stroke-width:1.2;
   stroke-dasharray:68;stroke-dashoffset:68;
-  animation:draw .9s var(--ease) .1s forwards;
+  animation:drawBracket .8s var(--ease) .15s forwards;
 }
 .frame .c1{top:calc(var(--nav-h) + 14px + var(--safe-top));left:calc(14px + var(--safe-left))}
 .frame .c2{top:calc(var(--nav-h) + 14px + var(--safe-top));right:calc(14px + var(--safe-right));transform:scaleX(-1)}
 .frame .c3{bottom:calc(14px + var(--safe-bottom));left:calc(14px + var(--safe-left));transform:scaleY(-1)}
 .frame .c4{bottom:calc(14px + var(--safe-bottom));right:calc(14px + var(--safe-right));transform:scale(-1)}
-@keyframes draw{to{stroke-dashoffset:0}}
+@keyframes drawBracket{to{stroke-dashoffset:0}}
 
 /* ============================================================
-   NAV
+   NAVBAR
    ============================================================ */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
@@ -131,18 +119,16 @@ body.power-surge{
   padding:var(--safe-top) calc(var(--pad) + 12px + var(--safe-right)) 0 calc(var(--pad) + 12px + var(--safe-left));
   background:var(--paper);
   border-bottom:1px solid var(--rule);
-  backdrop-filter:blur(8px);
   transition:background .35s ease, border-color .35s ease;
 }
 .brand{display:flex;align-items:center;gap:12px}
-.brand .mark img{width:42px;height:auto;transition:transform .4s var(--ease)}
-.brand:hover .mark img{transform:scale(1.06)}
+.brand svg{display:block;width:38px;height:38px;overflow:visible}
 .brand .wordmark{
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
   text-transform:uppercase;font-weight:600;white-space:nowrap;
 }
-.nav-right{display:flex;align-items:center;gap:clamp(12px, 2.5vw, 28px)}
-.nav-links{display:flex;gap:clamp(12px, 2.5vw, 28px)}
+.nav-right{display:flex;align-items:center;gap:clamp(14px, 2.5vw, 30px)}
+.nav-links{display:flex;gap:clamp(14px, 2.5vw, 30px)}
 .nav-links a{position:relative;padding:4px 0}
 .nav-links a::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
@@ -151,6 +137,7 @@ body.power-surge{
 }
 .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
 
+/* Lamp Pull Switch */
 .pull{
   --len:28px;
   position:relative;flex:none;
@@ -168,15 +155,15 @@ body.power-surge{
   width:11px;height:11px;margin-left:-5.5px;
   border:1px solid var(--ink);border-radius:50%;
   background:var(--glow);
-  transition:top .3s var(--ease),background .4s ease,box-shadow .4s ease;
-  box-shadow:0 0 8px rgba(var(--glow-rgb),.4);
+  transition:top .3s var(--ease),background .35s ease,box-shadow .35s ease;
+  box-shadow:0 0 8px rgba(255,194,75,.45);
 }
 html[data-theme="dark"] .pull .bead{background:transparent;box-shadow:none}
 .pull:hover,.pull:focus-visible{--len:34px}
 .pull.tug{--len:44px;transition-duration:.1s}
 
 /* ============================================================
-   HERO
+   HERO (SMOOTH CURTAIN MASK RISE)
    ============================================================ */
 main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .wrap{padding-inline:calc(var(--pad) + 12px)}
@@ -190,9 +177,17 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   letter-spacing:-.03em;
 }
 .hero h1 em{letter-spacing:-.005em}
-.line{display:block;overflow:hidden;padding-bottom:.14em;margin-bottom:-.14em}
-.line > span{display:block;transform:translateY(114%);animation:rise .9s var(--ease) forwards}
-@keyframes rise{to{transform:none}}
+
+.line-mask{display:block;overflow:hidden;padding-bottom:.12em;margin-bottom:-.12em}
+.line-inner{
+  display:block;
+  transform:translateY(115%);
+  opacity:0;
+  animation:curtainRise .85s var(--ease) forwards;
+}
+@keyframes curtainRise{
+  to{transform:translateY(0);opacity:1}
+}
 
 .hero-foot{
   margin-top:clamp(24px, 3.5vw, 48px);
@@ -214,8 +209,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .band img{
   width:100%;height:100%;object-fit:cover;
-  filter:contrast(1.03);
-  transition:transform 1.2s var(--ease);
+  transition:transform 1s var(--ease);
 }
 .band:hover img{transform:scale(1.02)}
 
@@ -241,15 +235,15 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   text-transform:uppercase;font-weight:600;
   transition:background .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease;
 }
-.chip:hover{border-color:var(--ink);box-shadow:0 0 10px rgba(var(--glow-rgb),.2)}
+.chip:hover{border-color:var(--ink);box-shadow:0 0 10px rgba(255,194,75,.2)}
 .chip .n{font-weight:400;opacity:.5}
-.chip .dot{width:5px;height:5px;background:var(--glow);opacity:0;transition:opacity .2s ease,box-shadow .2s ease}
+.chip .dot{width:5px;height:5px;background:var(--glow);opacity:0;transition:opacity .2s ease}
 .chip[aria-pressed="true"]{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
 /* ============================================================
-   WORK GRID WITH SCANLINE & RETICLES
+   WORK GRID
    ============================================================ */
 .grid{display:flex;flex-direction:column;gap:var(--gap)}
 .row{display:flex;gap:var(--gap);align-items:flex-start}
@@ -268,61 +262,27 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .plate img{
   width:100%;height:100%;object-fit:cover;
-  transition:transform .7s var(--ease),opacity .4s ease,filter .5s ease;
+  transition:transform .65s var(--ease),opacity .4s ease;
   opacity:0;
 }
 .plate img.ready{opacity:1}
 .shot:hover .plate img,.shot:focus-visible .plate img{
-  transform:scale(1.04);
-  filter:brightness(1.03);
+  transform:scale(1.035);
 }
 
-/* Laser scan line effect */
-.plate::after{
-  content:"";
-  position:absolute;
-  inset:-100% 0 100% 0;
-  background:linear-gradient(180deg, transparent 0%, rgba(var(--glow-rgb), 0.3) 50%, rgba(var(--glow-rgb), 0.7) 52%, transparent 54%);
-  opacity:0;
-  pointer-events:none;
-}
-.shot:hover .plate::after{
-  opacity:1;
-  animation:laserSweep .85s cubic-bezier(.25, .8, .25, 1) forwards;
-}
-@keyframes laserSweep{
-  0%{transform:translateY(0)}
-  100%{transform:translateY(200%)}
-}
-
-/* Optical HUD Reticles */
+/* Subtle Reticle Focus on Hover */
 .corners{position:absolute;inset:8px;pointer-events:none}
 .corners i{
   position:absolute;width:14px;height:14px;
   border:0 solid var(--glow);
-  opacity:0;transform:scale(.75);
+  opacity:0;transform:scale(.8);
   transition:opacity .25s var(--ease),transform .25s var(--ease);
-  box-shadow:0 0 6px rgba(var(--glow-rgb),.4);
 }
 .corners i:nth-child(1){top:0;left:0;border-top-width:1.8px;border-left-width:1.8px}
 .corners i:nth-child(2){top:0;right:0;border-top-width:1.8px;border-right-width:1.8px}
 .corners i:nth-child(3){bottom:0;left:0;border-bottom-width:1.8px;border-left-width:1.8px}
 .corners i:nth-child(4){bottom:0;right:0;border-bottom-width:1.8px;border-right-width:1.8px}
 .shot:hover .corners i,.shot:focus-visible .corners i{opacity:1;transform:none}
-
-.telemetry{
-  position:absolute;bottom:10px;right:10px;
-  font-family:"JetBrains Mono",monospace;
-  font-size:.58rem;
-  color:var(--glow);
-  background:rgba(0,0,0,.75);
-  padding:2px 6px;
-  letter-spacing:.12em;
-  opacity:0;transform:translateY(4px);
-  transition:opacity .3s ease, transform .3s ease;
-  pointer-events:none;
-}
-.shot:hover .telemetry{opacity:1;transform:none}
 
 .cap{
   display:flex;justify-content:space-between;gap:12px;
@@ -403,38 +363,34 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .foot ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
 .foot a:hover,.foot a:focus-visible{text-decoration:underline;text-underline-offset:3px}
 
-.lockup{
-  margin-top:clamp(40px, 6vw, 80px);
-  padding-bottom:clamp(30px, 4vw, 60px);
-  display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;
+.lockup-wrap{
+  margin-top:clamp(30px, 5vw, 60px);
+  padding-bottom:clamp(40px, 5vw, 80px);
+  display:flex;justify-content:center;
 }
-.lockup img{width:clamp(220px, 32vw, 380px);height:auto}
-
-.lg-l{display:block}
-.lg-d{display:none}
-html[data-theme="dark"] .lg-l{display:none}
-html[data-theme="dark"] .lg-d{display:block}
+.lockup-wrap svg{
+  width:100%;
+  max-width:min(440px, 90vw);
+  height:auto;
+  overflow:visible;
+}
 
 /* ============================================================
-   LIGHTBOX WITH HOLOGRAPHIC FRAME
+   LIGHTBOX
    ============================================================ */
 .lb{
   position:fixed;inset:0;z-index:120;
-  background:rgba(5, 5, 5, .96);
-  color:#FFFFFF;
+  background:var(--paper);
   display:none;flex-direction:column;
   padding:calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
-  backdrop-filter:blur(16px);
-  animation:lbFadeIn .3s var(--ease) forwards;
 }
-@keyframes lbFadeIn{from{opacity:0}to{opacity:1}}
 .lb[open],.lb.on{display:flex}
 .lb-top{
   display:flex;justify-content:space-between;align-items:center;gap:14px;
-  padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.2);
+  padding-bottom:12px;border-bottom:1px solid var(--rule);
 }
 .lb-count{font-size:var(--fs-label);letter-spacing:.14em;font-weight:600}
-.lb-close{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;color:#FFF}
+.lb-close{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600}
 .lb-close svg{width:13px;height:13px}
 
 .lb-stage{
@@ -445,40 +401,31 @@ html[data-theme="dark"] .lg-d{display:block}
 .lb-nav{
   width:42px;height:42px;flex:none;
   display:grid;place-items:center;
-  border:1px solid rgba(255,255,255,.2);border-radius:50%;
-  color:#FFF;
-  transition:background .2s ease, border-color .2s ease, transform .2s ease;
+  border:1px solid var(--rule);border-radius:50%;
+  transition:background .2s ease,color .2s ease,border-color .2s ease;
 }
-.lb-nav:hover{background:#FFF;color:#000;transform:scale(1.08)}
+.lb-nav:hover{background:var(--ink);color:var(--paper);border-color:var(--ink)}
 .lb-nav svg{width:14px;height:14px}
 .lb-figure{flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:center}
-.lb-frame{
-  position:relative;display:block;line-height:0;
-  box-shadow:0 0 35px rgba(0,0,0,.8);
-}
+.lb-frame{position:relative;display:block;line-height:0}
 .lb-frame img{
   display:block;width:auto;height:auto;
   max-width:calc(100vw - 120px - var(--safe-left) - var(--safe-right));
   max-height:calc(100vh - 180px - var(--safe-top) - var(--safe-bottom));
-  animation:lbImagePop .4s var(--ease) forwards;
-}
-@keyframes lbImagePop{
-  from{transform:scale(.97);opacity:.4}
-  to{transform:scale(1);opacity:1}
 }
 .lb-frame .corners{inset:-10px}
 .lb-frame .corners i{opacity:1;transform:none;width:18px;height:18px;border-color:var(--glow)}
 
 .lb-cap{
   display:grid;grid-template-columns:1fr auto;gap:6px 20px;align-items:baseline;
-  border-top:1px solid rgba(255,255,255,.2);padding-top:12px;
+  border-top:1px solid var(--rule);padding-top:12px;
 }
-.lb-cap .t{font-weight:600;font-size:clamp(.95rem, 1.6vw, 1.25rem);color:#FFF}
-.lb-cap .m{opacity:.6;font-size:.82rem;text-align:right;color:#FFF}
-.lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
+.lb-cap .t{font-weight:600;font-size:clamp(.95rem, 1.6vw, 1.25rem)}
+.lb-cap .m{opacity:.6;font-size:.82rem;text-align:right}
+.lb-cap .d{grid-column:1/-1;opacity:.7;font-size:.86rem;max-width:70ch}
 
 /* ============================================================
-   RESPONSIVE LAYOUTS
+   RESPONSIVE
    ============================================================ */
 @media (max-width:920px){
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
@@ -508,10 +455,9 @@ html[data-theme="dark"] .lg-d{display:block}
 @media (prefers-reduced-motion:reduce){
   html{scroll-behavior:auto}
   *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
-  .line > span{transform:none}
+  .line-inner{transform:none;opacity:1}
   .frame svg path{stroke-dashoffset:0}
   .plate img{opacity:1}
-  .plate::after{display:none}
 }
 </style>
 </head>
@@ -527,7 +473,7 @@ html[data-theme="dark"] .lg-d{display:block}
 </div>
 
 <nav class="nav">
-  <a class="brand" href="#top">
+  <a class="brand" href="#top" aria-label="Living Room Labs">
     <span class="mark" data-logo></span>
     <span class="wordmark" data-name></span>
   </a>
@@ -603,7 +549,7 @@ html[data-theme="dark"] .lg-d{display:block}
       </div>
     </div>
 
-    <div class="lockup">
+    <div class="lockup-wrap">
       <span data-lockup></span>
     </div>
   </section>
@@ -640,30 +586,30 @@ html[data-theme="dark"] .lg-d{display:block}
 
 <script>
 /* ==================================================================
-   LOGO ASSETS (CAMERA + LIVING ROOM + "LIVING ROOM LABS")
+   CLEAN VECTOR LOGO GENERATOR (NO DATA-URI ENCODING QUIRKS)
    ================================================================== */
-function generateCameraSVG(color, showText){
-  var h = showText ? 520 : 340;
-  var vb = showText ? "0 0 500 520" : "0 0 500 340";
-  var textBlock = showText ? `
-    <g stroke="none" fill="${color}">
-      <path d="M 65 375 L 45 375 L 45 398" stroke="${color}" stroke-width="3" fill="none"/>
-      <path d="M 435 375 L 455 375 L 455 398" stroke="${color}" stroke-width="3" fill="none"/>
-      <path d="M 45 422 L 45 445 L 65 445" stroke="${color}" stroke-width="3" fill="none"/>
-      <path d="M 455 422 L 455 445 L 435 445" stroke="${color}" stroke-width="3" fill="none"/>
+function getLogoSVG(showText) {
+  var h = showText ? 510 : 320;
+  var vb = showText ? "0 0 500 510" : "0 0 500 320";
+  var textSvg = showText ? `
+    <g stroke="none" fill="currentColor">
+      <path d="M 65 365 L 45 365 L 45 388" stroke="currentColor" stroke-width="3" fill="none"/>
+      <path d="M 435 365 L 455 365 L 455 388" stroke="currentColor" stroke-width="3" fill="none"/>
+      <path d="M 45 412 L 45 435 L 65 435" stroke="currentColor" stroke-width="3" fill="none"/>
+      <path d="M 455 412 L 455 435 L 435 435" stroke="currentColor" stroke-width="3" fill="none"/>
 
-      <text x="250" y="418" text-anchor="middle" font-family="'Archivo', sans-serif" font-weight="700" font-size="31" letter-spacing="0.26em">LIVING ROOM LABS</text>
-      <text x="250" y="475" text-anchor="middle" font-family="'Archivo', sans-serif" font-weight="500" font-size="12" letter-spacing="0.32em">CAPTURE . CREATE . INSPIRE</text>
+      <text x="250" y="408" text-anchor="middle" font-family="'Archivo', sans-serif" font-weight="700" font-size="30" letter-spacing="0.26em">LIVING ROOM LABS</text>
+      <text x="250" y="462" text-anchor="middle" font-family="'Archivo', sans-serif" font-weight="500" font-size="12" letter-spacing="0.32em">CAPTURE . CREATE . INSPIRE</text>
 
-      <line x1="205" y1="504" x2="238" y2="504" stroke="${color}" stroke-width="2.5"/>
-      <circle cx="250" cy="504" r="4.5" fill="${color}"/>
-      <line x1="262" y1="504" x2="295" y2="504" stroke="${color}" stroke-width="2.5"/>
+      <line x1="205" y1="492" x2="238" y2="492" stroke="currentColor" stroke-width="2.5"/>
+      <circle cx="250" cy="492" r="4.5" fill="currentColor"/>
+      <line x1="262" y1="492" x2="295" y2="492" stroke="currentColor" stroke-width="2.5"/>
     </g>
   ` : '';
 
-  return `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="${vb}" width="500" height="${h}">
-    <g fill="none" stroke="${color}" stroke-linecap="round" stroke-linejoin="round">
-      <path d="M 152 104 L 172 104 L 172 112 L 152 112 Z" fill="${color}" stroke="none"/>
+  return `<svg viewBox="${vb}" width="100%" height="100%" style="color:var(--ink)">
+    <g fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M 152 104 L 172 104 L 172 112 L 152 112 Z" fill="currentColor" stroke="none"/>
       <path d="M 180 114 L 216 72 L 284 72 L 320 114" stroke-width="12"/>
       <path d="M 180 114 L 138 114 C 122 114 116 122 116 138 L 116 250 C 116 264 124 272 138 272 L 195 272" stroke-width="12"/>
       <rect x="132" y="146" width="16" height="88" rx="8" stroke-width="8"/>
@@ -672,39 +618,33 @@ function generateCameraSVG(color, showText){
       <circle cx="250" cy="180" r="82" stroke-width="14"/>
 
       <!-- Warm Lamp Beam -->
-      <polygon points="244,130 256,130 308,242 192,242" fill="%23FFC24B" opacity="0.32" stroke="none"/>
+      <polygon points="244,130 256,130 308,242 192,242" fill="var(--glow)" opacity="0.35" stroke="none"/>
       <line x1="250" y1="98" x2="250" y2="122" stroke-width="3"/>
-      <path d="M 241 122 L 259 122 L 267 134 L 233 134 Z" fill="${color}" stroke="none"/>
-      <circle cx="250" cy="134" r="3.5" fill="%23FFC24B" stroke="none"/>
+      <path d="M 241 122 L 259 122 L 267 134 L 233 134 Z" fill="currentColor" stroke="none"/>
+      <circle cx="250" cy="134" r="3.5" fill="var(--glow)" stroke="none"/>
 
-      <!-- Armchair & Plant -->
-      <rect x="226" y="192" width="48" height="34" rx="8" fill="${color}" stroke="none"/>
-      <rect x="220" y="214" width="60" height="15" rx="4" fill="${color}" stroke="none"/>
-      <rect x="214" y="202" width="12" height="27" rx="5" fill="${color}" stroke="none"/>
-      <rect x="274" y="202" width="12" height="27" rx="5" fill="${color}" stroke="none"/>
+      <!-- Armchair -->
+      <rect x="226" y="192" width="48" height="34" rx="8" fill="currentColor" stroke="none"/>
+      <rect x="220" y="214" width="60" height="15" rx="4" fill="currentColor" stroke="none"/>
+      <rect x="214" y="202" width="12" height="27" rx="5" fill="currentColor" stroke="none"/>
+      <rect x="274" y="202" width="12" height="27" rx="5" fill="currentColor" stroke="none"/>
       <line x1="225" y1="229" x2="221" y2="238" stroke-width="3"/>
       <line x1="275" y1="229" x2="279" y2="238" stroke-width="3"/>
 
-      <polygon points="288,225 304,225 300,238 292,238" fill="${color}" stroke="none"/>
+      <!-- Plant -->
+      <polygon points="288,225 304,225 300,238 292,238" fill="currentColor" stroke="none"/>
       <path d="M 296 225 Q 295 195 296 186" stroke-width="2.5"/>
-      <ellipse cx="290" cy="208" rx="5" ry="3" transform="rotate(-30 290 208)" fill="${color}" stroke="none"/>
-      <ellipse cx="302" cy="200" rx="5" ry="3" transform="rotate(30 302 200)" fill="${color}" stroke="none"/>
-      <ellipse cx="291" cy="192" rx="5" ry="3" transform="rotate(-25 291 192)" fill="${color}" stroke="none"/>
-      <ellipse cx="296" cy="184" rx="3.5" ry="5" fill="${color}" stroke="none"/>
+      <ellipse cx="290" cy="208" rx="5" ry="3" transform="rotate(-30 290 208)" fill="currentColor" stroke="none"/>
+      <ellipse cx="302" cy="200" rx="5" ry="3" transform="rotate(30 302 200)" fill="currentColor" stroke="none"/>
+      <ellipse cx="291" cy="192" rx="5" ry="3" transform="rotate(-25 291 192)" fill="currentColor" stroke="none"/>
+      <ellipse cx="296" cy="184" rx="3.5" ry="5" fill="currentColor" stroke="none"/>
       <line x1="188" y1="238" x2="312" y2="238" stroke-width="3.5"/>
     </g>
-    ${textBlock}
+    ${textSvg}
   </svg>`;
 }
 
-const LOGO = {
-  markLight:   generateCameraSVG("%23000000", false),
-  markDark:    generateCameraSVG("%23FFFFFF", false),
-  lockupLight: generateCameraSVG("%23000000", true),
-  lockupDark:  generateCameraSVG("%23FFFFFF", true)
-};
-
-/* Built-in Baseline Database with Updated Headline */
+/* Built-in Baseline Database */
 var SITE = {
   name: "Living Room Labs",
   tagline: "CAPTURE . CREATE . INSPIRE",
@@ -724,7 +664,7 @@ var SITE = {
   ],
   band: {
     src: "https://picsum.photos/seed/lrl-band/2400/1100",
-    alt: "Studio overview shoot"
+    alt: "Studio shoot overview"
   },
   statement: "A portfolio is not a *promise*. It is a receipt.",
   statementBy: "Everything on this page was shot by us, for someone who needed it.",
@@ -762,32 +702,6 @@ function italics(str){
 }
 function esc(str){
   return String(str==null?"":str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
-}
-
-/* Cyber Decrypt Animation */
-function triggerDecrypt(el, rawText, delayMs){
-  var glyphs = "01XZ#_/>-~%";
-  var target = rawText.replace(/\*/g, "");
-  setTimeout(function(){
-    var step = 0;
-    var len = target.length;
-    var timer = setInterval(function(){
-      step += 1.5;
-      var scrambled = "";
-      for(var i=0; i<len; i++){
-        if(i < step) {
-          scrambled += target[i];
-        } else {
-          scrambled += glyphs[Math.floor(Math.random() * glyphs.length)];
-        }
-      }
-      el.textContent = scrambled;
-      if(step >= len){
-        clearInterval(timer);
-        el.innerHTML = italics(rawText);
-      }
-    }, 28);
-  }, delayMs);
 }
 
 function rowTarget(){
@@ -895,12 +809,10 @@ function renderGrid(){
   grid.innerHTML = rows.map(function(row){
     return '<div class="row">' + row.items.map(function(slot){
       var p = slot.ref, i = n++;
-      var paddedNum = String(i+1).padStart(2, "0");
       return '<button class="shot" style="--sw:'+slot.w+'px" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                '<span class="plate" style="--sh:'+row.h+'px">'+
                  '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'">'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
-                 '<span class="telemetry">REC // '+paddedNum+'</span>'+
                '</span>'+
                '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
              '</button>';
@@ -964,53 +876,39 @@ lb.addEventListener("touchend", function(e){
   if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
 }, {passive:true});
 
-/* Pull Lamp Toggle with Surge */
+/* Pull Lamp Toggle */
 var pull = $("#theme");
 pull.addEventListener("click", function(){
   var wasDark = document.documentElement.getAttribute("data-theme") === "dark";
   var nowDark = !wasDark;
-  
-  document.body.classList.add("power-surge");
-  setTimeout(function(){
-    document.documentElement.setAttribute("data-theme", nowDark ? "dark" : "light");
-    pull.setAttribute("aria-pressed", String(nowDark));
-    pull.setAttribute("aria-label", nowDark ? "Turn the lamp on" : "Turn the lamp off");
-  }, 100);
-
+  document.documentElement.setAttribute("data-theme", nowDark ? "dark" : "light");
+  pull.setAttribute("aria-pressed", String(nowDark));
+  pull.setAttribute("aria-label", nowDark ? "Turn the lamp on" : "Turn the lamp off");
   pull.classList.add("tug");
-  setTimeout(function(){ 
-    pull.classList.remove("tug");
-    document.body.classList.remove("power-surge");
-  }, 320);
+  setTimeout(function(){ pull.classList.remove("tug"); }, 140);
 });
 
 function renderContent(){
-  $$("[data-logo]").forEach(function(n){
-    n.innerHTML = '<img class="lg-l" src="'+LOGO.markLight+'" alt="Living Room Labs">'+
-                  '<img class="lg-d" src="'+LOGO.markDark+'" alt="Living Room Labs">';
-  });
-  $$("[data-lockup]").forEach(function(n){
-    n.innerHTML = '<img class="lg-l" src="'+LOGO.lockupLight+'" alt="'+esc(SITE.name)+'">'+
-                  '<img class="lg-d" src="'+LOGO.lockupDark+'" alt="'+esc(SITE.name)+'">';
-  });
+  /* Inject Pure Vectors for Nav and Footer */
+  $$("[data-logo]").forEach(function(n){ n.innerHTML = getLogoSVG(false); });
+  $$("[data-lockup]").forEach(function(n){ n.innerHTML = getLogoSVG(true); });
 
   $$("[data-name]").forEach(function(n){ n.textContent = SITE.name; });
   $$("[data-tagline]").forEach(function(n){ n.textContent = SITE.tagline; });
   var pl1 = $("[data-place]"); if(pl1) pl1.textContent = SITE.city;
   var pl2 = $("[data-place2]"); if(pl2) pl2.textContent = SITE.city;
 
-  /* Headline Injection & Sequence Decrypt */
+  /* Headline: High-End Smooth Editorial Mask Curtain */
   var heroEl = $("[data-hero]");
   if(heroEl){
-    heroEl.innerHTML = (SITE.hero || []).map(function(l, i){
-      var delay = (0.15 + i * 0.1).toFixed(2);
-      return '<span class="line"><span id="hero-line-'+i+'" style="animation-delay:'+delay+'s"></span></span>';
+    heroEl.innerHTML = (SITE.hero || []).map(function(lineStr, i){
+      var delay = (0.12 + (i * 0.12)).toFixed(2);
+      return '<span class="line-mask">' +
+               '<span class="line-inner" style="animation-delay:' + delay + 's">' +
+                 italics(lineStr) +
+               '</span>' +
+             '</span>';
     }).join("");
-
-    (SITE.hero || []).forEach(function(lineStr, i){
-      var el = $("#hero-line-" + i);
-      if(el) triggerDecrypt(el, lineStr, 220 + (i * 140));
-    });
   }
 
   var bandImg = $("[data-band]");
