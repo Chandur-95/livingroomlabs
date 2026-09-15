@@ -124,13 +124,32 @@ em{font-family:"Bodoni Moda",Georgia,serif;font-style:italic;font-weight:400}
 }
 .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
 
-.toggle{
-  width:34px;height:34px;display:grid;place-items:center;
-  border:1px solid var(--rule);border-radius:50%;
+/* the lamp pull — the switch you'd actually find in a living room.
+   Bead lit = lights on (light mode), bead dark = lights off. */
+.pull{
+  --len:30px;
+  position:relative;flex:none;
+  width:28px;height:var(--nav-h);
+  align-self:stretch;
 }
-.toggle svg{width:15px;height:15px}
-.toggle .half{fill:var(--ink)}
-.toggle .ring{fill:none;stroke:var(--ink);stroke-width:1.4}
+.pull .cord{
+  position:absolute;top:0;left:50%;
+  width:1px;height:var(--len);
+  background:var(--ink);
+  transition:height .32s var(--ease);
+}
+.pull .bead{
+  position:absolute;top:var(--len);left:50%;
+  width:11px;height:11px;margin-left:-5.5px;
+  border:1px solid var(--ink);border-radius:50%;
+  background:var(--glow);
+  transition:top .32s var(--ease),background .4s ease,box-shadow .4s ease;
+  box-shadow:0 0 0 4px rgba(255,194,75,.28);
+}
+html[data-theme="dark"] .pull .bead{background:transparent;box-shadow:none}
+.pull:hover,.pull:focus-visible{--len:37px}
+.pull.tug{--len:48px;transition-duration:.1s}
+.pull:focus-visible{outline-offset:-2px}
 
 /* ============================================================
    HERO
@@ -212,7 +231,7 @@ main{padding-top:var(--nav-h)}
 .grid{display:flex;flex-direction:column;gap:var(--gap)}
 .row{display:flex;gap:var(--gap);align-items:flex-start}
 .shot{
-  flex:0 0 auto;min-width:0;
+  flex:0 1 auto;min-width:0;max-width:100%;
   width:var(--sw,100%);
   display:block;text-align:left;
 }
@@ -450,6 +469,7 @@ html[data-theme="dark"] .lg-d{display:block}
   .frame svg path{stroke-dashoffset:0}
   .hero-foot{opacity:1}
   .plate img{opacity:1}
+  .pull .cord,.pull .bead{transition:none}
 }
 </style>
 </head>
@@ -477,11 +497,9 @@ html[data-theme="dark"] .lg-d{display:block}
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
     </div>
-    <button class="toggle" id="theme" aria-label="Switch to dark mode">
-      <svg viewBox="0 0 24 24" aria-hidden="true">
-        <path class="half" d="M12 2a10 10 0 0 0 0 20z"/>
-        <circle class="ring" cx="12" cy="12" r="10"/>
-      </svg>
+    <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
+      <span class="cord" aria-hidden="true"></span>
+      <span class="bead" aria-hidden="true"></span>
     </button>
   </div>
 </nav>
@@ -615,7 +633,7 @@ function esc(str){
 ----------------------------------------------------------- */
 function rowTarget(){
   var w = window.innerWidth;
-  if(w <= 640)  return 4;   /* phone  — mostly one photo per row */
+  if(w <= 640)  return 3;   /* phone  — one photo per row */
   if(w <= 1080) return 8;   /* tablet */
   return 12;                /* desktop */
 }
@@ -645,7 +663,8 @@ function buildRows(items, width, gap){
     var n = g.items.length;
     var avail = width - gap * (n - 1);
     var aSum = g.items.reduce(function(t,p){ return t + aspectOf(p); }, 0);
-    var h = avail / aSum;
+    var fit = avail / aSum;      /* the height at which this row exactly fills the width */
+    var h = fit;
 
     /* a short final row would otherwise balloon — hold it to the
        rhythm the rows above it set */
@@ -655,13 +674,14 @@ function buildRows(items, width, gap){
         : Math.min(avail * 0.42, 460);
       h = Math.min(h, avg);
     }
-    h = Math.max(150, Math.round(h));
+    /* never taller than the exact fit, or the row would overflow the page */
+    h = Math.min(fit, Math.max(Math.min(130, fit), Math.round(h)));
     if(g.full) heights.push(h);
 
     out.push({
       h: h,
       items: g.items.map(function(p){
-        return { ref:p, w: Math.max(60, Math.round(aspectOf(p) * h)) };
+        return { ref:p, w: Math.max(40, Math.round(aspectOf(p) * h)) };
       })
     });
   });
@@ -803,10 +823,15 @@ lb.addEventListener("touchend", function(e){
 }, {passive:true});
 
 /* ---------- theme ---------- */
-$("#theme").addEventListener("click", function(){
-  var dark = document.documentElement.getAttribute("data-theme") === "dark";
-  document.documentElement.setAttribute("data-theme", dark ? "light" : "dark");
-  this.setAttribute("aria-label", dark ? "Switch to dark mode" : "Switch to light mode");
+var pull = $("#theme");
+pull.addEventListener("click", function(){
+  var wasDark = document.documentElement.getAttribute("data-theme") === "dark";
+  var nowDark = !wasDark;
+  document.documentElement.setAttribute("data-theme", nowDark ? "dark" : "light");
+  pull.setAttribute("aria-pressed", String(nowDark));
+  pull.setAttribute("aria-label", nowDark ? "Turn the lamp on" : "Turn the lamp off");
+  pull.classList.add("tug");
+  setTimeout(function(){ pull.classList.remove("tug"); }, 130);
 });
 
 /* ---------- content injection ---------- */
