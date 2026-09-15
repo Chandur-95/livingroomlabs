@@ -117,9 +117,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   letter-spacing:.08em;
 }
 
-/* ============================================================
-   VIEWPORT CORNER BRACKETS
-   ============================================================ */
+/* Reticle Viewport Brackets */
 .frame{position:fixed;inset:0;z-index:60;pointer-events:none}
 .frame svg{position:absolute;width:28px;height:28px;overflow:visible}
 .frame svg path{
@@ -134,7 +132,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
 @keyframes drawBracket{to{stroke-dashoffset:0}}
 
 /* ============================================================
-   NAVBAR
+   NAVBAR (EXACT IMAGE LOGO)
    ============================================================ */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
@@ -173,7 +171,7 @@ html[data-theme="dark"] .brand .mark img{
 }
 .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
 
-/* Pull Cord */
+/* Spring-Loaded Pull Cord */
 .pull{
   --len:28px;
   position:relative;flex:none;
@@ -200,7 +198,7 @@ html[data-theme="dark"] .pull .bead{background:transparent;box-shadow:none}
 .pull.tug .bead{top:52px;transition:top .08s ease-out}
 
 /* ============================================================
-   HERO
+   HERO & UNCROPPED EDITORIAL BANNER
    ============================================================ */
 main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .wrap{padding-inline:calc(var(--pad) + 12px)}
@@ -233,18 +231,28 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-top:14px;
 }
 
+/* Banner Height Ceiling Fix */
 .band{
   position:relative;
   width:100%;
-  height:clamp(220px, 45vw, 540px);
+  height:auto;
+  min-height:clamp(280px, 42vw, 750px);
+  max-height:85vh;
   overflow:hidden;
   background:var(--rule-soft);
+  display:flex;
+  align-items:center;
+  justify-content:center;
 }
 .band img{
-  width:100%;height:100%;object-fit:cover;
+  width:100%;
+  height:100%;
+  max-height:85vh;
+  object-fit:cover;
+  object-position:center center;
   transition:transform 1s var(--ease);
 }
-.band:hover img{transform:scale(1.02)}
+.band:hover img{transform:scale(1.015)}
 
 /* ============================================================
    SECTIONS & FILTERS
@@ -276,7 +284,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
 /* ============================================================
-   WORK GRID WITH STRICT CONTAINMENT
+   WORK GRID (STRICT PAINT CONTAINMENT - RED LASER)
    ============================================================ */
 .grid{display:flex;flex-direction:column;gap:var(--gap)}
 .row{display:flex;gap:var(--gap);align-items:flex-start}
@@ -419,9 +427,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .niche .state.open{display:inline-flex;align-items:center;gap:6px}
 .niche .state.open::before{content:"";width:5px;height:5px;background:var(--glow);box-shadow:0 0 5px var(--glow)}
 
-/* ============================================================
-   DEDICATED NICHE SHOWCASE VIEW
-   ============================================================ */
+/* Dedicated Niche Showcase View */
 .niche-view{
   margin-top:clamp(20px, 3.5vw, 40px);
   padding-top:clamp(24px, 4vw, 48px);
@@ -460,7 +466,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
 /* ============================================================
-   CONTACT & FOOTER
+   CONTACT & FOOTER (EXACT IMAGE LOCKUP)
    ============================================================ */
 .mail{
   display:inline-block;
@@ -591,7 +597,7 @@ html[data-theme="dark"] .lockup-wrap img{
 @media (max-width:840px) and (orientation:landscape){
   :root{--nav-h:54px}
   .hero{padding-block:20px 18px}
-  .band{height:180px}
+  .band{min-height:220px}
   .lb-frame img{max-height:calc(100vh - 110px);max-width:calc(100vw - 80px)}
   .lb-stage{padding-block:4px}
 }
@@ -684,10 +690,7 @@ html[data-theme="dark"] .lockup-wrap img{
       <span class="fill"></span>
       <span class="count mono" data-nichecount></span>
     </div>
-    <!-- Interactive Niche Rows -->
     <div id="niches-list" data-niches></div>
-
-    <!-- Dynamic Niche Showcase Container -->
     <div id="niche-view-box" style="display:none;"></div>
   </section>
 
@@ -752,7 +755,6 @@ html[data-theme="dark"] .lockup-wrap img{
 </div>
 
 <script>
-/* Baseline Database */
 var SITE = {
   name: "Living Room Labs",
   tagline: "CAPTURE . CREATE . INSPIRE",
@@ -940,9 +942,6 @@ function renderGrid(){
   });
 }
 
-/* ============================================================
-   CLICKABLE NICHE DIRECTORY & SHOWCASE CONTROLLER
-   ============================================================ */
 function renderNichesList(){
   var made = categories();
   var nc = $("[data-nichecount]"); if(nc) nc.textContent = (SITE.niches || []).length + " CATEGORIES";
@@ -1043,7 +1042,6 @@ function openNicheView(nicheName){
 
   $("#close-niche-btn").addEventListener("click", closeNicheView);
 
-  // Smooth scroll to header of section
   var sec = $("#niches-sec");
   if(sec){
     var y = sec.getBoundingClientRect().top + window.pageYOffset - 80;
@@ -1066,7 +1064,6 @@ function closeNicheView(){
   }
 }
 
-/* Hash change listener for back/forward navigation */
 window.addEventListener("hashchange", function(){
   var hash = window.location.hash;
   if(hash.startsWith("#niche-")){
@@ -1077,9 +1074,7 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-/* ============================================================
-   LIGHTBOX
-   ============================================================ */
+/* Lightbox Controls */
 var lb = $("#lb");
 function openLB(i, opener){
   state.index = i; state.opener = opener || null;
@@ -1184,7 +1179,6 @@ function renderContent(){
   var pl1 = $("[data-place]"); if(pl1) pl1.textContent = SITE.city;
   var pl2 = $("[data-place2]"); if(pl2) pl2.textContent = SITE.city;
 
-  /* Hero Curtain Mask */
   var heroEl = $("[data-hero]");
   if(heroEl){
     heroEl.innerHTML = (SITE.hero || []).map(function(lineStr, i){
@@ -1237,7 +1231,6 @@ function renderContent(){
   renderGrid();
   renderNichesList();
 
-  // Check if loaded with direct niche link
   if(window.location.hash.startsWith("#niche-")){
     var niche = decodeURIComponent(window.location.hash.replace("#niche-", ""));
     openNicheView(niche);
