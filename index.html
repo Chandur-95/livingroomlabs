@@ -12,7 +12,7 @@
 
 <style>
 /* ============================================================
-   DESIGN TOKENS & THEMES
+   DESIGN TOKENS & SYSTEM
    ============================================================ */
 :root{
   --paper:#FFFFFF;
@@ -21,6 +21,9 @@
   --rule-soft:rgba(0,0,0,.06);
   --glow:#FFC24B;
   --glow-rgb:255, 194, 75;
+
+  /* Laser Beam Color: Electric Cyan */
+  --laser-color: 0, 229, 255;
 
   --nav-h:68px;
   --pad:clamp(16px, 4vw, 56px);
@@ -81,7 +84,7 @@ em{
   letter-spacing:-0.01em;
 }
 
-/* Incandescent Power Pulse */
+/* Power Pulse for Pull Cord */
 body.power-flux{animation:powerPulse .32s ease-in-out forwards}
 @keyframes powerPulse{
   0%{filter:brightness(1)}
@@ -119,7 +122,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
 }
 
 /* ============================================================
-   CORNER BRACKETS
+   VIEWPORT CORNER BRACKETS
    ============================================================ */
 .frame{position:fixed;inset:0;z-index:60;pointer-events:none}
 .frame svg{position:absolute;width:28px;height:28px;overflow:visible}
@@ -283,7 +286,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
 /* ============================================================
-   WORK GRID WITH STRICT CONTAINMENT
+   WORK GRID (ISOLATED SCANNER + RETICLES)
    ============================================================ */
 .grid{display:flex;flex-direction:column;gap:var(--gap)}
 .row{display:flex;gap:var(--gap);align-items:flex-start}
@@ -296,7 +299,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .plate{
   position:relative;
   overflow:hidden !important;
-  contain:paint !important;
+  contain:paint !important; /* Prevents overflow from escaping into lower DOM nodes */
   background:var(--rule-soft);
   width:100%;
   height:var(--sh,300px);
@@ -309,20 +312,43 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .plate img.ready{opacity:1}
 .shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.04)}
 
+/* Electric Cyan Laser Scanline (Strictly Contained) */
+.plate .scanner{
+  position:absolute;
+  left:0;right:0;
+  height:2px;
+  top:0;
+  background:rgba(var(--laser-color), 0.95);
+  box-shadow:0 0 14px 2px rgba(var(--laser-color), 0.8), 0 0 4px rgba(255,255,255, 0.9);
+  pointer-events:none;
+  opacity:0;
+  z-index:2;
+}
+.shot:hover .plate .scanner{
+  opacity:1;
+  animation:containedLaserSweep .7s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+@keyframes containedLaserSweep{
+  0%{top:0%;opacity:0}
+  15%{opacity:1}
+  85%{opacity:1}
+  100%{top:100%;opacity:0}
+}
+
 /* Invisible Anti-Save Guard */
 .guard{
-  position:absolute;inset:0;z-index:2;
+  position:absolute;inset:0;z-index:3;
   background:transparent;
 }
 
 /* Reticle Corners */
-.corners{position:absolute;inset:8px;pointer-events:none;z-index:3}
+.corners{position:absolute;inset:8px;pointer-events:none;z-index:4}
 .corners i{
   position:absolute;width:14px;height:14px;
-  border:0 solid var(--glow);
+  border:0 solid rgba(var(--laser-color), 0.9);
   opacity:0;transform:scale(.7);
   transition:opacity .25s var(--ease),transform .25s var(--ease);
-  box-shadow:0 0 6px rgba(var(--glow-rgb),.45);
+  box-shadow:0 0 8px rgba(var(--laser-color),.5);
 }
 .corners i:nth-child(1){top:0;left:0;border-top-width:2px;border-left-width:2px}
 .corners i:nth-child(2){top:0;right:0;border-top-width:2px;border-right-width:2px}
@@ -331,11 +357,11 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .shot:hover .corners i,.shot:focus-visible .corners i{opacity:1;transform:scale(1)}
 
 .telemetry{
-  position:absolute;bottom:8px;right:8px;z-index:3;
+  position:absolute;bottom:8px;right:8px;z-index:4;
   font-family:"JetBrains Mono",monospace;
   font-size:.58rem;
-  color:var(--glow);
-  background:rgba(0,0,0,.82);
+  color:rgb(var(--laser-color));
+  background:rgba(0,0,0,.85);
   padding:2px 6px;
   letter-spacing:.12em;
   opacity:0;transform:translateY(4px);
@@ -504,8 +530,8 @@ html[data-theme="dark"] .lockup-wrap img{
 .lb-frame .corners{inset:-12px}
 .lb-frame .corners i{
   opacity:1;transform:scale(1);width:20px;height:20px;
-  border-color:var(--glow);
-  box-shadow:0 0 10px rgba(var(--glow-rgb),.6);
+  border-color:rgb(var(--laser-color));
+  box-shadow:0 0 10px rgba(var(--laser-color),.6);
 }
 
 .lb-cap{
@@ -557,6 +583,7 @@ html[data-theme="dark"] .lockup-wrap img{
   .line-inner{transform:none;opacity:1}
   .frame svg path{stroke-dashoffset:0}
   .plate img{opacity:1}
+  .plate .scanner{display:none}
 }
 </style>
 </head>
@@ -856,6 +883,7 @@ function renderGrid(){
       return '<button class="shot" style="--sw:'+slot.w+'px" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                '<span class="plate" style="--sh:'+row.h+'px">'+
                  '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'">'+
+                 '<span class="scanner" aria-hidden="true"></span>'+
                  '<span class="guard"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
                  '<span class="telemetry">REC // '+paddedNum+'</span>'+
@@ -934,7 +962,7 @@ lb.addEventListener("touchend", function(e){
   if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
 }, {passive:true});
 
-/* Pull Cord Physics & Filament Voltage Pulse */
+/* Pull Cord Physics & Filament Pulse */
 var pull = $("#theme");
 pull.addEventListener("click", function(){
   var wasDark = document.documentElement.getAttribute("data-theme") === "dark";
