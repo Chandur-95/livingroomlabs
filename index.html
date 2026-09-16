@@ -463,7 +463,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .mail:hover,.mail:focus-visible{background-size:100% 3px}
 .contact-note{margin-top:clamp(16px, 2.5vw, 30px);max-width:48ch;opacity:.7}
 
-/* 4-Column Footer */
 .foot{
   margin-top:var(--sec);
   border-top:1px solid var(--ink);
@@ -497,16 +496,16 @@ html[data-theme="dark"] .lockup-wrap img{
 .lockup-wrap:hover img{transform:scale(1.02)}
 
 /* ============================================================
-   THE COLLECTIVE (FULL SCREEN MODAL / PAGE)
+   THE COLLECTIVE FULL-PAGE VIEW
    ============================================================ */
-.collective-modal{
+.collective-page{
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
   overflow-y:auto;overflow-x:hidden;
   display:none;flex-direction:column;
   scroll-behavior:smooth;
 }
-.collective-modal.open{display:flex;animation:curtainRise .4s var(--ease) forwards}
+.collective-page.open{display:flex;animation:curtainRise .4s var(--ease) forwards}
 
 .collective-nav{
   position:sticky;top:0;z-index:20;
@@ -528,7 +527,7 @@ html[data-theme="dark"] .lockup-wrap img{
   overflow:hidden;background:var(--rule-soft);
 }
 .collective-hero img{
-  width:100%;height:100%;object-fit:cover;object-position:center;
+  width:100%;height:100%;object-fit:cover;
   filter:brightness(0.85);
   transition:transform 1.2s var(--ease);
 }
@@ -536,12 +535,12 @@ html[data-theme="dark"] .lockup-wrap img{
   position:absolute;inset:0;
   background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
   display:flex;flex-direction:column;justify-content:flex-end;
-  padding:calc(var(--pad) + 16px);
+  padding:calc(var(--pad) + 24px);
   color:#FFF;
 }
 .collective-hero-overlay h1{
   margin:0;font-family:"Space Grotesk",sans-serif;
-  font-size:clamp(2.4rem, 6.5vw, 5.2rem);
+  font-size:clamp(2.6rem, 7vw, 5.8rem);
   line-height:1;font-weight:700;letter-spacing:-0.03em;
 }
 .collective-hero-overlay p{
@@ -627,9 +626,6 @@ html[data-theme="dark"] .lockup-wrap img{
   background:var(--ink);color:var(--paper);border-color:var(--ink);
 }
 
-/* ============================================================
-   LIGHTBOX
-   ============================================================ */
 .lb{
   position:fixed;inset:0;z-index:120;
   background:rgba(6, 6, 6, .97);color:#FFF;
@@ -697,9 +693,6 @@ html[data-theme="dark"] .lockup-wrap img{
 .lb-cap .m{opacity:.6;font-size:.82rem;text-align:right;color:#FFF}
 .lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
 
-/* ============================================================
-   RESPONSIVE SPECIFICS (MOBILE)
-   ============================================================ */
 @media (max-width:980px){
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
@@ -778,7 +771,7 @@ html[data-theme="dark"] .lockup-wrap img{
 <nav class="nav">
   <a class="brand" href="#top" aria-label="Living Room Labs">
     <span class="mark">
-      <img src="logo.png" alt="Living Room Labs">
+      <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
     </span>
     <span class="wordmark" data-name></span>
   </a>
@@ -861,17 +854,17 @@ html[data-theme="dark"] .lockup-wrap img{
     </div>
 
     <div class="lockup-wrap">
-      <img src="logo.png" alt="Living Room Labs">
+      <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
     </div>
   </section>
 </main>
 
-<!-- The Collective Full View Modal -->
-<div class="collective-modal" id="collective-modal" role="dialog" aria-modal="true" aria-label="The Collective">
+<!-- The Collective Full-Page Experience -->
+<div class="collective-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
   <div class="collective-nav">
     <span class="label mono" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
     <button class="collective-close" id="close-collective-btn">
-      Close
+      Back to Studio
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/></svg>
     </button>
   </div>
@@ -961,12 +954,14 @@ var SITE = {
   ],
   contactNote: "Tell us what you are shooting, roughly when, and where. We reply within a day.",
   teamHeroImg: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=2200&q=80",
+  teamHeroImgPosition: "Center",
   teamHeroIntro: "Four distinct visual sensibilities aligned under one collective principle: unfiltered truth in every frame.",
   team: [
     {
       name: "Pooja",
-      role: "Lead",
+      role: "Lead / Photographer",
       photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=80",
+      imagePosition: "Center",
       bio: "Directing creative narratives and client commissions with a precision-led eye for natural compositions and timing.",
       instagram: "https://instagram.com/",
       portfolio: "https://behance.net/"
@@ -975,28 +970,37 @@ var SITE = {
       name: "Chikitha",
       role: "Photographer / Creative Head",
       photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80",
+      imagePosition: "Center",
       bio: "Curating high-concept aesthetics across culinary styling, editorial sets, and character-driven visual storytelling.",
       instagram: "https://instagram.com/",
       portfolio: "https://behance.net/"
     },
     {
       name: "Cherry",
-      role: "DOP",
+      role: "DOP / Filmmaker",
       photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=900&q=80",
+      imagePosition: "Center",
       bio: "Specializing in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
       instagram: "https://instagram.com/",
       portfolio: "https://behance.net/"
     },
     {
       name: "Chandu",
-      role: "Photographer",
+      role: "Photographer / Drone Pilot",
       photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
+      imagePosition: "Center",
       bio: "High-shutter capture specialist for candid movements, fast ambient shifts, and raw character portraits.",
       instagram: "https://instagram.com/",
       portfolio: "https://behance.net/"
     }
   ],
-  photos: []
+  photos: [
+    { src: "https://picsum.photos/seed/lrl-food-1/1200/1500", title: "Sunday Roast", client: "Olive & Oak", category: "Food", imagePosition: "Center", caption: "Shot at five, so the steam still reads.", w: 5, ratio: "4/5" },
+    { src: "https://picsum.photos/seed/lrl-food-2/1200/1200", title: "Cold Brew, Hot Day", client: "Kettle Room", category: "Food", imagePosition: "Center", caption: "The condensation is the entire photograph.", w: 4, ratio: "1/1" },
+    { src: "https://picsum.photos/seed/lrl-food-3/1100/1460", title: "Thali, Overhead", client: "Banjara House", category: "Food", imagePosition: "Center", caption: "Twelve bowls, one frame, nothing cropped out.", w: 3, ratio: "3/4" },
+    { src: "https://picsum.photos/seed/lrl-pets-1/1600/1070", title: "Mango Refuses to Sit", client: "Private", category: "Pets", imagePosition: "Center", caption: "1/2000s and still a blur of tail.", w: 6, ratio: "3/2" },
+    { src: "https://picsum.photos/seed/lrl-re-1/1800/1010", title: "Two-Bed, North Light", client: "Casa Listings", category: "Real Estate", imagePosition: "Center", caption: "Shot at nine, for the light a buyer will get.", w: 6, ratio: "16/9" }
+  ]
 };
 
 var $  = function(s,r){ return (r||document).querySelector(s); };
@@ -1116,9 +1120,10 @@ function renderGrid(){
     return '<div class="row">' + row.items.map(function(slot){
       var p = slot.ref, i = n++;
       var paddedNum = String(i+1).padStart(2, "0");
+      var pos = (p.imagePosition || "Center").toLowerCase();
       return '<button class="shot" style="--sw:'+slot.w+'px" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                '<span class="plate" style="--sh:'+row.h+'px">'+
-                 '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'">'+
+                 '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
                  '<span class="scanner"></span>'+
                  '<span class="guard"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
@@ -1194,9 +1199,10 @@ function openNicheView(nicheName){
       return '<div class="row">' + row.items.map(function(slot){
         var p = slot.ref, i = n++;
         var paddedNum = String(i+1).padStart(2, "0");
+        var pos = (p.imagePosition || "Center").toLowerCase();
         return '<button class="shot" style="--sw:'+slot.w+'px" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                  '<span class="plate" style="--sh:'+row.h+'px">'+
-                   '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'">'+
+                   '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
                    '<span class="scanner"></span>'+
                    '<span class="guard"></span>'+
                    '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
@@ -1272,15 +1278,15 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-/* The Collective Page Logic */
-var collectiveModal = $("#collective-modal");
+var collectivePage = $("#collective-page");
 function openCollective(){
-  collectiveModal.classList.add("open");
+  collectivePage.classList.add("open");
   document.body.style.overflow = "hidden";
   window.location.hash = "collective";
+  collectivePage.scrollTop = 0;
 }
 function closeCollective(){
-  collectiveModal.classList.remove("open");
+  collectivePage.classList.remove("open");
   document.body.style.overflow = "";
   if(window.location.hash === "#collective"){
     history.pushState("", document.title, window.location.pathname + window.location.search);
@@ -1292,7 +1298,6 @@ $("#scroll-to-members").addEventListener("click", function(){
   $("#collective-members-sec").scrollIntoView({ behavior: 'smooth' });
 });
 
-/* Lightbox Controls */
 var lb = $("#lb");
 function openLB(i, opener){
   state.index = i; state.opener = opener || null;
@@ -1341,7 +1346,7 @@ lb.addEventListener("click", function(e){ if(e.target === lb) closeLB(); });
 
 document.addEventListener("keydown", function(e){
   if(e.key === "Escape"){
-    if(collectiveModal.classList.contains("open")) closeCollective();
+    if(collectivePage.classList.contains("open")) closeCollective();
     if(lb.classList.contains("on")) closeLB();
   }
   if(!lb.classList.contains("on")) return;
@@ -1356,7 +1361,6 @@ lb.addEventListener("touchend", function(e){
   if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
 }, {passive:true});
 
-/* Pull Cord Physics & Filament Pulse */
 var pull = $("#theme");
 pull.addEventListener("click", function(){
   var wasDark = document.documentElement.getAttribute("data-theme") === "dark";
@@ -1377,7 +1381,6 @@ pull.addEventListener("click", function(){
   }, 320);
 });
 
-/* Anti-Download Protection */
 document.addEventListener("contextmenu", function(e){
   if (e.target.closest(".plate, .lb-frame, img, .guard, .member-plate")) {
     e.preventDefault();
@@ -1459,9 +1462,12 @@ function renderContent(){
     }).join("");
   }
 
-  /* The Collective Modal Content Rendering */
   var teamHero = $("#team-hero-img");
-  if(teamHero && SITE.teamHeroImg) teamHero.src = SITE.teamHeroImg;
+  if(teamHero && SITE.teamHeroImg) {
+    teamHero.src = SITE.teamHeroImg;
+    var heroPos = (SITE.teamHeroImgPosition || "Center").toLowerCase();
+    teamHero.style.objectPosition = "center " + heroPos;
+  }
   var teamIntro = $("#team-hero-intro");
   if(teamIntro && SITE.teamHeroIntro) teamIntro.textContent = SITE.teamHeroIntro;
 
@@ -1471,12 +1477,13 @@ function renderContent(){
       var links = "";
       if(m.instagram) links += '<a href="'+esc(m.instagram)+'" target="_blank" rel="noopener" class="member-chip">Instagram ↗</a>';
       if(m.portfolio) links += '<a href="'+esc(m.portfolio)+'" target="_blank" rel="noopener" class="member-chip">Work ↗</a>';
+      var mPos = (m.imagePosition || "Center").toLowerCase();
 
       return '<div class="member-card">' +
                '<div class="member-plate">' +
-                 '<img loading="lazy" src="'+esc(m.photo || 'https://picsum.photos/600/800')+'" alt="'+esc(m.name)+'">' +
-                 '<span class="scanner"></span>' +
-                 '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>' +
+                 '<img loading="lazy" src="'+esc(m.photo || 'https://picsum.photos/600/800')+'" alt="'+esc(m.name)+'" style="object-position: center '+mPos+';">' +
+                 '<span class="scanner"></span>'+
+                 '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
                '</div>' +
                '<div class="member-info">' +
                  '<h3>'+esc(m.name)+'</h3>' +
@@ -1517,6 +1524,16 @@ function initApp(){
 }
 
 initApp();
+
+if (window.netlifyIdentity) {
+  window.netlifyIdentity.on("init", user => {
+    if (!user) {
+      window.netlifyIdentity.on("login", () => {
+        document.location.href = "/admin/";
+      });
+    }
+  });
+}
 
 var rsTimer = null, lastW = window.innerWidth;
 window.addEventListener("resize", function(){
