@@ -55,9 +55,9 @@ collections:
                 widget: "select"
                 options: ["Food", "Pets", "Architecture", "Products", "Events", "Portraits"]
               - { label: "Image", name: "src", widget: "image" }
+              - { label: "Feature on Homepage ('All' view limit of 10)", name: "featured", widget: "boolean", default: true }
               - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
               - { label: "Caption", name: "caption", widget: "string", required: false }
-              - { label: "Grid Width Weight (1-8)", name: "w", widget: "number", value_type: "int", default: 4, min: 1, max: 12 }
               - label: "Aspect Ratio"
                 name: "ratio"
                 widget: "select"
