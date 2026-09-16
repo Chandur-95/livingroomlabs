@@ -166,7 +166,6 @@ html[data-theme="dark"] .brand .mark img{
 .nav-mobile-only{display:none}
 .nav-desktop-only{display:inline-block}
 
-/* Classic Woven Rope Switch */
 .pull{
   --len:30px;
   position:relative;flex:none;
@@ -177,13 +176,7 @@ html[data-theme="dark"] .brand .mark img{
   position:absolute;top:0;left:50%;
   width:4px;height:var(--len);
   margin-left:-2px;
-  background: repeating-linear-gradient(
-    135deg,
-    #9A7B55,
-    #9A7B55 2px,
-    #C2A277 2px,
-    #C2A277 4px
-  );
+  background: repeating-linear-gradient(135deg, #9A7B55, #9A7B55 2px, #C2A277 2px, #C2A277 4px);
   box-shadow: inset 1px 0 2px rgba(0,0,0,0.25);
   transition:height .35s cubic-bezier(0.175, 0.885, 0.32, 1.35);
 }
@@ -197,13 +190,7 @@ html[data-theme="dark"] .brand .mark img{
   transition:top .35s cubic-bezier(0.175, 0.885, 0.32, 1.35);
 }
 html[data-theme="dark"] .pull .cord{
-  background: repeating-linear-gradient(
-    135deg,
-    #C2A277,
-    #C2A277 2px,
-    #E4C59E 2px,
-    #E4C59E 4px
-  );
+  background: repeating-linear-gradient(135deg, #C2A277, #C2A277 2px, #E4C59E 2px, #E4C59E 4px);
 }
 html[data-theme="dark"] .pull .bead{
   background: linear-gradient(135deg, #B58450 0%, #82532B 100%);
@@ -303,8 +290,8 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   contain:paint !important;
   background:var(--rule-soft);
   width:100%;
-  max-height: 440px; /* Clamps vertical height so 4:5 shots never stretch excessively tall */
-  height:var(--sh,300px);
+  max-height: 380px; /* Hard strict cap on plate height so vertical shots never get disproportionate */
+  height:var(--sh,260px);
 }
 .plate img{
   width:100%;height:100%;object-fit:cover;
@@ -464,9 +451,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
-/* ============================================================
-   CONTACT SECTION
-   ============================================================ */
 #contact{
   padding-top:clamp(24px, 3vw, 48px);
   padding-bottom:clamp(12px, 1.5vw, 24px);
@@ -494,9 +478,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   line-height:1.5;
 }
 
-/* ============================================================
-   FOOTER
-   ============================================================ */
 .foot{
   margin-top:clamp(18px, 2.5vw, 32px);
   border-top:1px solid var(--ink);
@@ -534,9 +515,6 @@ html[data-theme="dark"] .foot-logo-btn img{
 }
 .foot-logo-btn:hover img{transform:scale(1.03)}
 
-/* ============================================================
-   THE COLLECTIVE OVERLAY VIEW
-   ============================================================ */
 .collective-page{
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
@@ -743,9 +721,6 @@ html[data-theme="dark"] .collective-about-logo img{
 }
 .collective-about-logo:hover img{transform:scale(1.03)}
 
-/* ============================================================
-   LIGHTBOX
-   ============================================================ */
 .lb{
   position:fixed;inset:0;z-index:120;
   background:rgba(6, 6, 6, .97);color:#FFF;
@@ -813,9 +788,6 @@ html[data-theme="dark"] .collective-about-logo img{
 .lb-cap .m{opacity:.6;font-size:.82rem;text-align:right;color:#FFF}
 .lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
 
-/* ============================================================
-   RESPONSIVE & MOBILE HEADER
-   ============================================================ */
 @media (max-width:980px){
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
   .collective-about-wrap{grid-template-columns:1fr;gap:32px}
@@ -891,7 +863,6 @@ html[data-theme="dark"] .collective-about-logo img{
 
   .collective-grid{grid-template-columns:1fr}
   
-  /* Mobile Footer: Index and Elsewhere only, with logo left-aligned */
   .foot-col-team {
     display: none !important;
   }
@@ -921,11 +892,8 @@ html[data-theme="dark"] .collective-about-logo img{
   </button>
   <div class="nav-right">
     <div class="nav-links label">
-      <!-- Desktop Header Items -->
       <a href="#niches-sec" class="nav-desktop-only">What we shoot</a>
       <button type="button" id="nav-collective-link" class="nav-desktop-only">The Collective</button>
-
-      <!-- Mobile Header Items (Only The Collective) -->
       <button type="button" id="nav-collective-link-mob" class="nav-mobile-only">The Collective</button>
     </div>
     <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
@@ -946,7 +914,6 @@ html[data-theme="dark"] .collective-about-logo img{
 
   <div class="band"><img data-band alt=""></div>
 
-  <!-- WORK SECTION WITH 10-PHOTO INITIAL LIMIT -->
   <section class="sec wrap" id="work">
     <div class="sec-head">
       <span class="label">Work</span>
@@ -962,7 +929,6 @@ html[data-theme="dark"] .collective-about-logo img{
     </div>
   </section>
 
-  <!-- WHAT WE SHOOT SECTION -->
   <section class="sec wrap" id="niches-sec">
     <div class="sec-head">
       <span class="label">What we shoot</span>
@@ -973,7 +939,6 @@ html[data-theme="dark"] .collective-about-logo img{
     <div id="niche-view-box" style="display:none;"></div>
   </section>
 
-  <!-- ON-PAGE CONTACT SECTION -->
   <section class="sec wrap" id="contact">
     <div class="sec-head">
       <span class="label">Contact</span>
@@ -984,7 +949,6 @@ html[data-theme="dark"] .collective-about-logo img{
     <p class="contact-note" data-contact-note></p>
   </section>
 
-  <!-- FOOTER -->
   <footer class="wrap">
     <div class="foot">
       <div>
@@ -1008,7 +972,6 @@ html[data-theme="dark"] .collective-about-logo img{
   </footer>
 </main>
 
-<!-- THE COLLECTIVE + ABOUT STATEMENT VIEW -->
 <div class="collective-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
   <div class="collective-nav">
     <span class="label mono" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -1051,7 +1014,6 @@ html[data-theme="dark"] .collective-about-logo img{
   </section>
 </div>
 
-<!-- LIGHTBOX -->
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <div class="lb-top">
     <div class="lb-count mono"><b id="lb-i">01</b> <span>/</span> <span id="lb-n">01</span></div>
@@ -1108,7 +1070,8 @@ var SITE = {
   niches: [
     { name: "Food", line: "Menus, delivery listings, and the plate as it actually arrives." },
     { name: "Pets", line: "Fast shutter, floor-level angles, treats on hand." },
-    { name: "Real Estate", line: "Rooms shot wide and straight, in the light they actually get." },
+    { name: "Architecture", line: "Rooms shot wide and straight, in the light they actually get." },
+    { name: "Products", line: "Studio lighting and crisp textures for brand campaigns." },
     { name: "Events", line: "Setup to last song, edited and delivered within the week." },
     { name: "Portraits", line: "Headshots and personal work, in studio or wherever you already are." }
   ],
@@ -1159,7 +1122,7 @@ var SITE = {
     { src: "https://picsum.photos/seed/lrl-food-2/1200/1200", title: "Cold Brew, Hot Day", client: "Kettle Room", category: "Food", imagePosition: "Center", caption: "The condensation is the entire photograph.", w: 4, ratio: "1/1" },
     { src: "https://picsum.photos/seed/lrl-food-3/1100/1460", title: "Thali, Overhead", client: "Banjara House", category: "Food", imagePosition: "Center", caption: "Twelve bowls, one frame, nothing cropped out.", w: 3, ratio: "3/4" },
     { src: "https://picsum.photos/seed/lrl-pets-1/1600/1070", title: "Mango Refuses to Sit", client: "Private", category: "Pets", imagePosition: "Center", caption: "1/2000s and still a blur of tail.", w: 6, ratio: "3/2" },
-    { src: "https://picsum.photos/seed/lrl-re-1/1800/1010", title: "Two-Bed, North Light", client: "Casa Listings", category: "Real Estate", imagePosition: "Center", caption: "Shot at nine, for the light a buyer will get.", w: 6, ratio: "16/9" }
+    { src: "https://picsum.photos/seed/lrl-re-1/1800/1010", title: "Two-Bed, North Light", client: "Casa Listings", category: "Architecture", imagePosition: "Center", caption: "Shot at nine, for the light a buyer will get.", w: 6, ratio: "16/9" }
   ]
 };
 
@@ -1208,7 +1171,7 @@ function buildRows(items, width, gap){
     if(!g.full){
       var avg = heights.length
         ? heights.reduce(function(a,b){return a+b;},0) / heights.length
-        : Math.min(avail * 0.42, 440);
+        : Math.min(avail * 0.42, 380);
       h = Math.min(h, avg);
     }
     h = Math.min(fit, Math.max(Math.min(130, fit), Math.round(h)));
@@ -1291,7 +1254,7 @@ function renderGrid(){
       var paddedNum = String(i+1).padStart(2, "0");
       var pos = (p.imagePosition || "Center").toLowerCase();
       return '<button class="shot" style="--sw:'+slot.w+'px" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
-               '<span class="plate" style="--sh:'+row.h+'px">'+
+               '<span class="plate" style="--sh:'+Math.min(row.h, 380)+'px">'+
                  '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
                  '<span class="scanner"></span>'+
                  '<span class="guard"></span>'+
@@ -1375,7 +1338,7 @@ function openNicheView(nicheName){
         var paddedNum = String(i+1).padStart(2, "0");
         var pos = (p.imagePosition || "Center").toLowerCase();
         return '<button class="shot" style="--sw:'+slot.w+'px" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
-                 '<span class="plate" style="--sh:'+row.h+'px">'+
+                 '<span class="plate" style="--sh:'+Math.min(row.h, 380)+'px">'+
                    '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
                    '<span class="scanner"></span>'+
                    '<span class="guard"></span>'+
@@ -1450,7 +1413,6 @@ $("#bottom-lockup-btn").addEventListener("click", function(e){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-/* The Collective Modal Controls */
 var collectivePage = $("#collective-page");
 
 function openCollective(){
@@ -1498,7 +1460,6 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-/* Lightbox */
 var lb = $("#lb");
 function openLB(i, opener){
   state.index = i; state.opener = opener || null;
