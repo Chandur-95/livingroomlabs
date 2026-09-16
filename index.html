@@ -22,7 +22,8 @@
 
   --nav-h:80px;
   --pad:clamp(16px, 4vw, 56px);
-  --gap:20px;
+  --col-gap:24px;
+  --row-gap:44px; /* Generous vertical gap to completely prevent text overlapping */
   --sec:clamp(36px, 4.5vw, 76px);
 
   --fs-label:.7rem;
@@ -276,15 +277,17 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* UNIFORM UNALIGNED GRID: Fixed 3-column structured layout with equal aspect ratios */
+/* UNIFORM GRID WITH SPACED ROWS */
 .uniform-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: var(--gap);
+  column-gap: var(--col-gap);
+  row-gap: var(--row-gap);
 }
 
 .shot {
-  display: block;
+  display: flex;
+  flex-direction: column;
   text-align: left;
   position: relative;
   width: 100%;
@@ -294,7 +297,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   overflow: hidden !important;
   background: var(--rule-soft);
   width: 100%;
-  aspect-ratio: 4 / 5; /* Perfectly uniform aspect ratio for every single image box */
+  aspect-ratio: 4 / 5;
   height: auto;
 }
 .plate img {
@@ -356,7 +359,8 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 
 .cap{
   display:flex;justify-content:space-between;gap:12px;
-  padding-top:8px;margin-top:2px;
+  padding-top:10px;
+  margin-top:4px;
   border-top:1px solid var(--rule);
   font-size:.76rem;line-height:1.35;
 }
@@ -364,7 +368,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .cap .c{opacity:.55;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .curated-toggle-wrap{
-  margin-top:clamp(20px, 2.5vw, 32px);
+  margin-top:clamp(24px, 3vw, 40px);
   display:flex;justify-content:center;
 }
 .btn-curated-expand{
@@ -931,7 +935,6 @@ html[data-theme="dark"] .collective-about-logo img{
       <span class="count mono" data-workcount></span>
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
-    <!-- Uniform Grid Container -->
     <div class="uniform-grid" id="grid"></div>
     <div class="curated-toggle-wrap" id="curated-wrap" style="display:none;">
       <button type="button" class="btn-curated-expand" id="btn-toggle-curated">
