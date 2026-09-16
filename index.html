@@ -149,7 +149,7 @@ html[data-theme="dark"] .brand .mark img{
   text-transform:uppercase;font-weight:600;white-space:nowrap;
 }
 .nav-right{display:flex;align-items:center;gap:clamp(16px, 2.5vw, 32px)}
-.nav-links{display:flex;gap:clamp(16px, 2.5vw, 32px)}
+.nav-links{display:flex;gap:clamp(16px, 2.5vw, 32px);align-items:center}
 .nav-links a, .nav-links button{
   position:relative;padding:4px 0;
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
@@ -162,6 +162,10 @@ html[data-theme="dark"] .brand .mark img{
 }
 .nav-links a:hover::after,.nav-links a:focus-visible::after,
 .nav-links button:hover::after,.nav-links button:focus-visible::after{transform:scaleX(1)}
+
+/* Responsive Desktop/Mobile Nav Controls */
+.nav-mobile-only{display:none}
+.nav-desktop-only{display:inline-block}
 
 .pull{
   --len:28px;
@@ -439,7 +443,23 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
-/* Footer with tightened spacing */
+/* Restored On-Page Contact Section */
+.mail{
+  display:inline-block;
+  font-size:clamp(1.4rem, 5vw, 3.8rem);
+  font-weight:600;letter-spacing:-.035em;line-height:1.05;
+  word-break:break-word;
+  padding-bottom:.06em;
+  background-image:linear-gradient(var(--glow),var(--glow));
+  background-repeat:no-repeat;
+  background-position:0 100%;
+  background-size:0% 3px;
+  transition:background-size .4s var(--ease);
+}
+.mail:hover,.mail:focus-visible{background-size:100% 3px}
+.contact-note{margin-top:clamp(16px, 2.5vw, 30px);max-width:48ch;opacity:.7}
+
+/* Footer */
 .foot{
   margin-top:clamp(32px, 5vw, 64px);
   border-top:1px solid var(--ink);
@@ -476,7 +496,7 @@ html[data-theme="dark"] .lockup-wrap img{
 .lockup-wrap button:hover img{transform:scale(1.04)}
 
 /* ============================================================
-   OVERLAY VIEWS: THE COLLECTIVE & CONTACT
+   THE COLLECTIVE OVERLAY VIEW
    ============================================================ */
 .collective-page{
   position:fixed;inset:0;z-index:150;
@@ -660,32 +680,6 @@ html[data-theme="dark"] .lockup-wrap img{
 }
 .collective-about-wrap .by{margin-top:clamp(18px, 2.5vw, 32px);opacity:.55}
 
-/* DEDICATED CONTACT & ABOUT OVERLAY */
-.contact-page{
-  position:fixed;inset:0;z-index:160;
-  background:var(--paper);color:var(--ink);
-  overflow-y:auto;overflow-x:hidden;
-  display:none;flex-direction:column;
-  padding:calc(20px + var(--safe-top)) calc(var(--pad) + var(--safe-right)) calc(40px + var(--safe-bottom)) calc(var(--pad) + var(--safe-left));
-}
-.contact-page.open{display:flex;animation:curtainRise .32s var(--ease) forwards}
-.contact-page-head{
-  display:flex;justify-content:space-between;align-items:center;
-  border-bottom:1px solid var(--ink);padding-bottom:16px;
-}
-.contact-page-hero{
-  margin-top:clamp(40px, 7vw, 100px);
-  display:flex;flex-direction:column;gap:clamp(18px, 3vw, 36px);
-  max-width:1100px;
-}
-.contact-mail{
-  display:inline-block;
-  font-size:clamp(1.8rem, 6.2vw, 5.2rem);
-  font-weight:700;line-height:1;letter-spacing:-.035em;
-  word-break:break-word;
-}
-.contact-mail:hover{color:var(--glow)}
-
 /* ============================================================
    LIGHTBOX
    ============================================================ */
@@ -756,28 +750,36 @@ html[data-theme="dark"] .lockup-wrap img{
 .lb-cap .m{opacity:.6;font-size:.82rem;text-align:right;color:#FFF}
 .lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
 
+/* ============================================================
+   RESPONSIVE & MOBILE HEADER FIX
+   ============================================================ */
 @media (max-width:980px){
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
   .foot{grid-template-columns:1fr 1fr}
 }
+
 @media (max-width:640px){
   :root{--nav-h:64px; --pad:12px}
   .nav{padding-inline:12px;gap:8px}
   
-  .brand .mark{height:54px}
-  .brand .mark img{height:54px}
+  .brand .mark{height:52px}
+  .brand .mark img{height:52px}
   .brand .wordmark{display:none}
   
-  .nav-right{gap:12px}
+  .nav-right{gap:14px}
   .nav-links{
     display:flex;
-    gap:14px;
-    font-size:0.65rem;
-    letter-spacing:0.12em;
+    gap:16px;
+    font-size:0.7rem;
+    letter-spacing:0.14em;
     white-space:nowrap;
   }
+
+  /* Force Mobile Header to ONLY Work & Contact */
+  .nav-desktop-only{display:none !important}
+  .nav-mobile-only{display:inline-block !important}
 
   .pull{--len:20px;width:20px}
   .hero{padding-block:20px 16px}
@@ -856,8 +858,13 @@ html[data-theme="dark"] .lockup-wrap img{
   </button>
   <div class="nav-right">
     <div class="nav-links label">
-      <a href="#niches-sec">What we shoot</a>
-      <button type="button" id="nav-collective-link">The Collective</button>
+      <!-- Desktop Header Items -->
+      <a href="#niches-sec" class="nav-desktop-only">What we shoot</a>
+      <button type="button" id="nav-collective-link" class="nav-desktop-only">The Collective</button>
+
+      <!-- Mobile Exclusive Header Items (Clean & Spaced) -->
+      <a href="#work" class="nav-mobile-only">Work</a>
+      <a href="#contact" class="nav-mobile-only">Contact</a>
     </div>
     <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
       <span class="cord" aria-hidden="true"></span>
@@ -904,6 +911,17 @@ html[data-theme="dark"] .lockup-wrap img{
     <div id="niche-view-box" style="display:none;"></div>
   </section>
 
+  <!-- RESTORED ON-PAGE CONTACT SECTION -->
+  <section class="sec wrap" id="contact">
+    <div class="sec-head">
+      <span class="label">Contact</span>
+      <span class="fill"></span>
+      <span class="count mono" data-place2></span>
+    </div>
+    <a class="mail" data-mail href="#"></a>
+    <p class="contact-note" data-contact-note></p>
+  </section>
+
   <!-- FOOTER -->
   <footer class="wrap">
     <div class="foot">
@@ -933,9 +951,7 @@ html[data-theme="dark"] .lockup-wrap img{
   </footer>
 </main>
 
-<!-- ============================================================
-     THE COLLECTIVE + ABOUT STATEMENT VIEW
-     ============================================================ -->
+<!-- THE COLLECTIVE + ABOUT STATEMENT VIEW -->
 <div class="collective-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
   <div class="collective-nav">
     <span class="label mono" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -965,31 +981,12 @@ html[data-theme="dark"] .lockup-wrap img{
     </div>
     <div class="collective-grid" id="collective-grid"></div>
 
-    <!-- MOVED ABOUT STATEMENT TO THE BOTTOM OF THE COLLECTIVE -->
     <div class="collective-about-wrap">
       <span class="label mono" style="opacity:.5;display:block;margin-bottom:12px;">About Living Room Labs</span>
       <p data-statement></p>
       <div class="label by" data-statement-by></div>
     </div>
   </section>
-</div>
-
-<!-- ============================================================
-     DEDICATED CONTACT OVERLAY VIEW
-     ============================================================ -->
-<div class="contact-page" id="contact-page" role="dialog" aria-modal="true" aria-label="Contact Studio">
-  <div class="contact-page-head">
-    <span class="label mono" data-place2></span>
-    <button class="collective-close" id="close-contact-btn" style="color:var(--ink);border-color:var(--rule);background:transparent;">
-      Back to Studio
-      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/></svg>
-    </button>
-  </div>
-  <div class="contact-page-hero">
-    <span class="label">Contact & Inquiries</span>
-    <a class="contact-mail" data-mail href="#"></a>
-    <p style="max-width:54ch;opacity:.8;font-size:clamp(1.1rem, 1.6vw, 1.4rem);margin:0;line-height:1.4;" data-contact-note></p>
-  </div>
 </div>
 
 <!-- LIGHTBOX -->
@@ -1191,7 +1188,7 @@ function buildFilters(){
   $$(".chip",host).forEach(function(b){
     b.addEventListener("click",function(){
       state.filter = b.dataset.cat;
-      state.showAllCurated = true; /* Filtering automatically allows full view of that category */
+      state.showAllCurated = true;
       $$(".chip",host).forEach(function(x){ x.setAttribute("aria-pressed", String(x === b)); });
       renderGrid();
     });
@@ -1334,7 +1331,7 @@ function openNicheView(nicheName){
       '<div class="niche-view-top">' +
         '<div class="niche-view-title">' +
           '<h2>' + esc(nicheData.name) + '</h2>' +
-          'p' + esc(nicheData.line) + '</p>' +
+          '<p>' + esc(nicheData.line) + '</p>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:16px;">' +
           '<span class="mono" style="opacity:.6;font-size:.75rem">' + countText + '</span>' +
@@ -1391,9 +1388,8 @@ $("#bottom-lockup-btn").addEventListener("click", function(e){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-/* Collective & Contact Modals */
+/* The Collective Modal Controls */
 var collectivePage = $("#collective-page");
-var contactPage = $("#contact-page");
 
 function openCollective(){
   collectivePage.classList.add("open");
@@ -1409,19 +1405,6 @@ function closeCollective(){
   }
 }
 
-function openContact(){
-  contactPage.classList.add("open");
-  document.body.style.overflow = "hidden";
-  window.location.hash = "contact";
-}
-function closeContact(){
-  contactPage.classList.remove("open");
-  document.body.style.overflow = "";
-  if(window.location.hash === "#contact"){
-    history.pushState("", document.title, window.location.pathname + window.location.search);
-  }
-}
-
 $("#nav-collective-link").addEventListener("click", function(e){
   e.preventDefault();
   openCollective();
@@ -1431,7 +1414,6 @@ $("#open-collective-foot-btn").addEventListener("click", function(e){
   openCollective();
 });
 $("#close-collective-btn").addEventListener("click", closeCollective);
-$("#close-contact-btn").addEventListener("click", closeContact);
 
 $("#scroll-to-members").addEventListener("click", function(){
   $("#collective-members-sec").scrollIntoView({ behavior: 'smooth' });
@@ -1441,14 +1423,11 @@ window.addEventListener("hashchange", function(){
   var hash = window.location.hash;
   if(hash === "#collective"){
     openCollective();
-  } else if(hash === "#contact"){
-    openContact();
   } else if(hash.startsWith("#niche-")){
     var niche = decodeURIComponent(hash.replace("#niche-", ""));
     openNicheView(niche);
   } else {
     if(collectivePage.classList.contains("open")) closeCollective();
-    if(contactPage.classList.contains("open")) closeContact();
     if(state.activeNiche) closeNicheView();
   }
 });
@@ -1503,7 +1482,6 @@ lb.addEventListener("click", function(e){ if(e.target === lb) closeLB(); });
 document.addEventListener("keydown", function(e){
   if(e.key === "Escape"){
     if(collectivePage.classList.contains("open")) closeCollective();
-    if(contactPage.classList.contains("open")) closeContact();
     if(lb.classList.contains("on")) closeLB();
   }
   if(!lb.classList.contains("on")) return;
@@ -1610,13 +1588,10 @@ function renderContent(){
       '<li><a href="#work">Work</a></li>' +
       '<li><a href="#niches-sec">What we shoot</a></li>' +
       '<li><button type="button" class="btn-foot-about">About</button></li>' +
-      '<li><button type="button" class="btn-foot-contact">Contact</button></li>';
+      '<li><a href="#contact">Contact</a></li>';
     
     $$(".btn-foot-about", idxList).forEach(function(b){
       b.addEventListener("click", function(){ openCollective(); });
-    });
-    $$(".btn-foot-contact", idxList).forEach(function(b){
-      b.addEventListener("click", function(){ openContact(); });
     });
   }
 
@@ -1686,8 +1661,6 @@ function renderContent(){
 
   if(window.location.hash === "#collective"){
     openCollective();
-  } else if(window.location.hash === "#contact"){
-    openContact();
   } else if(window.location.hash.startsWith("#niche-")){
     var niche = decodeURIComponent(window.location.hash.replace("#niche-", ""));
     openNicheView(niche);
