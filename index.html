@@ -443,7 +443,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
 /* ============================================================
-   CONTACT SECTION: COMPACT, TIGHTENED SPACING
+   CONTACT SECTION
    ============================================================ */
 #contact{
   padding-top:clamp(24px, 3vw, 48px);
@@ -473,16 +473,16 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 /* ============================================================
-   FOOTER: STUDIO LOGO IN FIRST COLUMN, BALANCED BOTTOM GAP
+   FOOTER: PROPORTIONATELY ENLARGED LOGO IN FIRST COLUMN
    ============================================================ */
 .foot{
   margin-top:clamp(18px, 2.5vw, 32px);
   border-top:1px solid var(--ink);
-  padding-top:clamp(20px, 2.8vw, 32px);
-  padding-bottom:clamp(28px, 3.5vw, 44px);
+  padding-top:clamp(22px, 3vw, 36px);
+  padding-bottom:clamp(24px, 3.5vw, 42px);
   display:grid;
-  grid-template-columns:1fr 0.8fr 0.8fr 1.2fr;
-  gap:24px 28px;
+  grid-template-columns:1.35fr 0.8fr 0.8fr 1.15fr;
+  gap:24px clamp(20px, 3vw, 40px);
   align-items:start;
 }
 .foot h4{margin:0 0 10px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;opacity:.5}
@@ -499,10 +499,9 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   line-height:0;
 }
 .foot-logo-btn img{
-  width:auto;
-  max-width:180px;
+  width:100%;
+  max-width:260px;
   height:auto;
-  max-height:88px;
   object-fit:contain;
   mix-blend-mode:multiply;
   transition:transform .3s var(--ease), opacity .3s ease;
@@ -683,20 +682,45 @@ html[data-theme="dark"] .foot-logo-btn img{
   background:var(--ink);color:var(--paper);border-color:var(--ink);
 }
 
+/* Collective About Section with Side-by-Side Logo */
 .collective-about-wrap{
   margin-top:clamp(48px, 8vw, 90px);
   padding-top:clamp(32px, 5vw, 60px);
   border-top:1px solid var(--ink);
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:clamp(28px, 5vw, 60px);
+  align-items:center;
 }
-.collective-about-wrap p{
+.collective-about-text p{
   margin:0;
   font-size:clamp(1.4rem, 3.4vw, 2.8rem);
   line-height:1.15;
   letter-spacing:-.02em;
   font-weight:500;
-  max-width:26ch;
+  max-width:24ch;
 }
-.collective-about-wrap .by{margin-top:clamp(18px, 2.5vw, 32px);opacity:.55}
+.collective-about-text .by{margin-top:clamp(18px, 2.5vw, 32px);opacity:.55}
+
+.collective-about-logo{
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding-right:clamp(0px, 2vw, 24px);
+}
+.collective-about-logo img{
+  width:auto;
+  max-width:260px;
+  height:auto;
+  object-fit:contain;
+  mix-blend-mode:multiply;
+  transition:transform .3s var(--ease);
+}
+html[data-theme="dark"] .collective-about-logo img{
+  filter:invert(1) brightness(1.05);
+  mix-blend-mode:screen;
+}
+.collective-about-logo:hover img{transform:scale(1.03)}
 
 /* ============================================================
    LIGHTBOX
@@ -769,10 +793,12 @@ html[data-theme="dark"] .foot-logo-btn img{
 .lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
 
 /* ============================================================
-   RESPONSIVE & MOBILE HEADER
+   RESPONSIVE
    ============================================================ */
 @media (max-width:980px){
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
+  .collective-about-wrap{grid-template-columns:1fr;gap:32px}
+  .collective-about-logo{justify-content:flex-start}
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
   .foot{grid-template-columns:1fr 1fr;gap:24px 20px}
@@ -848,6 +874,7 @@ html[data-theme="dark"] .foot-logo-btn img{
     gap: 20px 16px !important;
     padding-bottom: 24px !important;
   }
+  .foot-logo-btn img{max-width:180px !important}
 
   .lb-frame img{max-width:calc(100vw - 24px);max-height:calc(100vh - 140px)}
   .lb-cap{grid-template-columns:1fr}
@@ -921,7 +948,7 @@ html[data-theme="dark"] .foot-logo-btn img{
     <div id="niche-view-box" style="display:none;"></div>
   </section>
 
-  <!-- ON-PAGE CONTACT SECTION (COMPACT & CLEAN) -->
+  <!-- ON-PAGE CONTACT SECTION -->
   <section class="sec wrap" id="contact">
     <div class="sec-head">
       <span class="label">Contact</span>
@@ -932,7 +959,7 @@ html[data-theme="dark"] .foot-logo-btn img{
     <p class="contact-note" data-contact-note></p>
   </section>
 
-  <!-- FOOTER: LOGO RELOCATED INTO FIRST COLUMN -->
+  <!-- FOOTER: PROPORTIONATELY ENLARGED LOGO IN FIRST COLUMN -->
   <footer class="wrap">
     <div class="foot">
       <div>
@@ -956,7 +983,7 @@ html[data-theme="dark"] .foot-logo-btn img{
   </footer>
 </main>
 
-<!-- THE COLLECTIVE + ABOUT STATEMENT VIEW -->
+<!-- THE COLLECTIVE + ABOUT STATEMENT VIEW WITH EMBEDDED LOGO -->
 <div class="collective-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
   <div class="collective-nav">
     <span class="label mono" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -986,10 +1013,16 @@ html[data-theme="dark"] .foot-logo-btn img{
     </div>
     <div class="collective-grid" id="collective-grid"></div>
 
+    <!-- SIDE-BY-SIDE ABOUT TEXT AND LOGO -->
     <div class="collective-about-wrap">
-      <span class="label mono" style="opacity:.5;display:block;margin-bottom:12px;">About Living Room Labs</span>
-      <p data-statement></p>
-      <div class="label by" data-statement-by></div>
+      <div class="collective-about-text">
+        <span class="label mono" style="opacity:.5;display:block;margin-bottom:12px;">About Living Room Labs</span>
+        <p data-statement></p>
+        <div class="label by" data-statement-by></div>
+      </div>
+      <div class="collective-about-logo">
+        <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+      </div>
     </div>
   </section>
 </div>
