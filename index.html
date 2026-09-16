@@ -463,7 +463,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .mail:hover,.mail:focus-visible{background-size:100% 3px}
 .contact-note{margin-top:clamp(16px, 2.5vw, 30px);max-width:48ch;opacity:.7}
 
-/* 4-Column Footer with Crew Section */
+/* 4-Column Footer */
 .foot{
   margin-top:var(--sec);
   border-top:1px solid var(--ink);
@@ -496,10 +496,143 @@ html[data-theme="dark"] .lockup-wrap img{
 }
 .lockup-wrap:hover img{transform:scale(1.02)}
 
+/* ============================================================
+   THE COLLECTIVE (FULL SCREEN MODAL / PAGE)
+   ============================================================ */
+.collective-modal{
+  position:fixed;inset:0;z-index:150;
+  background:var(--paper);color:var(--ink);
+  overflow-y:auto;overflow-x:hidden;
+  display:none;flex-direction:column;
+  scroll-behavior:smooth;
+}
+.collective-modal.open{display:flex;animation:curtainRise .4s var(--ease) forwards}
+
+.collective-nav{
+  position:sticky;top:0;z-index:20;
+  height:var(--nav-h);padding-inline:calc(var(--pad) + 12px);
+  display:flex;align-items:center;justify-content:space-between;
+  background:var(--paper);border-bottom:1px solid var(--rule);
+}
+.collective-close{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:var(--fs-label);letter-spacing:var(--tr-label);
+  text-transform:uppercase;font-weight:600;cursor:pointer;
+}
+
+.collective-hero{
+  position:relative;width:100%;
+  height:calc(100vh - var(--nav-h));
+  min-height:550px;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;background:var(--rule-soft);
+}
+.collective-hero img{
+  width:100%;height:100%;object-fit:cover;object-position:center;
+  filter:brightness(0.85);
+  transition:transform 1.2s var(--ease);
+}
+.collective-hero-overlay{
+  position:absolute;inset:0;
+  background:linear-gradient(to top, rgba(0,0,0,0.85) 0%, rgba(0,0,0,0.2) 60%, transparent 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:calc(var(--pad) + 16px);
+  color:#FFF;
+}
+.collective-hero-overlay h1{
+  margin:0;font-family:"Space Grotesk",sans-serif;
+  font-size:clamp(2.4rem, 6.5vw, 5.2rem);
+  line-height:1;font-weight:700;letter-spacing:-0.03em;
+}
+.collective-hero-overlay p{
+  margin-top:14px;max-width:54ch;font-size:clamp(1rem, 1.4vw, 1.25rem);
+  opacity:.85;line-height:1.45;
+}
+
+.scroll-indicator{
+  margin-top:28px;display:inline-flex;align-items:center;gap:12px;
+  font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;
+  cursor:pointer;color:#FFF;
+}
+.scroll-indicator svg{width:16px;height:16px;animation:bounceArrow 1.5s infinite}
+@keyframes bounceArrow{
+  0%,20%,50%,80%,100%{transform:translateY(0)}
+  40%{transform:translateY(6px)}
+  60%{transform:translateY(3px)}
+}
+
+.collective-grid-sec{
+  padding:var(--sec) calc(var(--pad) + 12px);
+  max-width:1440px;margin-inline:auto;width:100%;
+}
+.collective-grid{
+  display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
+}
+.member-card{
+  display:flex;flex-direction:column;gap:14px;
+}
+.member-plate{
+  position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;
+  background:var(--rule-soft);
+}
+.member-plate img{
+  width:100%;height:100%;object-fit:cover;
+  transition:transform .5s var(--ease);
+}
+.member-card:hover .member-plate img{transform:scale(1.05)}
+.member-card .scanner{
+  position:absolute;left:0;right:0;height:2.5px;top:0;
+  background:rgba(var(--laser-red), 0.95);
+  box-shadow:0 0 14px 2px rgba(var(--laser-red), 0.85);
+  pointer-events:none;opacity:0;z-index:2;
+}
+.member-card:hover .scanner{
+  opacity:1;
+  animation:containedLaserSweep .7s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+.member-card .corners{position:absolute;inset:8px;pointer-events:none;z-index:4}
+.member-card .corners i{
+  position:absolute;width:12px;height:12px;
+  border:0 solid rgba(var(--laser-red), 0.95);
+  opacity:0;transition:opacity .25s ease;
+}
+.member-card .corners i:nth-child(1){top:0;left:0;border-top-width:2px;border-left-width:2px}
+.member-card .corners i:nth-child(2){top:0;right:0;border-top-width:2px;border-right-width:2px}
+.member-card .corners i:nth-child(3){bottom:0;left:0;border-bottom-width:2px;border-left-width:2px}
+.member-card .corners i:nth-child(4){bottom:0;right:0;border-bottom-width:2px;border-right-width:2px}
+.member-card:hover .corners i{opacity:1}
+
+.member-info h3{
+  margin:0;font-size:clamp(1.2rem, 1.8vw, 1.5rem);font-weight:700;
+  font-family:"Space Grotesk",sans-serif;letter-spacing:-0.02em;
+}
+.member-role{
+  display:block;margin-top:2px;font-size:var(--fs-label);
+  letter-spacing:var(--tr-label);text-transform:uppercase;
+  font-weight:600;opacity:0.6;
+}
+.member-bio{
+  margin-top:10px;font-size:0.85rem;line-height:1.5;opacity:0.75;
+}
+.member-links{
+  margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;
+}
+.member-chip{
+  border:1px solid var(--rule);padding:5px 10px;
+  font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;
+  font-family:"JetBrains Mono",monospace;font-weight:600;
+  transition:background .2s ease, color .2s ease, border-color .2s ease;
+}
+.member-chip:hover{
+  background:var(--ink);color:var(--paper);border-color:var(--ink);
+}
+
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
 .lb{
   position:fixed;inset:0;z-index:120;
-  background:rgba(6, 6, 6, .97);
-  color:#FFF;
+  background:rgba(6, 6, 6, .97);color:#FFF;
   display:none;flex-direction:column;
   padding:calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
   backdrop-filter:blur(24px);
@@ -567,7 +700,8 @@ html[data-theme="dark"] .lockup-wrap img{
 /* ============================================================
    RESPONSIVE SPECIFICS (MOBILE)
    ============================================================ */
-@media (max-width:920px){
+@media (max-width:980px){
+  .collective-grid{grid-template-columns:repeat(2, 1fr)}
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
   .foot{grid-template-columns:1fr 1fr}
@@ -580,7 +714,6 @@ html[data-theme="dark"] .lockup-wrap img{
   .brand .mark img{height:34px}
   .brand .wordmark{display:none}
   
-  /* Mobile: Show only 'What we shoot' & 'About' */
   .nav-right{gap:12px}
   .nav-links{
     display:flex;
@@ -597,7 +730,6 @@ html[data-theme="dark"] .lockup-wrap img{
   .pull{--len:20px;width:20px}
   .hero{padding-block:20px 16px}
   
-  /* Compact hero headline on mobile */
   .hero h1{
     font-size: clamp(1.35rem, 5.8vw, 1.75rem);
     line-height: 1.1;
@@ -609,7 +741,6 @@ html[data-theme="dark"] .lockup-wrap img{
     padding-top:8px;
     justify-content: flex-start;
   }
-  /* Remove location string on mobile only */
   .hero-foot [data-place] {
     display: none;
   }
@@ -625,6 +756,7 @@ html[data-theme="dark"] .lockup-wrap img{
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
+  .collective-grid{grid-template-columns:1fr}
   .foot{grid-template-columns:1fr;gap:20px}
   .lb-frame img{max-width:calc(100vw - 24px);max-height:calc(100vh - 140px)}
   .lb-cap{grid-template-columns:1fr}
@@ -723,7 +855,7 @@ html[data-theme="dark"] .lockup-wrap img{
         <ul data-foot-social></ul>
       </div>
       <div>
-        <h4>Crew</h4>
+        <h4><button id="open-collective-btn" style="text-decoration:underline;text-underline-offset:3px;cursor:pointer;">The Collective ↗</button></h4>
         <ul data-foot-team></ul>
       </div>
     </div>
@@ -733,6 +865,38 @@ html[data-theme="dark"] .lockup-wrap img{
     </div>
   </section>
 </main>
+
+<!-- The Collective Full View Modal -->
+<div class="collective-modal" id="collective-modal" role="dialog" aria-modal="true" aria-label="The Collective">
+  <div class="collective-nav">
+    <span class="label mono" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
+    <button class="collective-close" id="close-collective-btn">
+      Close
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/></svg>
+    </button>
+  </div>
+
+  <div class="collective-hero">
+    <img id="team-hero-img" alt="The Collective">
+    <div class="collective-hero-overlay">
+      <h1>The Collective</h1>
+      <p id="team-hero-intro"></p>
+      <div class="scroll-indicator" id="scroll-to-members">
+        <span>Scroll to Members</span>
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M6 9l6 6 6-6"/></svg>
+      </div>
+    </div>
+  </div>
+
+  <section class="collective-grid-sec" id="collective-members-sec">
+    <div class="sec-head" style="margin-bottom: clamp(28px, 4vw, 48px);">
+      <span class="label">Principals & Visual Creators</span>
+      <span class="fill"></span>
+      <span class="count mono">4 FRAMES</span>
+    </div>
+    <div class="collective-grid" id="collective-grid"></div>
+  </section>
+</div>
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <div class="lb-top">
@@ -796,10 +960,41 @@ var SITE = {
     { name: "Portraits", line: "Headshots and personal work, in studio or wherever you already are." }
   ],
   contactNote: "Tell us what you are shooting, roughly when, and where. We reply within a day.",
+  teamHeroImg: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=2200&q=80",
+  teamHeroIntro: "Four distinct visual sensibilities aligned under one collective principle: unfiltered truth in every frame.",
   team: [
-    { name: "Chandur", role: "Lead / Frames" },
-    { name: "Team Member 2", role: "Cinematography" },
-    { name: "Team Member 3", role: "Post & Color" }
+    {
+      name: "Pooja",
+      role: "Lead",
+      photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=80",
+      bio: "Directing creative narratives and client commissions with a precision-led eye for natural compositions and timing.",
+      instagram: "https://instagram.com/",
+      portfolio: "https://behance.net/"
+    },
+    {
+      name: "Chikitha",
+      role: "Photographer / Creative Head",
+      photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80",
+      bio: "Curating high-concept aesthetics across culinary styling, editorial sets, and character-driven visual storytelling.",
+      instagram: "https://instagram.com/",
+      portfolio: "https://behance.net/"
+    },
+    {
+      name: "Cherry",
+      role: "DOP",
+      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=900&q=80",
+      bio: "Specializing in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
+      instagram: "https://instagram.com/",
+      portfolio: "https://behance.net/"
+    },
+    {
+      name: "Chandu",
+      role: "Photographer",
+      photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
+      bio: "High-shutter capture specialist for candid movements, fast ambient shifts, and raw character portraits.",
+      instagram: "https://instagram.com/",
+      portfolio: "https://behance.net/"
+    }
   ],
   photos: []
 };
@@ -1067,7 +1262,9 @@ function closeNicheView(){
 
 window.addEventListener("hashchange", function(){
   var hash = window.location.hash;
-  if(hash.startsWith("#niche-")){
+  if(hash === "#collective"){
+    openCollective();
+  } else if(hash.startsWith("#niche-")){
     var niche = decodeURIComponent(hash.replace("#niche-", ""));
     openNicheView(niche);
   } else if(state.activeNiche){
@@ -1075,6 +1272,27 @@ window.addEventListener("hashchange", function(){
   }
 });
 
+/* The Collective Page Logic */
+var collectiveModal = $("#collective-modal");
+function openCollective(){
+  collectiveModal.classList.add("open");
+  document.body.style.overflow = "hidden";
+  window.location.hash = "collective";
+}
+function closeCollective(){
+  collectiveModal.classList.remove("open");
+  document.body.style.overflow = "";
+  if(window.location.hash === "#collective"){
+    history.pushState("", document.title, window.location.pathname + window.location.search);
+  }
+}
+$("#open-collective-btn").addEventListener("click", openCollective);
+$("#close-collective-btn").addEventListener("click", closeCollective);
+$("#scroll-to-members").addEventListener("click", function(){
+  $("#collective-members-sec").scrollIntoView({ behavior: 'smooth' });
+});
+
+/* Lightbox Controls */
 var lb = $("#lb");
 function openLB(i, opener){
   state.index = i; state.opener = opener || null;
@@ -1122,9 +1340,12 @@ $("#lb-next").addEventListener("click", function(){ stepLB(1); });
 lb.addEventListener("click", function(e){ if(e.target === lb) closeLB(); });
 
 document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){
+    if(collectiveModal.classList.contains("open")) closeCollective();
+    if(lb.classList.contains("on")) closeLB();
+  }
   if(!lb.classList.contains("on")) return;
-  if(e.key === "Escape") closeLB();
-  else if(e.key === "ArrowLeft") stepLB(-1);
+  if(e.key === "ArrowLeft") stepLB(-1);
   else if(e.key === "ArrowRight") stepLB(1);
 });
 
@@ -1135,6 +1356,7 @@ lb.addEventListener("touchend", function(e){
   if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
 }, {passive:true});
 
+/* Pull Cord Physics & Filament Pulse */
 var pull = $("#theme");
 pull.addEventListener("click", function(){
   var wasDark = document.documentElement.getAttribute("data-theme") === "dark";
@@ -1155,8 +1377,9 @@ pull.addEventListener("click", function(){
   }, 320);
 });
 
+/* Anti-Download Protection */
 document.addEventListener("contextmenu", function(e){
-  if (e.target.closest(".plate, .lb-frame, img, .guard")) {
+  if (e.target.closest(".plate, .lb-frame, img, .guard, .member-plate")) {
     e.preventDefault();
   }
 });
@@ -1236,11 +1459,42 @@ function renderContent(){
     }).join("");
   }
 
+  /* The Collective Modal Content Rendering */
+  var teamHero = $("#team-hero-img");
+  if(teamHero && SITE.teamHeroImg) teamHero.src = SITE.teamHeroImg;
+  var teamIntro = $("#team-hero-intro");
+  if(teamIntro && SITE.teamHeroIntro) teamIntro.textContent = SITE.teamHeroIntro;
+
+  var collectiveGrid = $("#collective-grid");
+  if(collectiveGrid && SITE.team){
+    collectiveGrid.innerHTML = SITE.team.map(function(m){
+      var links = "";
+      if(m.instagram) links += '<a href="'+esc(m.instagram)+'" target="_blank" rel="noopener" class="member-chip">Instagram ↗</a>';
+      if(m.portfolio) links += '<a href="'+esc(m.portfolio)+'" target="_blank" rel="noopener" class="member-chip">Work ↗</a>';
+
+      return '<div class="member-card">' +
+               '<div class="member-plate">' +
+                 '<img loading="lazy" src="'+esc(m.photo || 'https://picsum.photos/600/800')+'" alt="'+esc(m.name)+'">' +
+                 '<span class="scanner"></span>' +
+                 '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>' +
+               '</div>' +
+               '<div class="member-info">' +
+                 '<h3>'+esc(m.name)+'</h3>' +
+                 '<span class="member-role mono">'+esc(m.role)+'</span>' +
+                 '<p class="member-bio">'+esc(m.bio || '')+'</p>' +
+                 '<div class="member-links">'+links+'</div>' +
+               '</div>' +
+             '</div>';
+    }).join("");
+  }
+
   buildFilters();
   renderGrid();
   renderNichesList();
 
-  if(window.location.hash.startsWith("#niche-")){
+  if(window.location.hash === "#collective"){
+    openCollective();
+  } else if(window.location.hash.startsWith("#niche-")){
     var niche = decodeURIComponent(window.location.hash.replace("#niche-", ""));
     openNicheView(niche);
   }
