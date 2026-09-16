@@ -232,6 +232,9 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-top:14px;
 }
 
+/* ============================================================
+   HERO BANNER SLIDESHOW (MULTI-PHOTO ENGINE)
+   ============================================================ */
 .band{
   position:relative;
   width:100%;
@@ -239,19 +242,113 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   min-height:clamp(280px, 42vw, 750px);
   max-height:85vh;
   overflow:hidden;
-  background:var(--rule-soft);
-  display:flex;
-  align-items:center;
-  justify-content:center;
+  background:#000;
+  display:block;
+  cursor:pointer;
+  user-select:none;
 }
-.band img{
+.band-stage{
+  position:relative;
   width:100%;
   height:100%;
+  min-height:clamp(280px, 42vw, 750px);
   max-height:85vh;
+}
+.band-img{
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
   object-fit:cover;
+  opacity:0;
+  pointer-events:none;
+  transform:scale(1.04);
   transition:transform 1s var(--ease);
 }
-.band:hover img{transform:scale(1.015)}
+.band-img.active{
+  opacity:1;
+  pointer-events:auto;
+  transform:scale(1);
+  z-index:2;
+}
+
+/* Camera Aperture / Iris Snap Wipe */
+.band-img.shutter-enter{
+  z-index:3;
+  opacity:1;
+  animation:apertureIrisIn .65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+@keyframes apertureIrisIn{
+  0%{
+    clip-path:circle(0% at 50% 50%);
+    filter:brightness(1.5) contrast(1.2);
+    transform:scale(1.08);
+  }
+  60%{
+    filter:brightness(1.1) contrast(1.05);
+  }
+  100%{
+    clip-path:circle(150% at 50% 50%);
+    filter:brightness(1) contrast(1);
+    transform:scale(1);
+  }
+}
+
+/* Flash bloom line on transition */
+.band-flash{
+  position:absolute;
+  inset:0;
+  background:radial-gradient(circle at center, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%);
+  pointer-events:none;
+  opacity:0;
+  z-index:4;
+}
+.band-flash.flash-active{
+  animation:flashBloom .45s ease-out forwards;
+}
+@keyframes flashBloom{
+  0%{opacity:0.85}
+  100%{opacity:0}
+}
+
+/* HUD Overlay */
+.band-hud{
+  position:absolute;
+  bottom:16px;
+  right:calc(var(--pad) + 12px);
+  z-index:6;
+  display:flex;
+  align-items:center;
+  gap:12px;
+  background:rgba(0,0,0,0.65);
+  backdrop-filter:blur(8px);
+  color:#FFF;
+  padding:6px 14px;
+  border-radius:2px;
+  border:1px solid rgba(255,255,255,0.2);
+  pointer-events:none;
+  transition:transform .2s ease, opacity .2s ease;
+}
+.band:hover .band-hud{
+  border-color:rgba(255,255,255,0.45);
+}
+.band-pills{
+  display:flex;
+  gap:6px;
+  align-items:center;
+}
+.band-pill{
+  width:18px;
+  height:3px;
+  background:rgba(255,255,255,0.3);
+  border-radius:2px;
+  transition:background .3s ease, width .3s var(--ease);
+}
+.band-pill.active{
+  background:var(--glow);
+  width:26px;
+  box-shadow:0 0 8px var(--glow);
+}
 
 .sec{padding-block:var(--sec)}
 .sec-head{
@@ -489,9 +586,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   line-height:1.5;
 }
 
-/* ============================================================
-   FOOTER (4-COLUMN DESKTOP DEFAULT)
-   ============================================================ */
+/* FOOTER */
 .foot{
   margin-top:clamp(22px, 3vw, 40px);
   border-top:1px solid var(--ink);
@@ -816,9 +911,7 @@ html[data-theme="dark"] .collective-about-logo img{
   .foot{grid-template-columns:1.2fr 1fr 1fr;gap:24px 20px}
 }
 
-/* ============================================================
-   MOBILE RESPONSIVE ADJUSTMENTS (BELOW 640PX ONLY)
-   ============================================================ */
+/* MOBILE SPECIFICS */
 @media (max-width:640px){
   :root{
     --nav-h:64px;
@@ -878,11 +971,7 @@ html[data-theme="dark"] .collective-about-logo img{
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* ============================================================
-     MOBILE FOOTER: 
-     - LOGO ON THE LEFT
-     - INDEX & ELSEWHERE ON THE RIGHT (SIDE-BY-SIDE)
-     ============================================================ */
+  /* FOOTER */
   .foot{
     display: grid !important;
     grid-template-columns: 110px 1fr !important;
@@ -948,7 +1037,6 @@ html[data-theme="dark"] .collective-about-logo img{
 
   .collective-grid{grid-template-columns:1fr}
   
-  /* Mobile: Center logo in collective modal */
   .collective-about-wrap{
     display: flex !important;
     flex-direction: column !important;
@@ -1004,7 +1092,15 @@ html[data-theme="dark"] .collective-about-logo img{
     </div>
   </header>
 
-  <div class="band"><img data-band alt=""></div>
+  <!-- INTERACTIVE HERO BANNER SLIDESHOW -->
+  <div class="band" id="hero-slideshow" role="region" aria-label="Click to advance hero image slideshow" tabindex="0">
+    <div class="band-stage" id="band-stage"></div>
+    <div class="band-flash" id="band-flash"></div>
+    <div class="band-hud">
+      <span class="mono" style="font-size:0.65rem;letter-spacing:0.14em;" id="band-slide-counter">FRAME 01 / 01</span>
+      <div class="band-pills" id="band-pills"></div>
+    </div>
+  </div>
 
   <section class="sec wrap" id="work">
     <div class="sec-head">
@@ -1041,7 +1137,6 @@ html[data-theme="dark"] .collective-about-logo img{
     <p class="contact-note" data-contact-note></p>
   </section>
 
-  <!-- FOOTER: 4 COLUMNS ON DESKTOP, LOGO ON LEFT + (INDEX & ELSEWHERE) ON RIGHT ON MOBILE -->
   <footer class="wrap">
     <div class="foot">
       <div class="foot-col-logo">
@@ -1160,9 +1255,23 @@ var SITE = {
     "Every niche, every frame,",
     "*uncompromisingly real*."
   ],
-  bandImg: "https://picsum.photos/seed/lrl-band/2400/1100",
-  bandImgPosition: "Center",
-  bandAlt: "Studio shoot overview",
+  bandSlides: [
+    {
+      src: "https://picsum.photos/seed/lrl-band-1/2400/1100",
+      imagePosition: "Center",
+      alt: "Lighthouse on coastal rocks"
+    },
+    {
+      src: "https://picsum.photos/seed/lrl-band-2/2400/1100",
+      imagePosition: "Center",
+      alt: "Studio shoot overview"
+    },
+    {
+      src: "https://picsum.photos/seed/lrl-band-3/2400/1100",
+      imagePosition: "Center",
+      alt: "Architectural night frame"
+    }
+  ],
   statement: "A portfolio is not a *promise*. It is a receipt.",
   statementBy: "Everything on this page was shot by us, for someone who needed it.",
   niches: [
@@ -1229,7 +1338,16 @@ function esc(str){
   return String(str==null?"":str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 }
 
-var state = { filter:"All", visible:[], index:0, opener:null, activeNiche:null, showAllCurated:false };
+var state = { 
+  filter:"All", 
+  visible:[], 
+  index:0, 
+  opener:null, 
+  activeNiche:null, 
+  showAllCurated:false,
+  currentSlide:0,
+  slides:[]
+};
 
 function categories(){
   var seen = [];
@@ -1506,6 +1624,99 @@ window.addEventListener("hashchange", function(){
   }
 });
 
+/* SLIDESHOW ENGINE */
+function initSlideshow(){
+  var slides = [];
+  if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
+    slides = SITE.bandSlides;
+  } else if(SITE.bandImg || (SITE.band && SITE.band.src)){
+    var single = SITE.bandImg || SITE.band.src;
+    var singlePos = SITE.bandImgPosition || "Center";
+    var singleAlt = SITE.bandAlt || (SITE.band && SITE.band.alt) || "";
+    slides = [{ src: single, imagePosition: singlePos, alt: singleAlt }];
+  } else {
+    slides = [{ src: "https://picsum.photos/seed/lrl-band/2400/1100", imagePosition: "Center", alt: "Studio shoot" }];
+  }
+
+  state.slides = slides;
+  state.currentSlide = 0;
+
+  var stage = $("#band-stage");
+  var pillsBox = $("#band-pills");
+  var counter = $("#band-slide-counter");
+  if(!stage) return;
+
+  stage.innerHTML = slides.map(function(s, idx){
+    var pos = (s.imagePosition || "Center").toLowerCase();
+    var act = (idx === 0) ? "active" : "";
+    return '<img class="band-img '+act+'" data-slide-i="'+idx+'" src="'+esc(s.src)+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: center '+pos+';">';
+  }).join("");
+
+  if(pillsBox){
+    pillsBox.innerHTML = slides.map(function(_, idx){
+      var act = (idx === 0) ? "active" : "";
+      return '<span class="band-pill '+act+'" data-pill-i="'+idx+'"></span>';
+    }).join("");
+  }
+
+  updateSlideCounter();
+
+  var heroBox = $("#hero-slideshow");
+  heroBox.onclick = function(e){
+    e.preventDefault();
+    nextSlide();
+  };
+  heroBox.onkeydown = function(e){
+    if(e.key === "Enter" || e.key === " "){
+      e.preventDefault();
+      nextSlide();
+    }
+  };
+}
+
+function updateSlideCounter(){
+  var counter = $("#band-slide-counter");
+  if(!counter) return;
+  var cur = String(state.currentSlide + 1).padStart(2, "0");
+  var tot = String(state.slides.length).padStart(2, "0");
+  counter.textContent = "FRAME " + cur + " / " + tot + " // TAP TO ADVANCE";
+
+  $$(".band-pill").forEach(function(pill, idx){
+    pill.classList.toggle("active", idx === state.currentSlide);
+  });
+}
+
+function nextSlide(){
+  if(!state.slides || state.slides.length <= 1) return;
+
+  var oldIndex = state.currentSlide;
+  var newIndex = (state.currentSlide + 1) % state.slides.length;
+  state.currentSlide = newIndex;
+
+  var imgs = $$(".band-img", $("#band-stage"));
+  var oldImg = imgs[oldIndex];
+  var newImg = imgs[newIndex];
+  var flash = $("#band-flash");
+
+  if(flash){
+    flash.classList.remove("flash-active");
+    void flash.offsetWidth;
+    flash.classList.add("flash-active");
+  }
+
+  if(newImg){
+    newImg.classList.remove("shutter-enter", "active");
+    void newImg.offsetWidth;
+    newImg.classList.add("shutter-enter", "active");
+  }
+
+  setTimeout(function(){
+    if(oldImg) oldImg.classList.remove("active", "shutter-enter");
+  }, 620);
+
+  updateSlideCounter();
+}
+
 var lb = $("#lb");
 function openLB(i, opener){
   state.index = i; state.opener = opener || null;
@@ -1627,16 +1838,7 @@ function renderContent(){
     }).join("");
   }
 
-  var bandImg = $("[data-band]");
-  if(bandImg){
-    var src = SITE.bandImg || (SITE.band && SITE.band.src) || "https://picsum.photos/seed/lrl-band/2400/1100";
-    var alt = SITE.bandAlt || (SITE.band && SITE.band.alt) || "";
-    var bPos = (SITE.bandImgPosition || "Center").toLowerCase();
-    
-    bandImg.src = src;
-    bandImg.alt = alt;
-    bandImg.style.objectPosition = "center " + bPos;
-  }
+  initSlideshow();
 
   var stmt = $("[data-statement]"); if(stmt) stmt.innerHTML = italics(SITE.statement || "");
   var stmtBy = $("[data-statement-by]"); if(stmtBy) stmtBy.textContent = SITE.statementBy || "";
