@@ -49,17 +49,24 @@ collections:
             required: false
           - { label: "Collective Hero Intro", name: "teamHeroIntro", widget: "text", required: false }
 
+          # HERO SLIDESHOW (MULTIPLE PHOTOS)
+          - label: "Hero Banner Slideshow"
+            name: "bandSlides"
+            widget: "list"
+            fields:
+              - { label: "Image", name: "src", widget: "image" }
+              - { label: "Alt Text", name: "alt", widget: "string", required: false }
+              - label: "Focal Position"
+                name: "imagePosition"
+                widget: "select"
+                options: ["Top", "Center", "Bottom"]
+                default: "Center"
+
           # HERO BANNER & NICHES
           - label: "Hero Lines"
             name: "hero"
             widget: "list"
             field: { label: "Line", name: "line", widget: "string" }
-          - label: "Hero Banner Shoot"
-            name: "band"
-            widget: "object"
-            fields:
-              - { label: "Image", name: "src", widget: "image" }
-              - { label: "Alt Text", name: "alt", widget: "string", required: false }
           - { label: "Statement", name: "statement", widget: "string" }
           - { label: "Statement Attribution", name: "statementBy", widget: "string" }
           - label: "What We Shoot (Niches)"
