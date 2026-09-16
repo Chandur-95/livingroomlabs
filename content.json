@@ -2,53 +2,94 @@
   "photos": [
     {
       "src": "/assets/uploads/dsc07197.jpg",
-      "title": "Indian Delight",
-      "client": "Resturant",
-      "category": "Food",
       "imagePosition": "Center",
       "caption": "Classy Indian Meal",
       "ratio": "4/5",
-      "w": 5
+      "client": "Resturant",
+      "featured": true,
+      "w": 5,
+      "title": "Indian Delight",
+      "category": "Food"
     },
     {
       "src": "/assets/uploads/dsc07638.jpg",
-      "title": "Veggie delight",
-      "client": "Resturant",
-      "category": "Food",
       "imagePosition": "Center",
       "caption": "There is no we in food",
       "ratio": "3/2",
-      "w": 4
+      "client": "Resturant",
+      "featured": true,
+      "w": 4,
+      "title": "Veggie delight",
+      "category": "Food"
     },
     {
       "src": "/assets/uploads/dsc07201.jpg",
-      "title": "The Biryani",
-      "client": "Resturant",
-      "category": "Food",
       "imagePosition": "Center",
       "caption": "Hyderabadi Biryani",
       "ratio": "3/2",
-      "w": 3
+      "client": "Resturant",
+      "featured": true,
+      "w": 3,
+      "title": "The Biryani",
+      "category": "Food"
     },
     {
-      "src": "/assets/uploads/dsc02550.jpg",
-      "title": "Philly",
-      "client": "Private",
-      "category": "Architecture",
+      "src": "/images/uploads/bruuuu.png",
       "imagePosition": "Center",
       "caption": "1/2000s and still a blur of tail.",
-      "ratio": "1/1",
-      "w": 6
+      "ratio": "3/2",
+      "client": "Private",
+      "featured": true,
+      "w": 6,
+      "title": "Bruuu",
+      "category": "Pets"
     },
     {
-      "src": "/assets/uploads/dsc09094.jpg",
-      "title": "Hyderabad at night",
-      "client": "Private",
-      "category": "Architecture",
+      "src": "/images/uploads/catch.png",
       "imagePosition": "Center",
       "caption": "Shot at nine, for the light a buyer will get.",
       "ratio": "3/2",
-      "w": 6
+      "client": "Private",
+      "featured": true,
+      "w": 6,
+      "title": "Catch",
+      "category": "Pets"
+    },
+    {
+      "featured": true,
+      "ratio": "3/2",
+      "imagePosition": "Center",
+      "src": "/images/uploads/mink.png",
+      "title": "Mink",
+      "client": "Private",
+      "category": "Pets"
+    },
+    {
+      "featured": true,
+      "ratio": "3/2",
+      "imagePosition": "Center",
+      "src": "/images/uploads/day-3.jpg",
+      "title": "Watch",
+      "category": "Products",
+      "client": "Private"
+    },
+    {
+      "featured": true,
+      "ratio": "3/2",
+      "imagePosition": "Center",
+      "title": "Watch ",
+      "category": "Products",
+      "src": "/images/uploads/durgam-1.jpg",
+      "client": "Private"
+    },
+    {
+      "featured": true,
+      "ratio": "3/2",
+      "imagePosition": "Center",
+      "title": "Watch 3",
+      "category": "Products",
+      "src": "/images/uploads/untitled-5.jpg",
+      "client": "Private"
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
