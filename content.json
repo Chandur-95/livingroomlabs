@@ -153,8 +153,8 @@
     },
     {
       "imagePosition": "Center",
-      "src": "/images/uploads/img_0893.jpg",
-      "alt": "New York Skyline, NYC"
+      "src": "/images/uploads/mink.png",
+      "alt": "Mink"
     }
   ],
   "hero": [
@@ -170,7 +170,7 @@
       "role": "Lead / Photographer",
       "photo": "/assets/uploads/whatsapp-image-2026-09-16-at-1.50.59-pm.jpeg",
       "imagePosition": "Center",
-      "bio": "Hello folks! I am a photographer who finds little stories in everyday moments. Always curious of exploring new ideas to capture images that feel alive.",
+      "bio": "Directing creative narratives and client commissions with a precision-led eye for natural compositions and timing.",
       "instagram": "https://www.instagram.com/pooja.and.hachi?stkn=MXVuc2pwbXhmZHVxNA==",
       "portfolio": ""
     },
@@ -179,7 +179,7 @@
       "role": "Photographer / Creative Head",
       "photo": "/images/uploads/whatsapp-image-2026-09-16-at-9.25.07-pm.jpeg",
       "imagePosition": "Center",
-      "bio": "I am a photographer and creative collaborator who brings fresh ideas to every shoot. I don't just capture moments—I help shape the vision behind them to bring your stories to life.",
+      "bio": "Curating high-concept aesthetics across culinary styling, editorial sets, and character-driven visual storytelling.",
       "instagram": "https://www.instagram.com/m._.chikita?stkn=YTN0ejZoNzBmMWln",
       "portfolio": ""
     },
@@ -197,7 +197,7 @@
       "role": "Photographer / Drone Pilot",
       "photo": "/assets/uploads/me.jpeg",
       "imagePosition": "Center",
-      "bio": "Software engineer by day, Photographer by night. I like to turn fleeting moments into timeless stories.",
+      "bio": "High-shutter capture specialist for candid movements, fast ambient shifts, and raw character portraits.",
       "instagram": "https://www.instagram.com/chandu_r25/",
       "portfolio": "https://unsplash.com/@cr029"
     }
