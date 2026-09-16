@@ -1,75 +1,60 @@
 backend:
   name: git-gateway
   branch: main
-  commit_messages:
-    create: 'Create {{collection}} “{{slug}}”'
-    update: 'Update {{collection}} “{{slug}}”'
-    delete: 'Delete {{collection}} “{{slug}}”'
-    uploadMedia: 'Upload “{{path}}”'
-    deleteMedia: 'Delete “{{path}}”'
 
-media_folder: "images/uploads"
-public_folder: "/images/uploads"
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
 
 collections:
-  - name: "website"
-    label: "Website Content"
+  - name: "site_content"
+    label: "Website Content & Settings"
     files:
       - file: "content.json"
-        label: "Settings & Portfolio"
-        name: "content"
+        label: "General Settings, Fonts & Collective"
+        name: "general"
         fields:
           - { label: "Site Name", name: "name", widget: "string" }
           - { label: "Tagline", name: "tagline", widget: "string" }
           - { label: "City", name: "city", widget: "string" }
           - { label: "Email", name: "email", widget: "string" }
-
-          # PHOTOS & PORTFOLIO
+          - label: "Typography Font"
+            name: "bodyFont"
+            widget: "select"
+            options: ["Inter", "Archivo", "Space Grotesk", "Playfair Display", "JetBrains Mono"]
+          - { label: "Hero Lines (one per line)", name: "hero", widget: "list" }
+          - { label: "Statement Headline", name: "statement", widget: "string" }
+          - { label: "Statement Attribution", name: "statementBy", widget: "string" }
+          - { label: "Contact Note", name: "contactNote", widget: "text" }
+          - label: "The Collective (Team Full Photo)"
+            name: "teamHeroImg"
+            widget: "image"
+          - { label: "The Collective Intro Text", name: "teamHeroIntro", widget: "string" }
+          - label: "The Collective Members"
+            name: "team"
+            widget: "list"
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Role", name: "role", widget: "string" }
+              - { label: "Portrait Photo", name: "photo", widget: "image" }
+              - { label: "Bio Summary", name: "bio", widget: "text" }
+              - { label: "Instagram Profile (Optional)", name: "instagram", widget: "string", required: false }
+              - { label: "LinkedIn / Behance (Optional)", name: "portfolio", widget: "string", required: false }
           - label: "Photos & Portfolio"
             name: "photos"
             widget: "list"
             fields:
-              - { label: "Photo Title", name: "title", widget: "string" }
-              - { label: "Client Name", name: "client", widget: "string" }
-              - label: "Category / Filter"
+              - { label: "Photo File", name: "src", widget: "image" }
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Client", name: "client", widget: "string" }
+              - label: "Category / Folder"
                 name: "category"
                 widget: "select"
                 options: ["Food", "Pets", "Real Estate", "Events", "Portraits"]
-              - { label: "Image File", name: "src", widget: "image" }
               - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
-              - { label: "Caption / Description", name: "caption", widget: "string", required: false }
-              - { label: "Grid Width Weight (1-8)", name: "w", widget: "number", value_type: "int", default: 4, min: 1, max: 12 }
+              - { label: "Caption", name: "caption", widget: "string", required: false }
+              - { label: "Width Ratio Weight (1 to 12)", name: "w", widget: "number", default: 4, value_type: "int" }
               - label: "Aspect Ratio"
                 name: "ratio"
                 widget: "select"
-                options: ["4/5", "1/1", "3/4", "3/2", "16/9"]
-                default: "4/5"
-
-          # BANNER & NICHES
-          - label: "Hero Banner Shoot"
-            name: "band"
-            widget: "object"
-            fields:
-              - { label: "Banner Image", name: "src", widget: "image" }
-              - { label: "Alt Description", name: "alt", widget: "string", required: false }
-          - label: "What We Shoot (Niches)"
-            name: "niches"
-            widget: "list"
-            fields:
-              - { label: "Niche Name", name: "name", widget: "string" }
-              - { label: "Description Line", name: "line", widget: "string" }
-
-          # COPY & SOCIAL
-          - label: "Hero Headline Lines"
-            name: "hero"
-            widget: "list"
-            field: { label: "Line", name: "line", widget: "string" }
-          - { label: "Statement Headline", name: "statement", widget: "string" }
-          - { label: "Statement Attribution", name: "statementBy", widget: "string" }
-          - { label: "Contact Note", name: "contactNote", widget: "text" }
-          - label: "Social Media Links"
-            name: "socials"
-            widget: "list"
-            fields:
-              - { label: "Platform Name", name: "name", widget: "string" }
-              - { label: "URL", name: "url", widget: "string" }
+                options: ["4/5", "1/1", "3/2", "3/4", "16/9"]
+                default: "3/4"
