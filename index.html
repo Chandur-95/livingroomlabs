@@ -121,19 +121,6 @@ div[data-netlify-drawer],
   visibility: hidden !important;
 }
 
-.frame{position:fixed;inset:0;z-index:60;pointer-events:none}
-.frame svg{position:absolute;width:28px;height:28px;overflow:visible}
-.frame svg path{
-  fill:none;stroke:var(--ink);stroke-width:1.2;
-  stroke-dasharray:68;stroke-dashoffset:68;
-  animation:drawBracket .8s var(--ease) .15s forwards;
-}
-.frame .c1{top:calc(var(--nav-h) + 14px + var(--safe-top));left:calc(14px + var(--safe-left))}
-.frame .c2{top:calc(var(--nav-h) + 14px + var(--safe-top));right:calc(14px + var(--safe-right));transform:scaleX(-1)}
-.frame .c3{bottom:calc(14px + var(--safe-bottom));left:calc(14px + var(--safe-left));transform:scaleY(-1)}
-.frame .c4{bottom:calc(14px + var(--safe-bottom));right:calc(14px + var(--safe-right));transform:scale(-1)}
-@keyframes drawBracket{to{stroke-dashoffset:0}}
-
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
   height:calc(var(--nav-h) + var(--safe-top));
@@ -227,9 +214,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-top:14px;
 }
 
-/* ============================================================
-   FULL-BLEED BAND (Editable via CMS)
-   ============================================================ */
 .band{
   position:relative;
   width:100%;
@@ -497,9 +481,6 @@ html[data-theme="dark"] .lockup-wrap img{
 }
 .lockup-wrap:hover img{transform:scale(1.02)}
 
-/* ============================================================
-   THE COLLECTIVE FULL-PAGE VIEW
-   ============================================================ */
 .collective-page{
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
@@ -663,9 +644,6 @@ html[data-theme="dark"] .lockup-wrap img{
   background:var(--ink);color:var(--paper);border-color:var(--ink);
 }
 
-/* ============================================================
-   LIGHTBOX
-   ============================================================ */
 .lb{
   position:fixed;inset:0;z-index:120;
   background:rgba(6, 6, 6, .97);color:#FFF;
@@ -741,7 +719,6 @@ html[data-theme="dark"] .lockup-wrap img{
 }
 @media (max-width:640px){
   :root{--nav-h:56px; --pad:12px}
-  .frame svg{width:18px;height:18px}
   .nav{padding-inline:12px;gap:8px}
   .brand .mark{height:34px}
   .brand .mark img{height:34px}
@@ -789,8 +766,33 @@ html[data-theme="dark"] .lockup-wrap img{
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
+  /* Uncropped Collective Hero on Mobile */
+  .collective-hero{
+    height: 72vh !important;
+    min-height: 460px !important;
+  }
+  .collective-hero img{
+    object-fit: contain !important;
+    object-position: center top !important;
+    background: #000;
+  }
+  .collective-hero-overlay{
+    padding: 20px 16px !important;
+    background: linear-gradient(to top, rgba(0,0,0,0.95) 0%, rgba(0,0,0,0.4) 40%, transparent 80%) !important;
+  }
+
   .collective-grid{grid-template-columns:1fr}
-  .foot{grid-template-columns:1fr;gap:20px}
+  
+  /* Mobile Footer: Only Elsewhere and The Collective */
+  .foot-col-studio,
+  .foot-col-index {
+    display: none !important;
+  }
+  .foot{
+    grid-template-columns: 1fr 1fr !important;
+    gap: 20px 16px !important;
+  }
+
   .lb-frame img{max-width:calc(100vw - 24px);max-height:calc(100vh - 140px)}
   .lb-cap{grid-template-columns:1fr}
   .lb-cap .m{text-align:left}
@@ -800,13 +802,6 @@ html[data-theme="dark"] .lockup-wrap img{
 
 <body>
 <a class="skip" href="#work">Skip to work</a>
-
-<div class="frame" aria-hidden="true">
-  <svg class="c1" viewBox="0 0 34 34"><path d="M34 1H1v33"/></svg>
-  <svg class="c2" viewBox="0 0 34 34"><path d="M34 1H1v33"/></svg>
-  <svg class="c3" viewBox="0 0 34 34"><path d="M34 1H1v33"/></svg>
-  <svg class="c4" viewBox="0 0 34 34"><path d="M34 1H1v33"/></svg>
-</div>
 
 <nav class="nav">
   <a class="brand" href="#top" aria-label="Living Room Labs">
@@ -838,7 +833,6 @@ html[data-theme="dark"] .lockup-wrap img{
     </div>
   </header>
 
-  <!-- Full Bleed Band Section -->
   <div class="band"><img data-band alt=""></div>
 
   <section class="sec wrap" id="work">
@@ -876,11 +870,11 @@ html[data-theme="dark"] .lockup-wrap img{
     <p class="contact-note" data-contact-note></p>
 
     <div class="foot">
-      <div>
+      <div class="foot-col-studio">
         <h4>Studio</h4>
         <ul data-foot-studio></ul>
       </div>
-      <div>
+      <div class="foot-col-index">
         <h4>Index</h4>
         <ul data-foot-index></ul>
       </div>
@@ -1458,7 +1452,6 @@ function renderContent(){
     }).join("");
   }
 
-  // Band Image Rendering with Position/Framing control
   var bandImg = $("[data-band]");
   if(bandImg){
     var src = SITE.bandImg || (SITE.band && SITE.band.src) || "https://picsum.photos/seed/lrl-band/2400/1100";
