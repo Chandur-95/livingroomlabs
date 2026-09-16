@@ -1,98 +1,4 @@
 {
-  "name": "Living Room Labs",
-  "tagline": "CAPTURE . CREATE . INSPIRE",
-  "city": "Hyderabad, India",
-  "email": "livingroomlabs@outlook.com",
-  "bodyFont": "Inter",
-  "contactNote": "Tell us what you are shooting, roughly when, and where. We reply within a day.",
-  "hero": [
-    "A visual collective",
-    "built on *curiosity*.",
-    "Every niche, every frame,",
-    "*uncompromisingly real*."
-  ],
-  "bandImg": "https://picsum.photos/seed/lrl-band/2400/1100",
-  "bandImgPosition": "Center",
-  "bandAlt": "Studio shoot overview",
-  "statement": "A portfolio is not a *promise*. It is a receipt.",
-  "statementBy": "Everything on this page was shot by us, for someone who needed it.",
-  "teamHeroImg": "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=2200&q=80",
-  "teamHeroImgPosition": "Center",
-  "teamHeroIntro": "Four distinct visual sensibilities aligned under one collective principle: unfiltered truth in every frame.",
-  "team": [
-    {
-      "name": "Pooja",
-      "role": "Lead / Photographer",
-      "photo": "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=80",
-      "imagePosition": "Center",
-      "bio": "Directing creative narratives and client commissions with a precision-led eye for natural compositions and timing.",
-      "instagram": "https://instagram.com/",
-      "portfolio": "https://behance.net/"
-    },
-    {
-      "name": "Chikitha",
-      "role": "Photographer / Creative Head",
-      "photo": "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80",
-      "imagePosition": "Center",
-      "bio": "Curating high-concept aesthetics across culinary styling, editorial sets, and character-driven visual storytelling.",
-      "instagram": "https://instagram.com/",
-      "portfolio": "https://behance.net/"
-    },
-    {
-      "name": "Cherry",
-      "role": "DOP / Filmmaker",
-      "photo": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=900&q=80",
-      "imagePosition": "Center",
-      "bio": "Specializing in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
-      "instagram": "https://instagram.com/",
-      "portfolio": "https://behance.net/"
-    },
-    {
-      "name": "Chandu",
-      "role": "Photographer / Drone Pilot",
-      "photo": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
-      "imagePosition": "Center",
-      "bio": "High-shutter capture specialist for candid movements, fast ambient shifts, and raw character portraits.",
-      "instagram": "https://instagram.com/",
-      "portfolio": "https://behance.net/"
-    }
-  ],
-  "niches": [
-    {
-      "name": "Food",
-      "line": "Menus, delivery listings, and the plate as it actually arrives."
-    },
-    {
-      "name": "Pets",
-      "line": "Fast shutter, floor-level angles, treats on hand."
-    },
-    {
-      "name": "Real Estate",
-      "line": "Rooms shot wide and straight, in the light they actually get."
-    },
-    {
-      "name": "Events",
-      "line": "Setup to last song, edited and delivered within the week."
-    },
-    {
-      "name": "Portraits",
-      "line": "Headshots and personal work, in studio or wherever you already are."
-    }
-  ],
-  "socials": [
-    {
-      "name": "Instagram",
-      "url": "https://instagram.com/livingroomlabs"
-    },
-    {
-      "name": "Behance",
-      "url": "https://behance.net/livingroomlabs"
-    },
-    {
-      "name": "WhatsApp",
-      "url": "https://wa.me/910000000000"
-    }
-  ],
   "photos": [
     {
       "src": "https://picsum.photos/seed/lrl-food-1/1200/1500",
@@ -143,6 +49,100 @@
       "caption": "Shot at nine, for the light a buyer will get.",
       "ratio": "16/9",
       "w": 6
+    }
+  ],
+  "statementBy": "Everything on this page was shot by us, for someone who needed it.",
+  "socials": [
+    {
+      "name": "Instagram",
+      "url": "https://instagram.com/livingroomlabs"
+    },
+    {
+      "name": "Behance",
+      "url": "https://behance.net/livingroomlabs"
+    },
+    {
+      "name": "WhatsApp",
+      "url": "https://wa.me/910000000000"
+    }
+  ],
+  "city": "Hyderabad, India",
+  "name": "Living Room Labs",
+  "teamHeroImg": "/assets/uploads/whatsapp-image-2026-09-16-at-11.33.04-am.jpeg",
+  "niches": [
+    {
+      "name": "Food",
+      "line": "Menus, delivery listings, and the plate as it actually arrives."
+    },
+    {
+      "name": "Pets",
+      "line": "Fast shutter, floor-level angles, treats on hand."
+    },
+    {
+      "name": "Real Estate",
+      "line": "Rooms shot wide and straight, in the light they actually get."
+    },
+    {
+      "name": "Events",
+      "line": "Setup to last song, edited and delivered within the week."
+    },
+    {
+      "name": "Portraits",
+      "line": "Headshots and personal work, in studio or wherever you already are."
+    }
+  ],
+  "bandImg": "/assets/uploads/dsc05175.jpg",
+  "tagline": "CAPTURE . CREATE . INSPIRE",
+  "statement": "A portfolio is not a *promise*. It is a receipt.",
+  "bodyFont": "Inter",
+  "contactNote": "Tell us what you are shooting, roughly when, and where. We reply within a day.",
+  "bandAlt": "Studio shoot overview",
+  "teamHeroIntro": "Four distinct visual sensibilities aligned under one collective principle: unfiltered truth in every frame.",
+  "teamHeroImgPosition": "Center",
+  "bandImgPosition": "Center",
+  "hero": [
+    "A visual collective",
+    "built on *curiosity*.",
+    "Every niche, every frame,",
+    "*uncompromisingly real*."
+  ],
+  "email": "livingroomlabs@outlook.com",
+  "team": [
+    {
+      "name": "Pooja",
+      "role": "Lead / Photographer",
+      "photo": "/assets/uploads/whatsapp-image-2026-09-16-at-1.50.59-pm.jpeg",
+      "imagePosition": "Center",
+      "bio": "Directing creative narratives and client commissions with a precision-led eye for natural compositions and timing.",
+      "instagram": "https://www.instagram.com/pooja.and.hachi?stkn=MXVuc2pwbXhmZHVxNA==",
+      "portfolio": ""
+    },
+    {
+      "name": "Chikitha",
+      "role": "Photographer / Creative Head",
+      "photo": "/assets/uploads/whatsapp-image-2026-09-16-at-1.51.53-pm.jpeg",
+      "imagePosition": "Center",
+      "bio": "Curating high-concept aesthetics across culinary styling, editorial sets, and character-driven visual storytelling.",
+      "instagram": "https://www.instagram.com/m._.chikita?stkn=YTN0ejZoNzBmMWln",
+      "portfolio": ""
+    },
+    {
+      "name": "Cherry",
+      "role": "DOP / Filmmaker",
+      "photo": "/assets/uploads/whatsapp-image-2026-09-16-at-1.53.16-pm.jpeg",
+      "imagePosition": "Center",
+      "bio": "Specializing in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
+      "instagram": "https://www.instagram.com/documentarian_?stkn=amZmYXI5dWprYjI0",
+      "portfolio": ""
+    },
+    {
+      "name": "Chandu",
+      "role": "Photographer / Drone Pilot",
+      "photo": "/assets/uploads/me.jpeg",
+      "imagePosition": "Center",
+      "bio": "High-shutter capture specialist for candid movements, fast ambient shifts, and raw character portraits.",
+      "instagram": "https://www.instagram.com/chandu_r25/",
+      "portfolio": "https://unsplash.com/@cr029"
     }
   ]
 }
