@@ -7,12 +7,10 @@
 <meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, events and portraits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;1,500;1,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
 <style>
-/* ============================================================
-   DESIGN TOKENS & SYSTEM
-   ============================================================ */
 :root{
   --paper:#FFFFFF;
   --ink:#000000;
@@ -116,7 +114,6 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   letter-spacing:.08em;
 }
 
-/* Hide Netlify Drawer / Feedback badge injection */
 iframe#netlify-drawer,
 div[data-netlify-drawer],
 .netlify-badge {
@@ -124,7 +121,6 @@ div[data-netlify-drawer],
   visibility: hidden !important;
 }
 
-/* Viewport Brackets */
 .frame{position:fixed;inset:0;z-index:60;pointer-events:none}
 .frame svg{position:absolute;width:28px;height:28px;overflow:visible}
 .frame svg path{
@@ -138,9 +134,6 @@ div[data-netlify-drawer],
 .frame .c4{bottom:calc(14px + var(--safe-bottom));right:calc(14px + var(--safe-right));transform:scale(-1)}
 @keyframes drawBracket{to{stroke-dashoffset:0}}
 
-/* ============================================================
-   NAVBAR
-   ============================================================ */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
   height:calc(var(--nav-h) + var(--safe-top));
@@ -178,7 +171,6 @@ html[data-theme="dark"] .brand .mark img{
 }
 .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
 
-/* Pull Cord */
 .pull{
   --len:28px;
   position:relative;flex:none;
@@ -204,9 +196,6 @@ html[data-theme="dark"] .pull .bead{background:transparent;box-shadow:none}
 .pull.tug .cord{height:52px;transition:height .08s ease-out}
 .pull.tug .bead{top:52px;transition:top .08s ease-out}
 
-/* ============================================================
-   HERO & BANNER
-   ============================================================ */
 main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .wrap{padding-inline:calc(var(--pad) + 12px)}
 
@@ -260,9 +249,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .band:hover img{transform:scale(1.015)}
 
-/* ============================================================
-   SECTIONS & FILTERS
-   ============================================================ */
 .sec{padding-block:var(--sec)}
 #contact{padding-bottom:0}
 .sec-head{
@@ -289,9 +275,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* ============================================================
-   WORK GRID (LASER SCANLINES PRESERVED)
-   ============================================================ */
 .grid{display:flex;flex-direction:column;gap:var(--gap)}
 .row{display:flex;gap:var(--gap);align-items:flex-start}
 .shot{
@@ -316,7 +299,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .plate img.ready{opacity:1}
 .shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.04)}
 
-/* Electric Red Laser Scan */
 .plate .scanner{
   position:absolute;left:0;right:0;height:2.5px;top:0;
   background:rgba(var(--laser-red), 0.95);
@@ -373,9 +355,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .cap .t{font-weight:500}
 .cap .c{opacity:.55;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* ============================================================
-   CLICKABLE NICHES
-   ============================================================ */
 .statement{
   border-top:1px solid var(--ink);
   border-bottom:1px solid var(--ink);
@@ -469,9 +448,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
-/* ============================================================
-   CONTACT & FOOTER
-   ============================================================ */
 .mail{
   display:inline-block;
   font-size:clamp(1.4rem, 5.5vw, 4.4rem);
@@ -487,13 +463,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .mail:hover,.mail:focus-visible{background-size:100% 3px}
 .contact-note{margin-top:clamp(16px, 2.5vw, 30px);max-width:48ch;opacity:.7}
 
+/* 4-Column Footer with Crew Section */
 .foot{
   margin-top:var(--sec);
   border-top:1px solid var(--ink);
   padding-top:clamp(24px, 3.5vw, 42px);
   padding-bottom:clamp(30px, 4vw, 50px);
   display:grid;
-  grid-template-columns:repeat(3, 1fr);
+  grid-template-columns:repeat(4, 1fr);
   gap:28px 24px;
 }
 .foot h4{margin:0 0 12px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;opacity:.5}
@@ -519,9 +496,6 @@ html[data-theme="dark"] .lockup-wrap img{
 }
 .lockup-wrap:hover img{transform:scale(1.02)}
 
-/* ============================================================
-   LIGHTBOX
-   ============================================================ */
 .lb{
   position:fixed;inset:0;z-index:120;
   background:rgba(6, 6, 6, .97);
@@ -591,7 +565,7 @@ html[data-theme="dark"] .lockup-wrap img{
 .lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
 
 /* ============================================================
-   RESPONSIVE MOBILE SPECIFICS
+   RESPONSIVE SPECIFICS (MOBILE)
    ============================================================ */
 @media (max-width:920px){
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
@@ -606,7 +580,7 @@ html[data-theme="dark"] .lockup-wrap img{
   .brand .mark img{height:34px}
   .brand .wordmark{display:none}
   
-  /* Show only 'What we shoot' & 'About' on mobile */
+  /* Mobile: Show only 'What we shoot' & 'About' */
   .nav-right{gap:12px}
   .nav-links{
     display:flex;
@@ -623,7 +597,7 @@ html[data-theme="dark"] .lockup-wrap img{
   .pull{--len:20px;width:20px}
   .hero{padding-block:20px 16px}
   
-  /* Compact font size for hero lines on mobile */
+  /* Compact hero headline on mobile */
   .hero h1{
     font-size: clamp(1.35rem, 5.8vw, 1.75rem);
     line-height: 1.1;
@@ -640,7 +614,6 @@ html[data-theme="dark"] .lockup-wrap img{
     display: none;
   }
 
-  /* Swipeable filter bar */
   .filters{
     flex-wrap:nowrap;
     overflow-x:auto;
@@ -749,6 +722,10 @@ html[data-theme="dark"] .lockup-wrap img{
         <h4>Elsewhere</h4>
         <ul data-foot-social></ul>
       </div>
+      <div>
+        <h4>Crew</h4>
+        <ul data-foot-team></ul>
+      </div>
     </div>
 
     <div class="lockup-wrap">
@@ -819,21 +796,12 @@ var SITE = {
     { name: "Portraits", line: "Headshots and personal work, in studio or wherever you already are." }
   ],
   contactNote: "Tell us what you are shooting, roughly when, and where. We reply within a day.",
-  photos: [
-    { src:"https://picsum.photos/seed/lrl-food-1/1200/1500", title:"Sunday Roast", client:"Olive & Oak", category:"Food", caption:"Shot at five, so the steam still reads.", w:5, ratio:"4/5" },
-    { src:"https://picsum.photos/seed/lrl-food-2/1200/1200", title:"Cold Brew, Hot Day", client:"Kettle Room", category:"Food", caption:"The condensation is the entire photograph.", w:4, ratio:"1/1" },
-    { src:"https://picsum.photos/seed/lrl-food-3/1100/1460", title:"Thali, Overhead", client:"Banjara House", category:"Food", caption:"Twelve bowls, one frame, nothing cropped out.", w:3, ratio:"3/4" },
-    { src:"https://picsum.photos/seed/lrl-pets-1/1600/1070", title:"Mango Refuses to Sit", client:"Private", category:"Pets", caption:"1/2000s and still a blur of tail.", w:6, ratio:"3/2" },
-    { src:"https://picsum.photos/seed/lrl-re-1/1800/1010", title:"Two-Bed, North Light", client:"Casa Listings", category:"Real Estate", caption:"Shot at nine, for the light a buyer will get.", w:6, ratio:"16/9" },
-    { src:"https://picsum.photos/seed/lrl-pets-2/1200/1500", title:"Rooftop Cat", client:"Private", category:"Pets", caption:"He picked the light. We only turned up.", w:3, ratio:"4/5" },
-    { src:"https://picsum.photos/seed/lrl-re-2/1200/1500", title:"Stairwell", client:"Vertex Homes", category:"Real Estate", caption:"Verticals kept vertical, no lens correction.", w:4, ratio:"4/5" },
-    { src:"https://picsum.photos/seed/lrl-food-4/1600/1070", title:"Proof at Midnight", client:"Flour & Salt", category:"Food", caption:"Bakery light only. No flash in the room.", w:5, ratio:"3/2" },
-    { src:"https://picsum.photos/seed/lrl-pets-3/1200/1200", title:"Three Still Minutes", client:"Paws & Co.", category:"Pets", caption:"Seamless white, one assistant, many treats.", w:3, ratio:"1/1" },
-    { src:"https://picsum.photos/seed/lrl-re-3/1600/1070", title:"Empty, On Purpose", client:"Vertex Homes", category:"Real Estate", caption:"Staged down rather than up.", w:6, ratio:"3/2" },
-    { src:"https://picsum.photos/seed/lrl-food-5/1100/1460", title:"Chai, Second Pour", client:"Kettle Room", category:"Food", caption:"Backlit steam, no smoke tricks.", w:3, ratio:"3/4" },
-    { src:"https://picsum.photos/seed/lrl-re-4/1800/1010", title:"Balcony, 14th Floor", client:"Casa Listings", category:"Real Estate", caption:"Blue hour outside, interiors lit to match.", w:6, ratio:"16/9" },
-    { src:"https://picsum.photos/seed/lrl-food-6/1800/1010", title:"Kitchen Pass", client:"Olive & Oak", category:"Food", caption:"Mid-service. Nobody posed for anything.", w:8, ratio:"16/9" }
-  ]
+  team: [
+    { name: "Chandur", role: "Lead / Frames" },
+    { name: "Team Member 2", role: "Cinematography" },
+    { name: "Team Member 3", role: "Post & Color" }
+  ],
+  photos: []
 };
 
 var $  = function(s,r){ return (r||document).querySelector(s); };
@@ -1107,7 +1075,6 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-/* Lightbox Controls */
 var lb = $("#lb");
 function openLB(i, opener){
   state.index = i; state.opener = opener || null;
@@ -1168,7 +1135,6 @@ lb.addEventListener("touchend", function(e){
   if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
 }, {passive:true});
 
-/* Pull Cord Physics & Filament Pulse */
 var pull = $("#theme");
 pull.addEventListener("click", function(){
   var wasDark = document.documentElement.getAttribute("data-theme") === "dark";
@@ -1189,7 +1155,6 @@ pull.addEventListener("click", function(){
   }, 320);
 });
 
-/* Anti-Download Protection */
 document.addEventListener("contextmenu", function(e){
   if (e.target.closest(".plate, .lb-frame, img, .guard")) {
     e.preventDefault();
@@ -1207,6 +1172,10 @@ document.addEventListener("keydown", function(e){
 });
 
 function renderContent(){
+  if(SITE.bodyFont){
+    document.body.style.fontFamily = '"' + SITE.bodyFont + '", system-ui, sans-serif';
+  }
+
   $$("[data-name]").forEach(function(n){ n.textContent = SITE.name; });
   $$("[data-tagline]").forEach(function(n){ n.textContent = SITE.tagline; });
   var pl1 = $("[data-place]"); if(pl1) pl1.textContent = SITE.city;
@@ -1260,6 +1229,13 @@ function renderContent(){
     }).join("");
   }
 
+  var teamList = $("[data-foot-team]");
+  if(teamList && SITE.team){
+    teamList.innerHTML = SITE.team.map(function(m){
+      return '<li>' + esc(m.name) + ' <span class="mono" style="opacity:.45;font-size:.7rem;margin-left:4px;">' + esc(m.role) + '</span></li>';
+    }).join("");
+  }
+
   buildFilters();
   renderGrid();
   renderNichesList();
@@ -1281,7 +1257,7 @@ function initApp(){
       renderContent();
     })
     .catch(function(err){
-      console.warn("Using baseline configuration:", err);
+      console.warn("Using baseline fallback:", err);
       renderContent();
     });
 }
