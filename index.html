@@ -23,7 +23,7 @@
   --nav-h:80px;
   --pad:clamp(16px, 4vw, 56px);
   --gap:clamp(10px, 1.2vw, 16px);
-  --sec:clamp(44px, 5.5vw, 96px);
+  --sec:clamp(36px, 4.5vw, 76px);
 
   --fs-label:.7rem;
   --tr-label:.24em;
@@ -163,7 +163,6 @@ html[data-theme="dark"] .brand .mark img{
 .nav-links a:hover::after,.nav-links a:focus-visible::after,
 .nav-links button:hover::after,.nav-links button:focus-visible::after{transform:scaleX(1)}
 
-/* Responsive Desktop/Mobile Nav Controls */
 .nav-mobile-only{display:none}
 .nav-desktop-only{display:inline-block}
 
@@ -195,7 +194,7 @@ html[data-theme="dark"] .pull .bead{background:transparent;box-shadow:none}
 main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .wrap{padding-inline:calc(var(--pad) + 12px)}
 
-.hero{padding-block:clamp(44px, 8vw, 105px) clamp(28px, 4vw, 56px)}
+.hero{padding-block:clamp(40px, 7vw, 95px) clamp(24px, 3.5vw, 48px)}
 .hero h1{
   margin:0;
   font-family:"Space Grotesk", sans-serif;
@@ -216,7 +215,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 @keyframes curtainRise{to{transform:translateY(0);opacity:1}}
 
 .hero-foot{
-  margin-top:clamp(24px, 3.5vw, 44px);
+  margin-top:clamp(20px, 3vw, 38px);
   display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;
   justify-content:space-between;
   border-top:1px solid var(--rule);
@@ -248,12 +247,12 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .sec-head{
   display:flex;align-items:baseline;gap:16px;
   border-bottom:1px solid var(--ink);
-  padding-bottom:10px;margin-bottom:clamp(20px, 3vw, 36px);
+  padding-bottom:10px;margin-bottom:clamp(16px, 2.5vw, 28px);
 }
 .sec-head .fill{flex:1;height:1px}
 .sec-head .count{font-size:var(--fs-label);letter-spacing:.1em;opacity:.55;white-space:nowrap}
 
-.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:clamp(20px, 3vw, 36px)}
+.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:clamp(18px, 2.5vw, 30px)}
 .chip{
   display:inline-flex;align-items:center;gap:8px;
   border:1px solid var(--rule);
@@ -350,13 +349,13 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .cap .c{opacity:.55;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 .curated-toggle-wrap{
-  margin-top:clamp(22px, 3.2vw, 36px);
+  margin-top:clamp(20px, 2.5vw, 32px);
   display:flex;justify-content:center;
 }
 .btn-curated-expand{
   display:inline-flex;align-items:center;gap:10px;
   border:1px solid var(--ink);
-  padding:12px 24px;
+  padding:11px 22px;
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
   text-transform:uppercase;font-weight:600;
   transition:background .25s var(--ease), color .25s var(--ease);
@@ -370,7 +369,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   grid-template-columns:minmax(130px, 1fr) 3fr auto;
   gap:12px 24px;
   align-items:baseline;
-  padding:clamp(16px, 2.2vw, 26px) 14px;
+  padding:clamp(15px, 2vw, 24px) 14px;
   border-bottom:1px solid var(--rule);
   text-align:left;
   width:100%;
@@ -407,8 +406,8 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .niche .state.open::before{content:"";width:5px;height:5px;background:var(--glow);box-shadow:0 0 5px var(--glow)}
 
 .niche-view{
-  margin-top:clamp(20px, 3.5vw, 40px);
-  padding-top:clamp(24px, 4vw, 48px);
+  margin-top:clamp(16px, 2.5vw, 32px);
+  padding-top:clamp(20px, 3vw, 38px);
   border-top:1px solid var(--ink);
   animation:nicheFadeIn .4s var(--ease) forwards;
 }
@@ -417,7 +416,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .niche-view-top{
   display:flex;justify-content:space-between;align-items:flex-start;
   flex-wrap:wrap;gap:18px 30px;
-  margin-bottom:clamp(24px, 4vw, 40px);
+  margin-bottom:clamp(20px, 3vw, 32px);
 }
 .niche-view-title h2{
   margin:0 0 6px;
@@ -443,57 +442,76 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
-/* Restored On-Page Contact Section */
+/* ============================================================
+   CONTACT SECTION: COMPACT, TIGHTENED SPACING
+   ============================================================ */
+#contact{
+  padding-top:clamp(24px, 3vw, 48px);
+  padding-bottom:clamp(12px, 1.5vw, 24px);
+}
 .mail{
   display:inline-block;
-  font-size:clamp(1.4rem, 5vw, 3.8rem);
-  font-weight:600;letter-spacing:-.035em;line-height:1.05;
+  font-size:clamp(1.2rem, 3vw, 2.2rem);
+  font-weight:600;
+  letter-spacing:-.025em;
+  line-height:1.15;
   word-break:break-word;
   padding-bottom:.06em;
   background-image:linear-gradient(var(--glow),var(--glow));
   background-repeat:no-repeat;
   background-position:0 100%;
-  background-size:0% 3px;
+  background-size:0% 2.5px;
   transition:background-size .4s var(--ease);
 }
-.mail:hover,.mail:focus-visible{background-size:100% 3px}
-.contact-note{margin-top:clamp(16px, 2.5vw, 30px);max-width:48ch;opacity:.7}
+.mail:hover,.mail:focus-visible{background-size:100% 2.5px}
+.contact-note{
+  margin-top:10px;
+  max-width:48ch;
+  opacity:.75;
+  font-size:clamp(.88rem, .25vw + .82rem, .96rem);
+  line-height:1.5;
+}
 
-/* Footer */
+/* ============================================================
+   FOOTER: STUDIO LOGO IN FIRST COLUMN, BALANCED BOTTOM GAP
+   ============================================================ */
 .foot{
-  margin-top:clamp(32px, 5vw, 64px);
+  margin-top:clamp(18px, 2.5vw, 32px);
   border-top:1px solid var(--ink);
-  padding-top:clamp(20px, 3vw, 32px);
-  padding-bottom:clamp(12px, 2vw, 20px);
+  padding-top:clamp(20px, 2.8vw, 32px);
+  padding-bottom:clamp(28px, 3.5vw, 44px);
   display:grid;
-  grid-template-columns:repeat(4, 1fr);
-  gap:24px 20px;
+  grid-template-columns:1fr 0.8fr 0.8fr 1.2fr;
+  gap:24px 28px;
+  align-items:start;
 }
 .foot h4{margin:0 0 10px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;opacity:.5}
 .foot ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
 .foot a:hover,.foot a:focus-visible{text-decoration:underline;text-underline-offset:3px}
 
-.lockup-wrap{
-  margin-top:clamp(18px, 3vw, 36px);
-  padding-bottom:clamp(20px, 3vw, 36px);
-  display:flex;justify-content:center;
-}
-.lockup-wrap button{
-  border:0;background:none;padding:0;cursor:pointer;display:inline-block;
-}
-.lockup-wrap img{
-  width:100%;
-  max-width:280px;
-  height:auto;
+.foot-logo-btn{
+  border:0;
+  background:none;
+  padding:0;
+  cursor:pointer;
   display:block;
+  text-align:left;
+  line-height:0;
+}
+.foot-logo-btn img{
+  width:auto;
+  max-width:180px;
+  height:auto;
+  max-height:88px;
+  object-fit:contain;
   mix-blend-mode:multiply;
   transition:transform .3s var(--ease), opacity .3s ease;
 }
-html[data-theme="dark"] .lockup-wrap img{
+html[data-theme="dark"] .foot-logo-btn img{
   filter:invert(1) brightness(1.05);
   mix-blend-mode:screen;
 }
-.lockup-wrap button:hover img{transform:scale(1.04)}
+.foot-logo-btn:hover img{transform:scale(1.03)}
 
 /* ============================================================
    THE COLLECTIVE OVERLAY VIEW
@@ -751,13 +769,13 @@ html[data-theme="dark"] .lockup-wrap img{
 .lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
 
 /* ============================================================
-   RESPONSIVE & MOBILE HEADER FIX
+   RESPONSIVE & MOBILE HEADER
    ============================================================ */
 @media (max-width:980px){
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
-  .foot{grid-template-columns:1fr 1fr}
+  .foot{grid-template-columns:1fr 1fr;gap:24px 20px}
 }
 
 @media (max-width:640px){
@@ -777,7 +795,6 @@ html[data-theme="dark"] .lockup-wrap img{
     white-space:nowrap;
   }
 
-  /* Force Mobile Header to ONLY Work & Contact */
   .nav-desktop-only{display:none !important}
   .nav-mobile-only{display:inline-block !important}
 
@@ -826,17 +843,10 @@ html[data-theme="dark"] .lockup-wrap img{
 
   .collective-grid{grid-template-columns:1fr}
   
-  .foot-col-studio,
-  .foot-col-index {
-    display: none !important;
-  }
   .foot{
     grid-template-columns: 1fr 1fr !important;
     gap: 20px 16px !important;
-  }
-
-  .lockup-wrap img{
-    max-width:220px !important;
+    padding-bottom: 24px !important;
   }
 
   .lb-frame img{max-width:calc(100vw - 24px);max-height:calc(100vh - 140px)}
@@ -862,7 +872,7 @@ html[data-theme="dark"] .lockup-wrap img{
       <a href="#niches-sec" class="nav-desktop-only">What we shoot</a>
       <button type="button" id="nav-collective-link" class="nav-desktop-only">The Collective</button>
 
-      <!-- Mobile Exclusive Header Items (Clean & Spaced) -->
+      <!-- Mobile Header Items -->
       <a href="#work" class="nav-mobile-only">Work</a>
       <a href="#contact" class="nav-mobile-only">Contact</a>
     </div>
@@ -911,7 +921,7 @@ html[data-theme="dark"] .lockup-wrap img{
     <div id="niche-view-box" style="display:none;"></div>
   </section>
 
-  <!-- RESTORED ON-PAGE CONTACT SECTION -->
+  <!-- ON-PAGE CONTACT SECTION (COMPACT & CLEAN) -->
   <section class="sec wrap" id="contact">
     <div class="sec-head">
       <span class="label">Contact</span>
@@ -922,12 +932,13 @@ html[data-theme="dark"] .lockup-wrap img{
     <p class="contact-note" data-contact-note></p>
   </section>
 
-  <!-- FOOTER -->
+  <!-- FOOTER: LOGO RELOCATED INTO FIRST COLUMN -->
   <footer class="wrap">
     <div class="foot">
-      <div class="foot-col-studio">
-        <h4>Studio</h4>
-        <ul data-foot-studio></ul>
+      <div>
+        <button class="foot-logo-btn" id="bottom-lockup-btn" aria-label="Scroll to top of page">
+          <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+        </button>
       </div>
       <div class="foot-col-index">
         <h4>Index</h4>
@@ -941,12 +952,6 @@ html[data-theme="dark"] .lockup-wrap img{
         <h4><button id="open-collective-foot-btn" style="text-decoration:underline;text-underline-offset:3px;cursor:pointer;">The Collective ↗</button></h4>
         <ul data-foot-team></ul>
       </div>
-    </div>
-
-    <div class="lockup-wrap">
-      <button id="bottom-lockup-btn" aria-label="Scroll to top of page">
-        <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
-      </button>
     </div>
   </footer>
 </main>
@@ -1574,13 +1579,6 @@ function renderContent(){
     mail.href = "mailto:" + SITE.email;
   }
   var note = $("[data-contact-note]"); if(note) note.textContent = SITE.contactNote || "";
-
-  var studioList = $("[data-foot-studio]");
-  if(studioList){
-    studioList.innerHTML =
-      '<li>'+esc(SITE.name)+'</li><li>'+esc(SITE.city)+'</li>'+
-      '<li><a href="mailto:'+esc(SITE.email)+'">'+esc(SITE.email)+'</a></li>';
-  }
 
   var idxList = $("[data-foot-index]");
   if(idxList){
