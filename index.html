@@ -492,7 +492,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 /* ============================================================
-   FOOTER (REVERTED TO BALANCED 4-COLUMN DESKTOP GRID)
+   FOOTER (4-COLUMN DESKTOP / REORGANIZED MOBILE)
    ============================================================ */
 .foot{
   margin-top:clamp(22px, 3vw, 40px);
@@ -530,6 +530,10 @@ html[data-theme="dark"] .foot-logo-btn img{
   mix-blend-mode:screen;
 }
 .foot-logo-btn:hover img{transform:scale(1.03)}
+
+.foot-links-group {
+  display: contents;
+}
 
 .collective-page{
   position:fixed;inset:0;z-index:150;
@@ -698,9 +702,6 @@ html[data-theme="dark"] .foot-logo-btn img{
   background:var(--ink);color:var(--paper);border-color:var(--ink);
 }
 
-/* ============================================================
-   COLLECTIVE ABOUT SECTION: REVERTED TO HORIZONTAL DESKTOP SPLIT
-   ============================================================ */
 .collective-about-wrap{
   margin-top:clamp(48px, 8vw, 90px);
   padding-top:clamp(32px, 5vw, 60px);
@@ -879,25 +880,55 @@ html[data-theme="dark"] .collective-about-logo img{
     grid-template-columns: repeat(2, 1fr);
   }
 
-  /* Mobile footer: 2 clean columns; Logo on left, Index and Elsewhere stacked on right */
+  /* ============================================================
+     MOBILE FOOTER: 
+     - Top row: Index (moved left) & Elsewhere (besides Index)
+     - Bottom row: Logo centered underneath
+     ============================================================ */
   .foot{
-    grid-template-columns: 1fr 1fr !important;
-    gap: 16px 20px !important;
-    padding-bottom: 24px !important;
-    align-items: start !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 32px !important;
+    padding-top: 24px !important;
+    padding-bottom: 32px !important;
   }
+  
+  .foot-links-group {
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    gap: 48px !important;
+    width: 100% !important;
+    order: 1 !important;
+  }
+
+  .foot-col-index {
+    min-width: 110px;
+  }
+  .foot-col-elsewhere {
+    min-width: 110px;
+  }
+
   .foot-col-logo {
-    grid-column: 1 / 2;
+    order: 2 !important;
+    display: flex !important;
+    justify-content: center !important;
+    align-items: center !important;
+    width: 100% !important;
+    margin-top: 8px !important;
   }
+
+  .foot-logo-btn {
+    display: flex !important;
+    justify-content: center !important;
+    width: 100% !important;
+  }
+
   .foot-logo-btn img{
-    max-width: 140px !important;
+    max-width: 170px !important;
+    margin: 0 auto !important;
   }
-  .foot-right-stack {
-    grid-column: 2 / 3;
-    display: flex;
-    flex-direction: column;
-    gap: 22px;
-  }
+
   .foot-col-team {
     display: none !important;
   }
@@ -918,7 +949,6 @@ html[data-theme="dark"] .collective-about-logo img{
 
   .collective-grid{grid-template-columns:1fr}
   
-  /* Mobile: Center logo in collective modal */
   .collective-about-wrap{
     display: flex !important;
     flex-direction: column !important;
@@ -1011,7 +1041,7 @@ html[data-theme="dark"] .collective-about-logo img{
     <p class="contact-note" data-contact-note></p>
   </section>
 
-  <!-- 4-COLUMN FOOTER FOR DESKTOP / STACKED FOR MOBILE -->
+  <!-- FOOTER: 4 COLUMNS ON DESKTOP, INDEX & ELSEWHERE SIDE-BY-SIDE + CENTERED LOGO ON MOBILE -->
   <footer class="wrap">
     <div class="foot">
       <div class="foot-col-logo">
@@ -1020,14 +1050,16 @@ html[data-theme="dark"] .collective-about-logo img{
         </button>
       </div>
 
-      <div class="foot-col-index">
-        <h4>Index</h4>
-        <ul data-foot-index></ul>
-      </div>
+      <div class="foot-links-group">
+        <div class="foot-col-index">
+          <h4>Index</h4>
+          <ul data-foot-index></ul>
+        </div>
 
-      <div class="foot-col-elsewhere">
-        <h4>Elsewhere</h4>
-        <ul data-foot-social></ul>
+        <div class="foot-col-elsewhere">
+          <h4>Elsewhere</h4>
+          <ul data-foot-social></ul>
+        </div>
       </div>
 
       <div class="foot-col-team">
@@ -1067,7 +1099,6 @@ html[data-theme="dark"] .collective-about-logo img{
     </div>
     <div class="collective-grid" id="collective-grid"></div>
 
-    <!-- COLLECTIVE ABOUT SECTION: HORIZONTAL DESKTOP / CENTERED MOBILE -->
     <div class="collective-about-wrap">
       <div class="collective-about-text">
         <span class="label mono" style="opacity:.5;display:block;margin-bottom:12px;">About Living Room Labs</span>
@@ -1360,10 +1391,10 @@ function openNicheView(nicheName){
                  '<span class="guard"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
                  '<span class="telemetry">REC // '+paddedNum+'</span>'+
-               '</span>'+
-               '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
-             '</button>';
-    }).join("") + '</div>';
+             '</span>'+
+             '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
+           '</button>';
+  }).join("") + '</div>';
   }
 
   box.innerHTML =
