@@ -130,8 +130,7 @@ em{font-family:"Bodoni Moda",Georgia,serif;font-style:italic;font-weight:400}
   transition:background .45s ease,border-color .45s ease;
 }
 .brand{display:flex;align-items:center;gap:11px}
-.brand .mark{display:flex;align-items:center;height:42px}
-.brand .mark svg{height:42px;width:auto;display:block}
+.brand .mark img{width:46px;height:auto}
 .brand .wordmark{
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
   text-transform:uppercase;font-weight:600;white-space:nowrap;
@@ -146,7 +145,7 @@ em{font-family:"Bodoni Moda",Georgia,serif;font-style:italic;font-weight:400}
 }
 .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
 
-/* Interactive Lamp Pull Cord */
+/* Lamp Pull Cord */
 .pull{
   --len:30px;
   position:relative;flex:none;
@@ -214,47 +213,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   background:var(--rule-soft);
 }
 .band img{width:100%;height:100%;object-fit:cover}
-
-/* ============================================================
-   THE COLLECTIVE SECTION
-   ============================================================ */
-.collective-hero{
-  position:relative;
-  width:100%;
-  height:76vh;
-  min-height:480px;
-  overflow:hidden;
-  background:#050505;
-}
-.collective-hero img{
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  object-position:center center;
-}
-.collective-hero-overlay{
-  position:absolute;
-  inset:0;
-  background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.85) 100%);
-  display:flex;
-  flex-direction:column;
-  justify-content:flex-end;
-  padding:clamp(20px, 4.5vw, 56px);
-  color:#FFFFFF;
-}
-.collective-hero h2{
-  margin:0 0 10px 0;
-  font-size:clamp(1.9rem, 4.5vw, 3.8rem);
-  font-weight:600;
-  letter-spacing:-.02em;
-}
-.collective-hero p{
-  margin:0;
-  max-width:54ch;
-  font-size:clamp(0.92rem, 1.2vw, 1.15rem);
-  opacity:0.85;
-  line-height:1.5;
-}
 
 /* ============================================================
    SECTION HEADS & FILTERS
@@ -465,20 +423,17 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .foot ul{margin:0;padding:0;list-style:none;display:grid;gap:7px}
 .foot a:hover,.foot a:focus-visible{text-decoration:underline;text-underline-offset:3px}
 
-.lockup-wrap{
-  margin-top:clamp(36px, 6vw, 72px);
-  padding-bottom:clamp(40px, 6vw, 84px);
-  display:flex;justify-content:center;
-  color:var(--ink);
+.lockup{
+  margin-top:clamp(62px,8vw,112px);
+  padding-bottom:clamp(40px,5vw,72px);
+  display:flex;flex-direction:column;align-items:center;gap:18px;text-align:center;
 }
-.lockup-wrap svg{
-  width:100%;
-  max-width:min(440px, 88vw);
-  height:auto;
-  display:block;
-  transition:transform .3s var(--ease);
-}
-.lockup-wrap:hover svg{transform:scale(1.02)}
+.lockup img{width:clamp(210px,30vw,330px);height:auto}
+
+.lg-l{display:block}
+.lg-d{display:none}
+html[data-theme="dark"] .lg-l{display:none}
+html[data-theme="dark"] .lg-d{display:block}
 
 /* ============================================================
    LIGHTBOX
@@ -536,7 +491,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .lb-cap .d{grid-column:1/-1;opacity:.7;font-size:.9rem;max-width:74ch}
 
 /* ============================================================
-   RESPONSIVE (MOBILE & DESKTOP TUNING)
+   RESPONSIVE (MOBILE OPTIMIZATIONS)
    ============================================================ */
 @media (max-width:820px){
   .niche{grid-template-columns:1fr auto;gap:4px 18px}
@@ -544,36 +499,39 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   .foot{grid-template-columns:1fr 1fr}
 }
 @media (max-width:640px){
-  :root{--nav-h:58px}
-  .frame svg{width:24px;height:24px}
+  :root{--nav-h:56px; --pad:12px}
+  .frame svg{width:22px;height:22px}
   .frame .c1,.frame .c2{top:calc(var(--nav-h) + 10px)}
   .frame .c3,.frame .c4{bottom:10px}
   .frame .c1,.frame .c3{left:10px}
   .frame .c2,.frame .c4{right:10px}
   .nav{padding-inline:calc(var(--pad) + 10px)}
   .wrap{padding-inline:calc(var(--pad) + 10px)}
-  .brand .wordmark{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
-  .nav-links{gap:14px}
+  .brand .wordmark{display:none}
+  
+  /* Mobile Header Navigation: Keep only "What we shoot" and "About" */
+  .nav-right{gap:14px}
+  .nav-links{display:flex;gap:14px}
+  .nav-links a.link-work,
+  .nav-links a.link-contact{display:none !important}
+  
+  /* Compact Hero Font on Mobile */
+  .hero{padding-block:clamp(36px, 8vw, 64px) 24px}
+  .hero h1{
+    font-size:clamp(1.4rem, 6.2vw, 1.85rem) !important;
+    line-height:1.1 !important;
+    letter-spacing:-.02em;
+  }
+  
+  /* Remove City from Mobile Hero */
+  .hero-foot{
+    margin-top:16px;
+    padding-top:10px;
+    justify-content:flex-start;
+  }
+  .hero-foot [data-place]{display:none !important}
 
-  /* 1. Mobile Collective Hero Framing (Prevents cutting team members) */
-  .collective-hero{
-    height:auto !important;
-    min-height:unset !important;
-    max-height:74vh;
-    aspect-ratio:4 / 5;
-    background:#080808 !important;
-  }
-  .collective-hero img{
-    object-fit:contain !important;
-    object-position:center top !important;
-    background:#080808 !important;
-  }
-  .collective-hero-overlay{
-    padding:20px 16px;
-    background:linear-gradient(180deg, rgba(0,0,0,0.15) 0%, rgba(0,0,0,0.92) 100%);
-  }
-
-  /* 2. Simplified Mobile Footer: Studio & Index hidden, keeping only Collective & Elsewhere */
+  /* Mobile Footer: Hide Studio & Index, keep only The Collective & Elsewhere */
   .foot-col-studio,
   .foot-col-index{
     display:none !important;
@@ -617,7 +575,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 <body>
 <a class="skip" href="#work">Skip to work</a>
 
-<!-- viewport corner brackets -->
 <div class="frame" aria-hidden="true">
   <svg class="c1" viewBox="0 0 34 34"><path d="M34 1H1v33"/></svg>
   <svg class="c2" viewBox="0 0 34 34"><path d="M34 1H1v33"/></svg>
@@ -627,44 +584,18 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 
 <!-- NAV -->
 <nav class="nav">
-  <a class="brand" href="#top" aria-label="Living Room Labs">
+  <a class="brand" href="#top">
     <span class="mark">
-      <svg viewBox="0 0 540 380" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <g stroke-width="9">
-          <path d="M150 78 h36 v-10 h-36 Z" fill="currentColor"/>
-          <path d="M176 78 L208 42 h56 L298 78"/>
-          <path d="M176 78 H134 c-14 0 -18 10 -18 24 v102 c0 14 6 22 20 22 h42"/>
-          <rect x="132" y="110" width="14" height="68" rx="7" stroke-width="6"/>
-          <path d="M298 78 c36 0 68 18 68 56 c0 34 -28 50 -60 50"/>
-          <path d="M320 180 c16 22 36 54 62 44"/>
-          <circle cx="238" cy="142" r="76" stroke-width="11"/>
-          <polygon points="232,96 244,96 286,188 190,188" fill="var(--glow)" opacity="0.45" stroke="none"/>
-          <line x1="238" y1="68" x2="238" y2="90" stroke-width="3.5"/>
-          <path d="M230 90 h16 l7 10 h-30 Z" fill="currentColor"/>
-          <circle cx="238" cy="102" r="3.5" fill="var(--glow)" stroke="none"/>
-          <rect x="214" y="152" width="48" height="34" rx="7" fill="currentColor"/>
-          <rect x="208" y="174" width="60" height="15" rx="4" fill="currentColor"/>
-          <rect x="202" y="162" width="12" height="27" rx="5" fill="currentColor"/>
-          <rect x="262" y="162" width="12" height="27" rx="5" fill="currentColor"/>
-          <line x1="213" y1="188" x2="209" y2="197" stroke-width="3"/>
-          <line x1="263" y1="188" x2="267" y2="197" stroke-width="3"/>
-          <polygon points="276,184 292,184 288,197 280,197" fill="currentColor"/>
-          <path d="M284 184 Q283 154 284 145" stroke-width="2.5"/>
-          <ellipse cx="278" cy="167" rx="5" ry="3" transform="rotate(-30 278 167)" fill="currentColor"/>
-          <ellipse cx="290" cy="159" rx="5" ry="3" transform="rotate(30 290 159)" fill="currentColor"/>
-          <ellipse cx="279" cy="151" rx="5" ry="3" transform="rotate(-25 279 151)" fill="currentColor"/>
-          <line x1="180" y1="197" x2="302" y2="197" stroke-width="3.5"/>
-        </g>
-      </svg>
+      <img src="logo.png" alt="Living Room Labs">
     </span>
     <span class="wordmark" data-name></span>
   </a>
   <div class="nav-right">
     <div class="nav-links label">
-      <a href="#work">Work</a>
-      <a href="#about">About</a>
-      <a href="#collective">The Collective</a>
-      <a href="#contact">Contact</a>
+      <a class="link-work" href="#work">Work</a>
+      <a class="link-niches" href="#niches">What we shoot</a>
+      <a class="link-about" href="#about">About</a>
+      <a class="link-contact" href="#contact">Contact</a>
     </div>
     <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
       <span class="cord" aria-hidden="true"></span>
@@ -704,24 +635,8 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
     <div class="label by" data-statement-by></div>
   </section>
 
-  <!-- THE COLLECTIVE -->
-  <section class="sec wrap" id="collective" style="padding-bottom:0">
-    <div class="sec-head">
-      <span class="label">The Collective // Lab Roster</span>
-      <span class="fill"></span>
-      <span class="count mono">4 MEMBERS</span>
-    </div>
-    <div class="collective-hero">
-      <img src="https://picsum.photos/seed/lrl-collective/1600/1000" data-collective-img alt="Living Room Labs Collective Roster">
-      <div class="collective-hero-overlay">
-        <h2>The Collective</h2>
-        <p>Four distinct visual sensibilities aligned under one collective principle: unfiltered truth in every frame.</p>
-      </div>
-    </div>
-  </section>
-
   <!-- WHAT WE SHOOT -->
-  <section class="sec wrap">
+  <section class="sec wrap" id="niches">
     <div class="sec-head">
       <span class="label">What we shoot</span>
       <span class="fill"></span>
@@ -753,9 +668,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
       <div class="foot-col-collective">
         <h4>The Collective</h4>
         <ul data-foot-collective>
-          <li><a href="#collective">Lab Roster</a></li>
-          <li><a href="#collective">Our Approach</a></li>
-          <li><a href="#about">Principles</a></li>
+          <li><a href="collective.html">View Roster & Roles →</a></li>
         </ul>
       </div>
       <div class="foot-col-elsewhere">
@@ -764,46 +677,8 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
       </div>
     </div>
 
-    <!-- LOCKUP VECTOR -->
-    <div class="lockup-wrap">
-      <svg viewBox="0 0 540 380" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round">
-        <g stroke-width="9">
-          <path d="M150 78 h36 v-10 h-36 Z" fill="currentColor"/>
-          <path d="M176 78 L208 42 h56 L298 78"/>
-          <path d="M176 78 H134 c-14 0 -18 10 -18 24 v102 c0 14 6 22 20 22 h42"/>
-          <rect x="132" y="110" width="14" height="68" rx="7" stroke-width="6"/>
-          <path d="M298 78 c36 0 68 18 68 56 c0 34 -28 50 -60 50"/>
-          <path d="M320 180 c16 22 36 54 62 44"/>
-          <circle cx="238" cy="142" r="76" stroke-width="11"/>
-          <polygon points="232,96 244,96 286,188 190,188" fill="var(--glow)" opacity="0.45" stroke="none"/>
-          <line x1="238" y1="68" x2="238" y2="90" stroke-width="3.5"/>
-          <path d="M230 90 h16 l7 10 h-30 Z" fill="currentColor"/>
-          <circle cx="238" cy="102" r="3.5" fill="var(--glow)" stroke="none"/>
-          <rect x="214" y="152" width="48" height="34" rx="7" fill="currentColor"/>
-          <rect x="208" y="174" width="60" height="15" rx="4" fill="currentColor"/>
-          <rect x="202" y="162" width="12" height="27" rx="5" fill="currentColor"/>
-          <rect x="262" y="162" width="12" height="27" rx="5" fill="currentColor"/>
-          <line x1="213" y1="188" x2="209" y2="197" stroke-width="3"/>
-          <line x1="263" y1="188" x2="267" y2="197" stroke-width="3"/>
-          <polygon points="276,184 292,184 288,197 280,197" fill="currentColor"/>
-          <path d="M284 184 Q283 154 284 145" stroke-width="2.5"/>
-          <ellipse cx="278" cy="167" rx="5" ry="3" transform="rotate(-30 278 167)" fill="currentColor"/>
-          <ellipse cx="290" cy="159" rx="5" ry="3" transform="rotate(30 290 159)" fill="currentColor"/>
-          <ellipse cx="279" cy="151" rx="5" ry="3" transform="rotate(-25 279 151)" fill="currentColor"/>
-          <line x1="180" y1="197" x2="302" y2="197" stroke-width="3.5"/>
-        </g>
-        <g stroke="none" fill="currentColor">
-          <path d="M50 252 L26 252 L26 276" stroke="currentColor" stroke-width="3.8" fill="none"/>
-          <path d="M490 252 L514 252 L514 276" stroke="currentColor" stroke-width="3.8" fill="none"/>
-          <path d="M26 304 L26 328 L50 328" stroke="currentColor" stroke-width="3.8" fill="none"/>
-          <path d="M514 304 L514 328 L490 328" stroke="currentColor" stroke-width="3.8" fill="none"/>
-          <text x="270" y="298" text-anchor="middle" font-family="'Archivo', sans-serif" font-weight="700" font-size="34" letter-spacing="0.26em">LIVING ROOM LABS</text>
-          <text x="270" y="348" text-anchor="middle" font-family="'Archivo', sans-serif" font-weight="600" font-size="13" letter-spacing="0.34em">CAPTURE . CREATE . INSPIRE</text>
-          <line x1="210" y1="370" x2="246" y2="370" stroke="currentColor" stroke-width="3"/>
-          <circle cx="270" cy="370" r="5.5" fill="currentColor"/>
-          <line x1="294" y1="370" x2="330" y2="370" stroke="currentColor" stroke-width="3"/>
-        </g>
-      </svg>
+    <div class="lockup">
+      <img src="logo.png" alt="Living Room Labs" style="max-width:min(320px, 80vw); height:auto;">
     </div>
   </section>
 </main>
@@ -866,7 +741,6 @@ var SITE = {
     alt: "A table being photographed under a pendant lamp"
   },
 
-  collectiveImg: "https://picsum.photos/seed/lrl-collective/1600/1000",
   statement:   "A portfolio is not a *promise*. It is a receipt.",
   statementBy: "Everything on this page was shot by us, for someone who needed it.",
 
@@ -1096,12 +970,6 @@ document.addEventListener("keydown", function(e){
   if(e.key === "Escape"){ closeLB(); }
   else if(e.key === "ArrowLeft"){ stepLB(-1); }
   else if(e.key === "ArrowRight"){ stepLB(1); }
-  else if(e.key === "Tab"){
-    var f = $$("button", lb);
-    var first = f[0], last = f[f.length-1];
-    if(e.shiftKey && document.activeElement === first){ e.preventDefault(); last.focus(); }
-    else if(!e.shiftKey && document.activeElement === last){ e.preventDefault(); first.focus(); }
-  }
 });
 
 var tx = 0, ty = 0;
@@ -1128,7 +996,7 @@ function toggleLampTheme(e){
 pull.addEventListener("click", toggleLampTheme);
 
 /* ============================================================
-   INJECTION & DYNAMIC DATA BINDING
+   INJECTION & BOOT
    ============================================================ */
 function boot(){
   $$("[data-name]").forEach(function(n){ n.textContent = SITE.name; });
@@ -1148,11 +1016,6 @@ function boot(){
   if(bandEl && SITE.band){
     bandEl.src = SITE.band.src;
     bandEl.alt = SITE.band.alt || "";
-  }
-
-  var collEl = $("[data-collective-img]");
-  if(collEl && SITE.collectiveImg){
-    collEl.src = SITE.collectiveImg;
   }
 
   var stmt = $("[data-statement]"); if(stmt) stmt.innerHTML = italics(SITE.statement || "");
@@ -1188,7 +1051,7 @@ function boot(){
   var indexFoot = $("[data-foot-index]");
   if(indexFoot){
     indexFoot.innerHTML =
-      '<li><a href="#work">Work</a></li><li><a href="#about">About</a></li><li><a href="#collective">The Collective</a></li><li><a href="#contact">Contact</a></li>';
+      '<li><a href="#work">Work</a></li><li><a href="#about">About</a></li><li><a href="#niches">What we shoot</a></li><li><a href="#contact">Contact</a></li>';
   }
 
   var socFoot = $("[data-foot-social]");
@@ -1202,10 +1065,9 @@ function boot(){
   renderGrid();
 }
 
-// 1. Boot immediately with built-in data so page NEVER renders blank
 boot();
 
-// 2. Safely sync with content.json if present
+// CMS Bridge
 fetch('/content.json')
   .then(function(res){
     if(!res.ok) return null;
