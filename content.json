@@ -140,6 +140,23 @@
     "src": "/images/uploads/dsc05175.jpg"
   },
   "bandImgPosition": "Center",
+  "bandSlides": [
+    {
+      "imagePosition": "Center",
+      "src": "/images/uploads/dsc05175.jpg",
+      "alt": " Portland Head Light, Rodhe Island"
+    },
+    {
+      "imagePosition": "Center",
+      "src": "/images/uploads/dsc09341.jpg",
+      "alt": "Chicago, IL"
+    },
+    {
+      "imagePosition": "Center",
+      "src": "/images/uploads/img_0893.jpg",
+      "alt": "New York Skyline, NYC"
+    }
+  ],
   "hero": [
     "A visual collective",
     "built on *curiosity*.",
