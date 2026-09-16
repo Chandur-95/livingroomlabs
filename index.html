@@ -122,9 +122,7 @@ div[data-netlify-drawer],
   visibility: hidden !important;
 }
 
-/* ============================================================
-   NAVBAR & LOGO DARK MODE ORANGE LAMP FILTER
-   ============================================================ */
+/* NAV */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
   height:calc(var(--nav-h) + var(--safe-top));
@@ -280,7 +278,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* UNIFORM GRID WITH SPACED ROWS */
+/* UNIFORM GRID */
 .uniform-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -492,7 +490,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 /* ============================================================
-   FOOTER (4-COLUMN DESKTOP / REORGANIZED MOBILE)
+   FOOTER (4-COLUMN DESKTOP DEFAULT)
    ============================================================ */
 .foot{
   margin-top:clamp(22px, 3vw, 40px);
@@ -882,51 +880,52 @@ html[data-theme="dark"] .collective-about-logo img{
 
   /* ============================================================
      MOBILE FOOTER: 
-     - Top row: Index (moved left) & Elsewhere (besides Index)
-     - Bottom row: Logo centered underneath
+     - LOGO ON THE LEFT
+     - INDEX & ELSEWHERE ON THE RIGHT (SIDE-BY-SIDE)
      ============================================================ */
   .foot{
-    display: flex !important;
-    flex-direction: column !important;
-    gap: 32px !important;
+    display: grid !important;
+    grid-template-columns: 110px 1fr !important;
+    gap: 16px 20px !important;
     padding-top: 24px !important;
     padding-bottom: 32px !important;
+    align-items: start !important;
   }
   
-  .foot-links-group {
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: flex-start !important;
-    gap: 48px !important;
-    width: 100% !important;
-    order: 1 !important;
-  }
-
-  .foot-col-index {
-    min-width: 110px;
-  }
-  .foot-col-elsewhere {
-    min-width: 110px;
-  }
-
   .foot-col-logo {
-    order: 2 !important;
+    grid-column: 1 / 2 !important;
     display: flex !important;
-    justify-content: center !important;
-    align-items: center !important;
+    justify-content: flex-start !important;
+    align-items: flex-start !important;
     width: 100% !important;
-    margin-top: 8px !important;
   }
 
   .foot-logo-btn {
-    display: flex !important;
-    justify-content: center !important;
+    display: block !important;
+    text-align: left !important;
     width: 100% !important;
   }
 
   .foot-logo-btn img{
-    max-width: 170px !important;
-    margin: 0 auto !important;
+    max-width: 110px !important;
+    width: 100% !important;
+    margin: 0 !important;
+  }
+
+  .foot-links-group {
+    grid-column: 2 / 3 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    gap: 24px !important;
+    width: 100% !important;
+  }
+
+  .foot-col-index {
+    min-width: 90px;
+  }
+  .foot-col-elsewhere {
+    min-width: 80px;
   }
 
   .foot-col-team {
@@ -949,6 +948,7 @@ html[data-theme="dark"] .collective-about-logo img{
 
   .collective-grid{grid-template-columns:1fr}
   
+  /* Mobile: Center logo in collective modal */
   .collective-about-wrap{
     display: flex !important;
     flex-direction: column !important;
@@ -1041,7 +1041,7 @@ html[data-theme="dark"] .collective-about-logo img{
     <p class="contact-note" data-contact-note></p>
   </section>
 
-  <!-- FOOTER: 4 COLUMNS ON DESKTOP, INDEX & ELSEWHERE SIDE-BY-SIDE + CENTERED LOGO ON MOBILE -->
+  <!-- FOOTER: 4 COLUMNS ON DESKTOP, LOGO ON LEFT + (INDEX & ELSEWHERE) ON RIGHT ON MOBILE -->
   <footer class="wrap">
     <div class="foot">
       <div class="foot-col-logo">
@@ -1391,10 +1391,10 @@ function openNicheView(nicheName){
                  '<span class="guard"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
                  '<span class="telemetry">REC // '+paddedNum+'</span>'+
-             '</span>'+
-             '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
-           '</button>';
-  }).join("") + '</div>';
+               '</span>'+
+               '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
+             '</button>';
+    }).join("") + '</div>';
   }
 
   box.innerHTML =
