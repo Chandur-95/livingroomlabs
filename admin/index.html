@@ -1,23 +1,44 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex">
   <title>Living Room Labs — Content Studio</title>
-  <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+  <link rel="icon" href="/logo.png">
+  <style>
+    html,body{margin:0;height:100%}
+    #boot{
+      position:fixed;inset:0;display:grid;place-items:center;
+      font:15px/1.6 system-ui,sans-serif;color:#555;background:#fff;
+      text-align:center;padding:24px;
+    }
+    #boot b{display:block;font-size:.72rem;letter-spacing:.24em;
+      text-transform:uppercase;color:#000;margin-bottom:10px}
+  </style>
 </head>
 <body>
+  <div id="boot">
+    <div>
+      <b>Living Room Labs</b>
+      Loading the editor&hellip;<br>
+      <span style="font-size:.85em;opacity:.7">If this doesn't clear, check your connection and refresh.</span>
+    </div>
+  </div>
+
+  <!-- Login is handled by GitHub via Netlify's OAuth client.
+       Netlify Identity is no longer used, so its widget is gone. -->
   <script src="https://unpkg.com/decap-cms@^3.0.0/dist/decap-cms.js"></script>
   <script>
-    if (window.netlifyIdentity) {
-      window.netlifyIdentity.on("init", user => {
-        if (!user) {
-          window.netlifyIdentity.on("login", () => {
-            document.location.href = "/admin/";
-          });
-        }
-      });
-    }
+    var boot = document.getElementById('boot');
+    var tries = 0;
+    var poll = setInterval(function () {
+      tries++;
+      if (document.querySelector('#nc-root') || tries > 60) {
+        if (boot) boot.style.display = 'none';
+        clearInterval(poll);
+      }
+    }, 250);
   </script>
 </body>
 </html>
