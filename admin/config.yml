@@ -10,7 +10,7 @@ collections:
     label: "Website Content & Settings"
     files:
       - file: "content.json"
-        label: "General Settings, Fonts & Collective"
+        label: "General Settings, Fonts & The Collective"
         name: "general"
         fields:
           - { label: "Site Name", name: "name", widget: "string" }
@@ -25,10 +25,17 @@ collections:
           - { label: "Statement Headline", name: "statement", widget: "string" }
           - { label: "Statement Attribution", name: "statementBy", widget: "string" }
           - { label: "Contact Note", name: "contactNote", widget: "text" }
-          - label: "The Collective (Team Full Photo)"
+          
+          - label: "The Collective Banner Image"
             name: "teamHeroImg"
             widget: "image"
+          - label: "Banner Image Vertical Framing"
+            name: "teamHeroImgPosition"
+            widget: "select"
+            options: ["Center", "Top", "Bottom"]
+            default: "Center"
           - { label: "The Collective Intro Text", name: "teamHeroIntro", widget: "string" }
+          
           - label: "The Collective Members"
             name: "team"
             widget: "list"
@@ -36,9 +43,15 @@ collections:
               - { label: "Name", name: "name", widget: "string" }
               - { label: "Role", name: "role", widget: "string" }
               - { label: "Portrait Photo", name: "photo", widget: "image" }
+              - label: "Photo Vertical Framing (Crop / Pull Up or Down)"
+                name: "imagePosition"
+                widget: "select"
+                options: ["Center", "Top", "Bottom"]
+                default: "Center"
               - { label: "Bio Summary", name: "bio", widget: "text" }
-              - { label: "Instagram Profile (Optional)", name: "instagram", widget: "string", required: false }
-              - { label: "LinkedIn / Behance (Optional)", name: "portfolio", widget: "string", required: false }
+              - { label: "Instagram Link (Optional)", name: "instagram", widget: "string", required: false }
+              - { label: "Portfolio / Work Link (Optional)", name: "portfolio", widget: "string", required: false }
+          
           - label: "Photos & Portfolio"
             name: "photos"
             widget: "list"
@@ -50,9 +63,14 @@ collections:
                 name: "category"
                 widget: "select"
                 options: ["Food", "Pets", "Real Estate", "Events", "Portraits"]
+              - label: "Photo Vertical Framing"
+                name: "imagePosition"
+                widget: "select"
+                options: ["Center", "Top", "Bottom"]
+                default: "Center"
               - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
               - { label: "Caption", name: "caption", widget: "string", required: false }
-              - { label: "Width Ratio Weight (1 to 12)", name: "w", widget: "number", default: 4, value_type: "int" }
+              - { label: "Width Weight (1 to 12)", name: "w", widget: "number", default: 4, value_type: "int" }
               - label: "Aspect Ratio"
                 name: "ratio"
                 widget: "select"
