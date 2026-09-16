@@ -7,7 +7,7 @@
       "category": "Food",
       "imagePosition": "Center",
       "caption": "Classy Indian Meal",
-      "ratio": "3/4",
+      "ratio": "4/5",
       "w": 5
     },
     {
@@ -95,6 +95,9 @@
   "bandAlt": "Studio shoot overview",
   "teamHeroIntro": "Four distinct visual sensibilities aligned under one collective principle: unfiltered truth in every frame.",
   "teamHeroImgPosition": "Center",
+  "band": {
+    "src": "/images/uploads/dsc05175.jpg"
+  },
   "bandImgPosition": "Center",
   "hero": [
     "A visual collective",
