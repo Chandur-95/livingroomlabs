@@ -1,82 +1,211 @@
-backend:
-  name: git-gateway
-  branch: main
+# ===================================================================
+# Living Room Labs - admin configuration
+#
+# Every field below writes into content.json, which the website reads.
+# Field names must match the site's code exactly, so rename labels
+# freely but leave the "name:" values alone.
+# ===================================================================
 
-media_folder: "assets/uploads"
-public_folder: "/assets/uploads"
+backend:
+  name: github
+  repo: Chandur-95/livingroomlabs
+  branch: main
+  # Login goes through Netlify's OAuth client by default, so no
+  # base_url line is needed while this site is hosted on Netlify.
+
+# Where uploaded photos are stored. MUST match the folder in your repo.
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+# Lets you jump to the live site from inside the editor.
+site_url: https://lrl4.netlify.app
+display_url: https://lrl4.netlify.app
 
 collections:
-  - name: "site_content"
-    label: "Website Content & Settings"
+  - name: "site"
+    label: "Website"
+    editor:
+      preview: false
     files:
-      - file: "content.json"
-        label: "General Settings, Fonts & The Collective"
-        name: "general"
+      - name: "content"
+        label: "Everything on the page"
+        file: "content.json"
+        description: "Photos first, then the wording, then your studio details. Changes go live about a minute after you save."
         fields:
-          - { label: "Site Name", name: "name", widget: "string" }
-          - { label: "Tagline", name: "tagline", widget: "string" }
-          - { label: "City", name: "city", widget: "string" }
-          - { label: "Email", name: "email", widget: "string" }
-          - label: "Typography Font"
-            name: "bodyFont"
-            widget: "select"
-            options: ["Inter", "Archivo", "Space Grotesk", "Playfair Display", "JetBrains Mono"]
-          - { label: "Hero Lines (one per line)", name: "hero", widget: "list" }
-          - { label: "Statement Headline", name: "statement", widget: "string" }
-          - { label: "Statement Attribution", name: "statementBy", widget: "string" }
-          - { label: "Contact Note", name: "contactNote", widget: "text" }
-          
-          # --- BAND BANNER CONTROLS ---
-          - label: "Full-Bleed Band Image"
-            name: "bandImg"
-            widget: "image"
-          - { label: "Band Vertical Position % (0=Top, 50=Center, 100=Bottom)", name: "bandPosY", widget: "number", default: 50, value_type: "int", min: 0, max: 100 }
-          - { label: "Band Zoom % (100 = Normal, 150 = Zoom In)", name: "bandZoom", widget: "number", default: 100, value_type: "int", min: 100, max: 250 }
-          - { label: "Band Image Description (Alt text)", name: "bandAlt", widget: "string", required: false }
 
-          # --- THE COLLECTIVE BANNER CONTROLS ---
-          - label: "The Collective Banner Image"
-            name: "teamHeroImg"
-            widget: "image"
-          - { label: "Collective Hero Vertical Position % (0=Top, 50=Center, 100=Bottom)", name: "teamHeroPosY", widget: "number", default: 50, value_type: "int", min: 0, max: 100 }
-          - { label: "Collective Hero Zoom % (100 = Normal, 150 = Zoom In)", name: "teamHeroZoom", widget: "number", default: 100, value_type: "int", min: 100, max: 250 }
-          - { label: "The Collective Intro Text", name: "teamHeroIntro", widget: "string" }
-          
-          # --- THE COLLECTIVE ROSTER ---
-          - label: "The Collective Members"
-            name: "team"
-            widget: "list"
+          # ---------- PHOTOS ----------
+          - label: "Photos"
+            name: photos
+            widget: list
+            label_singular: "Photo"
+            collapsed: true
+            minimize_collapsed: true
+            summary: "{{fields.title}} - {{fields.category}}"
             fields:
-              - { label: "Name", name: "name", widget: "string" }
-              - { label: "Role", name: "role", widget: "string" }
-              - { label: "Portrait Photo", name: "photo", widget: "image" }
-              - { label: "Vertical Position % (0=Top, 50=Center, 100=Bottom)", name: "posY", widget: "number", default: 50, value_type: "int", min: 0, max: 100 }
-              - { label: "Horizontal Position % (0=Left, 50=Center, 100=Right)", name: "posX", widget: "number", default: 50, value_type: "int", min: 0, max: 100 }
-              - { label: "Zoom % (100=Fit, 120=Slight Crop, 150=Close Crop)", name: "zoom", widget: "number", default: 100, value_type: "int", min: 100, max: 250 }
-              - { label: "Bio Summary", name: "bio", widget: "text" }
-              - { label: "Instagram Link (Optional)", name: "instagram", widget: "string", required: false }
-              - { label: "Portfolio / Work Link (Optional)", name: "portfolio", widget: "string", required: false }
-          
-          # --- WORK & GALLERY PHOTOS ---
-          - label: "Photos & Portfolio"
-            name: "photos"
-            widget: "list"
+              - label: "Photo"
+                name: src
+                widget: image
+                hint: "Resize to about 1600px on the long edge first. Straight-from-camera files are 5-8MB and will slow the site down badly."
+              - label: "Title"
+                name: title
+                widget: string
+              - label: "Client"
+                name: client
+                widget: string
+                hint: "Put 'Private' if it wasn't a commission."
+              - label: "Category"
+                name: category
+                widget: string
+                hint: "Typing a new category creates a new filter button automatically. Spelling must match the Categories list exactly - 'Real Estate', not 'real estate'."
+              - label: "Caption"
+                name: caption
+                widget: string
+                required: false
+                hint: "One line. Shows in the full-screen viewer."
+              - label: "Size on the page"
+                name: w
+                widget: select
+                default: 4
+                options:
+                  - label: "Small"
+                    value: 3
+                  - label: "Medium"
+                    value: 4
+                  - label: "Large"
+                    value: 6
+                  - label: "Extra large"
+                    value: 8
+              - label: "Shape of the photo"
+                name: ratio
+                widget: select
+                default: "4/5"
+                hint: "Must match the real shape of the image or it will be cropped."
+                options:
+                  - label: "Portrait (4:5)"
+                    value: "4/5"
+                  - label: "Tall portrait (3:4)"
+                    value: "3/4"
+                  - label: "Square (1:1)"
+                    value: "1/1"
+                  - label: "Landscape (3:2)"
+                    value: "3/2"
+                  - label: "Wide (16:9)"
+                    value: "16/9"
+
+          # ---------- CATEGORIES ----------
+          - label: "Categories (What we shoot)"
+            name: niches
+            widget: list
+            label_singular: "Category"
+            collapsed: true
+            summary: "{{fields.name}}"
+            hint: "A category with no photos yet shows as 'Available' rather than disappearing, so clients know you offer it."
             fields:
-              - { label: "Photo File", name: "src", widget: "image" }
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Client", name: "client", widget: "string" }
-              - label: "Category / Folder"
-                name: "category"
-                widget: "select"
-                options: ["Food", "Pets", "Real Estate", "Events", "Portraits"]
-              - { label: "Vertical Position % (0=Top, 50=Center, 100=Bottom)", name: "posY", widget: "number", default: 50, value_type: "int", min: 0, max: 100 }
-              - { label: "Horizontal Position % (0=Left, 50=Center, 100=Right)", name: "posX", widget: "number", default: 50, value_type: "int", min: 0, max: 100 }
-              - { label: "Zoom / Crop Scale % (100=Normal, 130=Tight Crop)", name: "zoom", widget: "number", default: 100, value_type: "int", min: 100, max: 250 }
-              - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
-              - { label: "Caption", name: "caption", widget: "string", required: false }
-              - { label: "Width Weight (1 to 12)", name: "w", widget: "number", default: 4, value_type: "int" }
-              - label: "Aspect Ratio"
-                name: "ratio"
-                widget: "select"
-                options: ["4/5", "1/1", "3/2", "3/4", "16/9"]
-                default: "3/4"
+              - label: "Category name"
+                name: name
+                widget: string
+                hint: "Must match the Category typed on your photos, exactly."
+              - label: "One-line description"
+                name: line
+                widget: string
+
+          # ---------- PAGE TEXT ----------
+          - label: "Headline"
+            name: hero
+            widget: list
+            label_singular: "Line"
+            hint: "One row per line, exactly as it should break on screen. Wrap a word in *asterisks* to make it italic."
+            field:
+              label: "Line"
+              name: line
+              widget: string
+
+          - label: "Wide photo under the headline"
+            name: band
+            widget: object
+            collapsed: true
+            fields:
+              - label: "Photo"
+                name: src
+                widget: image
+              - label: "Description for screen readers"
+                name: alt
+                widget: string
+                required: false
+                hint: "Describe what is in the photo. Leave blank if purely decorative."
+
+          - label: "Statement"
+            name: statement
+            widget: string
+            hint: "The large line in the middle of the page. *Asterisks* make a word italic."
+
+          - label: "Statement second line"
+            name: statementBy
+            widget: string
+
+          - label: "Contact note"
+            name: contactNote
+            widget: text
+            hint: "The small paragraph under your email address."
+
+          # ---------- STUDIO DETAILS ----------
+          - label: "Studio name"
+            name: name
+            widget: string
+
+          - label: "Tagline"
+            name: tagline
+            widget: string
+            hint: "Shows under the headline. This does NOT change the tagline inside the logo image."
+
+          - label: "City"
+            name: city
+            widget: string
+
+          - label: "Contact email"
+            name: email
+            widget: string
+            hint: "Used for the large email link and in the footer."
+
+          - label: "Crew"
+            name: team
+            widget: list
+            label_singular: "Person"
+            collapsed: true
+            summary: "{{fields.name}} - {{fields.role}}"
+            required: false
+            fields:
+              - label: "Name"
+                name: name
+                widget: string
+              - label: "Role"
+                name: role
+                widget: string
+
+          - label: "Social links"
+            name: socials
+            widget: list
+            label_singular: "Link"
+            collapsed: true
+            summary: "{{fields.name}}"
+            required: false
+            fields:
+              - label: "Name"
+                name: name
+                widget: string
+              - label: "Full web address"
+                name: url
+                widget: string
+                hint: "Include https:// at the start, for example https://instagram.com/livingroomlabs"
+
+          - label: "Website font"
+            name: bodyFont
+            widget: select
+            default: "Inter"
+            hint: "Changes the main typeface. The italic words in the headline use a separate serif and will not change."
+            options:
+              - "Inter"
+              - "Archivo"
+              - "Space Grotesk"
+              - "Playfair Display"
+              - "JetBrains Mono"
