@@ -23,7 +23,7 @@
   --nav-h:72px;
   --pad:clamp(16px, 4vw, 56px);
   --gap:clamp(10px, 1.2vw, 16px);
-  --sec:clamp(56px, 8vw, 130px);
+  --sec:clamp(48px, 6vw, 110px);
 
   --fs-label:.7rem;
   --tr-label:.24em;
@@ -236,7 +236,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .band:hover img{transform:scale(1.015)}
 
 .sec{padding-block:var(--sec)}
-#contact{padding-bottom:0}
+#contact{padding-top:var(--sec);padding-bottom:0}
 .sec-head{
   display:flex;align-items:baseline;gap:16px;
   border-bottom:1px solid var(--ink);
@@ -451,7 +451,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 
 .mail{
   display:inline-block;
-  font-size:clamp(1.4rem, 5.5vw, 4.4rem);
+  font-size:clamp(1.4rem, 5vw, 3.8rem);
   font-weight:600;letter-spacing:-.035em;line-height:1.05;
   word-break:break-word;
   padding-bottom:.06em;
@@ -499,6 +499,9 @@ html[data-theme="dark"] .lockup-wrap img{
 }
 .lockup-wrap button:hover img{transform:scale(1.04)}
 
+/* ============================================================
+   THE COLLECTIVE OVERLAY VIEW
+   ============================================================ */
 .collective-page{
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
@@ -512,7 +515,7 @@ html[data-theme="dark"] .lockup-wrap img{
   position:fixed;top:0;left:0;right:0;z-index:30;
   height:var(--nav-h);padding-inline:calc(var(--pad) + 12px);
   display:flex;align-items:center;justify-content:space-between;
-  background:linear-gradient(to bottom, rgba(0,0,0,0.7) 0%, transparent 100%);
+  background:linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, transparent 100%);
   border-bottom:none;
   color:#FFF;
 }
@@ -607,11 +610,16 @@ html[data-theme="dark"] .lockup-wrap img{
   display:flex;flex-direction:column;gap:14px;
 }
 .member-plate{
-  position:relative;width:100%;aspect-ratio:3/4;overflow:hidden;
+  position:relative;
+  width:100%;
+  aspect-ratio:3/4;
+  overflow:hidden;
   background:var(--rule-soft);
 }
 .member-plate img{
-  width:100%;height:100%;object-fit:cover;
+  width:100%;
+  height:100%;
+  object-fit:cover;
   transition:transform .5s var(--ease);
 }
 .member-card:hover .member-plate img{transform:scale(1.05)}
@@ -662,6 +670,9 @@ html[data-theme="dark"] .lockup-wrap img{
   background:var(--ink);color:var(--paper);border-color:var(--ink);
 }
 
+/* ============================================================
+   LIGHTBOX
+   ============================================================ */
 .lb{
   position:fixed;inset:0;z-index:120;
   background:rgba(6, 6, 6, .97);color:#FFF;
@@ -739,7 +750,6 @@ html[data-theme="dark"] .lockup-wrap img{
   :root{--nav-h:56px; --pad:12px}
   .nav{padding-inline:12px;gap:8px}
   
-  /* Top Logo on Mobile */
   .brand .mark{height:44px}
   .brand .mark img{height:44px}
   .brand .wordmark{display:none}
@@ -747,7 +757,7 @@ html[data-theme="dark"] .lockup-wrap img{
   .nav-right{gap:12px}
   .nav-links{
     display:flex;
-    gap:14px;
+    gap:12px;
     font-size:0.62rem;
     letter-spacing:0.12em;
     white-space:nowrap;
@@ -786,7 +796,6 @@ html[data-theme="dark"] .lockup-wrap img{
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
-  /* Uncropped Collective Hero on Mobile */
   .collective-hero{
     height: 72vh !important;
     min-height: 460px !important;
@@ -803,7 +812,6 @@ html[data-theme="dark"] .lockup-wrap img{
 
   .collective-grid{grid-template-columns:1fr}
   
-  /* Mobile Footer: Only Elsewhere and The Collective */
   .foot-col-studio,
   .foot-col-index {
     display: none !important;
@@ -813,7 +821,6 @@ html[data-theme="dark"] .lockup-wrap img{
     gap: 20px 16px !important;
   }
 
-  /* Bottom Lockup on Mobile */
   .lockup-wrap img{
     max-width:220px !important;
   }
@@ -840,6 +847,7 @@ html[data-theme="dark"] .lockup-wrap img{
       <a href="#work">Work</a>
       <a href="#niches-sec">What we shoot</a>
       <a href="#about">About</a>
+      <a href="#collective" id="nav-collective-link">The Collective</a>
       <a href="#contact">Contact</a>
     </div>
     <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
@@ -950,7 +958,7 @@ html[data-theme="dark"] .lockup-wrap img{
     <div class="sec-head" style="margin-bottom: clamp(28px, 4vw, 48px);">
       <span class="label">Principals & Visual Creators</span>
       <span class="fill"></span>
-      <span class="count mono">4 FRAMES</span>
+      <span class="count mono" id="collective-frame-count"></span>
     </div>
     <div class="collective-grid" id="collective-grid"></div>
   </section>
@@ -1168,7 +1176,6 @@ function renderGrid(){
     return state.filter === "All" || p.category === state.filter;
   });
 
-  // Work section shows max 10 photos so it never becomes cluttered
   var WORK_LIMIT = 10;
   var list = fullCategoryList.slice(0, WORK_LIMIT);
   state.visible = list;
@@ -1259,7 +1266,6 @@ function renderNichesList(){
   });
 }
 
-// "What we shoot" shows ALL images belonging to that niche without limit
 function openNicheView(nicheName){
   var nicheData = (SITE.niches || []).filter(function(x){ return x.name.toLowerCase() === nicheName.toLowerCase(); })[0];
   if(!nicheData) nicheData = { name: nicheName, line: "" };
@@ -1356,7 +1362,6 @@ function closeNicheView(){
   }
 }
 
-// Work section explore button listener
 $("#work-explore-all-btn").addEventListener("click", function(){
   if(state.filter !== "All"){
     window.location.hash = "niche-" + encodeURIComponent(state.filter);
@@ -1367,13 +1372,11 @@ $("#work-explore-all-btn").addEventListener("click", function(){
   }
 });
 
-// Top Logo: Reloads the page
 $("#top-brand-btn").addEventListener("click", function(e){
   e.preventDefault();
   window.location.reload();
 });
 
-// Bottom Logo: Scrolls smoothly back to the top
 $("#bottom-lockup-btn").addEventListener("click", function(e){
   e.preventDefault();
   window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -1406,6 +1409,10 @@ function closeCollective(){
   }
 }
 $("#open-collective-btn").addEventListener("click", openCollective);
+$("#nav-collective-link").addEventListener("click", function(e){
+  e.preventDefault();
+  openCollective();
+});
 $("#close-collective-btn").addEventListener("click", closeCollective);
 $("#scroll-to-members").addEventListener("click", function(){
   $("#collective-members-sec").scrollIntoView({ behavior: 'smooth' });
@@ -1576,7 +1583,14 @@ function renderContent(){
   var teamList = $("[data-foot-team]");
   if(teamList && SITE.team){
     teamList.innerHTML = SITE.team.map(function(m){
-      return '<li>' + esc(m.name) + ' <span class="mono" style="opacity:.45;font-size:.7rem;margin-left:4px;">' + esc(m.role) + '</span></li>';
+      var link = m.instagram || m.portfolio || "#";
+      var isExt = link.startsWith("http");
+      return '<li>' +
+               '<a href="' + esc(link) + '" ' + (isExt ? 'target="_blank" rel="noopener"' : '') + '>' +
+                 esc(m.name) +
+               '</a> ' +
+               '<span class="mono" style="opacity:.45;font-size:.7rem;margin-left:4px;">' + esc(m.role) + '</span>' +
+             '</li>';
     }).join("");
   }
 
@@ -1589,6 +1603,11 @@ function renderContent(){
   var teamIntro = $("#team-hero-intro");
   if(teamIntro && SITE.teamHeroIntro) teamIntro.textContent = SITE.teamHeroIntro;
 
+  var frameCount = $("#collective-frame-count");
+  if(frameCount && SITE.team) {
+    frameCount.textContent = SITE.team.length + " FRAMES";
+  }
+
   var collectiveGrid = $("#collective-grid");
   if(collectiveGrid && SITE.team){
     collectiveGrid.innerHTML = SITE.team.map(function(m){
@@ -1596,10 +1615,11 @@ function renderContent(){
       if(m.instagram) links += '<a href="'+esc(m.instagram)+'" target="_blank" rel="noopener" class="member-chip">Instagram ↗</a>';
       if(m.portfolio) links += '<a href="'+esc(m.portfolio)+'" target="_blank" rel="noopener" class="member-chip">Work ↗</a>';
       var mPos = (m.imagePosition || "Center").toLowerCase();
+      var photoSrc = m.photo ? m.photo : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
 
       return '<div class="member-card">' +
                '<div class="member-plate">' +
-                 '<img loading="lazy" src="'+esc(m.photo || 'https://picsum.photos/600/800')+'" alt="'+esc(m.name)+'" style="object-position: center '+mPos+';">' +
+                 '<img loading="lazy" src="'+esc(photoSrc)+'" alt="'+esc(m.name)+'" style="object-position: center '+mPos+';">' +
                  '<span class="scanner"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
                '</div>' +
