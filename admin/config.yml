@@ -55,7 +55,7 @@ collections:
                 widget: "select"
                 options: ["Food", "Pets", "Architecture", "Products", "Events", "Portraits"]
               - { label: "Image", name: "src", widget: "image" }
-              - { label: "Feature on Homepage ('All' view limit of 10)", name: "featured", widget: "boolean", default: true }
+              - { label: "Show in 'All' (Toggle on/off as you wish)", name: "featured", widget: "boolean", default: true }
               - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
               - { label: "Caption", name: "caption", widget: "string", required: false }
               - label: "Aspect Ratio"
