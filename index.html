@@ -228,7 +228,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 /* ============================================================
-   FULL-BLEED BAND (Fully Responsive with Position + Zoom)
+   FULL-BLEED BAND (Editable via CMS)
    ============================================================ */
 .band{
   position:relative;
@@ -247,8 +247,9 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   height:100%;
   max-height:85vh;
   object-fit:cover;
-  transition:transform 0.4s var(--ease);
+  transition:transform 1s var(--ease);
 }
+.band:hover img{transform:scale(1.015)}
 
 .sec{padding-block:var(--sec)}
 #contact{padding-bottom:0}
@@ -294,11 +295,11 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .plate img{
   width:100%;height:100%;object-fit:cover;
-  transition:transform .5s var(--ease), opacity .4s ease;
+  transition:transform .65s var(--ease), opacity .4s ease;
   opacity:0;
-  transform-origin:center center;
 }
 .plate img.ready{opacity:1}
+.shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.04)}
 
 .plate .scanner{
   position:absolute;left:0;right:0;height:2.5px;top:0;
@@ -497,7 +498,7 @@ html[data-theme="dark"] .lockup-wrap img{
 .lockup-wrap:hover img{transform:scale(1.02)}
 
 /* ============================================================
-   THE COLLECTIVE FULL-PAGE VIEW (True 100vh Full Screen)
+   THE COLLECTIVE FULL-PAGE VIEW
    ============================================================ */
 .collective-page{
   position:fixed;inset:0;z-index:150;
@@ -547,7 +548,7 @@ html[data-theme="dark"] .lockup-wrap img{
   width:100%;height:100%;
   object-fit:cover;
   filter:brightness(0.85);
-  transition:transform 0.4s var(--ease);
+  transition:transform 1.2s var(--ease);
 }
 
 .collective-hero-overlay{
@@ -612,9 +613,9 @@ html[data-theme="dark"] .lockup-wrap img{
 }
 .member-plate img{
   width:100%;height:100%;object-fit:cover;
-  transform-origin:center center;
-  transition:transform .4s var(--ease);
+  transition:transform .5s var(--ease);
 }
+.member-card:hover .member-plate img{transform:scale(1.05)}
 .member-card .scanner{
   position:absolute;left:0;right:0;height:2.5px;top:0;
   background:rgba(var(--laser-red), 0.95);
@@ -837,6 +838,7 @@ html[data-theme="dark"] .lockup-wrap img{
     </div>
   </header>
 
+  <!-- Full Bleed Band Section -->
   <div class="band"><img data-band alt=""></div>
 
   <section class="sec wrap" id="work">
@@ -978,8 +980,7 @@ var SITE = {
     "*uncompromisingly real*."
   ],
   bandImg: "https://picsum.photos/seed/lrl-band/2400/1100",
-  bandPosY: 50,
-  bandZoom: 100,
+  bandImgPosition: "Center",
   bandAlt: "Studio shoot overview",
   statement: "A portfolio is not a *promise*. It is a receipt.",
   statementBy: "Everything on this page was shot by us, for someone who needed it.",
@@ -992,17 +993,14 @@ var SITE = {
   ],
   contactNote: "Tell us what you are shooting, roughly when, and where. We reply within a day.",
   teamHeroImg: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=2200&q=80",
-  teamHeroPosY: 50,
-  teamHeroZoom: 100,
+  teamHeroImgPosition: "Center",
   teamHeroIntro: "Four distinct visual sensibilities aligned under one collective principle: unfiltered truth in every frame.",
   team: [
     {
       name: "Pooja",
       role: "Lead / Photographer",
       photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=80",
-      posY: 35,
-      posX: 50,
-      zoom: 100,
+      imagePosition: "Center",
       bio: "Directing creative narratives and client commissions with a precision-led eye for natural compositions and timing.",
       instagram: "https://instagram.com/",
       portfolio: "https://behance.net/"
@@ -1011,9 +1009,7 @@ var SITE = {
       name: "Chikitha",
       role: "Photographer / Creative Head",
       photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80",
-      posY: 40,
-      posX: 50,
-      zoom: 105,
+      imagePosition: "Center",
       bio: "Curating high-concept aesthetics across culinary styling, editorial sets, and character-driven visual storytelling.",
       instagram: "https://instagram.com/",
       portfolio: "https://behance.net/"
@@ -1022,9 +1018,7 @@ var SITE = {
       name: "Cherry",
       role: "DOP / Filmmaker",
       photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=900&q=80",
-      posY: 30,
-      posX: 50,
-      zoom: 100,
+      imagePosition: "Center",
       bio: "Specializing in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
       instagram: "https://instagram.com/",
       portfolio: "https://behance.net/"
@@ -1033,20 +1027,18 @@ var SITE = {
       name: "Chandu",
       role: "Photographer / Drone Pilot",
       photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
-      posY: 35,
-      posX: 50,
-      zoom: 100,
+      imagePosition: "Center",
       bio: "High-shutter capture specialist for candid movements, fast ambient shifts, and raw character portraits.",
       instagram: "https://instagram.com/",
       portfolio: "https://behance.net/"
     }
   ],
   photos: [
-    { src: "https://picsum.photos/seed/lrl-food-1/1200/1500", title: "Sunday Roast", client: "Olive & Oak", category: "Food", posY: 50, posX: 50, zoom: 100, caption: "Shot at five, so the steam still reads.", w: 5, ratio: "4/5" },
-    { src: "https://picsum.photos/seed/lrl-food-2/1200/1200", title: "Cold Brew, Hot Day", client: "Kettle Room", category: "Food", posY: 50, posX: 50, zoom: 100, caption: "The condensation is the entire photograph.", w: 4, ratio: "1/1" },
-    { src: "https://picsum.photos/seed/lrl-food-3/1100/1460", title: "Thali, Overhead", client: "Banjara House", category: "Food", posY: 50, posX: 50, zoom: 100, caption: "Twelve bowls, one frame, nothing cropped out.", w: 3, ratio: "3/4" },
-    { src: "https://picsum.photos/seed/lrl-pets-1/1600/1070", title: "Mango Refuses to Sit", client: "Private", category: "Pets", posY: 40, posX: 50, zoom: 100, caption: "1/2000s and still a blur of tail.", w: 6, ratio: "3/2" },
-    { src: "https://picsum.photos/seed/lrl-re-1/1800/1010", title: "Two-Bed, North Light", client: "Casa Listings", category: "Real Estate", posY: 50, posX: 50, zoom: 100, caption: "Shot at nine, for the light a buyer will get.", w: 6, ratio: "16/9" }
+    { src: "https://picsum.photos/seed/lrl-food-1/1200/1500", title: "Sunday Roast", client: "Olive & Oak", category: "Food", imagePosition: "Center", caption: "Shot at five, so the steam still reads.", w: 5, ratio: "4/5" },
+    { src: "https://picsum.photos/seed/lrl-food-2/1200/1200", title: "Cold Brew, Hot Day", client: "Kettle Room", category: "Food", imagePosition: "Center", caption: "The condensation is the entire photograph.", w: 4, ratio: "1/1" },
+    { src: "https://picsum.photos/seed/lrl-food-3/1100/1460", title: "Thali, Overhead", client: "Banjara House", category: "Food", imagePosition: "Center", caption: "Twelve bowls, one frame, nothing cropped out.", w: 3, ratio: "3/4" },
+    { src: "https://picsum.photos/seed/lrl-pets-1/1600/1070", title: "Mango Refuses to Sit", client: "Private", category: "Pets", imagePosition: "Center", caption: "1/2000s and still a blur of tail.", w: 6, ratio: "3/2" },
+    { src: "https://picsum.photos/seed/lrl-re-1/1800/1010", title: "Two-Bed, North Light", client: "Casa Listings", category: "Real Estate", imagePosition: "Center", caption: "Shot at nine, for the light a buyer will get.", w: 6, ratio: "16/9" }
   ]
 };
 
@@ -1167,13 +1159,10 @@ function renderGrid(){
     return '<div class="row">' + row.items.map(function(slot){
       var p = slot.ref, i = n++;
       var paddedNum = String(i+1).padStart(2, "0");
-      var px = p.posX != null ? p.posX : 50;
-      var py = p.posY != null ? p.posY : 50;
-      var pz = (p.zoom != null ? p.zoom : 100) / 100;
-
+      var pos = (p.imagePosition || "Center").toLowerCase();
       return '<button class="shot" style="--sw:'+slot.w+'px" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                '<span class="plate" style="--sh:'+row.h+'px">'+
-                 '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+px+'% '+py+'%; transform: scale('+pz+');">'+
+                 '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
                  '<span class="scanner"></span>'+
                  '<span class="guard"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
@@ -1249,13 +1238,10 @@ function openNicheView(nicheName){
       return '<div class="row">' + row.items.map(function(slot){
         var p = slot.ref, i = n++;
         var paddedNum = String(i+1).padStart(2, "0");
-        var px = p.posX != null ? p.posX : 50;
-        var py = p.posY != null ? p.posY : 50;
-        var pz = (p.zoom != null ? p.zoom : 100) / 100;
-
+        var pos = (p.imagePosition || "Center").toLowerCase();
         return '<button class="shot" style="--sw:'+slot.w+'px" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                  '<span class="plate" style="--sh:'+row.h+'px">'+
-                   '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+px+'% '+py+'%; transform: scale('+pz+');">'+
+                   '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
                    '<span class="scanner"></span>'+
                    '<span class="guard"></span>'+
                    '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
@@ -1472,18 +1458,16 @@ function renderContent(){
     }).join("");
   }
 
-  // Band Image Rendering with Position + Zoom Scaling
+  // Band Image Rendering with Position/Framing control
   var bandImg = $("[data-band]");
   if(bandImg){
     var src = SITE.bandImg || (SITE.band && SITE.band.src) || "https://picsum.photos/seed/lrl-band/2400/1100";
     var alt = SITE.bandAlt || (SITE.band && SITE.band.alt) || "";
-    var bY = SITE.bandPosY != null ? SITE.bandPosY : 50;
-    var bZ = (SITE.bandZoom != null ? SITE.bandZoom : 100) / 100;
+    var bPos = (SITE.bandImgPosition || "Center").toLowerCase();
     
     bandImg.src = src;
     bandImg.alt = alt;
-    bandImg.style.objectPosition = "center " + bY + "%";
-    bandImg.style.transform = "scale(" + bZ + ")";
+    bandImg.style.objectPosition = "center " + bPos;
   }
 
   var stmt = $("[data-statement]"); if(stmt) stmt.innerHTML = italics(SITE.statement || "");
@@ -1523,33 +1507,26 @@ function renderContent(){
     }).join("");
   }
 
-  // The Collective Hero Positioning + Zoom
   var teamHero = $("#team-hero-img");
   if(teamHero && SITE.teamHeroImg) {
     teamHero.src = SITE.teamHeroImg;
-    var heroY = SITE.teamHeroPosY != null ? SITE.teamHeroPosY : 50;
-    var heroZ = (SITE.teamHeroZoom != null ? SITE.teamHeroZoom : 100) / 100;
-    teamHero.style.objectPosition = "center " + heroY + "%";
-    teamHero.style.transform = "scale(" + heroZ + ")";
+    var heroPos = (SITE.teamHeroImgPosition || "Center").toLowerCase();
+    teamHero.style.objectPosition = "center " + heroPos;
   }
   var teamIntro = $("#team-hero-intro");
   if(teamIntro && SITE.teamHeroIntro) teamIntro.textContent = SITE.teamHeroIntro;
 
-  // The Collective Members Rendering
   var collectiveGrid = $("#collective-grid");
   if(collectiveGrid && SITE.team){
     collectiveGrid.innerHTML = SITE.team.map(function(m){
       var links = "";
       if(m.instagram) links += '<a href="'+esc(m.instagram)+'" target="_blank" rel="noopener" class="member-chip">Instagram ↗</a>';
       if(m.portfolio) links += '<a href="'+esc(m.portfolio)+'" target="_blank" rel="noopener" class="member-chip">Work ↗</a>';
-      
-      var mX = m.posX != null ? m.posX : 50;
-      var mY = m.posY != null ? m.posY : 50;
-      var mZ = (m.zoom != null ? m.zoom : 100) / 100;
+      var mPos = (m.imagePosition || "Center").toLowerCase();
 
       return '<div class="member-card">' +
                '<div class="member-plate">' +
-                 '<img loading="lazy" src="'+esc(m.photo || 'https://picsum.photos/600/800')+'" alt="'+esc(m.name)+'" style="object-position: '+mX+'% '+mY+'%; transform: scale('+mZ+');">' +
+                 '<img loading="lazy" src="'+esc(m.photo || 'https://picsum.photos/600/800')+'" alt="'+esc(m.name)+'" style="object-position: center '+mPos+';">' +
                  '<span class="scanner"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
                '</div>' +
