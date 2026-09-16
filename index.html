@@ -4,11 +4,10 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Living Room Labs — Photography</title>
-<meta name="description" content="Living Room Labs is a photography team in Hyderabad. Food, pets, real estate, events and portraits.">
+<meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, events and portraits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Playfair+Display:ital,wght@1,500;1,600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-<script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
 <style>
 /* ============================================================
@@ -117,7 +116,15 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   letter-spacing:.08em;
 }
 
-/* Reticle Viewport Brackets */
+/* Hide Netlify Drawer / Feedback badge injection */
+iframe#netlify-drawer,
+div[data-netlify-drawer],
+.netlify-badge {
+  display: none !important;
+  visibility: hidden !important;
+}
+
+/* Viewport Brackets */
 .frame{position:fixed;inset:0;z-index:60;pointer-events:none}
 .frame svg{position:absolute;width:28px;height:28px;overflow:visible}
 .frame svg path{
@@ -132,7 +139,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
 @keyframes drawBracket{to{stroke-dashoffset:0}}
 
 /* ============================================================
-   NAVBAR (EXACT IMAGE LOGO)
+   NAVBAR
    ============================================================ */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
@@ -171,7 +178,7 @@ html[data-theme="dark"] .brand .mark img{
 }
 .nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
 
-/* Spring-Loaded Pull Cord */
+/* Pull Cord */
 .pull{
   --len:28px;
   position:relative;flex:none;
@@ -198,7 +205,7 @@ html[data-theme="dark"] .pull .bead{background:transparent;box-shadow:none}
 .pull.tug .bead{top:52px;transition:top .08s ease-out}
 
 /* ============================================================
-   HERO & UNCROPPED EDITORIAL BANNER
+   HERO & BANNER
    ============================================================ */
 main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .wrap{padding-inline:calc(var(--pad) + 12px)}
@@ -231,7 +238,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-top:14px;
 }
 
-/* Banner Height Ceiling Fix */
 .band{
   position:relative;
   width:100%;
@@ -284,7 +290,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
 /* ============================================================
-   WORK GRID (STRICT PAINT CONTAINMENT - RED LASER)
+   WORK GRID (LASER SCANLINES PRESERVED)
    ============================================================ */
 .grid{display:flex;flex-direction:column;gap:var(--gap)}
 .row{display:flex;gap:var(--gap);align-items:flex-start}
@@ -330,7 +336,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 
 .guard{position:absolute;inset:0;z-index:3;background:transparent}
 
-/* Reticles */
 .corners{position:absolute;inset:8px;pointer-events:none;z-index:4}
 .corners i{
   position:absolute;width:14px;height:14px;
@@ -369,7 +374,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .cap .c{opacity:.55;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
 /* ============================================================
-   CLICKABLE NICHES (INTERACTIVE DIRECTORY)
+   CLICKABLE NICHES
    ============================================================ */
 .statement{
   border-top:1px solid var(--ink);
@@ -427,7 +432,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .niche .state.open{display:inline-flex;align-items:center;gap:6px}
 .niche .state.open::before{content:"";width:5px;height:5px;background:var(--glow);box-shadow:0 0 5px var(--glow)}
 
-/* Dedicated Niche Showcase View */
 .niche-view{
   margin-top:clamp(20px, 3.5vw, 40px);
   padding-top:clamp(24px, 4vw, 48px);
@@ -466,7 +470,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
 /* ============================================================
-   CONTACT & FOOTER (EXACT IMAGE LOCKUP)
+   CONTACT & FOOTER
    ============================================================ */
 .mail{
   display:inline-block;
@@ -587,42 +591,71 @@ html[data-theme="dark"] .lockup-wrap img{
 .lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
 
 /* ============================================================
-   RESPONSIVE
+   RESPONSIVE MOBILE SPECIFICS
    ============================================================ */
 @media (max-width:920px){
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
   .foot{grid-template-columns:1fr 1fr}
 }
-@media (max-width:840px) and (orientation:landscape){
-  :root{--nav-h:54px}
-  .hero{padding-block:20px 18px}
-  .band{min-height:220px}
-  .lb-frame img{max-height:calc(100vh - 110px);max-width:calc(100vw - 80px)}
-  .lb-stage{padding-block:4px}
-}
 @media (max-width:640px){
-  :root{--nav-h:60px}
-  .frame svg{width:22px;height:22px}
-  .nav{padding-inline:calc(var(--pad) + 6px)}
-  .wrap{padding-inline:calc(var(--pad) + 6px)}
-  .brand .mark{height:36px}
-  .brand .mark img{height:36px}
+  :root{--nav-h:56px; --pad:12px}
+  .frame svg{width:18px;height:18px}
+  .nav{padding-inline:12px;gap:8px}
+  .brand .mark{height:34px}
+  .brand .mark img{height:34px}
   .brand .wordmark{display:none}
-  .nav-links{gap:12px}
-  .foot{grid-template-columns:1fr;gap:24px}
-  .lb-frame img{max-width:calc(100vw - 28px);max-height:calc(100vh - 160px)}
+  
+  /* Show only 'What we shoot' & 'About' on mobile */
+  .nav-right{gap:12px}
+  .nav-links{
+    display:flex;
+    gap:14px;
+    font-size:0.62rem;
+    letter-spacing:0.12em;
+    white-space:nowrap;
+  }
+  .nav-links a:nth-child(1),
+  .nav-links a:nth-child(4) {
+    display: none;
+  }
+
+  .pull{--len:20px;width:20px}
+  .hero{padding-block:20px 16px}
+  
+  /* Compact font size for hero lines on mobile */
+  .hero h1{
+    font-size: clamp(1.35rem, 5.8vw, 1.75rem);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+  
+  .hero-foot{
+    margin-top:12px;
+    padding-top:8px;
+    justify-content: flex-start;
+  }
+  /* Remove location string on mobile only */
+  .hero-foot [data-place] {
+    display: none;
+  }
+
+  /* Swipeable filter bar */
+  .filters{
+    flex-wrap:nowrap;
+    overflow-x:auto;
+    -webkit-overflow-scrolling:touch;
+    padding-bottom:6px;
+    margin-bottom:18px;
+    scrollbar-width:none;
+  }
+  .filters::-webkit-scrollbar{display:none}
+  .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
+
+  .foot{grid-template-columns:1fr;gap:20px}
+  .lb-frame img{max-width:calc(100vw - 24px);max-height:calc(100vh - 140px)}
   .lb-cap{grid-template-columns:1fr}
   .lb-cap .m{text-align:left}
-}
-
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-  *,*::before,*::after{animation-duration:.001ms !important;transition-duration:.001ms !important}
-  .line-inner{transform:none;opacity:1}
-  .frame svg path{stroke-dashoffset:0}
-  .plate img{opacity:1}
-  .plate .scanner{display:none}
 }
 </style>
 </head>
@@ -1265,16 +1298,6 @@ window.addEventListener("resize", function(){
     if(state.activeNiche) openNicheView(state.activeNiche);
   }, 120);
 });
-
-if (window.netlifyIdentity) {
-  window.netlifyIdentity.on("init", function(user){
-    if (!user) {
-      window.netlifyIdentity.on("login", function(){
-        document.location.href = "/admin/";
-      });
-    }
-  });
-}
 </script>
 </body>
 </html>
