@@ -233,14 +233,15 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 /* ============================================================
-   HERO BANNER SLIDESHOW (UNCROPPED RESPONSIVE FIT)
+   HERO BANNER SLIDESHOW (UNCROPPED FIXED CONTAINER)
    ============================================================ */
 .band{
   position:relative;
   width:100%;
-  height:76vh;
-  min-height:480px;
-  max-height:860px;
+  height:auto;
+  aspect-ratio: 16 / 9;
+  max-height: 85vh;
+  min-height: 380px;
   overflow:hidden;
   background:#050505;
   display:block;
@@ -271,7 +272,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   z-index:2;
 }
 
-/* Camera Aperture / Iris Snap Wipe */
+/* Camera Aperture Snap Wipe */
 .band-img.shutter-enter{
   z-index:3;
   opacity:1;
@@ -281,7 +282,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   0%{
     clip-path:circle(0% at 50% 50%);
     filter:brightness(1.5) contrast(1.2);
-    transform:scale(1.06);
+    transform:scale(1.05);
   }
   60%{
     filter:brightness(1.1) contrast(1.05);
@@ -293,7 +294,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   }
 }
 
-/* Flash bloom line on transition */
 .band-flash{
   position:absolute;
   inset:0;
@@ -956,9 +956,9 @@ html[data-theme="dark"] .collective-about-logo img{
   }
 
   .band{
-    height:55vh;
-    min-height:340px;
-    max-height:500px;
+    aspect-ratio: 16 / 10;
+    min-height: 240px;
+    max-height: 420px;
   }
 
   .filters{
@@ -1250,9 +1250,7 @@ var SITE = {
   email: "livingroomlabs@outlook.com",
   bodyFont: "Inter",
   socials: [
-    { name: "Instagram", url: "https://instagram.com/livingroomlabs" },
-    { name: "Behance", url: "https://behance.net/livingroomlabs" },
-    { name: "WhatsApp", url: "https://wa.me/910000000000" }
+    { name: "Instagram", url: "https://www.instagram.com/fromlivingroomlabs/" }
   ],
   hero: [
     "A visual collective",
@@ -1260,75 +1258,15 @@ var SITE = {
     "Every niche, every frame,",
     "*uncompromisingly real*."
   ],
-  bandSlides: [
-    {
-      src: "https://picsum.photos/seed/lrl-band-1/2400/1100",
-      imagePosition: "Center",
-      alt: "Lighthouse on coastal rocks"
-    },
-    {
-      src: "https://picsum.photos/seed/lrl-band-2/2400/1100",
-      imagePosition: "Center",
-      alt: "Studio shoot overview"
-    },
-    {
-      src: "https://picsum.photos/seed/lrl-band-3/2400/1100",
-      imagePosition: "Center",
-      alt: "Architectural night frame"
-    }
-  ],
+  bandSlides: [],
   statement: "A portfolio is not a *promise*. It is a receipt.",
   statementBy: "Everything on this page was shot by us, for someone who needed it.",
-  niches: [
-    { name: "Food", line: "Menus, delivery listings, and the plate as it actually arrives." },
-    { name: "Pets", line: "Fast shutter, floor-level angles, treats on hand." },
-    { name: "Architecture", line: "Rooms shot wide and straight, in the light they actually get." },
-    { name: "Products", line: "Studio lighting and crisp textures for brand campaigns." },
-    { name: "Events", line: "Setup to last song, edited and delivered within the week." },
-    { name: "Portraits", line: "Headshots and personal work, in studio or wherever you already are." }
-  ],
+  niches: [],
   contactNote: "Tell us what you are shooting, roughly when, and where. We reply within a day.",
-  teamHeroImg: "https://images.unsplash.com/photo-1522071820081-009f0129c71c?auto=format&fit=crop&w=2200&q=80",
+  teamHeroImg: "/assets/uploads/whatsapp-image-2026-09-16-at-11.33.04-am.jpeg",
   teamHeroImgPosition: "Center",
   teamHeroIntro: "Four distinct visual sensibilities aligned under one collective principle: unfiltered truth in every frame.",
-  team: [
-    {
-      name: "Pooja",
-      role: "Lead / Photographer",
-      photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=80",
-      imagePosition: "Center",
-      bio: "Hello folks! I am a photographer who finds little stories in everyday moments. Always curious of exploring new ideas to capture images that feel alive.",
-      instagram: "https://instagram.com/",
-      portfolio: "https://behance.net/"
-    },
-    {
-      name: "Chikita",
-      role: "Photographer / Creative Head",
-      photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80",
-      imagePosition: "Center",
-      bio: "I am a photographer and creative collaborator who brings fresh ideas to every shoot. I don't just capture moments—I help shape the vision behind them to bring your stories to life.",
-      instagram: "https://instagram.com/",
-      portfolio: "https://behance.net/"
-    },
-    {
-      name: "Cherry",
-      role: "DOP / Filmmaker",
-      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=900&q=80",
-      imagePosition: "Center",
-      bio: "Specializing in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
-      instagram: "https://instagram.com/",
-      portfolio: "https://behance.net/"
-    },
-    {
-      name: "Chandu",
-      role: "Photographer / Drone Pilot",
-      photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
-      imagePosition: "Center",
-      bio: "Software engineer by day, Photographer by night. I like to turn fleeting moments into timeless stories.",
-      instagram: "https://instagram.com/",
-      portfolio: "https://behance.net/"
-    }
-  ],
+  team: [],
   photos: []
 };
 
@@ -1629,7 +1567,7 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-/* SLIDESHOW ENGINE */
+/* SLIDESHOW ENGINE WITH AUTO-ADAPTING RATIO & OBJECT-POSITION FIX */
 function initSlideshow(){
   var slides = [];
   if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
@@ -1640,7 +1578,7 @@ function initSlideshow(){
     var singleAlt = SITE.bandAlt || (SITE.band && SITE.band.alt) || "";
     slides = [{ src: single, imagePosition: singlePos, alt: singleAlt }];
   } else {
-    slides = [{ src: "https://picsum.photos/seed/lrl-band/2400/1100", imagePosition: "Center", alt: "Studio shoot" }];
+    slides = [{ src: "/images/uploads/dsc05175.jpg", imagePosition: "Center", alt: "Studio shoot" }];
   }
 
   state.slides = slides;
