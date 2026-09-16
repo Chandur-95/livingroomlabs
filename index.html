@@ -20,10 +20,10 @@
   --glow-rgb:255, 194, 75;
   --laser-red: 255, 36, 0;
 
-  --nav-h:72px;
+  --nav-h:80px;
   --pad:clamp(16px, 4vw, 56px);
   --gap:clamp(10px, 1.2vw, 16px);
-  --sec:clamp(48px, 6vw, 110px);
+  --sec:clamp(44px, 5.5vw, 96px);
 
   --fs-label:.7rem;
   --tr-label:.24em;
@@ -125,16 +125,16 @@ div[data-netlify-drawer],
   position:fixed;top:0;left:0;right:0;z-index:70;
   height:calc(var(--nav-h) + var(--safe-top));
   display:flex;align-items:center;justify-content:space-between;
-  gap:12px;
+  gap:16px;
   padding:var(--safe-top) calc(var(--pad) + 12px + var(--safe-right)) 0 calc(var(--pad) + 12px + var(--safe-left));
   background:var(--paper);
   border-bottom:1px solid var(--rule);
   transition:background .35s ease, border-color .35s ease;
 }
 .brand{display:flex;align-items:center;gap:14px;height:100%;cursor:pointer}
-.brand .mark{display:flex;align-items:center;height:62px}
+.brand .mark{display:flex;align-items:center;height:74px}
 .brand .mark img{
-  height:62px;width:auto;object-fit:contain;
+  height:74px;width:auto;object-fit:contain;
   mix-blend-mode:multiply;
   transition:transform .3s var(--ease);
 }
@@ -142,21 +142,26 @@ html[data-theme="dark"] .brand .mark img{
   filter:invert(1) brightness(1.05);
   mix-blend-mode:screen;
 }
-.brand:hover .mark img{transform:scale(1.04)}
+.brand:hover .mark img{transform:scale(1.03)}
 
 .brand .wordmark{
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
   text-transform:uppercase;font-weight:600;white-space:nowrap;
 }
-.nav-right{display:flex;align-items:center;gap:clamp(14px, 2.5vw, 30px)}
-.nav-links{display:flex;gap:clamp(14px, 2.5vw, 30px)}
-.nav-links a{position:relative;padding:4px 0}
-.nav-links a::after{
+.nav-right{display:flex;align-items:center;gap:clamp(16px, 2.5vw, 32px)}
+.nav-links{display:flex;gap:clamp(16px, 2.5vw, 32px)}
+.nav-links a, .nav-links button{
+  position:relative;padding:4px 0;
+  font-size:var(--fs-label);letter-spacing:var(--tr-label);
+  text-transform:uppercase;font-weight:600;
+}
+.nav-links a::after, .nav-links button::after{
   content:"";position:absolute;left:0;right:0;bottom:0;height:1px;
   background:var(--ink);transform:scaleX(0);transform-origin:left;
   transition:transform .3s var(--ease);
 }
-.nav-links a:hover::after,.nav-links a:focus-visible::after{transform:scaleX(1)}
+.nav-links a:hover::after,.nav-links a:focus-visible::after,
+.nav-links button:hover::after,.nav-links button:focus-visible::after{transform:scaleX(1)}
 
 .pull{
   --len:28px;
@@ -186,7 +191,7 @@ html[data-theme="dark"] .pull .bead{background:transparent;box-shadow:none}
 main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .wrap{padding-inline:calc(var(--pad) + 12px)}
 
-.hero{padding-block:clamp(44px, 8vw, 110px) clamp(30px, 5vw, 64px)}
+.hero{padding-block:clamp(44px, 8vw, 105px) clamp(28px, 4vw, 56px)}
 .hero h1{
   margin:0;
   font-family:"Space Grotesk", sans-serif;
@@ -207,7 +212,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 @keyframes curtainRise{to{transform:translateY(0);opacity:1}}
 
 .hero-foot{
-  margin-top:clamp(24px, 3.5vw, 48px);
+  margin-top:clamp(24px, 3.5vw, 44px);
   display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;
   justify-content:space-between;
   border-top:1px solid var(--rule);
@@ -236,7 +241,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .band:hover img{transform:scale(1.015)}
 
 .sec{padding-block:var(--sec)}
-#contact{padding-top:var(--sec);padding-bottom:0}
 .sec-head{
   display:flex;align-items:baseline;gap:16px;
   border-bottom:1px solid var(--ink);
@@ -341,35 +345,21 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .cap .t{font-weight:500}
 .cap .c{opacity:.55;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-.work-more-box{
-  margin-top:28px;
-  padding-top:16px;
-  border-top:1px solid var(--rule);
-  display:flex;align-items:center;justify-content:space-between;
-  flex-wrap:wrap;gap:12px;
+.curated-toggle-wrap{
+  margin-top:clamp(22px, 3.2vw, 36px);
+  display:flex;justify-content:center;
 }
-.work-more-btn{
+.btn-curated-expand{
+  display:inline-flex;align-items:center;gap:10px;
+  border:1px solid var(--ink);
+  padding:12px 24px;
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
   text-transform:uppercase;font-weight:600;
-  text-decoration:underline;text-underline-offset:3px;
-  display:inline-flex;align-items:center;gap:6px;
+  transition:background .25s var(--ease), color .25s var(--ease);
 }
-.work-more-btn:hover{color:var(--glow)}
-
-.statement{
-  border-top:1px solid var(--ink);
-  border-bottom:1px solid var(--ink);
-  padding-block:clamp(44px, 6.5vw, 90px);
+.btn-curated-expand:hover{
+  background:var(--ink);color:var(--paper);
 }
-.statement p{
-  margin:0;
-  font-size:clamp(1.4rem, 3.4vw, 2.8rem);
-  line-height:1.15;
-  letter-spacing:-.02em;
-  font-weight:500;
-  max-width:24ch;
-}
-.statement .by{margin-top:clamp(18px, 2.5vw, 32px);opacity:.55}
 
 .niche{
   display:grid;
@@ -449,37 +439,23 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
-.mail{
-  display:inline-block;
-  font-size:clamp(1.4rem, 5vw, 3.8rem);
-  font-weight:600;letter-spacing:-.035em;line-height:1.05;
-  word-break:break-word;
-  padding-bottom:.06em;
-  background-image:linear-gradient(var(--glow),var(--glow));
-  background-repeat:no-repeat;
-  background-position:0 100%;
-  background-size:0% 3px;
-  transition:background-size .4s var(--ease);
-}
-.mail:hover,.mail:focus-visible{background-size:100% 3px}
-.contact-note{margin-top:clamp(16px, 2.5vw, 30px);max-width:48ch;opacity:.7}
-
+/* Footer with tightened spacing */
 .foot{
-  margin-top:var(--sec);
+  margin-top:clamp(32px, 5vw, 64px);
   border-top:1px solid var(--ink);
-  padding-top:clamp(24px, 3.5vw, 42px);
-  padding-bottom:clamp(30px, 4vw, 50px);
+  padding-top:clamp(20px, 3vw, 32px);
+  padding-bottom:clamp(12px, 2vw, 20px);
   display:grid;
   grid-template-columns:repeat(4, 1fr);
-  gap:28px 24px;
+  gap:24px 20px;
 }
-.foot h4{margin:0 0 12px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;opacity:.5}
+.foot h4{margin:0 0 10px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;opacity:.5}
 .foot ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
 .foot a:hover,.foot a:focus-visible{text-decoration:underline;text-underline-offset:3px}
 
 .lockup-wrap{
-  margin-top:clamp(36px, 6vw, 72px);
-  padding-bottom:clamp(40px, 6vw, 84px);
+  margin-top:clamp(18px, 3vw, 36px);
+  padding-bottom:clamp(20px, 3vw, 36px);
   display:flex;justify-content:center;
 }
 .lockup-wrap button{
@@ -500,7 +476,7 @@ html[data-theme="dark"] .lockup-wrap img{
 .lockup-wrap button:hover img{transform:scale(1.04)}
 
 /* ============================================================
-   THE COLLECTIVE OVERLAY VIEW
+   OVERLAY VIEWS: THE COLLECTIVE & CONTACT
    ============================================================ */
 .collective-page{
   position:fixed;inset:0;z-index:150;
@@ -516,7 +492,6 @@ html[data-theme="dark"] .lockup-wrap img{
   height:var(--nav-h);padding-inline:calc(var(--pad) + 12px);
   display:flex;align-items:center;justify-content:space-between;
   background:linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, transparent 100%);
-  border-bottom:none;
   color:#FFF;
 }
 .collective-close{
@@ -670,6 +645,47 @@ html[data-theme="dark"] .lockup-wrap img{
   background:var(--ink);color:var(--paper);border-color:var(--ink);
 }
 
+.collective-about-wrap{
+  margin-top:clamp(48px, 8vw, 90px);
+  padding-top:clamp(32px, 5vw, 60px);
+  border-top:1px solid var(--ink);
+}
+.collective-about-wrap p{
+  margin:0;
+  font-size:clamp(1.4rem, 3.4vw, 2.8rem);
+  line-height:1.15;
+  letter-spacing:-.02em;
+  font-weight:500;
+  max-width:26ch;
+}
+.collective-about-wrap .by{margin-top:clamp(18px, 2.5vw, 32px);opacity:.55}
+
+/* DEDICATED CONTACT & ABOUT OVERLAY */
+.contact-page{
+  position:fixed;inset:0;z-index:160;
+  background:var(--paper);color:var(--ink);
+  overflow-y:auto;overflow-x:hidden;
+  display:none;flex-direction:column;
+  padding:calc(20px + var(--safe-top)) calc(var(--pad) + var(--safe-right)) calc(40px + var(--safe-bottom)) calc(var(--pad) + var(--safe-left));
+}
+.contact-page.open{display:flex;animation:curtainRise .32s var(--ease) forwards}
+.contact-page-head{
+  display:flex;justify-content:space-between;align-items:center;
+  border-bottom:1px solid var(--ink);padding-bottom:16px;
+}
+.contact-page-hero{
+  margin-top:clamp(40px, 7vw, 100px);
+  display:flex;flex-direction:column;gap:clamp(18px, 3vw, 36px);
+  max-width:1100px;
+}
+.contact-mail{
+  display:inline-block;
+  font-size:clamp(1.8rem, 6.2vw, 5.2rem);
+  font-weight:700;line-height:1;letter-spacing:-.035em;
+  word-break:break-word;
+}
+.contact-mail:hover{color:var(--glow)}
+
 /* ============================================================
    LIGHTBOX
    ============================================================ */
@@ -747,24 +763,20 @@ html[data-theme="dark"] .lockup-wrap img{
   .foot{grid-template-columns:1fr 1fr}
 }
 @media (max-width:640px){
-  :root{--nav-h:56px; --pad:12px}
+  :root{--nav-h:64px; --pad:12px}
   .nav{padding-inline:12px;gap:8px}
   
-  .brand .mark{height:44px}
-  .brand .mark img{height:44px}
+  .brand .mark{height:54px}
+  .brand .mark img{height:54px}
   .brand .wordmark{display:none}
   
   .nav-right{gap:12px}
   .nav-links{
     display:flex;
-    gap:12px;
-    font-size:0.62rem;
+    gap:14px;
+    font-size:0.65rem;
     letter-spacing:0.12em;
     white-space:nowrap;
-  }
-  .nav-links a:nth-child(1),
-  .nav-links a:nth-child(4) {
-    display: none;
   }
 
   .pull{--len:20px;width:20px}
@@ -844,11 +856,8 @@ html[data-theme="dark"] .lockup-wrap img{
   </button>
   <div class="nav-right">
     <div class="nav-links label">
-      <a href="#work">Work</a>
       <a href="#niches-sec">What we shoot</a>
-      <a href="#about">About</a>
-      <a href="#collective" id="nav-collective-link">The Collective</a>
-      <a href="#contact">Contact</a>
+      <button type="button" id="nav-collective-link">The Collective</button>
     </div>
     <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
       <span class="cord" aria-hidden="true"></span>
@@ -868,6 +877,7 @@ html[data-theme="dark"] .lockup-wrap img{
 
   <div class="band"><img data-band alt=""></div>
 
+  <!-- WORK SECTION WITH 10-PHOTO INITIAL LIMIT -->
   <section class="sec wrap" id="work">
     <div class="sec-head">
       <span class="label">Work</span>
@@ -876,17 +886,14 @@ html[data-theme="dark"] .lockup-wrap img{
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
     <div class="grid" id="grid"></div>
-    <div class="work-more-box" id="work-more-box" style="display:none;">
-      <span class="mono" style="font-size:0.75rem;opacity:0.6;" id="work-curated-label">CURATED SELECTION</span>
-      <button class="work-more-btn" id="work-explore-all-btn">Explore full archive in What We Shoot →</button>
+    <div class="curated-toggle-wrap" id="curated-wrap" style="display:none;">
+      <button type="button" class="btn-curated-expand" id="btn-toggle-curated">
+        &rarr; Click here to see the curated photos
+      </button>
     </div>
   </section>
 
-  <section class="statement wrap" id="about">
-    <p data-statement></p>
-    <div class="label by" data-statement-by></div>
-  </section>
-
+  <!-- WHAT WE SHOOT SECTION -->
   <section class="sec wrap" id="niches-sec">
     <div class="sec-head">
       <span class="label">What we shoot</span>
@@ -897,15 +904,8 @@ html[data-theme="dark"] .lockup-wrap img{
     <div id="niche-view-box" style="display:none;"></div>
   </section>
 
-  <section class="sec wrap" id="contact">
-    <div class="sec-head">
-      <span class="label">Contact</span>
-      <span class="fill"></span>
-      <span class="count mono" data-place2></span>
-    </div>
-    <a class="mail" data-mail href="#"></a>
-    <p class="contact-note" data-contact-note></p>
-
+  <!-- FOOTER -->
+  <footer class="wrap">
     <div class="foot">
       <div class="foot-col-studio">
         <h4>Studio</h4>
@@ -920,7 +920,7 @@ html[data-theme="dark"] .lockup-wrap img{
         <ul data-foot-social></ul>
       </div>
       <div>
-        <h4><button id="open-collective-btn" style="text-decoration:underline;text-underline-offset:3px;cursor:pointer;">The Collective ↗</button></h4>
+        <h4><button id="open-collective-foot-btn" style="text-decoration:underline;text-underline-offset:3px;cursor:pointer;">The Collective ↗</button></h4>
         <ul data-foot-team></ul>
       </div>
     </div>
@@ -930,9 +930,12 @@ html[data-theme="dark"] .lockup-wrap img{
         <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
       </button>
     </div>
-  </section>
+  </footer>
 </main>
 
+<!-- ============================================================
+     THE COLLECTIVE + ABOUT STATEMENT VIEW
+     ============================================================ -->
 <div class="collective-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
   <div class="collective-nav">
     <span class="label mono" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -961,9 +964,35 @@ html[data-theme="dark"] .lockup-wrap img{
       <span class="count mono" id="collective-frame-count"></span>
     </div>
     <div class="collective-grid" id="collective-grid"></div>
+
+    <!-- MOVED ABOUT STATEMENT TO THE BOTTOM OF THE COLLECTIVE -->
+    <div class="collective-about-wrap">
+      <span class="label mono" style="opacity:.5;display:block;margin-bottom:12px;">About Living Room Labs</span>
+      <p data-statement></p>
+      <div class="label by" data-statement-by></div>
+    </div>
   </section>
 </div>
 
+<!-- ============================================================
+     DEDICATED CONTACT OVERLAY VIEW
+     ============================================================ -->
+<div class="contact-page" id="contact-page" role="dialog" aria-modal="true" aria-label="Contact Studio">
+  <div class="contact-page-head">
+    <span class="label mono" data-place2></span>
+    <button class="collective-close" id="close-contact-btn" style="color:var(--ink);border-color:var(--rule);background:transparent;">
+      Back to Studio
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/></svg>
+    </button>
+  </div>
+  <div class="contact-page-hero">
+    <span class="label">Contact & Inquiries</span>
+    <a class="contact-mail" data-mail href="#"></a>
+    <p style="max-width:54ch;opacity:.8;font-size:clamp(1.1rem, 1.6vw, 1.4rem);margin:0;line-height:1.4;" data-contact-note></p>
+  </div>
+</div>
+
+<!-- LIGHTBOX -->
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <div class="lb-top">
     <div class="lb-count mono"><b id="lb-i">01</b> <span>/</span> <span id="lb-n">01</span></div>
@@ -1136,7 +1165,7 @@ function buildRows(items, width, gap){
   return out;
 }
 
-var state = { filter:"All", visible:[], index:0, opener:null, activeNiche:null };
+var state = { filter:"All", visible:[], index:0, opener:null, activeNiche:null, showAllCurated:false };
 
 function categories(){
   var seen = [];
@@ -1162,6 +1191,7 @@ function buildFilters(){
   $$(".chip",host).forEach(function(b){
     b.addEventListener("click",function(){
       state.filter = b.dataset.cat;
+      state.showAllCurated = true; /* Filtering automatically allows full view of that category */
       $$(".chip",host).forEach(function(x){ x.setAttribute("aria-pressed", String(x === b)); });
       renderGrid();
     });
@@ -1177,34 +1207,18 @@ function renderGrid(){
   });
 
   var WORK_LIMIT = 10;
-  var list = fullCategoryList.slice(0, WORK_LIMIT);
+  var shouldLimit = (!state.showAllCurated && fullCategoryList.length > WORK_LIMIT);
+  var list = shouldLimit ? fullCategoryList.slice(0, WORK_LIMIT) : fullCategoryList;
   state.visible = list;
 
   var counter = $("[data-workcount]");
   if(counter){
-    var totalForFilter = fullCategoryList.length;
-    if(state.filter === "All"){
-      counter.textContent = (totalForFilter > WORK_LIMIT) 
-        ? WORK_LIMIT + " OF " + totalForFilter + " FRAMES"
-        : totalForFilter + " FRAMES";
-    } else {
-      counter.textContent = (totalForFilter > WORK_LIMIT)
-        ? WORK_LIMIT + " OF " + totalForFilter + " FRAMES"
-        : totalForFilter + " / " + SITE.photos.length + " FRAMES";
-    }
+    counter.textContent = list.length + " / " + fullCategoryList.length + " FRAMES";
   }
 
-  var moreBox = $("#work-more-box");
-  var exploreBtn = $("#work-explore-all-btn");
-  if(moreBox && exploreBtn){
-    if(fullCategoryList.length > WORK_LIMIT){
-      moreBox.style.display = "flex";
-      exploreBtn.textContent = (state.filter === "All")
-        ? "Explore all " + fullCategoryList.length + " frames in What We Shoot →"
-        : "Explore all " + fullCategoryList.length + " " + state.filter + " frames →";
-    } else {
-      moreBox.style.display = "none";
-    }
+  var curatedWrap = $("#curated-wrap");
+  if(curatedWrap){
+    curatedWrap.style.display = shouldLimit ? "flex" : "none";
   }
 
   var width = grid.clientWidth || document.documentElement.clientWidth;
@@ -1238,6 +1252,11 @@ function renderGrid(){
     b.addEventListener("click",function(){ openLB(parseInt(b.dataset.i,10), b); });
   });
 }
+
+$("#btn-toggle-curated").addEventListener("click", function(){
+  state.showAllCurated = true;
+  renderGrid();
+});
 
 function renderNichesList(){
   var made = categories();
@@ -1315,7 +1334,7 @@ function openNicheView(nicheName){
       '<div class="niche-view-top">' +
         '<div class="niche-view-title">' +
           '<h2>' + esc(nicheData.name) + '</h2>' +
-          '<p>' + esc(nicheData.line) + '</p>' +
+          'p' + esc(nicheData.line) + '</p>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:16px;">' +
           '<span class="mono" style="opacity:.6;font-size:.75rem">' + countText + '</span>' +
@@ -1362,16 +1381,6 @@ function closeNicheView(){
   }
 }
 
-$("#work-explore-all-btn").addEventListener("click", function(){
-  if(state.filter !== "All"){
-    window.location.hash = "niche-" + encodeURIComponent(state.filter);
-    openNicheView(state.filter);
-  } else {
-    var sec = document.getElementById("niches-sec");
-    if(sec) sec.scrollIntoView({ behavior: 'smooth' });
-  }
-});
-
 $("#top-brand-btn").addEventListener("click", function(e){
   e.preventDefault();
   window.location.reload();
@@ -1382,19 +1391,10 @@ $("#bottom-lockup-btn").addEventListener("click", function(e){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-window.addEventListener("hashchange", function(){
-  var hash = window.location.hash;
-  if(hash === "#collective"){
-    openCollective();
-  } else if(hash.startsWith("#niche-")){
-    var niche = decodeURIComponent(hash.replace("#niche-", ""));
-    openNicheView(niche);
-  } else if(state.activeNiche){
-    closeNicheView();
-  }
-});
-
+/* Collective & Contact Modals */
 var collectivePage = $("#collective-page");
+var contactPage = $("#contact-page");
+
 function openCollective(){
   collectivePage.classList.add("open");
   document.body.style.overflow = "hidden";
@@ -1408,16 +1408,52 @@ function closeCollective(){
     history.pushState("", document.title, window.location.pathname + window.location.search);
   }
 }
-$("#open-collective-btn").addEventListener("click", openCollective);
+
+function openContact(){
+  contactPage.classList.add("open");
+  document.body.style.overflow = "hidden";
+  window.location.hash = "contact";
+}
+function closeContact(){
+  contactPage.classList.remove("open");
+  document.body.style.overflow = "";
+  if(window.location.hash === "#contact"){
+    history.pushState("", document.title, window.location.pathname + window.location.search);
+  }
+}
+
 $("#nav-collective-link").addEventListener("click", function(e){
   e.preventDefault();
   openCollective();
 });
+$("#open-collective-foot-btn").addEventListener("click", function(e){
+  e.preventDefault();
+  openCollective();
+});
 $("#close-collective-btn").addEventListener("click", closeCollective);
+$("#close-contact-btn").addEventListener("click", closeContact);
+
 $("#scroll-to-members").addEventListener("click", function(){
   $("#collective-members-sec").scrollIntoView({ behavior: 'smooth' });
 });
 
+window.addEventListener("hashchange", function(){
+  var hash = window.location.hash;
+  if(hash === "#collective"){
+    openCollective();
+  } else if(hash === "#contact"){
+    openContact();
+  } else if(hash.startsWith("#niche-")){
+    var niche = decodeURIComponent(hash.replace("#niche-", ""));
+    openNicheView(niche);
+  } else {
+    if(collectivePage.classList.contains("open")) closeCollective();
+    if(contactPage.classList.contains("open")) closeContact();
+    if(state.activeNiche) closeNicheView();
+  }
+});
+
+/* Lightbox */
 var lb = $("#lb");
 function openLB(i, opener){
   state.index = i; state.opener = opener || null;
@@ -1467,6 +1503,7 @@ lb.addEventListener("click", function(e){ if(e.target === lb) closeLB(); });
 document.addEventListener("keydown", function(e){
   if(e.key === "Escape"){
     if(collectivePage.classList.contains("open")) closeCollective();
+    if(contactPage.classList.contains("open")) closeContact();
     if(lb.classList.contains("on")) closeLB();
   }
   if(!lb.classList.contains("on")) return;
@@ -1570,7 +1607,17 @@ function renderContent(){
   var idxList = $("[data-foot-index]");
   if(idxList){
     idxList.innerHTML =
-      '<li><a href="#work">Work</a></li><li><a href="#niches-sec">What we shoot</a></li><li><a href="#about">About</a></li><li><a href="#contact">Contact</a></li>';
+      '<li><a href="#work">Work</a></li>' +
+      '<li><a href="#niches-sec">What we shoot</a></li>' +
+      '<li><button type="button" class="btn-foot-about">About</button></li>' +
+      '<li><button type="button" class="btn-foot-contact">Contact</button></li>';
+    
+    $$(".btn-foot-about", idxList).forEach(function(b){
+      b.addEventListener("click", function(){ openCollective(); });
+    });
+    $$(".btn-foot-contact", idxList).forEach(function(b){
+      b.addEventListener("click", function(){ openContact(); });
+    });
   }
 
   var socList = $("[data-foot-social]");
@@ -1639,6 +1686,8 @@ function renderContent(){
 
   if(window.location.hash === "#collective"){
     openCollective();
+  } else if(window.location.hash === "#contact"){
+    openContact();
   } else if(window.location.hash.startsWith("#niche-")){
     var niche = decodeURIComponent(window.location.hash.replace("#niche-", ""));
     openNicheView(niche);
