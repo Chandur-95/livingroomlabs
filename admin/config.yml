@@ -2,87 +2,147 @@ backend:
   name: github
   repo: Chandur-95/livingroomlabs
   branch: main
-  base_url: https://livingroomlabs.pages.dev
-  auth_endpoint: auth
 
 media_folder: "assets/uploads"
 public_folder: "/assets/uploads"
 
 collections:
   - name: "site_content"
-    label: "Website Content & Settings"
+    label: "Website Content"
+    delete: false
+    editor:
+      preview: false
     files:
-      - file: "content.json"
-        label: "General Settings, Fonts & The Collective"
-        name: "general"
+      - name: "global_content"
+        label: "All Site Settings & Content"
+        file: "content.json"
         fields:
-          - { label: "Site Name", name: "name", widget: "string" }
-          - { label: "Tagline", name: "tagline", widget: "string" }
-          - { label: "City", name: "city", widget: "string" }
-          - { label: "Email", name: "email", widget: "string" }
-          - label: "Typography Font"
+          - label: "Site / Studio Name"
+            name: "name"
+            widget: "string"
+
+          - label: "Tagline"
+            name: "tagline"
+            widget: "string"
+
+          - label: "City / Location"
+            name: "city"
+            widget: "string"
+
+          - label: "Contact Email"
+            name: "email"
+            widget: "string"
+
+          - label: "Contact Section Note"
+            name: "contactNote"
+            widget: "text"
+
+          - label: "Body Font"
             name: "bodyFont"
             widget: "select"
-            options: ["Inter", "Archivo", "Space Grotesk", "Playfair Display", "JetBrains Mono"]
-          - { label: "Hero Lines (one per line)", name: "hero", widget: "list" }
-          - { label: "Statement Headline", name: "statement", widget: "string" }
-          - { label: "Statement Attribution", name: "statementBy", widget: "string" }
-          - { label: "Contact Note", name: "contactNote", widget: "text" }
-          
-          - label: "The Collective Banner Image"
+            options: ["Inter", "Archivo", "Space Grotesk"]
+            default: "Inter"
+
+          # ---------------- HERO SECTION ----------------
+          - label: "Hero Lines (Italics wrapped in *stars*)"
+            name: "hero"
+            widget: "list"
+            field: { label: "Line", name: "line", widget: "string" }
+
+          # ---------------- HERO OVERVIEW BAND ----------------
+          - label: "Band Image (Panoramic Photo)"
+            name: "bandImg"
+            widget: "image"
+
+          - label: "Band Image Vertical Focus"
+            name: "bandImgPosition"
+            widget: "select"
+            options: ["Top", "Center", "Bottom"]
+            default: "Center"
+
+          - label: "Band Image Description (Alt Text)"
+            name: "bandAlt"
+            widget: "string"
+            required: false
+
+          # ---------------- STATEMENT SECTION ----------------
+          - label: "Statement Quote (Italics wrapped in *stars*)"
+            name: "statement"
+            widget: "string"
+
+          - label: "Statement Author / Note"
+            name: "statementBy"
+            widget: "string"
+
+          # ---------------- THE COLLECTIVE OVERLAY ----------------
+          - label: "Collective Hero Image"
             name: "teamHeroImg"
             widget: "image"
-          - label: "Banner Image Vertical Framing"
+
+          - label: "Collective Hero Vertical Focus"
             name: "teamHeroImgPosition"
             widget: "select"
-            options: ["Center", "Top", "Bottom"]
+            options: ["Top", "Center", "Bottom"]
             default: "Center"
-          - { label: "The Collective Intro Text", name: "teamHeroIntro", widget: "string" }
-          
+
+          - label: "Collective Hero Intro Description"
+            name: "teamHeroIntro"
+            widget: "text"
+
           - label: "The Collective Members"
             name: "team"
             widget: "list"
             fields:
-              - { label: "Name", name: "name", widget: "string" }
-              - { label: "Role", name: "role", widget: "string" }
-              - { label: "Portrait Photo", name: "photo", widget: "image" }
-              - label: "Photo Vertical Framing"
+              - { label: "Full Name", name: "name", widget: "string" }
+              - { label: "Role / Specialization", name: "role", widget: "string" }
+              - { label: "Member Photo", name: "photo", widget: "image" }
+              - label: "Photo Vertical Alignment"
                 name: "imagePosition"
                 widget: "select"
-                options: ["Center", "Top", "Bottom"]
+                options: ["Top", "Center", "Bottom"]
                 default: "Center"
-              - { label: "Bio Summary", name: "bio", widget: "text" }
-              - { label: "Instagram Link (Optional)", name: "instagram", widget: "string", required: false }
-              - { label: "Portfolio / Work Link (Optional)", name: "portfolio", widget: "string", required: false }
+              - { label: "Short Bio", name: "bio", widget: "text", required: false }
+              - { label: "Instagram Link (https://...)", name: "instagram", widget: "string", required: false }
+              - { label: "Portfolio / Work Link (https://...)", name: "portfolio", widget: "string", required: false }
 
+          # ---------------- WHAT WE SHOOT (NICHES) ----------------
           - label: "What We Shoot (Niches)"
             name: "niches"
             widget: "list"
             fields:
-              - { label: "Category Name", name: "name", widget: "string" }
-              - { label: "Line / Description", name: "line", widget: "string" }
-          
-          - label: "Photos & Portfolio"
+              - { label: "Niche Name", name: "name", widget: "string" }
+              - { label: "Short Summary Line", name: "line", widget: "string" }
+
+          # ---------------- SOCIAL LINKS ----------------
+          - label: "Socials (Elsewhere)"
+            name: "socials"
+            widget: "list"
+            fields:
+              - { label: "Platform Name", name: "name", widget: "string" }
+              - { label: "Profile Link (URL)", name: "url", widget: "string" }
+
+          # ---------------- WORK GALLERY ----------------
+          - label: "Work Gallery Photographs"
             name: "photos"
             widget: "list"
             fields:
               - { label: "Photo File", name: "src", widget: "image" }
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Client", name: "client", widget: "string" }
-              - label: "Category / Folder"
-                name: "category"
-                widget: "select"
-                options: ["Food", "Pets", "Real Estate", "Events", "Portraits"]
-              - label: "Photo Vertical Framing"
+              - { label: "Photo Title", name: "title", widget: "string" }
+              - { label: "Client / Brand", name: "client", widget: "string" }
+              - { label: "Category / Niche", name: "category", widget: "string" }
+              - label: "Crop Focus Position"
                 name: "imagePosition"
                 widget: "select"
-                options: ["Center", "Top", "Bottom"]
+                options: ["Top", "Center", "Bottom"]
                 default: "Center"
-              - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
-              - { label: "Caption", name: "caption", widget: "string", required: false }
-              - { label: "Width Weight (1 to 12)", name: "w", widget: "number", default: 4, value_type: "int" }
+              - { label: "Caption / Description", name: "caption", widget: "text", required: false }
               - label: "Aspect Ratio"
                 name: "ratio"
                 widget: "select"
-                options: ["4/5", "1/1", "3/2", "3/4", "16/9"]
-                default: "3/4"
+                options: ["4/5", "1/1", "3/4", "3/2", "16/9"]
+                default: "4/5"
+              - label: "Column Weight (1 to 12)"
+                name: "w"
+                widget: "number"
+                default: 4
+                value_type: "int"
