@@ -2,8 +2,87 @@ backend:
   name: github
   repo: Chandur-95/livingroomlabs
   branch: main
-  base_url: https://livingroomlabs.pages.dev # replace with your custom domain once connected
+  base_url: https://livingroomlabs.pages.dev
   auth_endpoint: auth
 
-media_folder: "images/uploads"
-public_folder: "/images/uploads"
+media_folder: "assets/uploads"
+public_folder: "/assets/uploads"
+
+collections:
+  - name: "site_content"
+    label: "Website Content & Settings"
+    files:
+      - file: "content.json"
+        label: "General Settings, Fonts & The Collective"
+        name: "general"
+        fields:
+          - { label: "Site Name", name: "name", widget: "string" }
+          - { label: "Tagline", name: "tagline", widget: "string" }
+          - { label: "City", name: "city", widget: "string" }
+          - { label: "Email", name: "email", widget: "string" }
+          - label: "Typography Font"
+            name: "bodyFont"
+            widget: "select"
+            options: ["Inter", "Archivo", "Space Grotesk", "Playfair Display", "JetBrains Mono"]
+          - { label: "Hero Lines (one per line)", name: "hero", widget: "list" }
+          - { label: "Statement Headline", name: "statement", widget: "string" }
+          - { label: "Statement Attribution", name: "statementBy", widget: "string" }
+          - { label: "Contact Note", name: "contactNote", widget: "text" }
+          
+          - label: "The Collective Banner Image"
+            name: "teamHeroImg"
+            widget: "image"
+          - label: "Banner Image Vertical Framing"
+            name: "teamHeroImgPosition"
+            widget: "select"
+            options: ["Center", "Top", "Bottom"]
+            default: "Center"
+          - { label: "The Collective Intro Text", name: "teamHeroIntro", widget: "string" }
+          
+          - label: "The Collective Members"
+            name: "team"
+            widget: "list"
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Role", name: "role", widget: "string" }
+              - { label: "Portrait Photo", name: "photo", widget: "image" }
+              - label: "Photo Vertical Framing"
+                name: "imagePosition"
+                widget: "select"
+                options: ["Center", "Top", "Bottom"]
+                default: "Center"
+              - { label: "Bio Summary", name: "bio", widget: "text" }
+              - { label: "Instagram Link (Optional)", name: "instagram", widget: "string", required: false }
+              - { label: "Portfolio / Work Link (Optional)", name: "portfolio", widget: "string", required: false }
+
+          - label: "What We Shoot (Niches)"
+            name: "niches"
+            widget: "list"
+            fields:
+              - { label: "Category Name", name: "name", widget: "string" }
+              - { label: "Line / Description", name: "line", widget: "string" }
+          
+          - label: "Photos & Portfolio"
+            name: "photos"
+            widget: "list"
+            fields:
+              - { label: "Photo File", name: "src", widget: "image" }
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Client", name: "client", widget: "string" }
+              - label: "Category / Folder"
+                name: "category"
+                widget: "select"
+                options: ["Food", "Pets", "Real Estate", "Events", "Portraits"]
+              - label: "Photo Vertical Framing"
+                name: "imagePosition"
+                widget: "select"
+                options: ["Center", "Top", "Bottom"]
+                default: "Center"
+              - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
+              - { label: "Caption", name: "caption", widget: "string", required: false }
+              - { label: "Width Weight (1 to 12)", name: "w", widget: "number", default: 4, value_type: "int" }
+              - label: "Aspect Ratio"
+                name: "ratio"
+                widget: "select"
+                options: ["4/5", "1/1", "3/2", "3/4", "16/9"]
+                default: "3/4"
