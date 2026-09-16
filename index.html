@@ -23,7 +23,7 @@
   --nav-h:80px;
   --pad:clamp(16px, 4vw, 56px);
   --col-gap:24px;
-  --row-gap:44px; /* Generous vertical gap to completely prevent text overlapping */
+  --row-gap:44px;
   --sec:clamp(36px, 4.5vw, 76px);
 
   --fs-label:.7rem;
@@ -122,6 +122,9 @@ div[data-netlify-drawer],
   visibility: hidden !important;
 }
 
+/* ============================================================
+   NAVBAR & LOGO DARK MODE ORANGE LAMP FILTER
+   ============================================================ */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
   height:calc(var(--nav-h) + var(--safe-top));
@@ -139,8 +142,9 @@ div[data-netlify-drawer],
   mix-blend-mode:multiply;
   transition:transform .3s var(--ease);
 }
+/* Converts logo lines to crisp white while turning yellow light to warm amber orange */
 html[data-theme="dark"] .brand .mark img{
-  filter:invert(1) brightness(1.05);
+  filter: invert(1) hue-rotate(185deg) saturate(280%) brightness(1.15);
   mix-blend-mode:screen;
 }
 .brand:hover .mark img{transform:scale(1.03)}
@@ -488,6 +492,9 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   line-height:1.5;
 }
 
+/* ============================================================
+   FOOTER (MOBILE STACKING & LOGO ORANGE FILTER)
+   ============================================================ */
 .foot{
   margin-top:clamp(18px, 2.5vw, 32px);
   border-top:1px solid var(--ink);
@@ -519,8 +526,9 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   mix-blend-mode:multiply;
   transition:transform .3s var(--ease), opacity .3s ease;
 }
+/* Orange lamp filter in dark mode */
 html[data-theme="dark"] .foot-logo-btn img{
-  filter:invert(1) brightness(1.05);
+  filter: invert(1) hue-rotate(185deg) saturate(280%) brightness(1.15);
   mix-blend-mode:screen;
 }
 .foot-logo-btn:hover img{transform:scale(1.03)}
@@ -692,17 +700,24 @@ html[data-theme="dark"] .foot-logo-btn img{
   background:var(--ink);color:var(--paper);border-color:var(--ink);
 }
 
+/* ============================================================
+   COLLECTIVE ABOUT SECTION: CENTERED LOGO ON 2ND PAGE
+   ============================================================ */
 .collective-about-wrap{
   margin-top:clamp(48px, 8vw, 90px);
   padding-top:clamp(32px, 5vw, 60px);
   border-top:1px solid var(--ink);
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:clamp(28px, 5vw, 60px);
+  display:flex;
+  flex-direction:column;
   align-items:center;
+  text-align:center;
+  gap:clamp(32px, 6vw, 60px);
+}
+.collective-about-text{
+  max-width:720px;
 }
 .collective-about-text p{
-  margin:0;
+  margin:0 auto;
   font-size:clamp(1.4rem, 3.4vw, 2.8rem);
   line-height:1.15;
   letter-spacing:-.02em;
@@ -715,18 +730,19 @@ html[data-theme="dark"] .foot-logo-btn img{
   display:flex;
   align-items:center;
   justify-content:center;
-  padding-right:clamp(0px, 2vw, 24px);
+  width:100%;
 }
 .collective-about-logo img{
   width:auto;
-  max-width:260px;
+  max-width:min(320px, 75vw);
   height:auto;
   object-fit:contain;
   mix-blend-mode:multiply;
   transition:transform .3s var(--ease);
 }
+/* Orange lamp filter in dark mode for Collective Page */
 html[data-theme="dark"] .collective-about-logo img{
-  filter:invert(1) brightness(1.05);
+  filter: invert(1) hue-rotate(185deg) saturate(280%) brightness(1.15);
   mix-blend-mode:screen;
 }
 .collective-about-logo:hover img{transform:scale(1.03)}
@@ -800,15 +816,20 @@ html[data-theme="dark"] .collective-about-logo img{
 
 @media (max-width:980px){
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
-  .collective-about-wrap{grid-template-columns:1fr;gap:32px}
-  .collective-about-logo{justify-content:flex-start}
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
-  .foot{grid-template-columns:1fr 1fr;gap:24px 20px}
 }
 
+/* ============================================================
+   MOBILE RESPONSIVE ADJUSTMENTS
+   ============================================================ */
 @media (max-width:640px){
-  :root{--nav-h:64px; --pad:12px}
+  :root{
+    --nav-h:64px;
+    --pad:12px;
+    --col-gap:14px;
+    --row-gap:28px;
+  }
   .nav{padding-inline:12px;gap:8px}
   
   .brand{flex-direction:row;justify-content:flex-start}
@@ -861,6 +882,29 @@ html[data-theme="dark"] .collective-about-logo img{
     grid-template-columns: repeat(2, 1fr);
   }
 
+  /* Mobile footer: 2 clean columns; Logo on left, Index and Elsewhere stacked on right */
+  .foot{
+    grid-template-columns: 1fr 1fr !important;
+    gap: 16px 20px !important;
+    padding-bottom: 24px !important;
+    align-items: start !important;
+  }
+  .foot-col-logo {
+    grid-column: 1 / 2;
+  }
+  .foot-logo-btn img{
+    max-width: 140px !important;
+  }
+  .foot-right-stack {
+    grid-column: 2 / 3;
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+  }
+  .foot-col-team {
+    display: none !important;
+  }
+
   .collective-hero{
     height: 72vh !important;
     min-height: 460px !important;
@@ -876,16 +920,7 @@ html[data-theme="dark"] .collective-about-logo img{
   }
 
   .collective-grid{grid-template-columns:1fr}
-  
-  .foot-col-team {
-    display: none !important;
-  }
-  .foot{
-    grid-template-columns: 1fr 1fr !important;
-    gap: 20px 16px !important;
-    padding-bottom: 24px !important;
-  }
-  .foot-logo-btn img{max-width:180px !important}
+  .collective-about-logo img{max-width:220px !important}
 
   .lb-frame img{max-width:calc(100vw - 24px);max-height:calc(100vh - 140px)}
   .lb-cap{grid-template-columns:1fr}
@@ -963,21 +998,26 @@ html[data-theme="dark"] .collective-about-logo img{
     <p class="contact-note" data-contact-note></p>
   </section>
 
+  <!-- MOBILE COMPACT FOOTER STRUCTURE -->
   <footer class="wrap">
     <div class="foot">
-      <div>
+      <div class="foot-col-logo">
         <button class="foot-logo-btn" id="bottom-lockup-btn" aria-label="Scroll to top of page">
           <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
-      <div class="foot-col-index">
-        <h4>Index</h4>
-        <ul data-foot-index></ul>
+
+      <div class="foot-right-stack">
+        <div class="foot-col-index">
+          <h4>Index</h4>
+          <ul data-foot-index></ul>
+        </div>
+        <div class="foot-col-elsewhere">
+          <h4>Elsewhere</h4>
+          <ul data-foot-social></ul>
+        </div>
       </div>
-      <div>
-        <h4>Elsewhere</h4>
-        <ul data-foot-social></ul>
-      </div>
+
       <div class="foot-col-team">
         <h4><button id="open-collective-foot-btn" style="text-decoration:underline;text-underline-offset:3px;cursor:pointer;">The Collective ↗</button></h4>
         <ul data-foot-team></ul>
@@ -1015,6 +1055,7 @@ html[data-theme="dark"] .collective-about-logo img{
     </div>
     <div class="collective-grid" id="collective-grid"></div>
 
+    <!-- CENTERED LOGO ON THE COLLECTIVE PAGE -->
     <div class="collective-about-wrap">
       <div class="collective-about-text">
         <span class="label mono" style="opacity:.5;display:block;margin-bottom:12px;">About Living Room Labs</span>
@@ -1163,7 +1204,11 @@ function buildFilters(){
   if(!host) return;
   var cats = ["All"].concat(categories());
   host.innerHTML = cats.map(function(c){
-    var n = c === "All" ? SITE.photos.filter(function(p){ return p.featured !== false; }).length : countIn(c);
+    var n = c === "All" 
+      ? (state.showAllCurated 
+          ? SITE.photos.length 
+          : SITE.photos.filter(function(p){ return p.featured !== false; }).length)
+      : countIn(c);
     return '<button class="chip" data-cat="'+esc(c)+'" aria-pressed="'+(c===state.filter)+'">'+
              '<span class="dot"></span>'+esc(c)+'<span class="n mono">'+n+'</span>'+
            '</button>';
@@ -1171,7 +1216,7 @@ function buildFilters(){
   $$(".chip",host).forEach(function(b){
     b.addEventListener("click",function(){
       state.filter = b.dataset.cat;
-      state.showAllCurated = true;
+      state.showAllCurated = (b.dataset.cat !== "All"); // If specific category clicked, show all
       $$(".chip",host).forEach(function(x){ x.setAttribute("aria-pressed", String(x === b)); });
       renderGrid();
     });
@@ -1182,17 +1227,23 @@ function renderGrid(){
   var grid = $("#grid");
   if(!grid) return;
   
-  var fullCategoryList = SITE.photos.filter(function(p){
-    var matchesCat = (state.filter === "All" || p.category === state.filter);
-    if(state.filter === "All" && !state.showAllCurated){
-      return matchesCat && (p.featured !== false);
-    }
-    return matchesCat;
-  });
+  // Strictly respects your manual 'featured' toggle with NO forced limit of 10
+  var list;
+  var hasUnshownPhotos = false;
 
-  var WORK_LIMIT = 10;
-  var shouldLimit = (!state.showAllCurated && state.filter === "All" && fullCategoryList.length > WORK_LIMIT);
-  var list = shouldLimit ? fullCategoryList.slice(0, WORK_LIMIT) : fullCategoryList;
+  if(state.filter === "All"){
+    if(!state.showAllCurated){
+      list = SITE.photos.filter(function(p){ return p.featured !== false; });
+      hasUnshownPhotos = (list.length < SITE.photos.length);
+    } else {
+      list = SITE.photos;
+      hasUnshownPhotos = false;
+    }
+  } else {
+    list = SITE.photos.filter(function(p){ return p.category === state.filter; });
+    hasUnshownPhotos = false;
+  }
+  
   state.visible = list;
 
   var counter = $("[data-workcount]");
@@ -1202,7 +1253,7 @@ function renderGrid(){
 
   var curatedWrap = $("#curated-wrap");
   if(curatedWrap){
-    curatedWrap.style.display = shouldLimit ? "flex" : "none";
+    curatedWrap.style.display = (hasUnshownPhotos && state.filter === "All") ? "flex" : "none";
   }
 
   var n = 0;
@@ -1233,6 +1284,7 @@ function renderGrid(){
 
 $("#btn-toggle-curated").addEventListener("click", function(){
   state.showAllCurated = true;
+  buildFilters();
   renderGrid();
 });
 
