@@ -233,16 +233,16 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 /* ============================================================
-   HERO BANNER SLIDESHOW (MULTI-PHOTO ENGINE)
+   HERO BANNER SLIDESHOW (UNCROPPED RESPONSIVE FIT)
    ============================================================ */
 .band{
   position:relative;
   width:100%;
-  height:auto;
-  min-height:clamp(280px, 42vw, 750px);
-  max-height:85vh;
+  height:76vh;
+  min-height:480px;
+  max-height:860px;
   overflow:hidden;
-  background:#000;
+  background:#050505;
   display:block;
   cursor:pointer;
   user-select:none;
@@ -251,8 +251,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   position:relative;
   width:100%;
   height:100%;
-  min-height:clamp(280px, 42vw, 750px);
-  max-height:85vh;
 }
 .band-img{
   position:absolute;
@@ -260,9 +258,10 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   width:100%;
   height:100%;
   object-fit:cover;
+  object-position:center center;
   opacity:0;
   pointer-events:none;
-  transform:scale(1.04);
+  transform:scale(1.02);
   transition:transform 1s var(--ease);
 }
 .band-img.active{
@@ -282,7 +281,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   0%{
     clip-path:circle(0% at 50% 50%);
     filter:brightness(1.5) contrast(1.2);
-    transform:scale(1.08);
+    transform:scale(1.06);
   }
   60%{
     filter:brightness(1.1) contrast(1.05);
@@ -956,6 +955,12 @@ html[data-theme="dark"] .collective-about-logo img{
     display: none;
   }
 
+  .band{
+    height:55vh;
+    min-height:340px;
+    max-height:500px;
+  }
+
   .filters{
     flex-wrap:nowrap;
     overflow-x:auto;
@@ -1292,7 +1297,7 @@ var SITE = {
       role: "Lead / Photographer",
       photo: "https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=900&q=80",
       imagePosition: "Center",
-      bio: "Directing creative narratives and client commissions with a precision-led eye for natural compositions and timing.",
+      bio: "Hello folks! I am a photographer who finds little stories in everyday moments. Always curious of exploring new ideas to capture images that feel alive.",
       instagram: "https://instagram.com/",
       portfolio: "https://behance.net/"
     },
@@ -1301,7 +1306,7 @@ var SITE = {
       role: "Photographer / Creative Head",
       photo: "https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=900&q=80",
       imagePosition: "Center",
-      bio: "Curating high-concept aesthetics across culinary styling, editorial sets, and character-driven visual storytelling.",
+      bio: "I am a photographer and creative collaborator who brings fresh ideas to every shoot. I don't just capture moments—I help shape the vision behind them to bring your stories to life.",
       instagram: "https://instagram.com/",
       portfolio: "https://behance.net/"
     },
@@ -1319,7 +1324,7 @@ var SITE = {
       role: "Photographer / Drone Pilot",
       photo: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=900&q=80",
       imagePosition: "Center",
-      bio: "High-shutter capture specialist for candid movements, fast ambient shifts, and raw character portraits.",
+      bio: "Software engineer by day, Photographer by night. I like to turn fleeting moments into timeless stories.",
       instagram: "https://instagram.com/",
       portfolio: "https://behance.net/"
     }
