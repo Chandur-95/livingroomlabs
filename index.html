@@ -22,7 +22,7 @@
 
   --nav-h:80px;
   --pad:clamp(16px, 4vw, 56px);
-  --gap:clamp(10px, 1.2vw, 16px);
+  --gap:20px;
   --sec:clamp(36px, 4.5vw, 76px);
 
   --fs-label:.7rem;
@@ -276,27 +276,33 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-.grid{display:flex;flex-direction:column;gap:var(--gap)}
-.row{display:flex;gap:var(--gap);align-items:flex-start}
-.shot{
-  flex:0 1 auto;min-width:0;max-width:100%;
-  width:var(--sw,100%);
-  display:block;text-align:left;
-  position:relative;
+/* UNIFORM UNALIGNED GRID: Fixed 3-column structured layout with equal aspect ratios */
+.uniform-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap);
 }
-.plate{
-  position:relative;
-  overflow:hidden !important;
-  contain:paint !important;
-  background:var(--rule-soft);
-  width:100%;
-  max-height: 380px; /* Hard strict cap on plate height so vertical shots never get disproportionate */
-  height:var(--sh,260px);
+
+.shot {
+  display: block;
+  text-align: left;
+  position: relative;
+  width: 100%;
 }
-.plate img{
-  width:100%;height:100%;object-fit:cover;
-  transition:transform .65s var(--ease), opacity .4s ease;
-  opacity:0;
+.plate {
+  position: relative;
+  overflow: hidden !important;
+  background: var(--rule-soft);
+  width: 100%;
+  aspect-ratio: 4 / 5; /* Perfectly uniform aspect ratio for every single image box */
+  height: auto;
+}
+.plate img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .65s var(--ease), opacity .4s ease;
+  opacity: 0;
 }
 .plate img.ready{opacity:1}
 .shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.04)}
@@ -847,6 +853,10 @@ html[data-theme="dark"] .collective-about-logo img{
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
+  .uniform-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
   .collective-hero{
     height: 72vh !important;
     min-height: 460px !important;
@@ -921,10 +931,11 @@ html[data-theme="dark"] .collective-about-logo img{
       <span class="count mono" data-workcount></span>
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
-    <div class="grid" id="grid"></div>
+    <!-- Uniform Grid Container -->
+    <div class="uniform-grid" id="grid"></div>
     <div class="curated-toggle-wrap" id="curated-wrap" style="display:none;">
       <button type="button" class="btn-curated-expand" id="btn-toggle-curated">
-        &rarr; Click here to see the curated photos
+        &rarr; Click here to see all photos
       </button>
     </div>
   </section>
@@ -1117,13 +1128,7 @@ var SITE = {
       portfolio: "https://behance.net/"
     }
   ],
-  photos: [
-    { src: "https://picsum.photos/seed/lrl-food-1/1200/1500", title: "Sunday Roast", client: "Olive & Oak", category: "Food", imagePosition: "Center", caption: "Shot at five, so the steam still reads.", w: 5, ratio: "4/5" },
-    { src: "https://picsum.photos/seed/lrl-food-2/1200/1200", title: "Cold Brew, Hot Day", client: "Kettle Room", category: "Food", imagePosition: "Center", caption: "The condensation is the entire photograph.", w: 4, ratio: "1/1" },
-    { src: "https://picsum.photos/seed/lrl-food-3/1100/1460", title: "Thali, Overhead", client: "Banjara House", category: "Food", imagePosition: "Center", caption: "Twelve bowls, one frame, nothing cropped out.", w: 3, ratio: "3/4" },
-    { src: "https://picsum.photos/seed/lrl-pets-1/1600/1070", title: "Mango Refuses to Sit", client: "Private", category: "Pets", imagePosition: "Center", caption: "1/2000s and still a blur of tail.", w: 6, ratio: "3/2" },
-    { src: "https://picsum.photos/seed/lrl-re-1/1800/1010", title: "Two-Bed, North Light", client: "Casa Listings", category: "Architecture", imagePosition: "Center", caption: "Shot at nine, for the light a buyer will get.", w: 6, ratio: "16/9" }
-  ]
+  photos: []
 };
 
 var $  = function(s,r){ return (r||document).querySelector(s); };
@@ -1135,56 +1140,6 @@ function italics(str){
 }
 function esc(str){
   return String(str==null?"":str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
-}
-
-function rowTarget(){
-  var w = window.innerWidth;
-  if(w <= 640) return 3;
-  if(w <= 1080) return 8;
-  return 12;
-}
-function aspectOf(p){
-  var r = String(p.ratio || "3/4").split("/");
-  var a = parseFloat(r[0]) / parseFloat(r[1]);
-  return (isFinite(a) && a > 0) ? a : 0.75;
-}
-
-function buildRows(items, width, gap){
-  var target = rowTarget();
-  var groups = [], cur = [], sum = 0, i;
-
-  for(i=0;i<items.length;i++){
-    cur.push(items[i]);
-    sum += Math.max(1, Math.min(12, items[i].w || 4));
-    if(sum >= target){ groups.push({items:cur, full:true}); cur = []; sum = 0; }
-  }
-  if(cur.length) groups.push({items:cur, full:false});
-
-  var heights = [], out = [];
-  groups.forEach(function(g){
-    var n = g.items.length;
-    var avail = width - gap * (n - 1);
-    var aSum = g.items.reduce(function(t,p){ return t + aspectOf(p); }, 0);
-    var fit = avail / aSum;
-    var h = fit;
-
-    if(!g.full){
-      var avg = heights.length
-        ? heights.reduce(function(a,b){return a+b;},0) / heights.length
-        : Math.min(avail * 0.42, 380);
-      h = Math.min(h, avg);
-    }
-    h = Math.min(fit, Math.max(Math.min(130, fit), Math.round(h)));
-    if(g.full) heights.push(h);
-
-    out.push({
-      h: h,
-      items: g.items.map(function(p){
-        return { ref:p, w: Math.max(40, Math.round(aspectOf(p) * h)) };
-      })
-    });
-  });
-  return out;
 }
 
 var state = { filter:"All", visible:[], index:0, opener:null, activeNiche:null, showAllCurated:false };
@@ -1205,7 +1160,7 @@ function buildFilters(){
   if(!host) return;
   var cats = ["All"].concat(categories());
   host.innerHTML = cats.map(function(c){
-    var n = c === "All" ? SITE.photos.length : countIn(c);
+    var n = c === "All" ? SITE.photos.filter(function(p){ return p.featured !== false; }).length : countIn(c);
     return '<button class="chip" data-cat="'+esc(c)+'" aria-pressed="'+(c===state.filter)+'">'+
              '<span class="dot"></span>'+esc(c)+'<span class="n mono">'+n+'</span>'+
            '</button>';
@@ -1225,17 +1180,21 @@ function renderGrid(){
   if(!grid) return;
   
   var fullCategoryList = SITE.photos.filter(function(p){
-    return state.filter === "All" || p.category === state.filter;
+    var matchesCat = (state.filter === "All" || p.category === state.filter);
+    if(state.filter === "All" && !state.showAllCurated){
+      return matchesCat && (p.featured !== false);
+    }
+    return matchesCat;
   });
 
   var WORK_LIMIT = 10;
-  var shouldLimit = (!state.showAllCurated && fullCategoryList.length > WORK_LIMIT);
+  var shouldLimit = (!state.showAllCurated && state.filter === "All" && fullCategoryList.length > WORK_LIMIT);
   var list = shouldLimit ? fullCategoryList.slice(0, WORK_LIMIT) : fullCategoryList;
   state.visible = list;
 
   var counter = $("[data-workcount]");
   if(counter){
-    counter.textContent = list.length + " / " + fullCategoryList.length + " FRAMES";
+    counter.textContent = list.length + " / " + SITE.photos.length + " FRAMES";
   }
 
   var curatedWrap = $("#curated-wrap");
@@ -1243,27 +1202,21 @@ function renderGrid(){
     curatedWrap.style.display = shouldLimit ? "flex" : "none";
   }
 
-  var width = grid.clientWidth || document.documentElement.clientWidth;
-  var gap = parseFloat(getComputedStyle(grid).gap) || 12;
-  var rows = buildRows(list, width, gap);
-
   var n = 0;
-  grid.innerHTML = rows.map(function(row){
-    return '<div class="row">' + row.items.map(function(slot){
-      var p = slot.ref, i = n++;
-      var paddedNum = String(i+1).padStart(2, "0");
-      var pos = (p.imagePosition || "Center").toLowerCase();
-      return '<button class="shot" style="--sw:'+slot.w+'px" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
-               '<span class="plate" style="--sh:'+Math.min(row.h, 380)+'px">'+
-                 '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
-                 '<span class="scanner"></span>'+
-                 '<span class="guard"></span>'+
-                 '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
-                 '<span class="telemetry">REC // '+paddedNum+'</span>'+
-               '</span>'+
-               '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
-             '</button>';
-    }).join("") + '</div>';
+  grid.innerHTML = list.map(function(p){
+    var i = n++;
+    var paddedNum = String(i+1).padStart(2, "0");
+    var pos = (p.imagePosition || "Center").toLowerCase();
+    return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
+             '<span class="plate">'+
+               '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
+               '<span class="scanner"></span>'+
+               '<span class="guard"></span>'+
+               '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
+               '<span class="telemetry">REC // '+paddedNum+'</span>'+
+             '</span>'+
+             '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
+           '</button>';
   }).join("");
 
   $$("#grid img",grid).forEach(function(img){
@@ -1329,25 +1282,21 @@ function openNicheView(nicheName){
   if(photosInNiche.length === 0){
     photosHTML = '<p style="opacity:.6;padding-block:30px;font-size:1.1rem">No photographs published in this category yet. Reach out to commission this shoot.</p>';
   } else {
-    var width = box.clientWidth || document.documentElement.clientWidth;
-    var rows = buildRows(photosInNiche, width, 12);
     var n = 0;
-    photosHTML = '<div class="grid">' + rows.map(function(row){
-      return '<div class="row">' + row.items.map(function(slot){
-        var p = slot.ref, i = n++;
-        var paddedNum = String(i+1).padStart(2, "0");
-        var pos = (p.imagePosition || "Center").toLowerCase();
-        return '<button class="shot" style="--sw:'+slot.w+'px" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
-                 '<span class="plate" style="--sh:'+Math.min(row.h, 380)+'px">'+
-                   '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
-                   '<span class="scanner"></span>'+
-                   '<span class="guard"></span>'+
-                   '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
-                   '<span class="telemetry">REC // '+paddedNum+'</span>'+
-                 '</span>'+
-                 '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
-               '</button>';
-      }).join("") + '</div>';
+    photosHTML = '<div class="uniform-grid">' + photosInNiche.map(function(p){
+      var i = n++;
+      var paddedNum = String(i+1).padStart(2, "0");
+      var pos = (p.imagePosition || "Center").toLowerCase();
+      return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
+               '<span class="plate">'+
+                 '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
+                 '<span class="scanner"></span>'+
+                 '<span class="guard"></span>'+
+                 '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
+                 '<span class="telemetry">REC // '+paddedNum+'</span>'+
+               '</span>'+
+               '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
+             '</button>';
     }).join("") + '</div>';
   }
 
@@ -1714,17 +1663,6 @@ if (window.netlifyIdentity) {
     }
   });
 }
-
-var rsTimer = null, lastW = window.innerWidth;
-window.addEventListener("resize", function(){
-  if(window.innerWidth === lastW) return;
-  lastW = window.innerWidth;
-  clearTimeout(rsTimer);
-  rsTimer = setTimeout(function(){
-    renderGrid();
-    if(state.activeNiche) openNicheView(state.activeNiche);
-  }, 120);
-});
 </script>
 </body>
 </html>
