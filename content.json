@@ -23,17 +23,6 @@
       "category": "Food"
     },
     {
-      "src": "/images/uploads/dsc07201.jpg",
-      "imagePosition": "Center",
-      "caption": "Hyderabadi Biryani",
-      "ratio": "3/2",
-      "client": "Resturant",
-      "featured": true,
-      "w": 3,
-      "title": "The Biryani",
-      "category": "Food"
-    },
-    {
       "src": "/images/uploads/bruuuu.png",
       "imagePosition": "Center",
       "caption": "1/2000s and still a blur of tail.",
