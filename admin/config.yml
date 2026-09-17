@@ -26,7 +26,6 @@ collections:
             options: ["Inter", "Archivo", "Playfair Display", "Space Grotesk"]
             default: "Inter"
 
-          # PRINCIPALS & VISUAL CREATORS (THE COLLECTIVE)
           - label: "The Collective (Principals & Visual Creators)"
             name: "team"
             widget: "list"
@@ -47,9 +46,13 @@ collections:
             name: "teamHeroImg"
             widget: "image"
             required: false
+          - label: "Collective Hero Focal Point"
+            name: "teamHeroImgPosition"
+            widget: "select"
+            options: ["Top", "Center", "Bottom"]
+            default: "Center"
           - { label: "Collective Hero Intro", name: "teamHeroIntro", widget: "text", required: false }
 
-          # HERO SLIDESHOW (MULTIPLE PHOTOS)
           - label: "Hero Banner Slideshow"
             name: "bandSlides"
             widget: "list"
@@ -62,22 +65,23 @@ collections:
                 options: ["Top", "Center", "Bottom"]
                 default: "Center"
 
-          # HERO BANNER & NICHES
           - label: "Hero Lines"
             name: "hero"
             widget: "list"
             field: { label: "Line", name: "line", widget: "string" }
+          
           - { label: "Statement", name: "statement", widget: "string" }
           - { label: "Statement Attribution", name: "statementBy", widget: "string" }
+          
           - label: "What We Shoot (Niches)"
             name: "niches"
             widget: "list"
             fields:
               - { label: "Niche Name", name: "name", widget: "string" }
               - { label: "Description Line", name: "line", widget: "string" }
+          
           - { label: "Contact Note", name: "contactNote", widget: "text" }
 
-          # PHOTOS & PORTFOLIO
           - label: "Photos & Portfolio"
             name: "photos"
             widget: "list"
@@ -90,7 +94,7 @@ collections:
                 options: ["Food", "Pets", "Architecture", "Products", "Events", "Portraits"]
               - { label: "Image", name: "src", widget: "image" }
               - { label: "Show in 'All' (Toggle on/off)", name: "featured", widget: "boolean", default: true }
-              - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
+              - { label: "Width Weight (Grid)", name: "w", widget: "number", value_type: "int", default: 4, required: false }
               - { label: "Caption", name: "caption", widget: "string", required: false }
               - label: "Aspect Ratio"
                 name: "ratio"
