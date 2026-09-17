@@ -1,28 +1,6 @@
 {
   "photos": [
     {
-      "src": "/images/uploads/dsc07638.jpg",
-      "imagePosition": "Center",
-      "caption": "Classy Indian food",
-      "ratio": "4/5",
-      "client": "Resturant",
-      "featured": true,
-      "w": 5,
-      "title": "Veg Kebab",
-      "category": "Food"
-    },
-    {
-      "src": "/images/uploads/dsc07201.jpg",
-      "imagePosition": "Center",
-      "caption": "There is no we in food",
-      "ratio": "3/2",
-      "client": "Resturant",
-      "featured": true,
-      "w": 4,
-      "title": "The Biryani",
-      "category": "Food"
-    },
-    {
       "src": "/images/uploads/bruuuu.png",
       "imagePosition": "Center",
       "caption": "1/2000s and still a blur of tail.",
@@ -87,7 +65,26 @@
       "title": "Momo",
       "client": "Resturant",
       "category": "Food",
-      "src": "/images/uploads/cr-xb1h54wwhiq-unsplash.jpg"
+      "src": "/images/uploads/cr-xb1h54wwhiq-unsplash.jpg",
+      "w": 5
+    },
+    {
+      "featured": true,
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "title": "The Biryani",
+      "client": "Resturant",
+      "category": "Food",
+      "src": "/images/uploads/dsc07201.jpg"
+    },
+    {
+      "featured": true,
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "title": "Veg Kebab",
+      "client": "Resturant",
+      "category": "Food",
+      "src": "/images/uploads/dsc07638.jpg"
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
