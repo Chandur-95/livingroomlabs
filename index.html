@@ -313,9 +313,18 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* MASONRY WORK GRID (PREVIOUS PREFERRED PROPORTIONAL LAYOUT) */
-.grid{display:flex;flex-direction:column;gap:var(--gap, 16px)}
-.row{display:flex;gap:var(--gap, 16px);align-items:flex-start}
+/* 4-IN-A-ROW NEAR-SQUARE DESKTOP / PREFERRED GRID */
+.home-work-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  column-gap: var(--col-gap, 16px);
+  row-gap: var(--row-gap, 24px);
+  width: 100%;
+}
+.home-work-grid .plate {
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
+}
 
 /* WHAT WE SHOOT OVERLAY GRID: BIGGER BOXES */
 .niche-work-grid {
@@ -331,10 +340,11 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 .shot {
-  flex:0 1 auto;min-width:0;max-width:100%;
-  width:var(--sw,100%);
-  display:block;text-align:left;
-  position:relative;
+  display: flex;
+  flex-direction: column;
+  text-align: left;
+  position: relative;
+  width: 100%;
   perspective: 900px;
 }
 .plate-tilt-wrap {
@@ -347,17 +357,17 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   overflow: hidden !important;
   background: var(--rule-soft);
   width: 100%;
-  height: var(--sh, 300px);
   display: block;
 }
 .plate img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .65s var(--ease), opacity .4s ease;
-  opacity: 0;
+  transition: transform .65s var(--ease);
 }
-.plate img.ready{opacity:1}
 .shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.04)}
 
 .plate .scanner{
@@ -454,13 +464,21 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   justify-content: space-between;
   gap: 12px;
 }
+.mobile-shoot-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 .mobile-shoot-arrow {
   font-family: "JetBrains Mono", monospace;
   font-size: 0.85rem;
+  color: var(--ink);
   transition: transform .25s var(--ease);
 }
-.mobile-shoot-box:hover .mobile-shoot-arrow {
+.mobile-shoot-box:hover .mobile-shoot-arrow,
+.mobile-shoot-box:focus-visible .mobile-shoot-arrow {
   transform: translateX(4px);
+  color: var(--glow);
 }
 
 #contact{
@@ -1020,6 +1038,15 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
+  /* HOME WORK: 2 columns single-stack clean portrait/landscape vertical flow like dog cards */
+  .home-work-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px !important;
+  }
+  .home-work-grid .plate {
+    aspect-ratio: 4 / 4.8 !important;
+  }
+
   /* MOBILE-ONLY "WHAT WE SHOOT" BOXED HYPERLINK SECTION ABOVE CONTACT */
   .mobile-shoot-sec {
     display: block !important;
@@ -1176,8 +1203,8 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
     
-    <!-- DESKTOP / MOBILE MASONRY WORK SECTION -->
-    <div class="grid" id="grid"></div>
+    <!-- DESKTOP 4-IN-A-ROW NEAR-SQUARE / MOBILE DOG-CARD FLOW -->
+    <div class="home-work-grid" id="grid"></div>
     
     <div class="curated-toggle-wrap" id="curated-wrap" style="display:none;">
       <button type="button" class="btn-curated-expand" id="btn-toggle-curated">
@@ -1190,8 +1217,11 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   <section class="sec wrap mobile-shoot-sec" id="mobile-shoot">
     <div class="mobile-shoot-box nav-niches-link" role="button" tabindex="0">
       <div class="mobile-shoot-header">
-        <span class="label">What we shoot</span>
-        <span class="mobile-shoot-arrow">PORTFOLIO ↗</span>
+        <span class="label mobile-shoot-title-group">
+          <span>What we shoot</span>
+          <span class="mobile-shoot-arrow">↗</span>
+        </span>
+        <span class="label mono" style="opacity:0.65;">PORTFOLIO</span>
       </div>
     </div>
     <p class="contact-note" style="margin-top:10px;">Food, pets, architecture, products, events, and portraits — calibrated per visual requirement.</p>
@@ -1414,99 +1444,6 @@ function esc(str){
   return String(str==null?"":str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 }
 
-function rowTarget(){
-  var w = window.innerWidth;
-  if(w <= 640) return 6;
-  if(w <= 1080) return 8;
-  return 12;
-}
-function aspectOf(p){
-  var r = String(p.ratio || "4/5").split("/");
-  var a = parseFloat(r[0]) / parseFloat(r[1]);
-  return (isFinite(a) && a > 0) ? a : 0.8;
-}
-
-function buildRows(items, width, gap){
-  var target = rowTarget();
-  var groups = [], cur = [], sum = 0, i;
-
-  for(i=0;i<items.length;i++){
-    cur.push(items[i]);
-    sum += Math.max(1, Math.min(12, items[i].w || 4));
-    if(sum >= target){ groups.push({items:cur, full:true}); cur = []; sum = 0; }
-  }
-  if(cur.length) groups.push({items:cur, full:false});
-
-  var heights = [], out = [];
-  groups.forEach(function(g){
-    var n = g.items.length;
-    var avail = width - gap * (n - 1);
-    var aSum = g.items.reduce(function(t,p){ return t + aspectOf(p); }, 0);
-    var fit = avail / aSum;
-    var h = fit;
-
-    if(!g.full){
-      var avg = heights.length
-        ? heights.reduce(function(a,b){return a+b;},0) / heights.length
-        : Math.min(avail * 0.42, 380);
-      h = Math.min(h, avg);
-    }
-    h = Math.min(fit, Math.max(Math.min(140, fit), Math.round(h)));
-    if(g.full) heights.push(h);
-
-    out.push({
-      h: h,
-      items: g.items.map(function(p){
-        return { ref:p, w: Math.max(40, Math.round(aspectOf(p) * h)) };
-      })
-    });
-  });
-  return out;
-}
-
-var state = { 
-  filter:"All", 
-  visible:[], 
-  index:0, 
-  opener:null, 
-  activeNiche:null, 
-  showAllCurated:false,
-  currentSlide:0,
-  slides:[],
-  slideTimer:null
-};
-
-function categories(){
-  var seen = [];
-  for(var i=0; i<SITE.photos.length; i++){
-    if(seen.indexOf(SITE.photos[i].category) === -1) seen.push(SITE.photos[i].category);
-  }
-  return seen;
-}
-function countIn(cat){
-  return SITE.photos.filter(function(p){ return p.category === cat; }).length;
-}
-
-function buildFilters(){
-  var host = $("[data-filters]");
-  if(!host) return;
-  var cats = ["All"].concat(categories());
-  host.innerHTML = cats.map(function(c){
-    var nStr = c === "All" ? "" : '<span class="n mono">' + countIn(c) + '</span>';
-    return '<button class="chip" data-cat="'+esc(c)+'" aria-pressed="'+(c===state.filter)+'">'+
-             '<span class="dot"></span>'+esc(c)+ nStr +
-           '</button>';
-  }).join("");
-  $$(".chip",host).forEach(function(b){
-    b.addEventListener("click",function(){
-      state.filter = b.dataset.cat;
-      state.showAllCurated = (b.dataset.cat !== "All");
-      $$(".chip",host).forEach(function(x){ x.setAttribute("aria-pressed", String(x === b)); });
-      renderGrid();
-    });
-  });
-}
-
 function attachTilt3D(el) {
   if (window.innerWidth <= 640) return;
   el.addEventListener('mousemove', function(e) {
@@ -1528,59 +1465,59 @@ function attachTilt3D(el) {
   });
 }
 
-function renderGrid(){
+function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
+  grid.className = "home-work-grid";
   
-  var fullCategoryList = SITE.photos.filter(function(p){
+  var list;
+  var hasUnshownPhotos = false;
+  var WORK_LIMIT = 12;
+
+  var filteredList = SITE.photos.filter(function(p){
     return state.filter === "All" || p.category === state.filter;
   });
 
-  var WORK_LIMIT = 12;
-  var shouldLimit = (!state.showAllCurated && fullCategoryList.length > WORK_LIMIT);
-  var list = shouldLimit ? fullCategoryList.slice(0, WORK_LIMIT) : fullCategoryList;
+  if(state.filter === "All" && !state.showAllCurated){
+    var baseList = filteredList.filter(function(p){ return p.featured !== false; });
+    list = baseList.slice(0, WORK_LIMIT);
+    hasUnshownPhotos = (filteredList.length > list.length);
+  } else {
+    list = filteredList;
+  }
+  
   state.visible = list;
-
   var counter = $("[data-workcount]");
-  if(counter){
-    counter.textContent = list.length + " / " + fullCategoryList.length + " FRAMES";
-  }
-
+  if(counter) counter.textContent = list.length + " / " + SITE.photos.length + " FRAMES";
   var curatedWrap = $("#curated-wrap");
-  if(curatedWrap){
-    curatedWrap.style.display = shouldLimit ? "flex" : "none";
-  }
+  if(curatedWrap) curatedWrap.style.display = (hasUnshownPhotos && state.filter === "All") ? "flex" : "none";
 
-  var width = grid.clientWidth || document.documentElement.clientWidth;
-  var gap = parseFloat(getComputedStyle(grid).gap) || 16;
-  var rows = buildRows(list, width, gap);
+  if(list.length === 0){
+    grid.innerHTML = '<p style="opacity:0.5; padding:20px 0;">No work published yet.</p>';
+    return;
+  }
 
   var n = 0;
-  grid.innerHTML = rows.map(function(row){
-    return '<div class="row">' + row.items.map(function(slot){
-      var p = slot.ref, i = n++;
-      var paddedNum = String(i+1).padStart(2, "0");
-      var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
-      var imgSrc = esc(fixPath(p.src)); 
-      return '<button class="shot" style="--sw:'+slot.w+'px" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
-               '<div class="plate-tilt-wrap">'+
-                 '<span class="plate" style="--sh:'+row.h+'px">'+
-                   '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+esc(pos)+';">'+
-                   '<span class="scanner"></span>'+
-                   '<span class="guard"></span>'+
-                   '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
-                   '<span class="telemetry">REC // '+paddedNum+'</span>'+
-                 '</span>'+
-               '</div>'+
-               '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
-             '</button>';
-    }).join("") + '</div>';
+  grid.innerHTML = list.map(function(p){
+    var i = n++;
+    var paddedNum = String(i+1).padStart(2, "0");
+    var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
+    var imgSrc = esc(fixPath(p.src)); 
+
+    return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
+             '<div class="plate-tilt-wrap">'+
+               '<span class="plate">'+
+                 '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+esc(pos)+';">'+
+                 '<span class="scanner"></span>'+
+                 '<span class="guard"></span>'+
+                 '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
+                 '<span class="telemetry">REC // '+paddedNum+'</span>'+
+               '</span>'+
+             '</div>'+
+             '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
+           '</button>';
   }).join("");
 
-  $$("#grid img",grid).forEach(function(img){
-    if(img.complete) img.classList.add("ready");
-    else img.addEventListener("load",function(){ img.classList.add("ready"); });
-  });
   $$(".shot",grid).forEach(function(b){
     attachTilt3D(b);
     b.addEventListener("click",function(){ openLB(parseInt(b.dataset.i,10), b); });
@@ -1590,7 +1527,8 @@ function renderGrid(){
 $$("#btn-toggle-curated").forEach(function(btn){
   btn.addEventListener("click", function(){
     state.showAllCurated = true;
-    renderGrid();
+    buildFilters();
+    renderHomeGrid();
   });
 });
 
@@ -2115,7 +2053,7 @@ function renderContent(){
   }
 
   buildFilters();
-  renderGrid();
+  renderHomeGrid();
   renderNichesList();
 
   if(window.location.hash === "#collective"){
@@ -2167,7 +2105,7 @@ window.addEventListener("resize", function(){
   lastW = currentW;
   clearTimeout(rsTimer);
   rsTimer = setTimeout(function(){
-    renderGrid();
+    renderHomeGrid();
     if(state.activeNiche) openNicheView(state.activeNiche);
   }, 150);
 });
