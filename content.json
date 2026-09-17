@@ -1,25 +1,25 @@
 {
   "photos": [
     {
-      "src": "/images/uploads/dsc07197.jpg",
+      "src": "/images/uploads/dsc07638.jpg",
       "imagePosition": "Center",
-      "caption": "Classy Indian Meal",
+      "caption": "Classy Indian food",
       "ratio": "4/5",
       "client": "Resturant",
       "featured": false,
       "w": 5,
-      "title": "Indian Delight",
+      "title": "Veg Kebab",
       "category": "Food"
     },
     {
-      "src": "/images/uploads/dsc07638.jpg",
+      "src": "/images/uploads/dsc07201.jpg",
       "imagePosition": "Center",
       "caption": "There is no we in food",
       "ratio": "3/2",
       "client": "Resturant",
       "featured": true,
       "w": 4,
-      "title": "Veggie delight",
+      "title": "The Biryani",
       "category": "Food"
     },
     {
