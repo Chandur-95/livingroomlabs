@@ -79,6 +79,15 @@
       "category": "Products",
       "src": "/images/uploads/untitled-5.jpg",
       "client": "Private"
+    },
+    {
+      "featured": true,
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "title": "Momo",
+      "client": "Resturant",
+      "category": "Food",
+      "src": "/images/uploads/cr-xb1h54wwhiq-unsplash.jpg"
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
