@@ -78,7 +78,7 @@
       "src": "/images/uploads/dsc07195.jpg"
     },
     {
-      "featured": true,
+      "featured": false,
       "ratio": "4/5",
       "imagePosition": "Center",
       "src": "/images/uploads/dsc07197.jpg",
