@@ -12,7 +12,6 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
 <script>
-  // Prevent theme flash before DOM paints
   try {
     var savedTheme = localStorage.getItem("lrl_theme");
     if (savedTheme) {
@@ -1206,7 +1205,7 @@ html[data-theme="dark"] .collective-about-logo img{
 <!-- WHAT WE SHOOT OVERLAY PAGE -->
 <div class="overlay-page" id="niches-page" role="dialog" aria-modal="true" aria-label="What We Shoot">
   <div class="overlay-nav niches-nav">
-    <button class="overlay-nav-brand btn-close-niches" aria-label="Back to Home">
+    <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
         <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
       </span>
@@ -1233,7 +1232,7 @@ html[data-theme="dark"] .collective-about-logo img{
         <button class="niche-back btn-close-niches" style="padding:14px 28px;">← Back to Studio</button>
       </div>
       <div class="collective-about-logo">
-        <button class="btn-close-niches" aria-label="Back to Home">
+        <button class="logo-exit-btn" aria-label="Back to Home">
           <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
@@ -1244,7 +1243,7 @@ html[data-theme="dark"] .collective-about-logo img{
 <!-- THE COLLECTIVE OVERLAY PAGE -->
 <div class="overlay-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
   <div class="overlay-nav collective-nav">
-    <button class="overlay-nav-brand btn-close-collective" aria-label="Back to Home">
+    <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
         <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
       </span>
@@ -1285,7 +1284,7 @@ html[data-theme="dark"] .collective-about-logo img{
         <div class="label by" data-statement-by></div>
       </div>
       <div class="collective-about-logo">
-        <button class="btn-close-collective" aria-label="Back to Home">
+        <button class="logo-exit-btn" aria-label="Back to Home">
           <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
@@ -1354,7 +1353,7 @@ var SITE = {
 var $  = function(s,r){ return (r||document).querySelector(s); };
 var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
 
-/* The absolute path fixer: Guaranteed to stop CMS uploaded images from breaking */
+/* Safely formats image paths from the CMS so they never break */
 function fixPath(p){
   if(!p) return "";
   if(p.indexOf("://") !== -1 || p.startsWith("data:")) return p;
@@ -1472,7 +1471,7 @@ function renderGrid(){
     var i = n++;
     var paddedNum = String(i+1).padStart(2, "0");
     var pos = (p.imagePosition || "Center").toLowerCase();
-    var imgSrc = esc(fixPath(p.src)); // Fix applied here
+    var imgSrc = esc(fixPath(p.src)); 
 
     return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
              '<div class="plate-tilt-wrap">'+
@@ -1513,7 +1512,6 @@ $("#btn-toggle-curated").addEventListener("click", function(){
 
 function renderNichesList(){
   var made = categories();
-  var nc = $("[data-nichecount]"); if(nc) nc.textContent = (SITE.niches || []).length + " CATEGORIES";
   var nHost = $("#niches-list");
   if(!nHost || !SITE.niches) return;
 
@@ -1565,7 +1563,7 @@ function openNicheView(nicheName){
       var i = n++;
       var paddedNum = String(i+1).padStart(2, "0");
       var pos = (p.imagePosition || "Center").toLowerCase();
-      var imgSrc = esc(fixPath(p.src)); // Fix applied here
+      var imgSrc = esc(fixPath(p.src)); 
 
       return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                '<div class="plate-tilt-wrap">'+
@@ -1591,7 +1589,7 @@ function openNicheView(nicheName){
         '</div>' +
         '<div style="display:flex;align-items:center;gap:16px;">' +
           '<span class="mono" style="opacity:.6;font-size:.75rem">' + countText + '</span>' +
-          '<button class="niche-back" id="close-niche-view-btn">← Back to Overview</button>' +
+          '<button class="niche-back" id="close-niche-view-btn">← Back to Categories</button>' +
         '</div>' +
       '</div>' +
       '<div id="niche-grid-host">' + photosHTML + '</div>' +
@@ -1619,7 +1617,6 @@ function openNicheView(nicheName){
     closeNicheView();
   });
   
-  // Scroll to top of overlay
   $("#niches-page").scrollTo({top: 0, behavior: 'smooth'});
 }
 
@@ -1638,19 +1635,17 @@ function closeNicheView(){
   }
 }
 
-// Nav and Footer Logo Actions
+// Global UI Buttons
 $("#top-brand-btn").addEventListener("click", function(e){
   e.preventDefault();
   window.location.reload();
 });
-
 $("#bottom-lockup-btn").addEventListener("click", function(e){
   e.preventDefault();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
-
-// Overlay States
+// Overlay Controls
 var collectivePage = $("#collective-page");
 var nichesPage = $("#niches-page");
 
@@ -1693,19 +1688,18 @@ function exitOverlayToHome(){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Click bindings for overlays
+// Foolproof Overlay Bindings
 $$(".btn-close-collective").forEach(function(btn){
   btn.addEventListener("click", function(e){ e.preventDefault(); closeCollective(); });
 });
 $$(".btn-close-niches").forEach(function(btn){
   btn.addEventListener("click", function(e){ e.preventDefault(); closeNiches(); });
 });
+$$(".logo-exit-btn").forEach(function(btn){
+  btn.addEventListener("click", function(e){ e.preventDefault(); exitOverlayToHome(); });
+});
 
-// Logo clicks inside overlays navigate back to Home
-$("#collective-top-logo-btn").addEventListener("click", function(e){ e.preventDefault(); exitOverlayToHome(); });
-$("#collective-bottom-logo-btn").addEventListener("click", function(e){ e.preventDefault(); exitOverlayToHome(); });
-
-// Nav Links
+// Primary Nav Links
 $("#nav-collective-link").addEventListener("click", function(e){ e.preventDefault(); openCollective(); });
 $("#nav-collective-link-mob").addEventListener("click", function(e){ e.preventDefault(); openCollective(); });
 $("#nav-niches-link").addEventListener("click", function(e){ e.preventDefault(); openNiches(); });
@@ -1754,7 +1748,7 @@ function initSlideshow(){
   stage.innerHTML = slides.map(function(s, idx){
     var pos = (s.imagePosition || "Center").toLowerCase();
     var act = (idx === state.currentSlide) ? "active" : "";
-    var imgSrc = esc(fixPath(s.src)); // Fix applied here
+    var imgSrc = esc(fixPath(s.src)); 
 
     return '<img class="band-img '+act+'" data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: center '+pos+';">';
   }).join("");
@@ -1848,7 +1842,7 @@ function stepLB(d){
 function paintLB(){
   var p = state.visible[state.index];
   if(!p) return;
-  $("#lb-img").src = fixPath(p.src); // Fix applied here
+  $("#lb-img").src = fixPath(p.src); 
   $("#lb-img").alt = p.caption || p.title;
   $("#lb-title").textContent = p.title;
   $("#lb-meta").textContent = p.client + " — " + p.category;
@@ -1931,18 +1925,24 @@ document.addEventListener("keydown", function(e){
 });
 
 function renderContent(){
+  // HARDENED SAFETY CATCHES
+  SITE.photos = SITE.photos || [];
+  SITE.niches = SITE.niches || [];
+  SITE.team = SITE.team || [];
+  SITE.hero = SITE.hero || [];
+
   if(SITE.bodyFont){
     document.body.style.fontFamily = '"' + SITE.bodyFont + '", system-ui, sans-serif';
   }
 
-  $$("[data-name]").forEach(function(n){ n.textContent = SITE.name; });
-  $$("[data-tagline]").forEach(function(n){ n.textContent = SITE.tagline; });
-  var pl1 = $("[data-place]"); if(pl1) pl1.textContent = SITE.city;
-  var pl2 = $("[data-place2]"); if(pl2) pl2.textContent = SITE.city;
+  $$("[data-name]").forEach(function(n){ n.textContent = SITE.name || ""; });
+  $$("[data-tagline]").forEach(function(n){ n.textContent = SITE.tagline || ""; });
+  var pl1 = $("[data-place]"); if(pl1) pl1.textContent = SITE.city || "";
+  var pl2 = $("[data-place2]"); if(pl2) pl2.textContent = SITE.city || "";
 
   var heroEl = $("[data-hero]");
   if(heroEl){
-    heroEl.innerHTML = (SITE.hero || []).map(function(lineStr, i){
+    heroEl.innerHTML = SITE.hero.map(function(lineStr, i){
       var delay = (0.12 + (i * 0.12)).toFixed(2);
       return '<span class="line-mask">' +
                '<span class="line-inner" style="animation-delay:' + delay + 's">' +
@@ -1959,8 +1959,8 @@ function renderContent(){
 
   var mail = $("[data-mail]");
   if(mail){
-    mail.textContent = SITE.email;
-    mail.href = "mailto:" + SITE.email;
+    mail.textContent = SITE.email || "";
+    mail.href = "mailto:" + (SITE.email || "");
   }
   var note = $("[data-contact-note]"); if(note) note.textContent = SITE.contactNote || "";
 
@@ -2011,12 +2011,12 @@ function renderContent(){
   if(teamIntro && SITE.teamHeroIntro) teamIntro.textContent = SITE.teamHeroIntro;
 
   var frameCount = $("#collective-frame-count");
-  if(frameCount && SITE.team) {
+  if(frameCount) {
     frameCount.textContent = SITE.team.length + " FRAMES";
   }
 
   var collectiveGrid = $("#collective-grid");
-  if(collectiveGrid && SITE.team){
+  if(collectiveGrid){
     collectiveGrid.innerHTML = SITE.team.map(function(m){
       var links = "";
       if(m.instagram) links += '<a href="'+esc(m.instagram)+'" target="_blank" rel="noopener" class="member-chip">Instagram ↗</a>';
