@@ -6,7 +6,7 @@
       "caption": "Classy Indian food",
       "ratio": "4/5",
       "client": "Resturant",
-      "featured": false,
+      "featured": true,
       "w": 5,
       "title": "Veg Kebab",
       "category": "Food"
