@@ -232,9 +232,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-top:14px;
 }
 
-/* ============================================================
-   HERO BANNER SLIDESHOW (UNCROPPED FIXED CONTAINER)
-   ============================================================ */
+/* HERO BANNER SLIDESHOW */
 .band{
   position:relative;
   width:100%;
@@ -272,7 +270,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   z-index:2;
 }
 
-/* Camera Aperture Snap Wipe */
 .band-img.shutter-enter{
   z-index:3;
   opacity:1;
@@ -310,7 +307,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   100%{opacity:0}
 }
 
-/* HUD Overlay */
 .band-hud{
   position:absolute;
   bottom:16px;
@@ -374,7 +370,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* UNIFORM GRID */
+/* UNIFORM GRID & 3D PERSPECTIVE */
 .uniform-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -388,6 +384,13 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   text-align: left;
   position: relative;
   width: 100%;
+  perspective: 900px;
+}
+.plate-tilt-wrap {
+  width: 100%;
+  height: 100%;
+  transition: transform 0.15s ease-out;
+  transform-style: preserve-3d;
 }
 .plate {
   position: relative;
@@ -836,6 +839,7 @@ html[data-theme="dark"] .collective-about-logo img{
 }
 .collective-about-logo:hover img{transform:scale(1.03)}
 
+/* LIGHTBOX & TELEMETRY HUD */
 .lb{
   position:fixed;inset:0;z-index:120;
   background:rgba(6, 6, 6, .97);color:#FFF;
@@ -849,6 +853,14 @@ html[data-theme="dark"] .collective-about-logo img{
 .lb-top{
   display:flex;justify-content:space-between;align-items:center;gap:14px;
   padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.18);
+}
+.lb-hud-strip {
+  font-family:"JetBrains Mono",monospace;
+  font-size:.65rem;
+  letter-spacing:.14em;
+  color: rgb(var(--laser-red));
+  display: flex; gap: 16px;
+  opacity: .85;
 }
 .lb-count{font-size:var(--fs-label);letter-spacing:.14em;font-weight:600}
 .lb-close{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;color:#FFF}
@@ -1058,6 +1070,9 @@ html[data-theme="dark"] .collective-about-logo img{
   }
   .collective-about-logo img{max-width:220px !important}
 
+  .lb-hud-strip {
+    display: none !important;
+  }
   .lb-frame img{max-width:calc(100vw - 24px);max-height:calc(100vh - 140px)}
   .lb-cap{grid-template-columns:1fr}
   .lb-cap .m{text-align:left}
@@ -1214,6 +1229,12 @@ html[data-theme="dark"] .collective-about-logo img{
 
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <div class="lb-top">
+    <div class="lb-hud-strip">
+      <span>SHUTTER: 1/2000s</span>
+      <span>ISO: 100</span>
+      <span>LENS: 50MM</span>
+      <span>FORMAT: RAW</span>
+    </div>
     <div class="lb-count mono"><b id="lb-i">01</b> <span>/</span> <span id="lb-n">01</span></div>
     <button class="lb-close" id="lb-close">
       Close
@@ -1273,6 +1294,37 @@ var SITE = {
 var $  = function(s,r){ return (r||document).querySelector(s); };
 var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
 
+// Safe native Web Audio API synthesizer for tactile mechanical feedback
+let audioCtx = null;
+function playTactileClick(type) {
+  try {
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    let osc = audioCtx.createOscillator();
+    let gain = audioCtx.createGain();
+    osc.connect(gain);
+    gain.connect(audioCtx.destination);
+    
+    if (type === 'shutter') {
+      osc.type = 'triangle';
+      osc.frequency.setValueAtTime(320, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(40, audioCtx.currentTime + 0.04);
+      gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.04);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.04);
+    } else {
+      osc.type = 'square';
+      osc.frequency.setValueAtTime(180, audioCtx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(80, audioCtx.currentTime + 0.03);
+      gain.gain.setValueAtTime(0.08, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.03);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.03);
+    }
+  } catch(e) {}
+}
+
 function italics(str){
   return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;")
                     .replace(/\*(.+?)\*/g,"<em>$1</em>");
@@ -1327,6 +1379,27 @@ function buildFilters(){
   });
 }
 
+function attachTilt3D(el) {
+  if (window.innerWidth <= 640) return;
+  el.addEventListener('mousemove', function(e) {
+    const rect = el.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const xc = rect.width / 2;
+    const yc = rect.height / 2;
+    const dx = (x - xc) / xc;
+    const dy = (y - yc) / yc;
+    const tiltWrap = el.querySelector('.plate-tilt-wrap');
+    if (tiltWrap) {
+      tiltWrap.style.transform = `rotateY(${dx * 4}deg) rotateX(${-dy * 4}deg)`;
+    }
+  });
+  el.addEventListener('mouseleave', function() {
+    const tiltWrap = el.querySelector('.plate-tilt-wrap');
+    if (tiltWrap) tiltWrap.style.transform = `rotateY(0deg) rotateX(0deg)`;
+  });
+}
+
 function renderGrid(){
   var grid = $("#grid");
   if(!grid) return;
@@ -1365,13 +1438,15 @@ function renderGrid(){
     var paddedNum = String(i+1).padStart(2, "0");
     var pos = (p.imagePosition || "Center").toLowerCase();
     return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
-             '<span class="plate">'+
-               '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
-               '<span class="scanner"></span>'+
-               '<span class="guard"></span>'+
-               '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
-               '<span class="telemetry">REC // '+paddedNum+'</span>'+
-             '</span>'+
+             '<div class="plate-tilt-wrap">'+
+               '<span class="plate">'+
+                 '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
+                 '<span class="scanner"></span>'+
+                 '<span class="guard"></span>'+
+                 '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
+                 '<span class="telemetry">REC // '+paddedNum+'</span>'+
+               '</span>'+
+             '</div>'+
              '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
            '</button>';
   }).join("");
@@ -1381,6 +1456,7 @@ function renderGrid(){
     else img.addEventListener("load",function(){ img.classList.add("ready"); });
   });
   $$(".shot",grid).forEach(function(b){
+    attachTilt3D(b);
     b.addEventListener("click",function(){ openLB(parseInt(b.dataset.i,10), b); });
   });
 }
@@ -1446,13 +1522,15 @@ function openNicheView(nicheName){
       var paddedNum = String(i+1).padStart(2, "0");
       var pos = (p.imagePosition || "Center").toLowerCase();
       return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
-               '<span class="plate">'+
-                 '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
-                 '<span class="scanner"></span>'+
-                 '<span class="guard"></span>'+
-                 '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
-                 '<span class="telemetry">REC // '+paddedNum+'</span>'+
-               '</span>'+
+               '<div class="plate-tilt-wrap">'+
+                 '<span class="plate">'+
+                   '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
+                   '<span class="scanner"></span>'+
+                   '<span class="guard"></span>'+
+                   '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
+                   '<span class="telemetry">REC // '+paddedNum+'</span>'+
+                 '</span>'+
+               '</div>'+
                '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
              '</button>';
     }).join("") + '</div>';
@@ -1479,6 +1557,7 @@ function openNicheView(nicheName){
   });
 
   $$("[data-niche-i]", box).forEach(function(b){
+    attachTilt3D(b);
     b.addEventListener("click", function(){
       var idx = parseInt(b.dataset.nicheI, 10);
       state.visible = photosInNiche;
@@ -1567,7 +1646,7 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-/* SLIDESHOW ENGINE WITH AUTO-ADAPTING RATIO & OBJECT-POSITION FIX */
+/* SLIDESHOW ENGINE */
 function initSlideshow(){
   var slides = [];
   if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
@@ -1631,6 +1710,7 @@ function updateSlideCounter(){
 
 function nextSlide(){
   if(!state.slides || state.slides.length <= 1) return;
+  playTactileClick('shutter');
 
   var oldIndex = state.currentSlide;
   var newIndex = (state.currentSlide + 1) % state.slides.length;
@@ -1660,8 +1740,10 @@ function nextSlide(){
   updateSlideCounter();
 }
 
+/* LIGHTBOX */
 var lb = $("#lb");
 function openLB(i, opener){
+  playTactileClick('shutter');
   state.index = i; state.opener = opener || null;
   lb.classList.add("on");
   document.body.style.overflow = "hidden";
@@ -1675,11 +1757,13 @@ function openLB(i, opener){
   $("#lb-close").focus();
 }
 function closeLB(){
+  playTactileClick('relay');
   lb.classList.remove("on");
   document.body.style.overflow = "";
   if(state.opener) state.opener.focus();
 }
 function stepLB(d){
+  playTactileClick('shutter');
   if(!state.visible.length) return;
   state.index = (state.index + d + state.visible.length) % state.visible.length;
   
@@ -1725,6 +1809,7 @@ lb.addEventListener("touchend", function(e){
 
 var pull = $("#theme");
 pull.addEventListener("click", function(){
+  playTactileClick('relay');
   var wasDark = document.documentElement.getAttribute("data-theme") === "dark";
   var nowDark = !wasDark;
   
