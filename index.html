@@ -12,7 +12,6 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
 <script>
-  // Prevent theme flash before DOM paints
   try {
     var savedTheme = localStorage.getItem("lrl_theme");
     if (savedTheme) {
@@ -33,7 +32,8 @@
 
   --nav-h:80px;
   --pad:clamp(16px, 4vw, 56px);
-  --gap:clamp(10px, 1.2vw, 16px);
+  --col-gap:16px;
+  --row-gap:24px;
   --sec:clamp(36px, 4.5vw, 76px);
 
   --fs-label:.7rem;
@@ -131,7 +131,7 @@ div[data-netlify-drawer],
   visibility: hidden !important;
 }
 
-/* NAV */
+/* GLOBAL NAV */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
   height:calc(var(--nav-h) + var(--safe-top));
@@ -146,6 +146,7 @@ div[data-netlify-drawer],
 .brand .mark{display:flex;align-items:center;height:74px}
 .brand .mark img{
   height:74px;width:auto;object-fit:contain;
+  mix-blend-mode:multiply;
   transition:transform .3s var(--ease);
 }
 .brand .wordmark{
@@ -200,7 +201,7 @@ html[data-theme="dark"] .pull .bead{ background: linear-gradient(135deg, #B58450
 .pull.tug .bead{top:54px;transition:top .08s ease-out}
 
 main{padding-top:calc(var(--nav-h) + var(--safe-top))}
-.wrap{padding-inline:calc(var(--pad) + 12px)}
+.wrap{padding-inline:clamp(16px, 4vw, 56px)}
 
 .hero{padding-block:clamp(40px, 7vw, 95px) clamp(24px, 3.5vw, 48px)}
 .hero h1{
@@ -313,26 +314,38 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* ORIGINAL MASONRY ENGINE LAYOUT */
-.grid {
-  display: flex;
-  flex-direction: column;
-  gap: var(--gap);
+/* HOME WORK SECTION: SMALL SQUARE BOXES (1:1 aspect ratio) */
+.home-work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+  column-gap: var(--col-gap);
+  row-gap: var(--row-gap);
+  width: 100%;
 }
-.row {
-  display: flex;
-  gap: var(--gap);
-  align-items: flex-start;
+.home-work-grid .plate {
+  aspect-ratio: 1 / 1 !important;
+  height: auto !important;
 }
+
+/* WHAT WE SHOOT OVERLAY GRID: EVEN BIGGER BOXES */
+.niche-work-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  column-gap: clamp(20px, 3vw, 32px);
+  row-gap: clamp(32px, 5vw, 56px);
+  width: 100%;
+}
+.niche-work-grid .plate {
+  aspect-ratio: 4 / 3 !important;
+  height: auto !important;
+}
+
 .shot {
-  flex: 0 1 auto;
-  min-width: 0;
-  max-width: 100%;
-  width: var(--sw, 100%);
   display: flex;
   flex-direction: column;
   text-align: left;
   position: relative;
+  width: 100%;
   perspective: 900px;
 }
 .plate-tilt-wrap {
@@ -345,7 +358,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   overflow: hidden !important;
   background: var(--rule-soft);
   width: 100%;
-  height: var(--sh, 300px);
   display: block;
 }
 .plate img {
@@ -488,12 +500,25 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   max-width:260px;
   height:auto;
   object-fit:contain;
+  mix-blend-mode:multiply;
   transition:transform .3s var(--ease);
 }
 .foot-logo-btn:hover img{transform:scale(1.03)}
+.foot-links-group { display: contents; }
+
+.mobile-shoot-column {
+  display: none;
+}
+.mobile-shoot-tagline {
+  font-size: 0.65rem;
+  opacity: 0.6;
+  font-weight: 400;
+  margin-top: 2px;
+  display: block;
+}
 
 /* ============================================================
-   LOGOS & DARK MODE LOGIC (FIXED)
+   LOGOS & DARK MODE LOGIC (Orange lamp hue-rotate preservation)
    ============================================================ */
 .brand .mark img,
 .foot-logo-btn img,
@@ -502,25 +527,20 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   mix-blend-mode: multiply;
 }
 
-/* Force bright white in Dark Mode */
 html[data-theme="dark"] .brand .mark img,
 html[data-theme="dark"] .foot-logo-btn img,
 html[data-theme="dark"] .collective-about-logo img,
 html[data-theme="dark"] .overlay-nav-brand .mark img {
-  filter: invert(1) brightness(1.2);
-  mix-blend-mode: normal; /* Removed screen blend to prevent vanishing */
+  filter: invert(1) hue-rotate(180deg) brightness(1.25);
+  mix-blend-mode: normal;
 }
 
-/* The Collective Nav ALWAYS needs to be white */
 .collective-nav .overlay-nav-brand .mark img {
-  filter: invert(1) brightness(1.2) !important;
+  filter: invert(1) hue-rotate(180deg) brightness(1.25) !important;
   mix-blend-mode: normal !important;
 }
 
-
-/* ============================================================
-   OVERLAYS (THE COLLECTIVE & WHAT WE SHOOT)
-   ============================================================ */
+/* OVERLAYS (THE COLLECTIVE & WHAT WE SHOOT) */
 .overlay-page {
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
@@ -922,31 +942,32 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 
 /* ============================================================
-   MOBILE SPECIFICS (FIXED NAVIGATION & SIZING)
+   MOBILE SPECIFICS
    ============================================================ */
 @media (max-width:640px){
   :root{
-    --nav-h:76px; /* Increased to fit stacked links */
+    --nav-h:64px;
     --pad:12px;
   }
   .nav{padding-inline:12px; gap:8px;}
   
   .brand{flex-direction:row;justify-content:flex-start}
-  .brand .mark{height:56px} /* Adjusted mobile logo size */
-  .brand .mark img{height:56px}
+  .brand .mark{height:52px}
+  .brand .mark img{height:52px}
   .brand .wordmark{display:none}
   
   .nav-right{gap:14px}
   
   .nav-links{
     display:flex;
-    flex-direction:column;
-    align-items:flex-end; /* Align right next to lamp */
+    align-items:center;
     justify-content:center;
-    gap:6px;
-    font-size:0.68rem;
-    letter-spacing:0.12em;
+    font-size:0.7rem;
+    letter-spacing:0.14em;
     white-space:nowrap;
+  }
+  .nav-mobile-only .nav-niches-link-mob {
+    display: none !important;
   }
 
   .nav-desktop-only{display:none !important}
@@ -987,6 +1008,10 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
+  .home-work-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+
   /* FOOTER */
   .foot{
     display: grid !important;
@@ -1022,15 +1047,21 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     display: flex !important;
     flex-direction: row !important;
     justify-content: flex-start !important;
-    gap: 24px !important;
+    gap: 20px !important;
     width: 100% !important;
+    flex-wrap: wrap;
   }
 
   .foot-col-index {
-    min-width: 90px;
+    min-width: 80px;
   }
   .foot-col-elsewhere {
     min-width: 80px;
+  }
+
+  .mobile-shoot-column {
+    display: block !important;
+    min-width: 100px;
   }
 
   .foot-col-team {
@@ -1097,9 +1128,9 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       <button type="button" class="nav-niches-link nav-desktop-only">What we shoot</button>
       <button type="button" class="nav-collective-link nav-desktop-only">The Collective</button>
 
-      <!-- Mobile Header Items (Stacked Order: 1. Collective, 2. Shoot) -->
+      <!-- Mobile Header Items (Only The Collective) -->
       <button type="button" class="nav-collective-link-mob nav-mobile-only">The Collective</button>
-      <button type="button" class="nav-niches-link-mob nav-mobile-only">What we shoot</button>
+      <button type="button" class="nav-niches-link-mob nav-mobile-only" style="display:none!important;">What we shoot</button>
     </div>
     <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
       <span class="cord" aria-hidden="true"></span>
@@ -1131,8 +1162,8 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
     
-    <!-- RESTORED MASONRY ENGINE -->
-    <div class="grid" id="grid"></div>
+    <!-- HOME WORK SECTION: SMALL SQUARE BOXES -->
+    <div class="home-work-grid" id="grid"></div>
     
     <div class="curated-toggle-wrap" id="curated-wrap" style="display:none;">
       <button type="button" class="btn-curated-expand" id="btn-toggle-curated">
@@ -1165,9 +1196,16 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
           <ul data-foot-index></ul>
         </div>
 
+        <!-- Elsewhere moved in between Index and The Collective -->
         <div class="foot-col-elsewhere">
           <h4>Elsewhere</h4>
           <ul data-foot-social></ul>
+        </div>
+
+        <!-- Mobile-only column for What we shoot with tagline -->
+        <div class="mobile-shoot-column">
+          <h4><button class="nav-niches-link" style="border:none;background:none;padding:0;font:inherit;text-align:left;cursor:pointer;">What we shoot</button></h4>
+          <span class="mobile-shoot-tagline">What we work</span>
         </div>
       </div>
 
@@ -1179,7 +1217,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   </footer>
 </main>
 
-<!-- WHAT WE SHOOT OVERLAY PAGE -->
+<!-- WHAT WE SHOOT OVERLAY PAGE (EVEN BIGGER BOXES) -->
 <div class="overlay-page" id="niches-page" role="dialog" aria-modal="true" aria-label="What We Shoot">
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
@@ -1269,8 +1307,37 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   </section>
 </div>
 
+<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
+  <div class="lb-top">
+    <div class="lb-count mono"><b id="lb-i">01</b> <span>/</span> <span id="lb-n">01</span></div>
+    <button class="lb-close" id="lb-close">
+      Close
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20"/></svg>
+    </button>
+  </div>
+  <div class="lb-stage">
+    <button class="lb-nav" id="lb-prev" aria-label="Previous photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M15 3L6 12l9 9"/></svg>
+    </button>
+    <figure class="lb-figure">
+      <span class="lb-frame">
+        <img id="lb-img" alt="">
+        <span class="guard" aria-hidden="true"></span>
+        <span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
+      </span>
+    </figure>
+    <button class="lb-nav" id="lb-next" aria-label="Next photo">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M9 3l9 9-9 9"/></svg>
+    </button>
+  </div>
+  <div class="lb-cap">
+    <div class="t" id="lb-title"></div>
+    <div class="m mono" id="lb-meta"></div>
+    <div class="d" id="lb-desc"></div>
+  </div>
+</div>
+
 <script>
-// Default Crash-Proof CMS Data
 var SITE = {
   name: "Living Room Labs",
   tagline: "CAPTURE . CREATE . INSPIRE",
@@ -1289,19 +1356,24 @@ var SITE = {
   bandSlides: [],
   statement: "A portfolio is not a *promise*. It is a receipt.",
   statementBy: "Everything on this page was shot by us, for someone who needed it.",
-  niches: [],
+  niches: [
+    { name: "Food", line: "Menus, delivery listings, and the plate as it actually arrives." },
+    { name: "Pets", line: "Fast shutter, floor-level angles, treats on hand." }
+  ],
   contactNote: "Tell us what you are shooting, roughly when, and where. We reply within a day.",
   teamHeroImg: "/images/uploads/dsc05175.jpg",
   teamHeroImgPosition: "Center",
   teamHeroIntro: "Four distinct visual sensibilities aligned under one collective principle.",
   team: [],
-  photos: []
+  photos: [
+    { src: "https://picsum.photos/seed/lrl1/800/800", title: "Placeholder 1", client: "Studio", category: "Food", imagePosition: "center", w: 4 },
+    { src: "https://picsum.photos/seed/lrl2/800/800", title: "Placeholder 2", client: "Studio", category: "Pets", imagePosition: "center", w: 4 }
+  ]
 };
 
 var $  = function(s,r){ return (r||document).querySelector(s); };
 var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
 
-/* Safely formats image paths from the CMS so they never break */
 function fixPath(p){
   if(!p) return "";
   if(p.indexOf("://") !== -1 || p.startsWith("data:")) return p;
@@ -1315,57 +1387,6 @@ function italics(str){
 }
 function esc(str){
   return String(str==null?"":str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
-}
-
-/* RESTORED: DYNAMIC MASONRY MATH ENGINE */
-function rowTarget(){
-  var w = window.innerWidth;
-  if(w <= 640) return 3;
-  if(w <= 1080) return 8;
-  return 12;
-}
-function aspectOf(p){
-  var r = String(p.ratio || "3/4").split("/");
-  var a = parseFloat(r[0]) / parseFloat(r[1]);
-  return (isFinite(a) && a > 0) ? a : 0.75;
-}
-
-function buildRows(items, width, gap){
-  var target = rowTarget();
-  var groups = [], cur = [], sum = 0, i;
-
-  for(i=0;i<items.length;i++){
-    cur.push(items[i]);
-    sum += Math.max(1, Math.min(12, items[i].w || 4));
-    if(sum >= target){ groups.push({items:cur, full:true}); cur = []; sum = 0; }
-  }
-  if(cur.length) groups.push({items:cur, full:false});
-
-  var heights = [], out = [];
-  groups.forEach(function(g){
-    var n = g.items.length;
-    var avail = width - gap * (n - 1);
-    var aSum = g.items.reduce(function(t,p){ return t + aspectOf(p); }, 0);
-    var fit = avail / aSum;
-    var h = fit;
-
-    if(!g.full){
-      var avg = heights.length
-        ? heights.reduce(function(a,b){return a+b;},0) / heights.length
-        : Math.min(avail * 0.42, 460);
-      h = Math.min(h, avg);
-    }
-    h = Math.min(fit, Math.max(Math.min(130, fit), Math.round(h)));
-    if(g.full) heights.push(h);
-
-    out.push({
-      h: h,
-      items: g.items.map(function(p){
-        return { ref:p, w: Math.max(40, Math.round(aspectOf(p) * h)) };
-      })
-    });
-  });
-  return out;
 }
 
 var state = { 
@@ -1406,7 +1427,7 @@ function buildFilters(){
       state.filter = b.dataset.cat;
       state.showAllCurated = (b.dataset.cat !== "All");
       $$(".chip",host).forEach(function(x){ x.setAttribute("aria-pressed", String(x === b)); });
-      renderGrid();
+      renderHomeGrid();
     });
   });
 }
@@ -1432,13 +1453,14 @@ function attachTilt3D(el) {
   });
 }
 
-function renderGrid(){
+function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
+  grid.className = "home-work-grid";
   
   var list;
   var hasUnshownPhotos = false;
-  var WORK_LIMIT = 12; // 12 PHOTOS BY DEFAULT
+  var WORK_LIMIT = 12;
 
   var filteredList = SITE.photos.filter(function(p){
     return state.filter === "All" || p.category === state.filter;
@@ -1450,51 +1472,38 @@ function renderGrid(){
     hasUnshownPhotos = (filteredList.length > list.length);
   } else {
     list = filteredList;
-    hasUnshownPhotos = false;
   }
   
   state.visible = list;
-
   var counter = $("[data-workcount]");
-  if(counter){
-    counter.textContent = list.length + " / " + SITE.photos.length + " FRAMES";
-  }
-
+  if(counter) counter.textContent = list.length + " / " + SITE.photos.length + " FRAMES";
   var curatedWrap = $("#curated-wrap");
-  if(curatedWrap){
-    curatedWrap.style.display = (hasUnshownPhotos && state.filter === "All") ? "flex" : "none";
-  }
+  if(curatedWrap) curatedWrap.style.display = (hasUnshownPhotos && state.filter === "All") ? "flex" : "none";
 
   if(list.length === 0){
     grid.innerHTML = '<p style="opacity:0.5; padding:20px 0;">No work published yet.</p>';
     return;
   }
 
-  var width = grid.clientWidth || document.documentElement.clientWidth;
-  var gap = parseFloat(getComputedStyle(grid).gap) || 16;
-  var rows = buildRows(list, width, gap);
-
   var n = 0;
-  grid.innerHTML = rows.map(function(row){
-    return '<div class="row">' + row.items.map(function(slot){
-      var p = slot.ref, i = n++;
-      var paddedNum = String(i+1).padStart(2, "0");
-      var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
-      var imgSrc = esc(fixPath(p.src)); 
+  grid.innerHTML = list.map(function(p){
+    var i = n++;
+    var paddedNum = String(i+1).padStart(2, "0");
+    var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
+    var imgSrc = esc(fixPath(p.src)); 
 
-      return '<button class="shot" style="--sw:'+slot.w+'px" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
-               '<div class="plate-tilt-wrap">'+
-                 '<span class="plate" style="--sh:'+row.h+'px">'+
-                   '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+esc(pos)+';">'+
-                   '<span class="scanner"></span>'+
-                   '<span class="guard"></span>'+
-                   '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
-                   '<span class="telemetry">REC // '+paddedNum+'</span>'+
-                 '</span>'+
-               '</div>'+
-               '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
-             '</button>';
-    }).join("") + '</div>';
+    return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
+             '<div class="plate-tilt-wrap">'+
+               '<span class="plate">'+
+                 '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+esc(pos)+';">'+
+                 '<span class="scanner"></span>'+
+                 '<span class="guard"></span>'+
+                 '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
+                 '<span class="telemetry">REC // '+paddedNum+'</span>'+
+               '</span>'+
+             '</div>'+
+             '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
+           '</button>';
   }).join("");
 
   $$(".shot",grid).forEach(function(b){
@@ -1507,7 +1516,7 @@ $$("#btn-toggle-curated").forEach(function(btn){
   btn.addEventListener("click", function(){
     state.showAllCurated = true;
     buildFilters();
-    renderGrid();
+    renderHomeGrid();
   });
 });
 
@@ -1559,31 +1568,25 @@ function openNicheView(nicheName){
   if(photosInNiche.length === 0){
     photosHTML = '<p style="opacity:.6;padding-block:30px;font-size:1.1rem">No photographs published in this category yet. Reach out to commission this shoot.</p>';
   } else {
-    var width = box.clientWidth || document.documentElement.clientWidth;
-    var gap = parseFloat(getComputedStyle($("#grid") || document.body).gap) || 16;
-    var rows = buildRows(photosInNiche, width, gap);
-    
     var n = 0;
-    photosHTML = '<div class="grid">' + rows.map(function(row){
-      return '<div class="row">' + row.items.map(function(slot){
-        var p = slot.ref, i = n++;
-        var paddedNum = String(i+1).padStart(2, "0");
-        var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
-        var imgSrc = esc(fixPath(p.src)); 
+    photosHTML = '<div class="niche-work-grid" id="niche-grid-inner">' + photosInNiche.map(function(p){
+      var i = n++;
+      var paddedNum = String(i+1).padStart(2, "0");
+      var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
+      var imgSrc = esc(fixPath(p.src)); 
 
-        return '<button class="shot" style="--sw:'+slot.w+'px" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
-                 '<div class="plate-tilt-wrap">'+
-                   '<span class="plate" style="--sh:'+row.h+'px">'+
-                     '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+esc(pos)+';">'+
-                     '<span class="scanner"></span>'+
-                     '<span class="guard"></span>'+
-                     '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
-                     '<span class="telemetry">REC // '+paddedNum+'</span>'+
-                   '</span>'+
-                 '</div>'+
-                 '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
-               '</button>';
-      }).join("") + '</div>';
+      return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
+               '<div class="plate-tilt-wrap">'+
+                 '<span class="plate">'+
+                   '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+esc(pos)+';">'+
+                   '<span class="scanner"></span>'+
+                   '<span class="guard"></span>'+
+                   '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
+                   '<span class="telemetry">REC // '+paddedNum+'</span>'+
+                 '</span>'+
+               '</div>'+
+               '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
+             '</button>';
     }).join("") + '</div>';
   }
 
@@ -1633,7 +1636,6 @@ function closeNicheView(){
   }
 }
 
-// Global Nav UI Logic
 var collectivePage = $("#collective-page");
 var nichesPage = $("#niches-page");
 
@@ -1684,7 +1686,6 @@ function exitOverlayToHome(){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// 100% Crash-Proof Global Bindings
 $$(".btn-close-collective").forEach(function(btn){
   btn.addEventListener("click", function(e){ e.preventDefault(); closeCollective(); });
 });
@@ -1698,7 +1699,7 @@ $$(".logo-exit-btn").forEach(function(btn){
 $$(".nav-collective-link, .nav-collective-link-mob").forEach(function(btn){
   btn.addEventListener("click", function(e){ e.preventDefault(); openCollective(); });
 });
-$$(".nav-niches-link, .nav-niches-link-mob").forEach(function(btn){
+$$(".nav-niches-link").forEach(function(btn){
   btn.addEventListener("click", function(e){ e.preventDefault(); openNiches(); });
 });
 
@@ -2040,7 +2041,7 @@ function renderContent(){
   }
 
   buildFilters();
-  renderGrid();
+  renderHomeGrid();
   renderNichesList();
 
   if(window.location.hash === "#collective"){
@@ -2082,20 +2083,17 @@ if (window.netlifyIdentity) {
   });
 }
 
-// 100% Flicker-Proof Scroll/Resize handler
 var rsTimer = null;
 var lastW = document.documentElement.clientWidth;
 
 window.addEventListener("resize", function(){
   var currentW = document.documentElement.clientWidth;
-  
-  // IGNORE VERTICAL SCROLL TRIGGERS ON MOBILE ENTIRELY
   if (Math.abs(currentW - lastW) < 10) return; 
   
   lastW = currentW;
   clearTimeout(rsTimer);
   rsTimer = setTimeout(function(){
-    renderGrid();
+    renderHomeGrid();
     if(state.activeNiche) openNicheView(state.activeNiche);
   }, 150);
 });
