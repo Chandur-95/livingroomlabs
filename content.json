@@ -1,7 +1,7 @@
 {
   "photos": [
     {
-      "src": "/assets/uploads/dsc07197.jpg",
+      "src": "/images/uploads/dsc07197.jpg",
       "imagePosition": "Center",
       "caption": "Classy Indian Meal",
       "ratio": "4/5",
@@ -12,7 +12,7 @@
       "category": "Food"
     },
     {
-      "src": "/assets/uploads/dsc07638.jpg",
+      "src": "/images/uploads/dsc07638.jpg",
       "imagePosition": "Center",
       "caption": "There is no we in food",
       "ratio": "3/2",
@@ -23,7 +23,7 @@
       "category": "Food"
     },
     {
-      "src": "/assets/uploads/dsc07201.jpg",
+      "src": "/images/uploads/dsc07201.jpg",
       "imagePosition": "Center",
       "caption": "Hyderabadi Biryani",
       "ratio": "3/2",
@@ -101,7 +101,7 @@
   ],
   "city": "Hyderabad/India",
   "name": "Living Room Labs",
-  "teamHeroImg": "/assets/uploads/whatsapp-image-2026-09-16-at-11.33.04-am.jpeg",
+  "teamHeroImg": "/images/uploads/whatsapp-image-2026-09-16-at-11.33.04-am.jpeg",
   "niches": [
     {
       "name": "Food",
@@ -128,7 +128,7 @@
       "line": "Headshots and personal work, in studio or wherever you already are."
     }
   ],
-  "bandImg": "/assets/uploads/dsc05175.jpg",
+  "bandImg": "/images/uploads/dsc05175.jpg",
   "tagline": "CAPTURE . CREATE . INSPIRE",
   "statement": "A portfolio is not a *promise*. It is a receipt.",
   "bodyFont": "Inter",
@@ -168,7 +168,7 @@
     {
       "name": "Pooja",
       "role": "Lead / Photographer",
-      "photo": "/assets/uploads/whatsapp-image-2026-09-16-at-1.50.59-pm.jpeg",
+      "photo": "/images/uploads/whatsapp-image-2026-09-16-at-1.50.59-pm.jpeg",
       "imagePosition": "Center",
       "bio": "Directing creative narratives and client commissions with a precision-led eye for natural compositions and timing.",
       "instagram": "https://www.instagram.com/pooja.and.hachi?stkn=MXVuc2pwbXhmZHVxNA==",
@@ -186,7 +186,7 @@
     {
       "name": "Cherry",
       "role": "DOP / Filmmaker",
-      "photo": "/assets/uploads/whatsapp-image-2026-09-16-at-1.53.16-pm.jpeg",
+      "photo": "/images/uploads/whatsapp-image-2026-09-16-at-1.53.16-pm.jpeg",
       "imagePosition": "Center",
       "bio": "Specializing in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
       "instagram": "https://www.instagram.com/documentarian_?stkn=amZmYXI5dWprYjI0",
@@ -195,7 +195,7 @@
     {
       "name": "Chandu",
       "role": "Photographer / Drone Pilot",
-      "photo": "/assets/uploads/me.jpeg",
+      "photo": "/images/uploads/me.jpeg",
       "imagePosition": "Center",
       "bio": "High-shutter capture specialist for candid movements, fast ambient shifts, and raw character portraits.",
       "instagram": "https://www.instagram.com/chandu_r25/",
