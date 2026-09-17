@@ -12,6 +12,7 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
 <script>
+  // Prevent theme flash before DOM paints
   try {
     var savedTheme = localStorage.getItem("lrl_theme");
     if (savedTheme) {
@@ -125,7 +126,9 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   letter-spacing:.08em;
 }
 
-iframe#netlify-drawer, div[data-netlify-drawer], .netlify-badge {
+iframe#netlify-drawer,
+div[data-netlify-drawer],
+.netlify-badge {
   display: none !important;
   visibility: hidden !important;
 }
@@ -340,7 +343,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* BULLETPROOF PURE CSS GRID - NO MATH NEEDED */
+/* BULLETPROOF PURE CSS GRID */
 .uniform-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -367,7 +370,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   overflow: hidden !important;
   background: var(--rule-soft);
   width: 100%;
-  aspect-ratio: 4 / 5; /* This fixes the infinite blank space issue entirely */
+  aspect-ratio: 4 / 5;
   display: block;
 }
 .plate img {
@@ -456,6 +459,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   background:var(--ink);color:var(--paper);
 }
 
+/* NICHES / WHAT WE SHOOT */
 .niche{
   display:grid;
   grid-template-columns:minmax(130px, 1fr) 3fr auto;
@@ -603,55 +607,84 @@ html[data-theme="dark"] .foot-logo-btn img{
   display: contents;
 }
 
-/* THE COLLECTIVE OVERLAY */
-.collective-page{
+/* OVERLAYS (THE COLLECTIVE & WHAT WE SHOOT) */
+.overlay-page {
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
   overflow-y:auto;overflow-x:hidden;
   display:none;flex-direction:column;
   scroll-behavior:smooth;
 }
-.collective-page.open{display:flex;animation:curtainRise .4s var(--ease) forwards}
+.overlay-page.open{display:flex;animation:curtainRise .4s var(--ease) forwards}
 
-.collective-nav{
+.overlay-nav {
   position:fixed;top:0;left:0;right:0;z-index:30;
   height:var(--nav-h);padding-inline:calc(var(--pad) + 12px);
   display:flex;align-items:center;justify-content:space-between;
+}
+.collective-nav {
   background:linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, transparent 100%);
-  border-bottom:none;
   color:#FFF;
 }
-.collective-nav-brand{
-  display:flex;align-items:center;gap:12px;cursor:pointer;height:100%;
+.niches-nav {
+  background:var(--paper);
+  border-bottom:1px solid var(--rule);
+  color:var(--ink);
 }
-.collective-nav-brand .mark{
+
+.overlay-nav-brand{
+  display:flex;align-items:center;gap:12px;cursor:pointer;height:100%;
+  background:none;border:none;padding:0;
+}
+.overlay-nav-brand .mark{
   display:flex;align-items:center;height:52px;
 }
-.collective-nav-brand .mark img{
+.overlay-nav-brand .mark img{
   height:52px;width:auto;object-fit:contain;
-  filter: invert(1) hue-rotate(185deg) saturate(280%) brightness(1.15);
   transition:transform .3s var(--ease);
 }
-.collective-nav-brand:hover .mark img{transform:scale(1.04)}
+.collective-nav-brand .mark img {
+  filter: invert(1) hue-rotate(185deg) saturate(280%) brightness(1.15);
+}
+.niches-nav-brand .mark img {
+  mix-blend-mode:multiply;
+}
+html[data-theme="dark"] .niches-nav-brand .mark img {
+  filter: invert(1) hue-rotate(185deg) saturate(280%) brightness(1.15);
+  mix-blend-mode:screen;
+}
+.overlay-nav-brand:hover .mark img{transform:scale(1.04)}
 
-.collective-nav-right{
+.overlay-nav-right{
   display:flex;align-items:center;gap:14px;
 }
-.collective-close{
+.overlay-close{
   display:inline-flex;align-items:center;gap:8px;
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
   text-transform:uppercase;font-weight:600;cursor:pointer;
+  border-radius:2px;
+  transition:background .2s ease, border-color .2s ease, color .2s ease;
+}
+.collective-close {
   color:#FFF;
   background:rgba(0,0,0,0.35);
   backdrop-filter:blur(8px);
   padding:8px 16px;
   border:1px solid rgba(255,255,255,0.25);
-  border-radius:2px;
-  transition:background .2s ease, border-color .2s ease;
 }
 .collective-close:hover{
   background:rgba(255,255,255,0.15);
   border-color:#FFF;
+}
+.niches-close {
+  color:var(--ink);
+  background:transparent;
+  padding:8px 16px;
+  border:1px solid var(--ink);
+}
+.niches-close:hover {
+  background:var(--ink);
+  color:var(--paper);
 }
 
 .collective-hero{
@@ -714,13 +747,20 @@ html[data-theme="dark"] .foot-logo-btn img{
   60%{transform:translateY(3px)}
 }
 
-.collective-grid-sec{
+.overlay-content-sec{
   position:relative;
   z-index:10;
   background:var(--paper);
   padding:var(--sec) calc(var(--pad) + 12px);
   max-width:1440px;margin-inline:auto;width:100%;
 }
+.niches-content-sec {
+  padding-top: calc(var(--nav-h) + clamp(30px, 5vw, 60px));
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
 .collective-grid{
   display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
 }
@@ -797,6 +837,10 @@ html[data-theme="dark"] .foot-logo-btn img{
   gap:clamp(28px, 5vw, 60px);
   align-items:center;
 }
+.niches-content-sec .collective-about-wrap {
+  margin-top: auto;
+}
+
 .collective-about-text{
   text-align:left;
 }
@@ -1024,10 +1068,10 @@ html[data-theme="dark"] .collective-about-logo img{
     display: none !important;
   }
 
-  /* Collective Nav on Mobile */
-  .collective-nav-brand .mark{height:40px}
-  .collective-nav-brand .mark img{height:40px}
-  .collective-nav .mono{display:none}
+  /* Overlay Navs on Mobile */
+  .overlay-nav-brand .mark{height:40px}
+  .overlay-nav-brand .mark img{height:40px}
+  .overlay-nav .mono{display:none}
 
   .collective-hero{
     height: 72vh !important;
@@ -1080,7 +1124,7 @@ html[data-theme="dark"] .collective-about-logo img{
   </button>
   <div class="nav-right">
     <div class="nav-links label">
-      <a href="#niches-sec" class="nav-desktop-only">What we shoot</a>
+      <button type="button" id="nav-niches-link" class="nav-desktop-only">What we shoot</button>
       <button type="button" id="nav-collective-link" class="nav-desktop-only">The Collective</button>
       <button type="button" id="nav-collective-link-mob" class="nav-mobile-only">The Collective</button>
     </div>
@@ -1121,16 +1165,6 @@ html[data-theme="dark"] .collective-about-logo img{
     </div>
   </section>
 
-  <section class="sec wrap" id="niches-sec">
-    <div class="sec-head">
-      <span class="label">What we shoot</span>
-      <span class="fill"></span>
-      <span class="count mono" data-nichecount></span>
-    </div>
-    <div id="niches-list" data-niches></div>
-    <div id="niche-view-box" style="display:none;"></div>
-  </section>
-
   <section class="sec wrap" id="contact">
     <div class="sec-head">
       <span class="label">Contact</span>
@@ -1169,16 +1203,55 @@ html[data-theme="dark"] .collective-about-logo img{
   </footer>
 </main>
 
-<div class="collective-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
-  <div class="collective-nav">
-    <button class="collective-nav-brand" id="collective-top-logo-btn" aria-label="Back to Home">
+<!-- WHAT WE SHOOT OVERLAY PAGE -->
+<div class="overlay-page" id="niches-page" role="dialog" aria-modal="true" aria-label="What We Shoot">
+  <div class="overlay-nav niches-nav">
+    <button class="overlay-nav-brand btn-close-niches" aria-label="Back to Home">
       <span class="mark">
         <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
       </span>
     </button>
-    <span class="label mono" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
-    <div class="collective-nav-right">
-      <button class="collective-close" id="close-collective-btn">
+    <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE SHOOT // CATEGORIES</span>
+    <div class="overlay-nav-right">
+      <button class="overlay-close niches-close btn-close-niches">
+        Back to Studio
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/></svg>
+      </button>
+    </div>
+  </div>
+
+  <div class="overlay-content-sec niches-content-sec">
+    <div id="niches-list-container" style="flex: 1;">
+      <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Shoot</h1>
+      <p style="opacity:.7; max-width:600px; margin-bottom:clamp(30px, 5vw, 60px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
+      <div id="niches-list" data-niches></div>
+    </div>
+    <div id="niche-view-box" style="display:none; flex: 1;"></div>
+
+    <div class="collective-about-wrap">
+      <div class="collective-about-text">
+        <button class="niche-back btn-close-niches" style="padding:14px 28px;">← Back to Studio</button>
+      </div>
+      <div class="collective-about-logo">
+        <button class="btn-close-niches" aria-label="Back to Home">
+          <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- THE COLLECTIVE OVERLAY PAGE -->
+<div class="overlay-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
+  <div class="overlay-nav collective-nav">
+    <button class="overlay-nav-brand btn-close-collective" aria-label="Back to Home">
+      <span class="mark">
+        <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+      </span>
+    </button>
+    <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
+    <div class="overlay-nav-right">
+      <button class="overlay-close collective-close btn-close-collective">
         Back to Studio
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/></svg>
       </button>
@@ -1197,7 +1270,7 @@ html[data-theme="dark"] .collective-about-logo img{
     </div>
   </div>
 
-  <section class="collective-grid-sec" id="collective-members-sec">
+  <section class="overlay-content-sec" id="collective-members-sec">
     <div class="sec-head" style="margin-bottom: clamp(28px, 4vw, 48px);">
       <span class="label">Principals & Visual Creators</span>
       <span class="fill"></span>
@@ -1212,7 +1285,7 @@ html[data-theme="dark"] .collective-about-logo img{
         <div class="label by" data-statement-by></div>
       </div>
       <div class="collective-about-logo">
-        <button id="collective-bottom-logo-btn" aria-label="Back to Home">
+        <button class="btn-close-collective" aria-label="Back to Home">
           <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
@@ -1280,6 +1353,14 @@ var SITE = {
 
 var $  = function(s,r){ return (r||document).querySelector(s); };
 var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
+
+/* The absolute path fixer: Guaranteed to stop CMS uploaded images from breaking */
+function fixPath(p){
+  if(!p) return "";
+  if(p.indexOf("://") !== -1 || p.startsWith("data:")) return p;
+  if(p.charAt(0) !== "/") return "/" + p;
+  return p;
+}
 
 function italics(str){
   return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;")
@@ -1391,12 +1472,12 @@ function renderGrid(){
     var i = n++;
     var paddedNum = String(i+1).padStart(2, "0");
     var pos = (p.imagePosition || "Center").toLowerCase();
-    var imgSrc = esc(p.src || "");
+    var imgSrc = esc(fixPath(p.src)); // Fix applied here
 
     return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
              '<div class="plate-tilt-wrap">'+
                '<span class="plate">'+
-                 '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
+                 '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
                  '<span class="scanner"></span>'+
                  '<span class="guard"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
@@ -1467,7 +1548,7 @@ function openNicheView(nicheName){
 
   state.activeNiche = nicheName;
   var box = $("#niche-view-box");
-  var list = $("#niches-list");
+  var list = $("#niches-list-container");
   if(!box || !list) return;
 
   list.style.display = "none";
@@ -1484,12 +1565,12 @@ function openNicheView(nicheName){
       var i = n++;
       var paddedNum = String(i+1).padStart(2, "0");
       var pos = (p.imagePosition || "Center").toLowerCase();
-      var imgSrc = esc(p.src || "");
+      var imgSrc = esc(fixPath(p.src)); // Fix applied here
 
       return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                '<div class="plate-tilt-wrap">'+
                  '<span class="plate">'+
-                   '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
+                   '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
                    '<span class="scanner"></span>'+
                    '<span class="guard"></span>'+
                    '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
@@ -1510,7 +1591,7 @@ function openNicheView(nicheName){
         '</div>' +
         '<div style="display:flex;align-items:center;gap:16px;">' +
           '<span class="mono" style="opacity:.6;font-size:.75rem">' + countText + '</span>' +
-          '<button class="niche-back" id="close-niche-btn">← Back to Overview</button>' +
+          '<button class="niche-back" id="close-niche-view-btn">← Back to Overview</button>' +
         '</div>' +
       '</div>' +
       '<div id="niche-grid-host">' + photosHTML + '</div>' +
@@ -1534,18 +1615,17 @@ function openNicheView(nicheName){
     });
   });
 
-  $("#close-niche-btn").addEventListener("click", closeNicheView);
-
-  var sec = $("#niches-sec");
-  if(sec){
-    var y = sec.getBoundingClientRect().top + window.pageYOffset - 80;
-    window.scrollTo({top: y, behavior: 'smooth'});
-  }
+  $("#close-niche-view-btn").addEventListener("click", function(){
+    closeNicheView();
+  });
+  
+  // Scroll to top of overlay
+  $("#niches-page").scrollTo({top: 0, behavior: 'smooth'});
 }
 
 function closeNicheView(){
   var box = $("#niche-view-box");
-  var list = $("#niches-list");
+  var list = $("#niches-list-container");
   if(!box || !list) return;
 
   state.activeNiche = null;
@@ -1554,7 +1634,7 @@ function closeNicheView(){
   list.style.display = "block";
 
   if(window.location.hash.indexOf("niche-") !== -1){
-    history.pushState("", document.title, window.location.pathname + window.location.search);
+    window.location.hash = "what-we-shoot";
   }
 }
 
@@ -1569,9 +1649,13 @@ $("#bottom-lockup-btn").addEventListener("click", function(e){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 });
 
+
+// Overlay States
 var collectivePage = $("#collective-page");
+var nichesPage = $("#niches-page");
 
 function openCollective(){
+  if(nichesPage.classList.contains("open")) closeNiches();
   collectivePage.classList.add("open");
   document.body.style.overflow = "hidden";
   window.location.hash = "collective";
@@ -1586,34 +1670,46 @@ function closeCollective(){
   }
 }
 
-function exitCollectiveToHome(){
+function openNiches(){
+  if(collectivePage.classList.contains("open")) closeCollective();
+  nichesPage.classList.add("open");
+  document.body.style.overflow = "hidden";
+  window.location.hash = "what-we-shoot";
+  nichesPage.scrollTop = 0;
+}
+
+function closeNiches(){
+  nichesPage.classList.remove("open");
+  document.body.style.overflow = "";
+  closeNicheView();
+  if(window.location.hash === "#what-we-shoot" || window.location.hash.startsWith("#niche-")){
+    history.pushState("", document.title, window.location.pathname + window.location.search);
+  }
+}
+
+function exitOverlayToHome(){
   closeCollective();
+  closeNiches();
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// Logo clicks inside The Collective navigate back to Home
-$("#collective-top-logo-btn").addEventListener("click", function(e){
-  e.preventDefault();
-  exitCollectiveToHome();
+// Click bindings for overlays
+$$(".btn-close-collective").forEach(function(btn){
+  btn.addEventListener("click", function(e){ e.preventDefault(); closeCollective(); });
 });
-$("#collective-bottom-logo-btn").addEventListener("click", function(e){
-  e.preventDefault();
-  exitCollectiveToHome();
+$$(".btn-close-niches").forEach(function(btn){
+  btn.addEventListener("click", function(e){ e.preventDefault(); closeNiches(); });
 });
 
-$("#nav-collective-link").addEventListener("click", function(e){
-  e.preventDefault();
-  openCollective();
-});
-$("#nav-collective-link-mob").addEventListener("click", function(e){
-  e.preventDefault();
-  openCollective();
-});
-$("#open-collective-foot-btn").addEventListener("click", function(e){
-  e.preventDefault();
-  openCollective();
-});
-$("#close-collective-btn").addEventListener("click", closeCollective);
+// Logo clicks inside overlays navigate back to Home
+$("#collective-top-logo-btn").addEventListener("click", function(e){ e.preventDefault(); exitOverlayToHome(); });
+$("#collective-bottom-logo-btn").addEventListener("click", function(e){ e.preventDefault(); exitOverlayToHome(); });
+
+// Nav Links
+$("#nav-collective-link").addEventListener("click", function(e){ e.preventDefault(); openCollective(); });
+$("#nav-collective-link-mob").addEventListener("click", function(e){ e.preventDefault(); openCollective(); });
+$("#nav-niches-link").addEventListener("click", function(e){ e.preventDefault(); openNiches(); });
+$("#open-collective-foot-btn").addEventListener("click", function(e){ e.preventDefault(); openCollective(); });
 
 $("#scroll-to-members").addEventListener("click", function(){
   $("#collective-members-sec").scrollIntoView({ behavior: 'smooth' });
@@ -1623,12 +1719,15 @@ window.addEventListener("hashchange", function(){
   var hash = window.location.hash;
   if(hash === "#collective"){
     openCollective();
+  } else if(hash === "#what-we-shoot"){
+    openNiches();
   } else if(hash.startsWith("#niche-")){
+    openNiches();
     var niche = decodeURIComponent(hash.replace("#niche-", ""));
     openNicheView(niche);
   } else {
     if(collectivePage.classList.contains("open")) closeCollective();
-    if(state.activeNiche) closeNicheView();
+    if(nichesPage.classList.contains("open")) closeNiches();
   }
 });
 
@@ -1655,7 +1754,9 @@ function initSlideshow(){
   stage.innerHTML = slides.map(function(s, idx){
     var pos = (s.imagePosition || "Center").toLowerCase();
     var act = (idx === state.currentSlide) ? "active" : "";
-    return '<img class="band-img '+act+'" data-slide-i="'+idx+'" src="'+esc(s.src)+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: center '+pos+';">';
+    var imgSrc = esc(fixPath(s.src)); // Fix applied here
+
+    return '<img class="band-img '+act+'" data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: center '+pos+';">';
   }).join("");
 
   var heroBox = $("#hero-slideshow");
@@ -1747,7 +1848,7 @@ function stepLB(d){
 function paintLB(){
   var p = state.visible[state.index];
   if(!p) return;
-  $("#lb-img").src = p.src;
+  $("#lb-img").src = fixPath(p.src); // Fix applied here
   $("#lb-img").alt = p.caption || p.title;
   $("#lb-title").textContent = p.title;
   $("#lb-meta").textContent = p.client + " — " + p.category;
@@ -1763,6 +1864,7 @@ lb.addEventListener("click", function(e){ if(e.target === lb) closeLB(); });
 document.addEventListener("keydown", function(e){
   if(e.key === "Escape"){
     if(collectivePage.classList.contains("open")) closeCollective();
+    if(nichesPage.classList.contains("open")) closeNiches();
     if(lb.classList.contains("on")) closeLB();
   }
   if(!lb.classList.contains("on")) return;
@@ -1866,12 +1968,15 @@ function renderContent(){
   if(idxList){
     idxList.innerHTML =
       '<li><a href="#work">Work</a></li>' +
-      '<li><a href="#niches-sec">What we shoot</a></li>' +
+      '<li><button type="button" class="btn-foot-niches">What we shoot</button></li>' +
       '<li><button type="button" class="btn-foot-about">About</button></li>' +
       '<li><a href="#contact">Contact</a></li>';
     
     $$(".btn-foot-about", idxList).forEach(function(b){
       b.addEventListener("click", function(){ openCollective(); });
+    });
+    $$(".btn-foot-niches", idxList).forEach(function(b){
+      b.addEventListener("click", function(){ openNiches(); });
     });
   }
 
@@ -1898,7 +2003,7 @@ function renderContent(){
 
   var teamHero = $("#team-hero-img");
   if(teamHero && SITE.teamHeroImg) {
-    teamHero.src = SITE.teamHeroImg;
+    teamHero.src = fixPath(SITE.teamHeroImg);
     var heroPos = (SITE.teamHeroImgPosition || "Center").toLowerCase();
     teamHero.style.objectPosition = "center " + heroPos;
   }
@@ -1917,7 +2022,7 @@ function renderContent(){
       if(m.instagram) links += '<a href="'+esc(m.instagram)+'" target="_blank" rel="noopener" class="member-chip">Instagram ↗</a>';
       if(m.portfolio) links += '<a href="'+esc(m.portfolio)+'" target="_blank" rel="noopener" class="member-chip">Work ↗</a>';
       var mPos = (m.imagePosition || "Center").toLowerCase();
-      var photoSrc = m.photo ? m.photo : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
+      var photoSrc = m.photo ? fixPath(m.photo) : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
 
       return '<div class="member-card">' +
                '<div class="member-plate">' +
@@ -1941,7 +2046,10 @@ function renderContent(){
 
   if(window.location.hash === "#collective"){
     openCollective();
+  } else if(window.location.hash === "#what-we-shoot"){
+    openNiches();
   } else if(window.location.hash.startsWith("#niche-")){
+    openNiches();
     var niche = decodeURIComponent(window.location.hash.replace("#niche-", ""));
     openNicheView(niche);
   }
