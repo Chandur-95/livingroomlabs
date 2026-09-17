@@ -1040,13 +1040,13 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
-  /* HOME WORK: 2 columns single-stack clean portrait/landscape vertical flow like dog cards */
+  /* HOME WORK: SINGLE STACK 1 IMAGE PER ROW ON MOBILE */
   .home-work-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
-    gap: 12px !important;
+    grid-template-columns: 1fr !important;
+    gap: 20px !important;
   }
   .home-work-grid .plate {
-    aspect-ratio: 4 / 4.8 !important;
+    aspect-ratio: 4 / 4.5 !important;
   }
 
   /* MOBILE-ONLY "WHAT WE SHOOT" BOXED HYPERLINK SECTION ABOVE CONTACT */
@@ -1205,7 +1205,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
     
-    <!-- DESKTOP 4-IN-A-ROW NEAR-SQUARE / MOBILE DOG-CARD FLOW -->
+    <!-- DESKTOP 4-IN-A-ROW NEAR-SQUARE / MOBILE SINGLE-STACK 1-IMAGE-PER-ROW -->
     <div class="home-work-grid" id="grid"></div>
     
     <div class="curated-toggle-wrap" id="curated-wrap" style="display:none;">
@@ -1219,11 +1219,11 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   <section class="sec wrap mobile-shoot-sec" id="mobile-shoot">
     <div class="mobile-shoot-box nav-niches-link" role="button" tabindex="0">
       <div class="mobile-shoot-header">
-        <span class="label mobile-shoot-title-group">
-          <span>What we shoot</span>
+        <span class="label mono" style="opacity:0.65;">PORTFOLIO</span>
+        <span class="label mobile-shoot-title-group" style="text-align:right;">
+          <span style="text-decoration:underline;text-underline-offset:3px;">What we shoot</span>
           <span class="mobile-shoot-arrow">↗</span>
         </span>
-        <span class="label mono" style="opacity:0.65;">PORTFOLIO</span>
       </div>
     </div>
     <p class="contact-note" style="margin-top:10px;">Food, pets, architecture, products, events, and portraits — calibrated per visual requirement.</p>
@@ -2142,6 +2142,7 @@ initApp();
 if (window.netlifyIdentity) {
   window.netlifyIdentity.on("init", user => {
     if (!user) {
+      window.netlifyIdentity.options = {};
       window.netlifyIdentity.on("login", () => {
         document.location.href = "/admin/";
       });
