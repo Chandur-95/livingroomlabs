@@ -342,7 +342,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* BULLETPROOF PURE CSS GRID */
+/* NEAT SQUARE GRID */
 .uniform-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -369,7 +369,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   overflow: hidden !important;
   background: var(--rule-soft);
   width: 100%;
-  aspect-ratio: 4 / 5;
+  aspect-ratio: 1 / 1; /* PERFECT SQUARES FOR A NEATER LAYOUT */
   display: block;
 }
 .plate img {
@@ -379,10 +379,8 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .65s var(--ease), opacity .4s ease;
-  opacity: 0;
+  transition: transform .65s var(--ease);
 }
-.plate img.ready{opacity:1}
 .shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.04)}
 
 .plate .scanner{
@@ -457,85 +455,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .btn-curated-expand:hover{
   background:var(--ink);color:var(--paper);
 }
-
-/* NICHES / WHAT WE SHOOT */
-.niche{
-  display:grid;
-  grid-template-columns:minmax(130px, 1fr) 3fr auto;
-  gap:12px 24px;
-  align-items:baseline;
-  padding:clamp(15px, 2vw, 24px) 14px;
-  border-bottom:1px solid var(--rule);
-  text-align:left;
-  width:100%;
-  cursor:pointer;
-  position:relative;
-  transition:background .22s ease, padding-left .25s var(--ease);
-}
-.niche:first-child{border-top:1px solid var(--rule)}
-.niche:hover, .niche:focus-visible{
-  background:var(--rule-soft);
-  padding-left:22px;
-}
-.niche h3{
-  margin:0;
-  font-size:clamp(1.1rem, 2vw, 1.55rem);
-  font-weight:600;
-  display:flex;align-items:center;gap:8px;
-}
-.niche .arrow{
-  opacity:0;transform:translateX(-6px);
-  transition:opacity .2s ease, transform .2s ease;
-  font-size:.9rem;
-}
-.niche:hover .arrow, .niche:focus-visible .arrow{
-  opacity:1;transform:translateX(0);
-}
-.niche p{margin:0;opacity:.7;max-width:58ch}
-.niche .state{
-  font-size:var(--fs-label);letter-spacing:var(--tr-label);
-  text-transform:uppercase;font-weight:600;white-space:nowrap;
-}
-.niche .state.has{opacity:.6}
-.niche .state.open{display:inline-flex;align-items:center;gap:6px}
-.niche .state.open::before{content:"";width:5px;height:5px;background:var(--glow);box-shadow:0 0 5px var(--glow)}
-
-.niche-view{
-  margin-top:clamp(16px, 2.5vw, 32px);
-  padding-top:clamp(20px, 3vw, 38px);
-  border-top:1px solid var(--ink);
-  animation:nicheFadeIn .4s var(--ease) forwards;
-}
-@keyframes nicheFadeIn{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:none}}
-
-.niche-view-top{
-  display:flex;justify-content:space-between;align-items:flex-start;
-  flex-wrap:wrap;gap:18px 30px;
-  margin-bottom:clamp(20px, 3vw, 32px);
-}
-.niche-view-title h2{
-  margin:0 0 6px;
-  font-family:"Space Grotesk", sans-serif;
-  font-size:clamp(2rem, 5vw, 4.2rem);
-  line-height:1.02;
-  font-weight:700;
-  letter-spacing:-.03em;
-}
-.niche-view-title p{
-  margin:0;
-  font-size:clamp(1rem, 1.4vw, 1.25rem);
-  opacity:.72;
-  max-width:56ch;
-}
-.niche-back{
-  display:inline-flex;align-items:center;gap:8px;
-  border:1px solid var(--ink);
-  padding:10px 18px;
-  font-size:var(--fs-label);letter-spacing:var(--tr-label);
-  text-transform:uppercase;font-weight:600;
-  transition:background .2s ease, color .2s ease;
-}
-.niche-back:hover{background:var(--ink);color:var(--paper)}
 
 #contact{
   padding-top:clamp(24px, 3vw, 48px);
@@ -642,6 +561,8 @@ html[data-theme="dark"] .foot-logo-btn img{
   height:52px;width:auto;object-fit:contain;
   transition:transform .3s var(--ease);
 }
+
+/* LOGO FIX FOR DARK MODE */
 .collective-nav-brand .mark img {
   filter: invert(1) hue-rotate(185deg) saturate(280%) brightness(1.15);
 }
@@ -649,8 +570,8 @@ html[data-theme="dark"] .foot-logo-btn img{
   mix-blend-mode:multiply;
 }
 html[data-theme="dark"] .niches-nav-brand .mark img {
-  filter: invert(1) hue-rotate(185deg) saturate(280%) brightness(1.15);
-  mix-blend-mode:screen;
+  filter: invert(1) brightness(1.2);
+  mix-blend-mode: normal; /* Fixed disappearing logo */
 }
 .overlay-nav-brand:hover .mark img{transform:scale(1.04)}
 
@@ -759,6 +680,78 @@ html[data-theme="dark"] .niches-nav-brand .mark img {
   display: flex;
   flex-direction: column;
 }
+
+/* NICHES LIST STYLING */
+.niche{
+  display:grid;
+  grid-template-columns:minmax(130px, 1fr) 3fr auto;
+  gap:12px 24px;
+  align-items:baseline;
+  padding:clamp(15px, 2vw, 24px) 14px;
+  border-bottom:1px solid var(--rule);
+  text-align:left;
+  width:100%;
+  cursor:pointer;
+  position:relative;
+  transition:background .22s ease, padding-left .25s var(--ease);
+}
+.niche:first-child{border-top:1px solid var(--rule)}
+.niche:hover, .niche:focus-visible{
+  background:var(--rule-soft);
+  padding-left:22px;
+}
+.niche h3{
+  margin:0;
+  font-size:clamp(1.1rem, 2vw, 1.55rem);
+  font-weight:600;
+  display:flex;align-items:center;gap:8px;
+}
+.niche .arrow{
+  opacity:0;transform:translateX(-6px);
+  transition:opacity .2s ease, transform .2s ease;
+  font-size:.9rem;
+}
+.niche:hover .arrow, .niche:focus-visible .arrow{
+  opacity:1;transform:translateX(0);
+}
+.niche p{margin:0;opacity:.7;max-width:58ch}
+.niche .state{
+  font-size:var(--fs-label);letter-spacing:var(--tr-label);
+  text-transform:uppercase;font-weight:600;white-space:nowrap;
+}
+.niche .state.has{opacity:.6}
+.niche .state.open{display:inline-flex;align-items:center;gap:6px}
+.niche .state.open::before{content:"";width:5px;height:5px;background:var(--glow);box-shadow:0 0 5px var(--glow)}
+
+.niche-view-top{
+  display:flex;justify-content:space-between;align-items:flex-start;
+  flex-wrap:wrap;gap:18px 30px;
+  margin-bottom:clamp(20px, 3vw, 32px);
+}
+.niche-view-title h2{
+  margin:0 0 6px;
+  font-family:"Space Grotesk", sans-serif;
+  font-size:clamp(2rem, 5vw, 4.2rem);
+  line-height:1.02;
+  font-weight:700;
+  letter-spacing:-.03em;
+}
+.niche-view-title p{
+  margin:0;
+  font-size:clamp(1rem, 1.4vw, 1.25rem);
+  opacity:.72;
+  max-width:56ch;
+}
+.niche-back{
+  display:inline-flex;align-items:center;gap:8px;
+  border:1px solid var(--ink);
+  padding:10px 18px;
+  font-size:var(--fs-label);letter-spacing:var(--tr-label);
+  text-transform:uppercase;font-weight:600;
+  transition:background .2s ease, color .2s ease;
+}
+.niche-back:hover{background:var(--ink);color:var(--paper)}
+
 
 .collective-grid{
   display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
@@ -945,6 +938,7 @@ html[data-theme="dark"] .collective-about-logo img{
 .lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
 
 @media (max-width:980px){
+  .uniform-grid { grid-template-columns: repeat(2, 1fr); }
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
@@ -1232,7 +1226,7 @@ html[data-theme="dark"] .collective-about-logo img{
         <button class="niche-back btn-close-niches" style="padding:14px 28px;">← Back to Studio</button>
       </div>
       <div class="collective-about-logo">
-        <button class="logo-exit-btn" aria-label="Back to Home">
+        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
           <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
@@ -1284,42 +1278,12 @@ html[data-theme="dark"] .collective-about-logo img{
         <div class="label by" data-statement-by></div>
       </div>
       <div class="collective-about-logo">
-        <button class="logo-exit-btn" aria-label="Back to Home">
+        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
           <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
     </div>
   </section>
-</div>
-
-<div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
-  <div class="lb-top">
-    <div class="lb-count mono"><b id="lb-i">01</b> <span>/</span> <span id="lb-n">01</span></div>
-    <button class="lb-close" id="lb-close">
-      Close
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M4 4l16 16M20 4L4 20"/></svg>
-    </button>
-  </div>
-  <div class="lb-stage">
-    <button class="lb-nav" id="lb-prev" aria-label="Previous photo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M15 3L6 12l9 9"/></svg>
-    </button>
-    <figure class="lb-figure">
-      <span class="lb-frame">
-        <img id="lb-img" alt="">
-        <span class="guard" aria-hidden="true"></span>
-        <span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
-      </span>
-    </figure>
-    <button class="lb-nav" id="lb-next" aria-label="Next photo">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M9 3l9 9-9 9"/></svg>
-    </button>
-  </div>
-  <div class="lb-cap">
-    <div class="t" id="lb-title"></div>
-    <div class="m mono" id="lb-meta"></div>
-    <div class="d" id="lb-desc"></div>
-  </div>
 </div>
 
 <script>
@@ -1470,13 +1434,13 @@ function renderGrid(){
   grid.innerHTML = list.map(function(p){
     var i = n++;
     var paddedNum = String(i+1).padStart(2, "0");
-    var pos = (p.imagePosition || "Center").toLowerCase();
+    var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
     var imgSrc = esc(fixPath(p.src)); 
 
     return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
              '<div class="plate-tilt-wrap">'+
                '<span class="plate">'+
-                 '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
+                 '<img src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+pos+';">'+
                  '<span class="scanner"></span>'+
                  '<span class="guard"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
@@ -1487,17 +1451,6 @@ function renderGrid(){
            '</button>';
   }).join("");
 
-  $$("#grid img",grid).forEach(function(img){
-    if(img.complete) {
-      img.classList.add("ready");
-    } else {
-      img.addEventListener("load",function(){ img.classList.add("ready"); });
-      img.addEventListener("error",function(){ 
-        img.classList.add("ready");
-        img.style.opacity = 0.4;
-      });
-    }
-  });
   $$(".shot",grid).forEach(function(b){
     attachTilt3D(b);
     b.addEventListener("click",function(){ openLB(parseInt(b.dataset.i,10), b); });
@@ -1562,13 +1515,13 @@ function openNicheView(nicheName){
     photosHTML = '<div class="uniform-grid">' + photosInNiche.map(function(p){
       var i = n++;
       var paddedNum = String(i+1).padStart(2, "0");
-      var pos = (p.imagePosition || "Center").toLowerCase();
+      var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
       var imgSrc = esc(fixPath(p.src)); 
 
       return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                '<div class="plate-tilt-wrap">'+
                  '<span class="plate">'+
-                   '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
+                   '<img src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+pos+';">'+
                    '<span class="scanner"></span>'+
                    '<span class="guard"></span>'+
                    '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
@@ -1594,15 +1547,6 @@ function openNicheView(nicheName){
       '</div>' +
       '<div id="niche-grid-host">' + photosHTML + '</div>' +
     '</div>';
-
-  $$("#niche-view-box img", box).forEach(function(img){
-    if(img.complete) {
-      img.classList.add("ready");
-    } else {
-      img.addEventListener("load", function(){ img.classList.add("ready"); });
-      img.addEventListener("error", function(){ img.classList.add("ready"); img.style.opacity = 0.4; });
-    }
-  });
 
   $$("[data-niche-i]", box).forEach(function(b){
     attachTilt3D(b);
@@ -1746,11 +1690,11 @@ function initSlideshow(){
   if(!stage) return;
 
   stage.innerHTML = slides.map(function(s, idx){
-    var pos = (s.imagePosition || "Center").toLowerCase();
+    var pos = (s.imagePosition && s.imagePosition !== "Center") ? s.imagePosition.toLowerCase() : "center";
     var act = (idx === state.currentSlide) ? "active" : "";
     var imgSrc = esc(fixPath(s.src)); 
 
-    return '<img class="band-img '+act+'" data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: center '+pos+';">';
+    return '<img class="band-img '+act+'" data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+pos+';">';
   }).join("");
 
   var heroBox = $("#hero-slideshow");
@@ -1925,7 +1869,6 @@ document.addEventListener("keydown", function(e){
 });
 
 function renderContent(){
-  // HARDENED SAFETY CATCHES
   SITE.photos = SITE.photos || [];
   SITE.niches = SITE.niches || [];
   SITE.team = SITE.team || [];
@@ -1968,8 +1911,8 @@ function renderContent(){
   if(idxList){
     idxList.innerHTML =
       '<li><a href="#work">Work</a></li>' +
-      '<li><button type="button" class="btn-foot-niches">What we shoot</button></li>' +
-      '<li><button type="button" class="btn-foot-about">About</button></li>' +
+      '<li><button type="button" class="btn-foot-niches" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">What we shoot</button></li>' +
+      '<li><button type="button" class="btn-foot-about" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">About</button></li>' +
       '<li><a href="#contact">Contact</a></li>';
     
     $$(".btn-foot-about", idxList).forEach(function(b){
@@ -2021,12 +1964,12 @@ function renderContent(){
       var links = "";
       if(m.instagram) links += '<a href="'+esc(m.instagram)+'" target="_blank" rel="noopener" class="member-chip">Instagram ↗</a>';
       if(m.portfolio) links += '<a href="'+esc(m.portfolio)+'" target="_blank" rel="noopener" class="member-chip">Work ↗</a>';
-      var mPos = (m.imagePosition || "Center").toLowerCase();
+      var mPos = (m.imagePosition && m.imagePosition !== "Center") ? m.imagePosition.toLowerCase() : "center";
       var photoSrc = m.photo ? fixPath(m.photo) : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
 
       return '<div class="member-card">' +
                '<div class="member-plate">' +
-                 '<img loading="lazy" src="'+esc(photoSrc)+'" alt="'+esc(m.name)+'" style="object-position: center '+mPos+';">' +
+                 '<img src="'+esc(photoSrc)+'" alt="'+esc(m.name)+'" style="object-position: '+mPos+';">' +
                  '<span class="scanner"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
                '</div>' +
