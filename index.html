@@ -12,7 +12,6 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
 <script>
-  // Prevent theme flash before DOM paints
   try {
     var savedTheme = localStorage.getItem("lrl_theme");
     if (savedTheme) {
@@ -126,9 +125,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   letter-spacing:.08em;
 }
 
-iframe#netlify-drawer,
-div[data-netlify-drawer],
-.netlify-badge {
+iframe#netlify-drawer, div[data-netlify-drawer], .netlify-badge {
   display: none !important;
   visibility: hidden !important;
 }
@@ -343,12 +340,13 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* UNIFORM GRID & 3D PERSPECTIVE TILT */
+/* BULLETPROOF PURE CSS GRID - NO MATH NEEDED */
 .uniform-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   column-gap: var(--col-gap);
   row-gap: var(--row-gap);
+  width: 100%;
 }
 
 .shot {
@@ -361,7 +359,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .plate-tilt-wrap {
   width: 100%;
-  height: 100%;
   transition: transform 0.15s ease-out;
   transform-style: preserve-3d;
 }
@@ -370,10 +367,13 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   overflow: hidden !important;
   background: var(--rule-soft);
   width: 100%;
-  aspect-ratio: 4 / 5;
-  height: auto;
+  aspect-ratio: 4 / 5; /* This fixes the infinite blank space issue entirely */
+  display: block;
 }
 .plate img {
+  position: absolute;
+  top: 0;
+  left: 0;
   width: 100%;
   height: 100%;
   object-fit: cover;
@@ -618,6 +618,7 @@ html[data-theme="dark"] .foot-logo-btn img{
   height:var(--nav-h);padding-inline:calc(var(--pad) + 12px);
   display:flex;align-items:center;justify-content:space-between;
   background:linear-gradient(to bottom, rgba(0,0,0,0.75) 0%, transparent 100%);
+  border-bottom:none;
   color:#FFF;
 }
 .collective-nav-brand{
@@ -1316,13 +1317,9 @@ function buildFilters(){
   if(!host) return;
   var cats = ["All"].concat(categories());
   host.innerHTML = cats.map(function(c){
-    var n = c === "All" 
-      ? (state.showAllCurated 
-          ? SITE.photos.length 
-          : SITE.photos.filter(function(p){ return p.featured !== false; }).length)
-      : countIn(c);
+    var nStr = c === "All" ? "" : '<span class="n mono">' + countIn(c) + '</span>';
     return '<button class="chip" data-cat="'+esc(c)+'" aria-pressed="'+(c===state.filter)+'">'+
-             '<span class="dot"></span>'+esc(c)+'<span class="n mono">'+n+'</span>'+
+             '<span class="dot"></span>'+esc(c)+ nStr +
            '</button>';
   }).join("");
   $$(".chip",host).forEach(function(b){
@@ -1362,17 +1359,18 @@ function renderGrid(){
   
   var list;
   var hasUnshownPhotos = false;
+  var WORK_LIMIT = 9;
 
-  if(state.filter === "All"){
-    if(!state.showAllCurated){
-      list = SITE.photos.filter(function(p){ return p.featured !== false; });
-      hasUnshownPhotos = (list.length < SITE.photos.length);
-    } else {
-      list = SITE.photos;
-      hasUnshownPhotos = false;
-    }
+  var filteredList = SITE.photos.filter(function(p){
+    return state.filter === "All" || p.category === state.filter;
+  });
+
+  if(state.filter === "All" && !state.showAllCurated){
+    var baseList = filteredList.filter(function(p){ return p.featured !== false; });
+    list = baseList.slice(0, WORK_LIMIT);
+    hasUnshownPhotos = (filteredList.length > list.length);
   } else {
-    list = SITE.photos.filter(function(p){ return p.category === state.filter; });
+    list = filteredList;
     hasUnshownPhotos = false;
   }
   
@@ -1393,10 +1391,12 @@ function renderGrid(){
     var i = n++;
     var paddedNum = String(i+1).padStart(2, "0");
     var pos = (p.imagePosition || "Center").toLowerCase();
+    var imgSrc = esc(p.src || "");
+
     return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
              '<div class="plate-tilt-wrap">'+
                '<span class="plate">'+
-                 '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
+                 '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
                  '<span class="scanner"></span>'+
                  '<span class="guard"></span>'+
                  '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
@@ -1408,8 +1408,15 @@ function renderGrid(){
   }).join("");
 
   $$("#grid img",grid).forEach(function(img){
-    if(img.complete) img.classList.add("ready");
-    else img.addEventListener("load",function(){ img.classList.add("ready"); });
+    if(img.complete) {
+      img.classList.add("ready");
+    } else {
+      img.addEventListener("load",function(){ img.classList.add("ready"); });
+      img.addEventListener("error",function(){ 
+        img.classList.add("ready");
+        img.style.opacity = 0.4;
+      });
+    }
   });
   $$(".shot",grid).forEach(function(b){
     attachTilt3D(b);
@@ -1477,10 +1484,12 @@ function openNicheView(nicheName){
       var i = n++;
       var paddedNum = String(i+1).padStart(2, "0");
       var pos = (p.imagePosition || "Center").toLowerCase();
+      var imgSrc = esc(p.src || "");
+
       return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
                '<div class="plate-tilt-wrap">'+
                  '<span class="plate">'+
-                   '<img loading="lazy" decoding="async" src="'+esc(p.src)+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
+                   '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: center '+pos+';">'+
                    '<span class="scanner"></span>'+
                    '<span class="guard"></span>'+
                    '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
@@ -1508,8 +1517,12 @@ function openNicheView(nicheName){
     '</div>';
 
   $$("#niche-view-box img", box).forEach(function(img){
-    if(img.complete) img.classList.add("ready");
-    else img.addEventListener("load", function(){ img.classList.add("ready"); });
+    if(img.complete) {
+      img.classList.add("ready");
+    } else {
+      img.addEventListener("load", function(){ img.classList.add("ready"); });
+      img.addEventListener("error", function(){ img.classList.add("ready"); img.style.opacity = 0.4; });
+    }
   });
 
   $$("[data-niche-i]", box).forEach(function(b){
