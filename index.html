@@ -369,6 +369,8 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   width: 100%;
   display: block;
 }
+
+/* CRITICAL FIX: Images are visible immediately. No JS onload opacity traps. */
 .plate img {
   position: absolute;
   top: 0;
@@ -376,10 +378,9 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .6s var(--ease), opacity .4s ease;
-  opacity: 0;
+  transition: transform .6s var(--ease);
+  opacity: 1 !important;
 }
-.plate img.ready{opacity:1}
 .shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.03)}
 
 .guard{position:absolute;inset:0;z-index:3;background:transparent}
@@ -524,9 +525,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   mix-blend-mode: normal !important;
 }
 
-/* ============================================================
-   PAGE LEVEL FLUID TRANSITIONS
-   ============================================================ */
+/* OVERLAYS */
 .overlay-page {
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
@@ -682,9 +681,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   flex-direction: column;
 }
 
-/* ============================================================
-   NICHES ACCORDION & SPACED INLINE 4-IMAGE DROPDOWN
-   ============================================================ */
+/* NICHES ACCORDION */
 .niche-row {
   border-bottom: 1px solid var(--rule);
   width: 100%;
@@ -745,7 +742,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 .niche .state.open{display:inline-flex;align-items:center;gap:6px}
 .niche .state.open::before{content:"";width:5px;height:5px;background:var(--glow);box-shadow:0 0 5px var(--glow)}
 
-/* ACCORDION INLINE CONTAINER: EXTRA TOP SPACING & SMOOTH EXPAND */
 .niche-dropdown {
   display: none;
   padding: clamp(24px, 3.2vw, 38px) 14px clamp(24px, 3.2vw, 36px);
@@ -755,14 +751,8 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   display: block;
 }
 @keyframes dropdownSlide {
-  0% {
-    opacity: 0;
-    transform: translateY(-12px) scale(0.99);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0) scale(1);
-  }
+  0% { opacity: 0; transform: translateY(-12px) scale(0.99); }
+  100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
 .niche-preview-grid {
@@ -801,22 +791,14 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   transform: translateX(3px);
 }
 
-/* ANIMATION FOR FULL NICHE VIEW SWITCH */
 .niche-view {
   animation: nichePageEnter .42s cubic-bezier(.16, 1, .3, 1) forwards;
 }
 @keyframes nichePageEnter {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  0% { opacity: 0; transform: translateY(20px); }
+  100% { opacity: 1; transform: translateY(0); }
 }
 
-/* BOOKING SECTION UNDER NICHES */
 .niche-enquire-sec {
   padding-top: clamp(24px, 3.5vw, 44px);
   padding-bottom: clamp(14px, 2vw, 24px);
@@ -966,7 +948,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .collective-about-logo button:hover img{transform:scale(1.03)}
 
-/* LIGHTBOX (THEME ADAPTIVE) */
+/* LIGHTBOX */
 .lb{
   position:fixed;inset:0;z-index:120;
   background:rgba(255, 255, 255, 0.96);
@@ -1494,10 +1476,10 @@ html[data-theme="dark"] .lb-frame {
       <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Shoot</h1>
       <p style="opacity:.7; max-width:600px; margin-bottom:clamp(30px, 5vw, 60px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
       
-      <!-- DYNAMIC ACCORDION LIST -->
+      <!-- ACCORDION -->
       <div id="niches-list" data-niches></div>
 
-      <!-- PLACED UNDER NICHES -->
+      <!-- INLINE ENQUIRE SECTION -->
       <div class="niche-enquire-sec">
         <div class="sec-head" style="margin-bottom:12px;">
           <span class="label">Let's make it official</span>
@@ -1508,7 +1490,7 @@ html[data-theme="dark"] .lb-frame {
       </div>
     </div>
     
-    <!-- FULL GALLERY PAGE WHEN "VIEW MORE" IS CLICKED -->
+    <!-- FULL GALLERY VIEW -->
     <div id="niche-view-box" style="display:none; flex: 1;"></div>
 
     <div class="collective-about-wrap">
@@ -1516,7 +1498,7 @@ html[data-theme="dark"] .lb-frame {
         <button class="niche-back btn-close-niches" style="padding:14px 28px; cursor:pointer;">← Back to Studio</button>
       </div>
       <div class="collective-about-logo">
-        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
+        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:display:block;line-height:0;">
           <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
@@ -1676,39 +1658,45 @@ var SITE = {
   bandSlides: [],
   statement: "A portfolio is not a *promise*. It is a receipt.",
   statementBy: "Everything on this page was shot by us, for someone who needed it.",
-  niches: [
-    { name: "Food", line: "Menus, delivery listings, and the plate as it actually arrives." },
-    { name: "Pets", line: "Fast shutter, floor-level angles, treats on hand." },
-    { name: "Architecture", line: "Rooms shot wide and straight, in the light they actually get." },
-    { name: "Products", line: "Studio lighting and crisp textures for brand campaigns." },
-    { name: "Events", line: "Setup to last song, edited and delivered within the week." },
-    { name: "Portraits", line: "Headshots and personal work, in studio or wherever you already are." }
-  ],
+  niches: [],
   contactNote: "Planning something special? Tell us what you’re looking to capture, and when and where.",
   teamHeroImg: "/images/uploads/dsc05175.jpg",
   teamHeroImgPosition: "Center",
   teamHeroIntro: "Four distinct visual sensibilities aligned under one collective principle.",
   team: [],
-  photos: [
-    { src: "https://picsum.photos/seed/lrl1/800/1000", title: "Bruuu", client: "Private", category: "Pets", imagePosition: "center", w: 3, ratio: "4/5" },
-    { src: "https://picsum.photos/seed/lrl2/800/1000", title: "Catch", client: "Private", category: "Pets", imagePosition: "center", w: 3, ratio: "4/5" },
-    { src: "https://picsum.photos/seed/lrl3/1000/800", title: "Mink", client: "Private", category: "Pets", imagePosition: "center", w: 5, ratio: "5/4" },
-    { src: "https://picsum.photos/seed/lrl4/900/900", title: "Watch", client: "Private", category: "Products", imagePosition: "center", w: 4, ratio: "1/1" },
-    { src: "https://picsum.photos/seed/lrl5/900/900", title: "Watch", client: "Private", category: "Products", imagePosition: "center", w: 4, ratio: "1/1" },
-    { src: "https://picsum.photos/seed/lrl6/1000/700", title: "Watch 3", client: "Private", category: "Products", imagePosition: "center", w: 6, ratio: "16/10" },
-    { src: "https://picsum.photos/seed/lrl7/800/1000", title: "Momo", client: "Resturant", category: "Food", imagePosition: "center", w: 3, ratio: "4/5" },
-    { src: "https://picsum.photos/seed/lrl8/900/900", title: "Fried chicken", client: "Resturant", category: "Food", imagePosition: "center", w: 4, ratio: "1/1" }
-  ]
+  photos: []
 };
 
 var $  = function(s,r){ return (r||document).querySelector(s); };
 var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
 
+/* BULLETPROOF PATH NORMALIZER: Resolves every Decap format and legacy paths */
 function fixPath(p){
   if(!p) return "";
-  if(p.indexOf("://") !== -1 || p.startsWith("data:")) return p;
-  if(p.charAt(0) !== "/") return "/" + p;
-  return p;
+  p = String(p).trim();
+  if(p.indexOf("://") !== -1 || p.startsWith("data:") || p.startsWith("blob:")) return p;
+  p = p.replace(/^(\.\/|\/)+/, "");
+  if(p.startsWith("assets/uploads/")){
+    p = p.replace("assets/uploads/", "images/uploads/");
+  }
+  if(p.indexOf("/") === -1){
+    p = "images/uploads/" + p;
+  }
+  return "/" + p;
+}
+
+function cleanCat(c){
+  return String(c || "").trim().toLowerCase();
+}
+
+function getObjPosition(pos){
+  if(!pos) return "center center";
+  pos = String(pos).trim().toLowerCase();
+  if(pos === "top") return "center top";
+  if(pos === "bottom") return "center bottom";
+  if(pos === "left") return "left center";
+  if(pos === "right") return "right center";
+  return "center center";
 }
 
 function italics(str){
@@ -1734,14 +1722,18 @@ var state = {
 
 function categories(){
   var seen = [];
-  for(var i=0; i<SITE.photos.length; i++){
-    if(seen.indexOf(SITE.photos[i].category) === -1) seen.push(SITE.photos[i].category);
-  }
+  (SITE.photos || []).forEach(function(p){
+    var cat = (p.category || "").trim();
+    if(cat && seen.indexOf(cat) === -1) seen.push(cat);
+  });
   return seen;
 }
 
 function countIn(cat){
-  return SITE.photos.filter(function(p){ return p.category === cat; }).length;
+  var target = cleanCat(cat);
+  return (SITE.photos || []).filter(function(p){ 
+    return cleanCat(p.category) === target; 
+  }).length;
 }
 
 function buildFilters(){
@@ -1764,7 +1756,6 @@ function buildFilters(){
   });
 }
 
-// 3D PERSPECTIVE TILT
 function attachTilt3D(el) {
   if (window.innerWidth <= 640) return;
   var rAF = null;
@@ -1800,12 +1791,12 @@ function renderHomeGrid() {
   var hasUnshownPhotos = false;
   var WORK_LIMIT = 12;
 
-  var filteredList = SITE.photos.filter(function(p){
-    return state.filter === "All" || p.category === state.filter;
+  var filteredList = (SITE.photos || []).filter(function(p){
+    return state.filter === "All" || cleanCat(p.category) === cleanCat(state.filter);
   });
 
   if(state.filter === "All" && !state.showAllCurated){
-    var baseList = filteredList.filter(function(p){ return p.featured !== false; });
+    var baseList = filteredList.filter(function(p){ return p.featured !== false && String(p.featured) !== "false"; });
     list = baseList.slice(0, WORK_LIMIT);
     hasUnshownPhotos = (filteredList.length > list.length);
   } else {
@@ -1814,56 +1805,53 @@ function renderHomeGrid() {
   
   state.visible = list;
   var counter = $("[data-workcount]");
-  if(counter) counter.textContent = list.length + " / " + SITE.photos.length + " FRAMES";
+  if(counter) counter.textContent = list.length + " / " + (SITE.photos || []).length + " FRAMES";
   var curatedWrap = $("#curated-wrap");
   if(curatedWrap) curatedWrap.style.display = (hasUnshownPhotos && state.filter === "All") ? "flex" : "none";
 
   if(list.length === 0){
-    grid.innerHTML = '<p style="opacity:0.5; padding:20px 0;">No work published yet.</p>';
+    grid.innerHTML = '<p style="opacity:0.5; padding:20px 0;">No work published in this selection yet.</p>';
     return;
   }
 
   var n = 0;
   grid.innerHTML = list.map(function(p){
     var i = n++;
-    var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
+    var pos = getObjPosition(p.imagePosition);
     var imgSrc = esc(fixPath(p.src)); 
 
-    return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
+    return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
              '<div class="plate-tilt-wrap">'+
                '<span class="plate">'+
-                 '<img loading="lazy" decoding="async" onload="this.classList.add(\'ready\')" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+esc(pos)+';">'+
+                 '<img src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.2\';">'+
                  '<span class="guard"></span>'+
                '</span>'+
              '</div>'+
-             '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
+             '<span class="cap"><span class="t">'+esc(p.title || "Untitled")+'</span><span class="c">'+esc(p.client || "Studio")+'</span></span>'+
            '</button>';
   }).join("");
 
-  $$("#grid img",grid).forEach(function(img){
-    if(img.complete) img.classList.add("ready");
-  });
   $$(".shot",grid).forEach(function(b){
     attachTilt3D(b);
     b.addEventListener("click",function(){ openLB(parseInt(b.dataset.i,10), b); });
   });
 }
 
-// RENDER ACCORDION WITH SPACED 4-IMAGE PREVIEWS
 function renderNichesList(){
-  var made = categories();
+  var made = categories().map(cleanCat);
   var nHost = $("#niches-list");
   if(!nHost || !SITE.niches) return;
 
   nHost.innerHTML = SITE.niches.map(function(n){
-    var has = made.indexOf(n.name) !== -1;
+    var cName = cleanCat(n.name);
     var totalCount = countIn(n.name);
+    var has = totalCount > 0 || made.indexOf(cName) !== -1;
     var right = has
       ? '<span class="state has mono">'+totalCount+' FRAMES</span>'
       : '<span class="state open mono">AVAILABLE</span>';
 
-    var photosInNiche = SITE.photos.filter(function(p){
-      return p.category.toLowerCase() === n.name.toLowerCase();
+    var photosInNiche = (SITE.photos || []).filter(function(p){
+      return cleanCat(p.category) === cName;
     });
     var previewPhotos = photosInNiche.slice(0, 4);
 
@@ -1872,11 +1860,11 @@ function renderNichesList(){
 
     if (previewPhotos.length > 0) {
       previewGridHTML = '<div class="niche-preview-grid">' + previewPhotos.map(function(p, pIdx){
-        var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
-        return '<button class="shot" data-preview-niche="'+esc(n.name)+'" data-preview-idx="'+pIdx+'" aria-label="Open '+esc(p.title)+'">'+
+        var pos = getObjPosition(p.imagePosition);
+        return '<button class="shot" data-preview-niche="'+esc(n.name)+'" data-preview-idx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
                    '<span class="plate">'+
-                     '<img loading="lazy" decoding="async" onload="this.classList.add(\'ready\')" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title)+'" style="object-position: '+esc(pos)+';">'+
+                     '<img src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.2\';">'+
                      '<span class="guard"></span>'+
                    '</span>'+
                  '</div>'+
@@ -1896,7 +1884,7 @@ function renderNichesList(){
     return '<div class="niche-row" data-niche-row="'+esc(n.name)+'">' +
              '<button type="button" class="niche btn-toggle-niche" data-niche="'+esc(n.name)+'" aria-expanded="false" aria-label="Toggle '+esc(n.name)+' preview">'+
                '<h3>'+esc(n.name)+'<span class="arrow">&rarr;</span></h3>'+
-               '<p>'+esc(n.line)+'</p>'+
+               '<p>'+esc(n.line || "")+'</p>'+
                right+
              '</button>' +
              '<div class="niche-dropdown">' +
@@ -1906,7 +1894,6 @@ function renderNichesList(){
            '</div>';
   }).join("");
 
-  // Smooth Toggle Dropdown On Click
   $$(".btn-toggle-niche", nHost).forEach(function(btn){
     btn.addEventListener("click", function(e){
       e.preventDefault();
@@ -1926,22 +1913,20 @@ function renderNichesList(){
     });
   });
 
-  // Lightbox from preview image click
   $$("[data-preview-niche]", nHost).forEach(function(imgBtn){
     attachTilt3D(imgBtn);
     imgBtn.addEventListener("click", function(e){
       e.stopPropagation();
       var nicheName = imgBtn.dataset.previewNiche;
       var pIdx = parseInt(imgBtn.dataset.previewIdx, 10);
-      var fullList = SITE.photos.filter(function(p){
-        return p.category.toLowerCase() === nicheName.toLowerCase();
+      var fullList = (SITE.photos || []).filter(function(p){
+        return cleanCat(p.category) === cleanCat(nicheName);
       });
       state.visible = fullList;
       openLB(pIdx, imgBtn);
     });
   });
 
-  // "View all photos" button -> Transitions into full gallery view
   $$("[data-go-niche]", nHost).forEach(function(btn){
     btn.addEventListener("click", function(e){
       e.preventDefault();
@@ -1953,13 +1938,13 @@ function renderNichesList(){
   });
 }
 
-// FULL GALLERY VIEW
 function openNicheView(nicheName){
-  var nicheData = (SITE.niches || []).filter(function(x){ return x.name.toLowerCase() === nicheName.toLowerCase(); })[0];
+  var target = cleanCat(nicheName);
+  var nicheData = (SITE.niches || []).filter(function(x){ return cleanCat(x.name) === target; })[0];
   if(!nicheData) nicheData = { name: nicheName, line: "" };
 
-  var photosInNiche = SITE.photos.filter(function(p){
-    return p.category.toLowerCase() === nicheName.toLowerCase();
+  var photosInNiche = (SITE.photos || []).filter(function(p){
+    return cleanCat(p.category) === target;
   });
 
   state.activeNiche = nicheName;
@@ -1979,17 +1964,17 @@ function openNicheView(nicheName){
     var n = 0;
     photosHTML = '<div class="niche-work-grid" id="niche-grid-inner">' + photosInNiche.map(function(p){
       var i = n++;
-      var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
+      var pos = getObjPosition(p.imagePosition);
       var imgSrc = esc(fixPath(p.src)); 
 
-      return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title)+'">'+
+      return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
                '<div class="plate-tilt-wrap">'+
                  '<span class="plate">'+
-                   '<img loading="lazy" decoding="async" onload="this.classList.add(\'ready\')" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+esc(pos)+';">'+
+                   '<img src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.2\';">'+
                    '<span class="guard"></span>'+
                  '</span>'+
                '</div>'+
-               '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
+               '<span class="cap"><span class="t">'+esc(p.title || "Untitled")+'</span><span class="c">'+esc(p.client || "Studio")+'</span></span>'+
              '</button>';
     }).join("") + '</div>';
   }
@@ -1999,7 +1984,7 @@ function openNicheView(nicheName){
       '<div class="niche-view-top">' +
         '<div class="niche-view-title">' +
           '<h2>' + esc(nicheData.name) + '</h2>' +
-          '<p>' + esc(nicheData.line) + '</p>' +
+          '<p>' + esc(nicheData.line || "") + '</p>' +
         '</div>' +
         '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
           '<span class="mono" style="opacity:.6;font-size:.75rem">' + countText + '</span>' +
@@ -2098,7 +2083,6 @@ function exitOverlayToHome(){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-// ROUTING OBSERVER
 window.addEventListener("hashchange", function(){
   var hash = window.location.hash;
   if(hash === "#collective"){
@@ -2115,7 +2099,6 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-// ENQUIRY MODAL LOGIC
 var enqModal = $("#enquiry-modal");
 var enqMsg = $("#enq-msg");
 var charCount = $("#char-count");
@@ -2151,7 +2134,6 @@ function closeEnquiryModal() {
   enqModal.classList.remove("open");
 }
 
-/* HERO SLIDESHOW */
 function initSlideshow(){
   var slides = [];
   if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
@@ -2172,7 +2154,7 @@ function initSlideshow(){
   if(!stage) return;
 
   stage.innerHTML = slides.map(function(s, idx){
-    var pos = (s.imagePosition && s.imagePosition !== "Center") ? s.imagePosition.toLowerCase() : "center";
+    var pos = getObjPosition(s.imagePosition);
     var act = (idx === state.currentSlide) ? "active" : "";
     var imgSrc = esc(fixPath(s.src)); 
 
@@ -2236,7 +2218,6 @@ function nextSlide(){
   }, 620);
 }
 
-/* LIGHTBOX */
 var lb = $("#lb");
 function openLB(i, opener){
   state.index = i; state.opener = opener || null;
@@ -2248,7 +2229,7 @@ function openLB(i, opener){
 }
 function closeLB(){
   lb.classList.remove("on");
-  document.body.style.overflow = "";
+  document.body.style.overflow = (collectivePage.classList.contains("open") || nichesPage.classList.contains("open")) ? "hidden" : "";
   if(state.opener) state.opener.focus();
 }
 function stepLB(d){
@@ -2266,15 +2247,14 @@ function paintLB(){
   imgEl.style.animation = "";
   
   imgEl.src = fixPath(p.src); 
-  imgEl.alt = p.caption || p.title;
-  $("#lb-title").textContent = p.title;
-  $("#lb-meta").textContent = p.client + " — " + p.category;
+  imgEl.alt = p.caption || p.title || "Frame";
+  $("#lb-title").textContent = p.title || "Untitled";
+  $("#lb-meta").textContent = (p.client || "Studio") + " — " + (p.category || "General");
   $("#lb-desc").textContent = p.caption || "";
   $("#lb-i").textContent = String(state.index + 1).padStart(2,"0");
   $("#lb-n").textContent = String(state.visible.length).padStart(2,"0");
 }
 
-/* THEME TOGGLE */
 var pull = $("#theme");
 
 function applyTheme(isDark) {
@@ -2315,7 +2295,6 @@ if(pull) {
   }
 })();
 
-// KEYBOARD & TOUCH CONTROLS
 document.addEventListener("keydown", function(e){
   if(e.key === "Escape"){
     if(enqModal && enqModal.classList.contains("open")) { closeEnquiryModal(); return; }
@@ -2337,7 +2316,6 @@ if(lb) {
   }, {passive:true});
 }
 
-// ASSET PROTECTION
 document.addEventListener("contextmenu", function(e){
   if (e.target.closest(".plate, .lb-frame, img, .guard, .member-plate, .band")) {
     e.preventDefault();
@@ -2349,7 +2327,6 @@ document.addEventListener("dragstart", function(e){
   }
 });
 
-// GLOBAL DISPATCH INITIALIZER
 function bindGlobalEvents() {
   document.addEventListener("click", function(e) {
     if (e.target.closest(".btn-close-collective")) {
@@ -2432,13 +2409,17 @@ function bindGlobalEvents() {
             if (enqStatus) enqStatus.textContent = "READY";
           }, 1800);
         } else {
-          throw new Error("Form submission error");
+          throw new Error("Submission failed");
         }
       })
       .catch(function() {
-        if (enqStatus) enqStatus.textContent = "FAILED TO SEND. TRY AGAIN.";
+        window.location.href = "mailto:" + SITE.email + 
+          "?subject=" + encodeURIComponent("Enquiry: " + payload.category + " — " + payload.name) +
+          "&body=" + encodeURIComponent("Name: " + payload.name + "\nEmail: " + payload.email + "\nCategory: " + payload.category + "\n\nMessage:\n" + payload.message);
+        if (enqStatus) enqStatus.textContent = "DISPATCHED VIA EMAIL";
         state.isSubmitting = false;
         if (btn) btn.disabled = false;
+        setTimeout(closeEnquiryModal, 1500);
       });
     });
   }
@@ -2486,7 +2467,6 @@ function renderContent(){
   var note = $("[data-contact-note]"); 
   if(note) note.textContent = targetNote;
 
-  // FOOTER INDEX
   var idxList = $("[data-foot-index]");
   if(idxList){
     idxList.innerHTML =
@@ -2536,12 +2516,12 @@ function renderContent(){
       var links = "";
       if(m.instagram) links += '<a href="'+esc(m.instagram)+'" target="_blank" rel="noopener" class="member-chip">Instagram ↗</a>';
       if(m.portfolio) links += '<a href="'+esc(m.portfolio)+'" target="_blank" rel="noopener" class="member-chip">Work ↗</a>';
-      var mPos = (m.imagePosition && m.imagePosition !== "Center") ? m.imagePosition.toLowerCase() : "center";
+      var mPos = getObjPosition(m.imagePosition);
       var photoSrc = m.photo ? fixPath(m.photo) : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
 
       return '<div class="member-card">' +
                '<div class="member-plate">' +
-                 '<img src="'+esc(photoSrc)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos)+';">' +
+                 '<img src="'+esc(photoSrc)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos)+';" onerror="this.style.opacity=\'0.2\';">' +
                '</div>' +
                '<div class="member-info">' +
                  '<h3>'+esc(m.name)+'</h3>' +
@@ -2568,9 +2548,10 @@ function renderContent(){
   }
 }
 
+/* CACHE-BUSTED BOOTSTRAP: Always pulls the latest content on reload */
 function initApp(){
   bindGlobalEvents();
-  fetch('/content.json')
+  fetch('/content.json?_t=' + Date.now(), { cache: "no-store" })
     .then(function(res){
       if(!res.ok) throw new Error("Status " + res.status);
       return res.json();
@@ -2582,12 +2563,8 @@ function initApp(){
       renderContent();
     })
     .catch(function(err){
-      console.warn("Using baseline fallback due to:", err);
-      try {
-        renderContent();
-      } catch(innerErr) {
-        console.error("Critical render failure:", innerErr);
-      }
+      console.warn("Using baseline fallback:", err);
+      renderContent();
     });
 }
 
