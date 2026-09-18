@@ -12,7 +12,6 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
 <script>
-  // Prevent theme flash before DOM renders
   (function() {
     try {
       var saved = localStorage.getItem("lrl_theme");
@@ -336,7 +335,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   height: auto !important;
 }
 
-/* OVERLAY CATEGORY VIEW GRID */
+/* FULL NICHE VIEW GALLERY GRID */
 .niche-work-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -463,7 +462,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .mail:hover,.mail:focus-visible{background-size:100% 2.5px}
 .contact-note{
   margin-top:10px;
-  max-width:48ch;
+  max-width:58ch;
   opacity:.75;
   font-size:clamp(.88rem, .25vw + .82rem, .96rem);
   line-height:1.5;
@@ -525,7 +524,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   mix-blend-mode: normal !important;
 }
 
-/* OVERLAYS (STABLE MOBILE DVH) */
+/* OVERLAYS */
 .overlay-page {
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
@@ -674,25 +673,37 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   flex-direction: column;
 }
 
-/* NICHES DIRECTORY */
+/* ============================================================
+   NICHES ACCORDION & INLINE 4-IMAGE DROPDOWN STYLES
+   ============================================================ */
+.niche-row {
+  border-bottom: 1px solid var(--rule);
+  width: 100%;
+}
+.niche-row:first-child {
+  border-top: 1px solid var(--rule);
+}
+
 .niche{
   display:grid;
   grid-template-columns:minmax(130px, 1fr) 3fr auto;
   gap:12px 24px;
   align-items:baseline;
-  padding:clamp(15px, 2vw, 24px) 14px;
-  border-bottom:1px solid var(--rule);
+  padding:clamp(16px, 2vw, 24px) 14px;
   text-align:left;
   width:100%;
   cursor:pointer;
   position:relative;
   transition:background .22s ease, padding-left .25s var(--ease);
 }
-.niche:first-child{border-top:1px solid var(--rule)}
 .niche:hover, .niche:focus-visible{
   background:var(--rule-soft);
   padding-left:22px;
 }
+.niche-row.expanded .niche {
+  background:var(--rule-soft);
+}
+
 .niche h3{
   margin:0;
   font-size:clamp(1.1rem, 2vw, 1.55rem);
@@ -700,13 +711,19 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   display:flex;align-items:center;gap:8px;
 }
 .niche .arrow{
-  opacity:0;transform:translateX(-6px);
-  transition:opacity .2s ease, transform .2s ease;
+  opacity:0.5;
+  transition:opacity .2s ease, transform .25s var(--ease);
   font-size:.9rem;
+  display: inline-block;
 }
 .niche:hover .arrow, .niche:focus-visible .arrow{
-  opacity:1;transform:translateX(0);
+  opacity:1;
 }
+.niche-row.expanded .niche .arrow {
+  opacity:1;
+  transform: rotate(90deg);
+}
+
 .niche p{margin:0;opacity:.7;max-width:58ch}
 .niche .state{
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
@@ -716,7 +733,55 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 .niche .state.open{display:inline-flex;align-items:center;gap:6px}
 .niche .state.open::before{content:"";width:5px;height:5px;background:var(--glow);box-shadow:0 0 5px var(--glow)}
 
-/* ENQUIRE UNDER NICHES */
+/* ACCORDION INLINE CONTAINER */
+.niche-dropdown {
+  display: none;
+  padding: 0 14px clamp(20px, 3vw, 32px);
+  animation: dropdownOpen .3s var(--ease) forwards;
+}
+.niche-row.expanded .niche-dropdown {
+  display: block;
+}
+@keyframes dropdownOpen {
+  from { opacity: 0; transform: translateY(-8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.niche-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 14px;
+  width: 100%;
+}
+.niche-preview-grid .plate {
+  aspect-ratio: 1 / 1 !important;
+}
+
+.niche-dropdown-foot {
+  margin-top: 16px;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: 16px;
+}
+.btn-niche-view-more {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid var(--ink);
+  padding: 9px 18px;
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: background .2s ease, color .2s ease;
+}
+.btn-niche-view-more:hover {
+  background: var(--ink);
+  color: var(--paper);
+}
+
+/* BOOKING SECTION UNDER NICHES */
 .niche-enquire-sec {
   padding-top: clamp(24px, 3.5vw, 44px);
   padding-bottom: clamp(14px, 2vw, 24px);
@@ -1085,6 +1150,7 @@ html[data-theme="dark"] .lb-frame {
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
+  .niche-preview-grid{grid-template-columns:repeat(2, 1fr)}
   .foot{grid-template-columns:1.2fr 1fr 1fr;gap:24px 20px}
 }
 
@@ -1159,6 +1225,11 @@ html[data-theme="dark"] .lb-frame {
   }
   .home-work-grid .plate {
     aspect-ratio: 4 / 4.5 !important;
+  }
+
+  .niche-preview-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 10px !important;
   }
 
   .mobile-shoot-sec {
@@ -1388,6 +1459,7 @@ html[data-theme="dark"] .lb-frame {
       <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Shoot</h1>
       <p style="opacity:.7; max-width:600px; margin-bottom:clamp(30px, 5vw, 60px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
       
+      <!-- DYNAMIC ACCORDION LIST -->
       <div id="niches-list" data-niches></div>
 
       <!-- PLACED UNDER NICHES -->
@@ -1401,6 +1473,7 @@ html[data-theme="dark"] .lb-frame {
       </div>
     </div>
     
+    <!-- FULL GALLERY PAGE WHEN "VIEW MORE" IS CLICKED -->
     <div id="niche-view-box" style="display:none; flex: 1;"></div>
 
     <div class="collective-about-wrap">
@@ -1421,7 +1494,7 @@ html[data-theme="dark"] .lb-frame {
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+        <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -1656,7 +1729,7 @@ function buildFilters(){
   });
 }
 
-// 3D PERSPECTIVE TILT (FRAME BUFFERED)
+// 3D PERSPECTIVE TILT
 function attachTilt3D(el) {
   if (window.innerWidth <= 640) return;
   var rAF = null;
@@ -1741,6 +1814,7 @@ function renderHomeGrid() {
   });
 }
 
+// RENDER ACCORDION WITH 4-IMAGE PREVIEWS
 function renderNichesList(){
   var made = categories();
   var nHost = $("#niches-list");
@@ -1748,25 +1822,105 @@ function renderNichesList(){
 
   nHost.innerHTML = SITE.niches.map(function(n){
     var has = made.indexOf(n.name) !== -1;
+    var totalCount = countIn(n.name);
     var right = has
-      ? '<span class="state has mono">'+countIn(n.name)+' FRAMES</span>'
+      ? '<span class="state has mono">'+totalCount+' FRAMES</span>'
       : '<span class="state open mono">AVAILABLE</span>';
-    return '<button class="niche" data-niche="'+esc(n.name)+'" aria-label="View '+esc(n.name)+' portfolio">'+
-             '<h3>'+esc(n.name)+'<span class="arrow">→</span></h3>'+
-             '<p>'+esc(n.line)+'</p>'+
-             right+
-           '</button>';
+
+    // Get up to 4 images for preview
+    var photosInNiche = SITE.photos.filter(function(p){
+      return p.category.toLowerCase() === n.name.toLowerCase();
+    });
+    var previewPhotos = photosInNiche.slice(0, 4);
+
+    var previewGridHTML = "";
+    var dropdownFootHTML = "";
+
+    if (previewPhotos.length > 0) {
+      previewGridHTML = '<div class="niche-preview-grid">' + previewPhotos.map(function(p, pIdx){
+        var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
+        return '<button class="shot" data-preview-niche="'+esc(n.name)+'" data-preview-idx="'+pIdx+'" aria-label="Open '+esc(p.title)+'">'+
+                 '<div class="plate-tilt-wrap">'+
+                   '<span class="plate">'+
+                     '<img loading="lazy" decoding="async" onload="this.classList.add(\'ready\')" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title)+'" style="object-position: '+esc(pos)+';">'+
+                     '<span class="guard"></span>'+
+                   '</span>'+
+                 '</div>'+
+               '</button>';
+      }).join("") + '</div>';
+
+      dropdownFootHTML = 
+        '<div class="niche-dropdown-foot">' +
+          '<button type="button" class="btn-niche-view-more" data-go-niche="'+esc(n.name)+'">' +
+            'View all ' + totalCount + ' photos in ' + esc(n.name) + ' &rarr;' +
+          '</button>' +
+        '</div>';
+    } else {
+      previewGridHTML = '<p style="opacity:0.55; margin:8px 0; font-size:0.9rem;">No photographs published in this category yet. Reach out to commission this shoot.</p>';
+    }
+
+    return '<div class="niche-row" data-niche-row="'+esc(n.name)+'">' +
+             '<button type="button" class="niche btn-toggle-niche" data-niche="'+esc(n.name)+'" aria-expanded="false" aria-label="Toggle '+esc(n.name)+' preview">'+
+               '<h3>'+esc(n.name)+'<span class="arrow">&rarr;</span></h3>'+
+               '<p>'+esc(n.line)+'</p>'+
+               right+
+             '</button>' +
+             '<div class="niche-dropdown">' +
+               previewGridHTML +
+               dropdownFootHTML +
+             '</div>' +
+           '</div>';
   }).join("");
 
-  $$(".niche", nHost).forEach(function(btn){
-    btn.addEventListener("click", function(){
-      var nicheName = btn.dataset.niche;
+  // Toggle Dropdown On Click
+  $$(".btn-toggle-niche", nHost).forEach(function(btn){
+    btn.addEventListener("click", function(e){
+      e.preventDefault();
+      var row = btn.closest(".niche-row");
+      var isExpanded = row.classList.contains("expanded");
+      
+      // Close other dropdowns
+      $$(".niche-row", nHost).forEach(function(r){
+        r.classList.remove("expanded");
+        var b = r.querySelector(".btn-toggle-niche");
+        if(b) b.setAttribute("aria-expanded", "false");
+      });
+
+      if (!isExpanded) {
+        row.classList.add("expanded");
+        btn.setAttribute("aria-expanded", "true");
+      }
+    });
+  });
+
+  // Lightbox from preview image click
+  $$("[data-preview-niche]", nHost).forEach(function(imgBtn){
+    attachTilt3D(imgBtn);
+    imgBtn.addEventListener("click", function(e){
+      e.stopPropagation();
+      var nicheName = imgBtn.dataset.previewNiche;
+      var pIdx = parseInt(imgBtn.dataset.previewIdx, 10);
+      var fullList = SITE.photos.filter(function(p){
+        return p.category.toLowerCase() === nicheName.toLowerCase();
+      });
+      state.visible = fullList;
+      openLB(pIdx, imgBtn);
+    });
+  });
+
+  // "View all photos" button -> Goes to full gallery page
+  $$("[data-go-niche]", nHost).forEach(function(btn){
+    btn.addEventListener("click", function(e){
+      e.preventDefault();
+      e.stopPropagation();
+      var nicheName = btn.dataset.goNiche;
       window.location.hash = "niche-" + encodeURIComponent(nicheName);
       openNicheView(nicheName);
     });
   });
 }
 
+// FULL GALLERY VIEW
 function openNicheView(nicheName){
   var nicheData = (SITE.niches || []).filter(function(x){ return x.name.toLowerCase() === nicheName.toLowerCase(); })[0];
   if(!nicheData) nicheData = { name: nicheName, line: "" };
@@ -2295,7 +2449,6 @@ function renderContent(){
     mail.href = "mailto:" + (SITE.email || "");
   }
   
-  // Direct target note override
   var targetNote = "Planning something special? Tell us what you’re looking to capture, and when and where.";
   var note = $("[data-contact-note]"); 
   if(note) note.textContent = targetNote;
