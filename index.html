@@ -12,12 +12,17 @@
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 
 <script>
-  try {
-    var savedTheme = localStorage.getItem("lrl_theme");
-    if (savedTheme) {
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    }
-  } catch(e) {}
+  // Prevent theme flash before DOM renders
+  (function() {
+    try {
+      var saved = localStorage.getItem("lrl_theme");
+      if (saved === "dark" || saved === "light") {
+        document.documentElement.setAttribute("data-theme", saved);
+      } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+        document.documentElement.setAttribute("data-theme", "dark");
+      }
+    } catch(e) {}
+  })();
 </script>
 
 <style>
@@ -43,6 +48,7 @@
   --safe-left:env(safe-area-inset-left, 0px);
   --safe-right:env(safe-area-inset-right, 0px);
 }
+
 html[data-theme="dark"]{
   --paper:#080808;
   --ink:#FFFFFF;
@@ -51,19 +57,22 @@ html[data-theme="dark"]{
 }
 
 *,*::before,*::after{box-sizing:border-box}
+
 html{
   -webkit-text-size-adjust:100%;
   scroll-behavior:smooth;
   scroll-padding-top:calc(var(--nav-h) + 16px);
 }
+
 body{
   margin:0;
   background:var(--paper);
   color:var(--ink);
-  font-family:"Inter",system-ui,sans-serif;
+  font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
   font-size:clamp(.92rem, .3vw + .85rem, 1.02rem);
   line-height:1.55;
   -webkit-font-smoothing:antialiased;
+  -moz-osx-font-smoothing:grayscale;
   overflow-x:hidden;
   transition:background .35s ease, color .35s ease;
 }
@@ -79,6 +88,7 @@ img{
 
 button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
 a{color:inherit;text-decoration:none}
+
 em{
   font-family:"Playfair Display",Georgia,serif;
   font-style:italic;
@@ -129,13 +139,13 @@ div[data-netlify-drawer],
   visibility: hidden !important;
 }
 
-/* GLOBAL NAV */
+/* NAVIGATION */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
   height:calc(var(--nav-h) + var(--safe-top));
   display:flex;align-items:center;justify-content:space-between;
   gap:16px;
-  padding:var(--safe-top) calc(var(--pad) + 12px + var(--safe-right)) 0 calc(var(--pad) + 12px + var(--safe-left));
+  padding:var(--safe-top) calc(var(--pad) + var(--safe-right)) 0 calc(var(--pad) + var(--safe-left));
   background:var(--paper);
   border-bottom:1px solid var(--rule);
   transition:background .35s ease, border-color .35s ease;
@@ -169,6 +179,7 @@ div[data-netlify-drawer],
 .nav-mobile-only{display:none}
 .nav-desktop-only{display:inline-block}
 
+/* PULL SWITCH */
 .pull{
   --len:30px;
   position:relative;flex:none;
@@ -229,14 +240,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-top:14px;
 }
 
-/* HERO BANNER SLIDESHOW */
+/* HERO SLIDESHOW BANNER */
 .band{
   position:relative;
   width:100%;
   height:auto;
   aspect-ratio: 16 / 9;
   max-height: 85vh;
-  min-height: 380px;
+  min-height: 360px;
   overflow:hidden;
   background:#050505;
   display:block;
@@ -312,7 +323,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* DESKTOP 4-IN-A-ROW NEAR-SQUARE GRID */
+/* 4-COLUMN SQUARE GRID */
 .home-work-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -325,7 +336,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   height: auto !important;
 }
 
-/* WHAT WE SHOOT OVERLAY GRID */
+/* OVERLAY CATEGORY VIEW GRID */
 .niche-work-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -348,8 +359,9 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .plate-tilt-wrap {
   width: 100%;
-  transition: transform 0.18s cubic-bezier(0.2, 0, 0.2, 1);
+  transition: transform 0.16s cubic-bezier(0.2, 0, 0.2, 1);
   transform-style: preserve-3d;
+  will-change: transform;
 }
 .plate {
   position: relative;
@@ -399,10 +411,8 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   background:var(--ink);color:var(--paper);
 }
 
-/* MOBILE-ONLY "WHAT WE SHOOT" BOXED SECTION */
-.mobile-shoot-sec {
-  display: none;
-}
+/* MOBILE "WHAT WE SHOOT" LINK BOX */
+.mobile-shoot-sec { display: none; }
 .mobile-shoot-box {
   border: 1px solid var(--rule);
   padding: 16px 18px;
@@ -472,7 +482,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .foot h4{margin:0 0 12px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;opacity:.5}
 .foot ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
-.foot a:hover,.foot a:focus-visible{text-decoration:underline;text-underline-offset:3px}
+.foot a:hover,.foot a:focus-visible, .foot button:hover, .foot button:focus-visible{text-decoration:underline;text-underline-offset:3px}
 
 .foot-logo-btn{
   border:0;
@@ -494,11 +504,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .foot-logo-btn:hover img{transform:scale(1.03)}
 .foot-links-group { display: contents; }
 
-.mobile-shoot-column {
-  display: none;
-}
-
-/* LOGOS & DARK MODE LOGIC */
+/* DARK MODE LOGO FILTER */
 .brand .mark img,
 .foot-logo-btn img,
 .collective-about-logo img,
@@ -519,19 +525,22 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   mix-blend-mode: normal !important;
 }
 
-/* OVERLAYS */
+/* OVERLAYS (STABLE MOBILE DVH) */
 .overlay-page {
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
+  height:100vh;
+  height:100dvh;
   overflow-y:auto;overflow-x:hidden;
   display:none;flex-direction:column;
   scroll-behavior:smooth;
+  -webkit-overflow-scrolling:touch;
 }
 .overlay-page.open{display:flex;animation:curtainRise .4s var(--ease) forwards}
 
 .overlay-nav {
   position:fixed;top:0;left:0;right:0;z-index:30;
-  height:var(--nav-h);padding-inline:calc(var(--pad) + 12px);
+  height:var(--nav-h);padding-inline:calc(var(--pad) + var(--safe-right)) 0 calc(var(--pad) + var(--safe-left));
   display:flex;align-items:center;justify-content:space-between;
 }
 .collective-nav {
@@ -593,6 +602,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   position:relative;
   width:100vw;
   height:100vh;
+  height:100dvh;
   min-height:100vh;
   display:flex;
   overflow:hidden;
@@ -659,11 +669,12 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 .niches-content-sec {
   padding-top: calc(var(--nav-h) + clamp(30px, 5vw, 60px));
   min-height: 100vh;
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
 }
 
-/* NICHES LIST STYLING */
+/* NICHES DIRECTORY */
 .niche{
   display:grid;
   grid-template-columns:minmax(130px, 1fr) 3fr auto;
@@ -916,9 +927,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 .lb-cap .m{opacity:.6;font-size:.82rem;text-align:right;color:#FFF}
 .lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
 
-/* ============================================================
-   ENQUIRY STUDIO MODAL
-   ============================================================ */
+/* ENQUIRY MODAL DIALOG */
 .enquiry-modal {
   position: fixed;
   inset: 0;
@@ -1034,9 +1043,13 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   font-weight: 600;
   transition: background .2s ease, color .2s ease;
 }
-.btn-enquiry-submit:hover {
+.btn-enquiry-submit:hover:not(:disabled) {
   background: var(--paper);
   color: var(--ink);
+}
+.btn-enquiry-submit:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
 .enquiry-status-msg {
@@ -1052,7 +1065,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   .foot{grid-template-columns:1.2fr 1fr 1fr;gap:24px 20px}
 }
 
-/* MOBILE SPECIFICS */
+/* MOBILE VIEWPORT */
 @media (max-width:640px){
   :root{
     --nav-h:64px;
@@ -1234,7 +1247,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 <nav class="nav">
   <button class="brand logo-exit-btn" aria-label="Living Room Labs (Reload)">
     <span class="mark">
-      <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+      <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
     </span>
     <span class="wordmark" data-name></span>
   </button>
@@ -1243,7 +1256,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       <button type="button" class="nav-niches-link nav-desktop-only">What we shoot</button>
       <button type="button" class="nav-collective-link nav-desktop-only">The Collective</button>
       <button type="button" class="nav-collective-link-mob nav-mobile-only">The Collective</button>
-      <button type="button" class="nav-niches-link-mob nav-mobile-only" style="display:none!important;">What we shoot</button>
     </div>
     <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
       <span class="cord" aria-hidden="true"></span>
@@ -1308,7 +1320,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     <div class="foot">
       <div class="foot-col-logo">
         <button class="foot-logo-btn logo-exit-btn" aria-label="Scroll to top of page">
-          <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+          <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
         </button>
       </div>
 
@@ -1336,7 +1348,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+        <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE SHOOT // CATEGORIES</span>
@@ -1355,15 +1367,14 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       
       <div id="niches-list" data-niches></div>
 
-      <!-- PLACED DIRECTLY UNDER WHAT WE SHOOT (LIKE HOME PAGE CONTACT) -->
+      <!-- PLACED UNDER NICHES -->
       <div class="niche-enquire-sec">
         <div class="sec-head" style="margin-bottom:12px;">
-          <span class="label">Booking & Inquiries</span>
+          <span class="label">Enquiry</span>
           <span class="fill"></span>
-          <span class="count mono">OPEN FOR COMMISSIONS</span>
         </div>
         <button type="button" class="niche-enquire-trigger" id="btn-enquire-overview">Enquire ↗</button>
-        <p class="niche-enquire-tagline">// Tell us what you are shooting</p>
+        <p class="niche-enquire-tagline">Every frame begins with a conversation.</p>
       </div>
     </div>
     
@@ -1375,7 +1386,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+          <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
         </button>
       </div>
     </div>
@@ -1387,7 +1398,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+        <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -1427,7 +1438,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+          <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
         </button>
       </div>
     </div>
@@ -1470,7 +1481,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     <div class="enquiry-head">
       <div>
         <h3>Enquiry</h3>
-        <span class="mono" style="display:block; margin-top:2px; font-size:0.68rem; opacity:0.65;">// Tell us what you are shooting</span>
+        <span class="mono" style="display:block; margin-top:2px; font-size:0.68rem; opacity:0.65;">Every frame begins with a conversation.</span>
       </div>
       <button type="button" id="btn-close-enquiry-modal" class="mono" style="font-size: 0.8rem; opacity: 0.65;">[ ESC / CLOSE ]</button>
     </div>
@@ -1536,7 +1547,11 @@ var SITE = {
   statementBy: "Everything on this page was shot by us, for someone who needed it.",
   niches: [
     { name: "Food", line: "Menus, delivery listings, and the plate as it actually arrives." },
-    { name: "Pets", line: "Fast shutter, floor-level angles, treats on hand." }
+    { name: "Pets", line: "Fast shutter, floor-level angles, treats on hand." },
+    { name: "Architecture", line: "Rooms shot wide and straight, in the light they actually get." },
+    { name: "Products", line: "Studio lighting and crisp textures for brand campaigns." },
+    { name: "Events", line: "Setup to last song, edited and delivered within the week." },
+    { name: "Portraits", line: "Headshots and personal work, in studio or wherever you already are." }
   ],
   contactNote: "Tell us what you are shooting, roughly when, and where. We reply within a day.",
   teamHeroImg: "/images/uploads/dsc05175.jpg",
@@ -1582,7 +1597,8 @@ var state = {
   showAllCurated:false,
   currentSlide:0,
   slides:[],
-  slideTimer:null
+  slideTimer:null,
+  isSubmitting:false
 };
 
 function categories(){
@@ -1592,6 +1608,7 @@ function categories(){
   }
   return seen;
 }
+
 function countIn(cat){
   return SITE.photos.filter(function(p){ return p.category === cat; }).length;
 }
@@ -1616,23 +1633,28 @@ function buildFilters(){
   });
 }
 
-// 3D PERSPECTIVE TILT
+// 3D PERSPECTIVE TILT (FRAME BUFFERED)
 function attachTilt3D(el) {
   if (window.innerWidth <= 640) return;
+  var rAF = null;
   el.addEventListener('mousemove', function(e) {
-    var rect = el.getBoundingClientRect();
-    var x = e.clientX - rect.left;
-    var y = e.clientY - rect.top;
-    var xc = rect.width / 2;
-    var yc = rect.height / 2;
-    var dx = (x - xc) / xc;
-    var dy = (y - yc) / yc;
-    var tiltWrap = el.querySelector('.plate-tilt-wrap');
-    if (tiltWrap) {
-      tiltWrap.style.transform = "rotateY(" + (dx * 5) + "deg) rotateX(" + (-dy * 5) + "deg) translateZ(4px)";
-    }
+    if (rAF) cancelAnimationFrame(rAF);
+    rAF = requestAnimationFrame(function() {
+      var rect = el.getBoundingClientRect();
+      var x = e.clientX - rect.left;
+      var y = e.clientY - rect.top;
+      var xc = rect.width / 2;
+      var yc = rect.height / 2;
+      var dx = (x - xc) / xc;
+      var dy = (y - yc) / yc;
+      var tiltWrap = el.querySelector('.plate-tilt-wrap');
+      if (tiltWrap) {
+        tiltWrap.style.transform = "rotateY(" + (dx * 5) + "deg) rotateX(" + (-dy * 5) + "deg) translateZ(4px)";
+      }
+    });
   });
   el.addEventListener('mouseleave', function() {
+    if (rAF) cancelAnimationFrame(rAF);
     var tiltWrap = el.querySelector('.plate-tilt-wrap');
     if (tiltWrap) tiltWrap.style.transform = "rotateY(0deg) rotateX(0deg) translateZ(0px)";
   });
@@ -1695,14 +1717,6 @@ function renderHomeGrid() {
     b.addEventListener("click",function(){ openLB(parseInt(b.dataset.i,10), b); });
   });
 }
-
-$$("#btn-toggle-curated").forEach(function(btn){
-  btn.addEventListener("click", function(){
-    state.showAllCurated = true;
-    buildFilters();
-    renderHomeGrid();
-  });
-});
 
 function renderNichesList(){
   var made = categories();
@@ -1801,9 +1815,10 @@ function openNicheView(nicheName){
     });
   });
 
-  $$("#close-niche-view-btn", box).forEach(function(btn){
-    btn.addEventListener("click", function(){ closeNicheView(); });
-  });
+  var closeBtn = $("#close-niche-view-btn");
+  if (closeBtn) {
+    closeBtn.addEventListener("click", function(){ closeNicheView(); });
+  }
   
   $("#niches-page").scrollTo({top: 0, behavior: 'smooth'});
 }
@@ -1873,29 +1888,7 @@ function exitOverlayToHome(){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
-$$(".btn-close-collective").forEach(function(btn){
-  btn.addEventListener("click", function(e){ e.preventDefault(); closeCollective(); });
-});
-$$(".btn-close-niches").forEach(function(btn){
-  btn.addEventListener("click", function(e){ e.preventDefault(); closeNiches(); });
-});
-$$(".logo-exit-btn").forEach(function(btn){
-  btn.addEventListener("click", function(e){ e.preventDefault(); exitOverlayToHome(); });
-});
-
-$$(".nav-collective-link, .nav-collective-link-mob").forEach(function(btn){
-  btn.addEventListener("click", function(e){ e.preventDefault(); openCollective(); });
-});
-$$(".nav-niches-link, .mobile-shoot-box").forEach(function(btn){
-  btn.addEventListener("click", function(e){ e.preventDefault(); openNiches(); });
-});
-
-$$("#scroll-to-members").forEach(function(btn){
-  btn.addEventListener("click", function(){
-    $("#collective-members-sec").scrollIntoView({ behavior: 'smooth' });
-  });
-});
-
+// ROUTING OBSERVER
 window.addEventListener("hashchange", function(){
   var hash = window.location.hash;
   if(hash === "#collective"){
@@ -1912,9 +1905,7 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-/* ============================================================
-   DIRECT SUBMISSION ENQUIRY MODAL LOGIC (FORMSPREE INTEGRATED)
-   ============================================================ */
+// ENQUIRY MODAL LOGIC
 var enqModal = $("#enquiry-modal");
 var enqMsg = $("#enq-msg");
 var charCount = $("#char-count");
@@ -1941,7 +1932,8 @@ function openEnquiryModal(preselectedCategory) {
     }
   }
   enqModal.classList.add("open");
-  $("#enq-name").focus();
+  var nameInput = $("#enq-name");
+  if (nameInput) nameInput.focus();
 }
 
 function closeEnquiryModal() {
@@ -1949,63 +1941,7 @@ function closeEnquiryModal() {
   enqModal.classList.remove("open");
 }
 
-$("#btn-enquire-overview").addEventListener("click", function(){
-  openEnquiryModal("General Enquiry");
-});
-
-$("#btn-close-enquiry-modal").addEventListener("click", closeEnquiryModal);
-enqModal.addEventListener("click", function(e) {
-  if (e.target === enqModal) closeEnquiryModal();
-});
-
-if (enqMsg && charCount) {
-  enqMsg.addEventListener("input", function() {
-    charCount.textContent = enqMsg.value.length;
-  });
-}
-
-$("#enquiry-form").addEventListener("submit", function(e) {
-  e.preventDefault();
-  var btn = $("#btn-enquiry-send");
-  btn.disabled = true;
-  enqStatus.textContent = "TRANSMITTING...";
-
-  var payload = {
-    name: $("#enq-name").value,
-    email: $("#enq-email").value,
-    category: $("#enq-niche").value,
-    message: $("#enq-msg").value
-  };
-
-  fetch("https://formspree.io/f/xjykvnoz", {
-    method: "POST",
-    headers: { 
-      "Content-Type": "application/json", 
-      "Accept": "application/json" 
-    },
-    body: JSON.stringify(payload)
-  })
-  .then(function(res) {
-    if (res.ok) {
-      enqStatus.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
-      setTimeout(function() {
-        $("#enquiry-form").reset();
-        charCount.textContent = "0";
-        closeEnquiryModal();
-        btn.disabled = false;
-        enqStatus.textContent = "READY";
-      }, 2000);
-    } else {
-      throw new Error("Form submission error");
-    }
-  })
-  .catch(function() {
-    enqStatus.textContent = "FAILED TO SEND. TRY AGAIN.";
-    btn.disabled = false;
-  });
-});
-
-/* SLIDESHOW ENGINE */
+/* HERO SLIDESHOW */
 function initSlideshow(){
   var slides = [];
   if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
@@ -2097,7 +2033,8 @@ function openLB(i, opener){
   lb.classList.add("on");
   document.body.style.overflow = "hidden";
   paintLB();
-  $("#lb-close").focus();
+  var closeEl = $("#lb-close");
+  if (closeEl) closeEl.focus();
 }
 function closeLB(){
   lb.classList.remove("on");
@@ -2125,33 +2062,6 @@ function paintLB(){
   $("#lb-desc").textContent = p.caption || "";
   $("#lb-i").textContent = String(state.index + 1).padStart(2,"0");
   $("#lb-n").textContent = String(state.visible.length).padStart(2,"0");
-}
-$$("#lb-close").forEach(function(btn){ btn.addEventListener("click", closeLB); });
-$$("#lb-prev").forEach(function(btn){ btn.addEventListener("click", function(){ stepLB(-1); }); });
-$$("#lb-next").forEach(function(btn){ btn.addEventListener("click", function(){ stepLB(1); }); });
-if(lb) {
-  lb.addEventListener("click", function(e){ if(e.target === lb) closeLB(); });
-}
-
-document.addEventListener("keydown", function(e){
-  if(e.key === "Escape"){
-    if(enqModal && enqModal.classList.contains("open")) { closeEnquiryModal(); return; }
-    if(collectivePage && collectivePage.classList.contains("open")) closeCollective();
-    if(nichesPage && nichesPage.classList.contains("open")) closeNiches();
-    if(lb && lb.classList.contains("on")) closeLB();
-  }
-  if(!lb || !lb.classList.contains("on")) return;
-  if(e.key === "ArrowLeft") stepLB(-1);
-  else if(e.key === "ArrowRight") stepLB(1);
-});
-
-var tx = 0, ty = 0;
-if(lb) {
-  lb.addEventListener("touchstart", function(e){ tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY; }, {passive:true});
-  lb.addEventListener("touchend", function(e){
-    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
-    if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
-  }, {passive:true});
 }
 
 /* THEME TOGGLE */
@@ -2195,6 +2105,29 @@ if(pull) {
   }
 })();
 
+// KEYBOARD & TOUCH CONTROLS
+document.addEventListener("keydown", function(e){
+  if(e.key === "Escape"){
+    if(enqModal && enqModal.classList.contains("open")) { closeEnquiryModal(); return; }
+    if(collectivePage && collectivePage.classList.contains("open")) { closeCollective(); return; }
+    if(nichesPage && nichesPage.classList.contains("open")) { closeNiches(); return; }
+    if(lb && lb.classList.contains("on")) { closeLB(); return; }
+  }
+  if(!lb || !lb.classList.contains("on")) return;
+  if(e.key === "ArrowLeft") stepLB(-1);
+  else if(e.key === "ArrowRight") stepLB(1);
+});
+
+var tx = 0, ty = 0;
+if(lb) {
+  lb.addEventListener("touchstart", function(e){ tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY; }, {passive:true});
+  lb.addEventListener("touchend", function(e){
+    var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
+    if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
+  }, {passive:true});
+}
+
+// ASSET PROTECTION
 document.addEventListener("contextmenu", function(e){
   if (e.target.closest(".plate, .lb-frame, img, .guard, .member-plate, .band")) {
     e.preventDefault();
@@ -2206,6 +2139,101 @@ document.addEventListener("dragstart", function(e){
   }
 });
 
+// GLOBAL DISPATCH INITIALIZER (CLEAN UNIFIED LISTENERS)
+function bindGlobalEvents() {
+  document.addEventListener("click", function(e) {
+    if (e.target.closest(".btn-close-collective")) {
+      e.preventDefault(); closeCollective();
+    } else if (e.target.closest(".btn-close-niches")) {
+      e.preventDefault(); closeNiches();
+    } else if (e.target.closest(".logo-exit-btn")) {
+      e.preventDefault(); exitOverlayToHome();
+    } else if (e.target.closest(".nav-collective-link, .nav-collective-link-mob")) {
+      e.preventDefault(); openCollective();
+    } else if (e.target.closest(".nav-niches-link, .mobile-shoot-box")) {
+      e.preventDefault(); openNiches();
+    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquire-overview")) {
+      e.preventDefault(); openEnquiryModal("General Enquiry");
+    } else if (e.target.closest("#btn-toggle-curated")) {
+      e.preventDefault();
+      state.showAllCurated = true;
+      buildFilters();
+      renderHomeGrid();
+    } else if (e.target.closest("#scroll-to-members")) {
+      e.preventDefault();
+      var sec = $("#collective-members-sec");
+      if (sec) sec.scrollIntoView({ behavior: 'smooth' });
+    } else if (e.target.closest("#btn-close-enquiry-modal")) {
+      e.preventDefault(); closeEnquiryModal();
+    } else if (e.target === enqModal) {
+      closeEnquiryModal();
+    } else if (e.target.closest("#lb-close")) {
+      closeLB();
+    } else if (e.target.closest("#lb-prev")) {
+      stepLB(-1);
+    } else if (e.target.closest("#lb-next")) {
+      stepLB(1);
+    } else if (e.target === lb) {
+      closeLB();
+    }
+  });
+
+  if (enqMsg && charCount) {
+    enqMsg.addEventListener("input", function() {
+      charCount.textContent = enqMsg.value.length;
+    });
+  }
+
+  var enqForm = $("#enquiry-form");
+  if (enqForm) {
+    enqForm.addEventListener("submit", function(e) {
+      e.preventDefault();
+      if (state.isSubmitting) return;
+
+      var btn = $("#btn-enquiry-send");
+      state.isSubmitting = true;
+      if (btn) btn.disabled = true;
+      if (enqStatus) enqStatus.textContent = "TRANSMITTING...";
+
+      var payload = {
+        name: $("#enq-name").value,
+        email: $("#enq-email").value,
+        category: $("#enq-niche").value,
+        message: $("#enq-msg").value
+      };
+
+      fetch("https://formspree.io/f/xjykvnoz", {
+        method: "POST",
+        headers: { 
+          "Content-Type": "application/json", 
+          "Accept": "application/json" 
+        },
+        body: JSON.stringify(payload)
+      })
+      .then(function(res) {
+        if (res.ok) {
+          if (enqStatus) enqStatus.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
+          setTimeout(function() {
+            enqForm.reset();
+            if (charCount) charCount.textContent = "0";
+            closeEnquiryModal();
+            state.isSubmitting = false;
+            if (btn) btn.disabled = false;
+            if (enqStatus) enqStatus.textContent = "READY";
+          }, 1800);
+        } else {
+          throw new Error("Form submission error");
+        }
+      })
+      .catch(function() {
+        if (enqStatus) enqStatus.textContent = "FAILED TO SEND. TRY AGAIN.";
+        state.isSubmitting = false;
+        if (btn) btn.disabled = false;
+      });
+    });
+  }
+}
+
 function renderContent(){
   SITE.photos = SITE.photos || [];
   SITE.niches = SITE.niches || [];
@@ -2213,7 +2241,7 @@ function renderContent(){
   SITE.hero = SITE.hero || [];
 
   if(SITE.bodyFont){
-    document.body.style.fontFamily = '"' + SITE.bodyFont + '", system-ui, sans-serif';
+    document.body.style.fontFamily = '"' + SITE.bodyFont + '", system-ui, -apple-system, sans-serif';
   }
 
   $$("[data-name]").forEach(function(n){ n.textContent = SITE.name || ""; });
@@ -2245,20 +2273,13 @@ function renderContent(){
   }
   var note = $("[data-contact-note]"); if(note) note.textContent = SITE.contactNote || "";
 
+  // FOOTER INDEX (Clean: Work, What we shoot, Enquire)
   var idxList = $("[data-foot-index]");
   if(idxList){
     idxList.innerHTML =
       '<li><a href="#work">Work</a></li>' +
       '<li><button type="button" class="nav-niches-link" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">What we shoot</button></li>' +
-      '<li><button type="button" class="nav-collective-link" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">About</button></li>' +
-      '<li><a href="#contact">Contact</a></li>';
-    
-    $$(".nav-collective-link").forEach(function(b){
-      b.addEventListener("click", function(e){ e.preventDefault(); openCollective(); });
-    });
-    $$(".nav-niches-link, .mobile-shoot-box").forEach(function(b){
-      b.addEventListener("click", function(e){ e.preventDefault(); openNiches(); });
-    });
+      '<li><button type="button" id="btn-foot-enquire" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">Enquire</button></li>';
   }
 
   var socList = $("[data-foot-social]");
@@ -2335,6 +2356,7 @@ function renderContent(){
 }
 
 function initApp(){
+  bindGlobalEvents();
   fetch('/content.json')
     .then(function(res){
       if(!res.ok) throw new Error("Status " + res.status);
@@ -2359,10 +2381,9 @@ function initApp(){
 initApp();
 
 if (window.netlifyIdentity) {
-  window.netlifyIdentity.on("init", user => {
+  window.netlifyIdentity.on("init", function(user) {
     if (!user) {
-      window.netlifyIdentity.options = {};
-      window.netlifyIdentity.on("login", () => {
+      window.netlifyIdentity.on("login", function() {
         document.location.href = "/admin/";
       });
     }
