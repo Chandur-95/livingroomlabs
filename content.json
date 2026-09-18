@@ -85,6 +85,36 @@
       "category": "Food",
       "title": "Dragon Paneer",
       "client": "Resturant"
+    },
+    {
+      "featured": true,
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "title": "Happy family",
+      "client": "Personal",
+      "category": "Portraits",
+      "src": "/images/uploads/img_8180.jpg",
+      "caption": "A moment frozen in time, but the love is timeless."
+    },
+    {
+      "featured": true,
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "title": "Core memory!",
+      "client": "Personal",
+      "category": "Portraits",
+      "src": "/images/uploads/cr-6xn5vs2u0os-unsplash.jpg",
+      "caption": "Love lives here."
+    },
+    {
+      "featured": true,
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "title": "The Beginning of Forever",
+      "client": "Personal",
+      "category": "Portraits",
+      "src": "/images/uploads/cr-tecni3ku3qw-unsplash.jpg",
+      "caption": "Honoured to capture the brand new Family!"
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
@@ -100,23 +130,23 @@
   "niches": [
     {
       "name": "Food",
-      "line": "Menus, delivery listings, and the plate as it actually arrives."
+      "line": "Commercial kitchen or street counter, captured before the first bite."
     },
     {
       "name": "Pets",
-      "line": "Fast shutter, floor-level angles, treats on hand."
+      "line": "Unpredictable energy, floor-level focus, zero stiff posing."
     },
     {
-      "name": "Architecture",
-      "line": "Rooms shot wide and straight, in the light they actually get."
+      "name": "Real Estate",
+      "line": "Listings, developments, and commercial properties documented exactly as they feel."
     },
     {
       "name": "Products",
-      "line": "Product shoot"
+      "line": "Studio lighting, sharp edges, and textures that sell without explaining."
     },
     {
       "name": "Events",
-      "line": "Setup to last song, edited and delivered within the week."
+      "line": "Candid moments, crowd energy, and just raw atmosphere from soundcheck to afterparty."
     },
     {
       "name": "Portraits",
