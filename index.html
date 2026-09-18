@@ -28,7 +28,6 @@
   --rule-soft:rgba(0,0,0,.06);
   --glow:#FFC24B;
   --glow-rgb:255, 194, 75;
-  --laser-red: 255, 36, 0;
 
   --nav-h:80px;
   --pad:clamp(16px, 4vw, 56px);
@@ -67,73 +66,6 @@ body{
   -webkit-font-smoothing:antialiased;
   overflow-x:hidden;
   transition:background .35s ease, color .35s ease;
-}
-
-/* ============================================================
-   CAMERA AUTOFOCUS VIEWFINDER RETICLE CURSOR
-   ============================================================ */
-@media (pointer: fine) {
-  body { cursor: none !important; }
-  a, button, [role="button"], input, select, textarea { cursor: none !important; }
-}
-
-.camera-cursor-crosshair {
-  position: fixed;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 99999;
-  width: 14px; height: 14px;
-  transform: translate(-50%, -50%);
-  display: none;
-}
-.camera-cursor-crosshair::before,
-.camera-cursor-crosshair::after {
-  content: "";
-  position: absolute;
-  background: rgb(var(--laser-red));
-  box-shadow: 0 0 5px rgba(var(--laser-red), 0.85);
-}
-.camera-cursor-crosshair::before {
-  top: 6px; left: 0; width: 14px; height: 1.8px;
-}
-.camera-cursor-crosshair::after {
-  top: 0; left: 6px; width: 1.8px; height: 14px;
-}
-
-.camera-cursor-brackets {
-  position: fixed;
-  top: 0; left: 0;
-  pointer-events: none;
-  z-index: 99998;
-  width: 34px; height: 34px;
-  transform: translate(-50%, -50%);
-  display: none;
-  transition: width 0.22s var(--ease), height 0.22s var(--ease), opacity 0.2s ease;
-}
-
-.camera-cursor-brackets i {
-  position: absolute;
-  width: 7px; height: 7px;
-  border: 1.8px solid rgba(var(--laser-red), 0.65);
-  transition: border-color 0.2s ease;
-}
-.camera-cursor-brackets i:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; }
-.camera-cursor-brackets i:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; }
-.camera-cursor-brackets i:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; }
-.camera-cursor-brackets i:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; }
-
-@media (pointer: fine) {
-  .camera-cursor-crosshair,
-  .camera-cursor-brackets {
-    display: block;
-  }
-  body.cursor-active .camera-cursor-brackets {
-    width: 48px; height: 48px;
-  }
-  body.cursor-active .camera-cursor-brackets i {
-    border-color: rgb(var(--laser-red));
-    box-shadow: 0 0 6px rgba(var(--laser-red), 0.7);
-  }
 }
 
 img{
@@ -412,12 +344,9 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   text-align: left;
   position: relative;
   width: 100%;
-  perspective: 1000px;
 }
 .plate-tilt-wrap {
   width: 100%;
-  transition: transform 0.18s cubic-bezier(0.2, 0, 0.2, 1);
-  transform-style: preserve-3d;
 }
 .plate {
   position: relative;
@@ -433,58 +362,13 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .65s var(--ease), opacity .4s ease;
+  transition: transform .6s var(--ease), opacity .4s ease;
   opacity: 0;
 }
 .plate img.ready{opacity:1}
-.shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.04)}
-
-.plate .scanner{
-  position:absolute;left:0;right:0;height:2.5px;top:0;
-  background:rgba(var(--laser-red), 0.95);
-  box-shadow:0 0 14px 2px rgba(var(--laser-red), 0.85), 0 0 4px rgba(255, 255, 255, 0.9);
-  pointer-events:none;opacity:0;z-index:2;
-}
-.shot:hover .plate .scanner,
-.shot.scanned .plate .scanner{
-  animation:containedLaserSweep .7s cubic-bezier(.22, 1, .36, 1) forwards;
-}
-@keyframes containedLaserSweep{
-  0%{top:0%;opacity:0}
-  15%{opacity:1}
-  85%{opacity:1}
-  100%{top:100%;opacity:0}
-}
+.shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.03)}
 
 .guard{position:absolute;inset:0;z-index:3;background:transparent}
-
-.corners{position:absolute;inset:8px;pointer-events:none;z-index:4}
-.corners i{
-  position:absolute;width:14px;height:14px;
-  border:0 solid rgba(var(--laser-red), 0.95);
-  opacity:0;transform:scale(.7);
-  transition:opacity .25s var(--ease),transform .25s var(--ease);
-  box-shadow:0 0 8px rgba(var(--laser-red),.6);
-}
-.corners i:nth-child(1){top:0;left:0;border-top-width:2px;border-left-width:2px}
-.corners i:nth-child(2){top:0;right:0;border-top-width:2px;border-right-width:2px}
-.corners i:nth-child(3){bottom:0;left:0;border-bottom-width:2px;border-left-width:2px}
-.corners i:nth-child(4){bottom:0;right:0;border-bottom-width:2px;border-right-width:2px}
-.shot:hover .corners i,.shot:focus-visible .corners i{opacity:1;transform:scale(1)}
-
-.telemetry{
-  position:absolute;bottom:8px;right:8px;z-index:4;
-  font-family:"JetBrains Mono",monospace;
-  font-size:.58rem;
-  color:rgb(var(--laser-red));
-  background:rgba(0,0,0,.85);
-  padding:2px 6px;
-  letter-spacing:.12em;
-  opacity:0;transform:translateY(4px);
-  transition:opacity .25s ease, transform .25s ease;
-  pointer-events:none;
-}
-.shot:hover .telemetry{opacity:1;transform:none}
 
 .cap{
   display:flex;justify-content:space-between;gap:12px;
@@ -847,6 +731,38 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
+/* ENQUIRE COMPONENT WITH TAGLINE */
+.enquire-box {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+.btn-enquire {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 10px 22px;
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: background .2s ease, color .2s ease;
+}
+.btn-enquire:hover, .btn-enquire:focus-visible {
+  background: var(--paper);
+  color: var(--ink);
+}
+.enquire-tagline {
+  font-family: "JetBrains Mono", monospace;
+  font-size: 0.65rem;
+  letter-spacing: 0.08em;
+  opacity: 0.6;
+}
+
 .collective-grid {
   display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
 }
@@ -867,27 +783,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   transition:transform .5s var(--ease);
 }
 .member-card:hover .member-plate img{transform:scale(1.05)}
-.member-card .scanner{
-  position:absolute;left:0;right:0;height:2.5px;top:0;
-  background:rgba(var(--laser-red), 0.95);
-  box-shadow:0 0 14px 2px rgba(var(--laser-red), 0.85);
-  pointer-events:none;opacity:0;z-index:2;
-}
-.member-card:hover .scanner{
-  opacity:1;
-  animation:containedLaserSweep .7s cubic-bezier(.22, 1, .36, 1) forwards;
-}
-.member-card .corners{position:absolute;inset:8px;pointer-events:none;z-index:4}
-.member-card .corners i{
-  position:absolute;width:12px;height:12px;
-  border:0 solid rgba(var(--laser-red), 0.95);
-  opacity:0;transition:opacity .25s ease;
-}
-.member-card .corners i:nth-child(1){top:0;left:0;border-top-width:2px;border-left-width:2px}
-.member-card .corners i:nth-child(2){top:0;right:0;border-top-width:2px;border-right-width:2px}
-.member-card .corners i:nth-child(3){bottom:0;left:0;border-bottom-width:2px;border-left-width:2px}
-.member-card .corners i:nth-child(4){bottom:0;right:0;border-bottom-width:2px;border-right-width:2px}
-.member-card:hover .corners i{opacity:1}
 
 .member-info h3{
   margin:0;font-size:clamp(1.2rem, 1.8vw, 1.5rem);font-weight:700;
@@ -1009,13 +904,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   100%{transform:scale(1);opacity:1}
 }
 
-.lb-frame .corners{inset:-12px}
-.lb-frame .corners i{
-  opacity:1;transform:scale(1);width:20px;height:20px;
-  border-color:rgb(var(--laser-red));
-  box-shadow:0 0 10px rgba(var(--laser-red),.7);
-}
-
 .lb-cap{
   display:grid;grid-template-columns:1fr auto;gap:6px 20px;align-items:baseline;
   border-top:1px solid rgba(255,255,255,.18);padding-top:12px;
@@ -1025,6 +913,135 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 .lb-cap .t{font-weight:600;font-size:clamp(.95rem, 1.6vw, 1.25rem);color:#FFF}
 .lb-cap .m{opacity:.6;font-size:.82rem;text-align:right;color:#FFF}
 .lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
+
+/* ============================================================
+   ENQUIRY STUDIO MODAL
+   ============================================================ */
+.enquiry-modal {
+  position: fixed;
+  inset: 0;
+  z-index: 180;
+  background: rgba(0, 0, 0, 0.78);
+  backdrop-filter: blur(12px);
+  display: none;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+}
+.enquiry-modal.open {
+  display: flex;
+  animation: modalFadeIn .25s var(--ease) forwards;
+}
+@keyframes modalFadeIn {
+  from { opacity: 0; transform: scale(0.97); }
+  to { opacity: 1; transform: scale(1); }
+}
+
+.enquiry-card {
+  position: relative;
+  background: var(--paper);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  width: 100%;
+  max-width: 500px;
+  padding: clamp(24px, 4vw, 36px);
+  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
+}
+
+.enquiry-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid var(--rule);
+  padding-bottom: 12px;
+  margin-bottom: 20px;
+}
+.enquiry-head h3 {
+  margin: 0;
+  font-family: "Space Grotesk", sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+}
+
+.enquiry-form {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+.enquiry-field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.enquiry-label {
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  font-weight: 600;
+  opacity: 0.75;
+}
+.enquiry-input, .enquiry-textarea, .enquiry-select {
+  width: 100%;
+  background: var(--rule-soft);
+  color: var(--ink);
+  border: 1px solid var(--rule);
+  padding: 10px 14px;
+  font-family: inherit;
+  font-size: 0.95rem;
+  border-radius: 0;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+.enquiry-input:focus, .enquiry-textarea:focus, .enquiry-select:focus {
+  border-color: var(--ink);
+  background: var(--paper);
+  outline: none;
+}
+.enquiry-textarea {
+  resize: vertical;
+  min-height: 100px;
+  max-height: 200px;
+}
+
+.char-counter {
+  font-size: 0.68rem;
+  text-align: right;
+  opacity: 0.55;
+  margin-top: 4px;
+}
+
+.enquiry-foot {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 8px;
+  padding-top: 14px;
+  border-top: 1px solid var(--rule);
+}
+.btn-enquiry-submit {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  background: var(--ink);
+  color: var(--paper);
+  border: 1px solid var(--ink);
+  padding: 10px 22px;
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: background .2s ease, color .2s ease;
+}
+.btn-enquiry-submit:hover {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.enquiry-status-msg {
+  font-size: 0.72rem;
+  letter-spacing: 0.08em;
+  opacity: 0.75;
+}
 
 @media (max-width:980px){
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
@@ -1210,11 +1227,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 </head>
 
 <body>
-<div class="camera-cursor-crosshair" id="camera-cursor-crosshair"></div>
-<div class="camera-cursor-brackets" id="camera-cursor-brackets">
-  <i></i><i></i><i></i><i></i>
-</div>
-
 <a class="skip" href="#work">Skip to work</a>
 
 <nav class="nav">
@@ -1269,7 +1281,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     </div>
   </section>
 
-  <!-- MOBILE-ONLY "WHAT WE SHOOT" BOXED HYPERLINK SECTION ABOVE CONTACT -->
+  <!-- MOBILE-ONLY "WHAT WE SHOOT" BOXED SECTION -->
   <section class="sec wrap mobile-shoot-sec" id="mobile-shoot">
     <div class="mobile-shoot-box nav-niches-link" role="button" tabindex="0">
       <div class="mobile-shoot-header">
@@ -1317,6 +1329,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   </footer>
 </main>
 
+<!-- WHAT WE SHOOT OVERLAY -->
 <div class="overlay-page" id="niches-page" role="dialog" aria-modal="true" aria-label="What We Shoot">
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
@@ -1326,6 +1339,10 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE SHOOT // CATEGORIES</span>
     <div class="overlay-nav-right">
+      <div class="enquire-box" style="margin-right: 6px; align-items: flex-end;">
+        <button class="btn-enquire" id="btn-enquire-overview">Enquire ↗</button>
+        <span class="enquire-tagline">// Tell us what you are shooting</span>
+      </div>
       <button class="overlay-close niches-close btn-close-niches">
         Back to Studio
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/></svg>
@@ -1354,6 +1371,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   </div>
 </div>
 
+<!-- THE COLLECTIVE OVERLAY -->
 <div class="overlay-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
@@ -1405,6 +1423,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   </section>
 </div>
 
+<!-- LIGHTBOX -->
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <div class="lb-top">
     <div class="lb-count mono"><b id="lb-i">01</b> <span>/</span> <span id="lb-n">01</span></div>
@@ -1421,7 +1440,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       <span class="lb-frame">
         <img id="lb-img" alt="">
         <span class="guard" aria-hidden="true"></span>
-        <span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>
       </span>
     </figure>
     <button class="lb-nav" id="lb-next" aria-label="Next photo">
@@ -1432,6 +1450,57 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     <div class="t" id="lb-title"></div>
     <div class="m mono" id="lb-meta"></div>
     <div class="d" id="lb-desc"></div>
+  </div>
+</div>
+
+<!-- ENQUIRY MODAL DIALOG -->
+<div class="enquiry-modal" id="enquiry-modal" role="dialog" aria-modal="true" aria-label="Commission Shoot Inquiry">
+  <div class="enquiry-card">
+    <div class="enquiry-head">
+      <div>
+        <h3>Commission Studio</h3>
+        <span class="enquire-tagline" style="display:block; margin-top:2px;">// Tell us what you are shooting</span>
+      </div>
+      <button type="button" id="btn-close-enquiry-modal" class="mono" style="font-size: 0.8rem; opacity: 0.65;">[ ESC / CLOSE ]</button>
+    </div>
+
+    <form class="enquiry-form" id="enquiry-form">
+      <div class="enquiry-field">
+        <label class="enquiry-label" for="enq-name">Your Name</label>
+        <input class="enquiry-input" type="text" id="enq-name" name="name" required placeholder="Jane Doe" autocomplete="name">
+      </div>
+
+      <div class="enquiry-field">
+        <label class="enquiry-label" for="enq-email">Your Email</label>
+        <input class="enquiry-input" type="email" id="enq-email" name="email" required placeholder="name@domain.com" autocomplete="email">
+      </div>
+
+      <div class="enquiry-field">
+        <label class="enquiry-label" for="enq-niche">Shoot Category</label>
+        <select class="enquiry-select" id="enq-niche" name="category">
+          <option value="General Commission">General Commission</option>
+          <option value="Food">Food</option>
+          <option value="Pets">Pets</option>
+          <option value="Architecture">Architecture</option>
+          <option value="Products">Products</option>
+          <option value="Events">Events</option>
+          <option value="Portraits">Portraits</option>
+        </select>
+      </div>
+
+      <div class="enquiry-field">
+        <label class="enquiry-label" for="enq-msg">Shoot Details & Timeline</label>
+        <textarea class="enquiry-textarea" id="enq-msg" name="message" maxlength="500" required placeholder="Tell us what you're shooting, roughly when, and the location."></textarea>
+        <div class="char-counter mono"><span id="char-count">0</span> / 500 CHARACTERS</div>
+      </div>
+
+      <div class="enquiry-foot">
+        <span class="mono enquiry-status-msg" id="enquiry-status">READY // INQUIRY DISPATCH</span>
+        <button type="submit" class="btn-enquiry-submit" id="btn-enquiry-send">
+          Send Inquiry &rarr;
+        </button>
+      </div>
+    </form>
   </div>
 </div>
 
@@ -1477,38 +1546,6 @@ var SITE = {
 
 var $  = function(s,r){ return (r||document).querySelector(s); };
 var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
-
-// Viewfinder Reticle Cursor Tracking
-(function initCameraReticle() {
-  var crosshair = $("#camera-cursor-crosshair");
-  var brackets = $("#camera-cursor-brackets");
-  if (!crosshair || !brackets) return;
-
-  var mouseX = -100, mouseY = -100;
-  var bracketX = -100, bracketY = -100;
-
-  window.addEventListener("mousemove", function(e) {
-    mouseX = e.clientX;
-    mouseY = e.clientY;
-    crosshair.style.transform = "translate3d(" + mouseX + "px, " + mouseY + "px, 0) translate(-50%, -50%)";
-  });
-
-  function loop() {
-    bracketX += (mouseX - bracketX) * 0.2;
-    bracketY += (mouseY - bracketY) * 0.2;
-    brackets.style.transform = "translate3d(" + bracketX + "px, " + bracketY + "px, 0) translate(-50%, -50%)";
-    requestAnimationFrame(loop);
-  }
-  requestAnimationFrame(loop);
-
-  document.addEventListener("mouseover", function(e) {
-    if (e.target.closest("a, button, [role='button'], .shot, .niche, .band")) {
-      document.body.classList.add("cursor-active");
-    } else {
-      document.body.classList.remove("cursor-active");
-    }
-  });
-})();
 
 function fixPath(p){
   if(!p) return "";
@@ -1568,37 +1605,6 @@ function buildFilters(){
   });
 }
 
-function attachTilt3D(el) {
-  if (window.innerWidth <= 640) return;
-  el.addEventListener('mousemove', function(e) {
-    var rect = el.getBoundingClientRect();
-    var x = e.clientX - rect.left;
-    var y = e.clientY - rect.top;
-    var xc = rect.width / 2;
-    var yc = rect.height / 2;
-    var dx = (x - xc) / xc;
-    var dy = (y - yc) / yc;
-    var tiltWrap = el.querySelector('.plate-tilt-wrap');
-    if (tiltWrap) {
-      tiltWrap.style.transform = "rotateY(" + (dx * 5) + "deg) rotateX(" + (-dy * 5) + "deg) translateZ(4px)";
-    }
-  });
-  el.addEventListener('mouseleave', function() {
-    var tiltWrap = el.querySelector('.plate-tilt-wrap');
-    if (tiltWrap) tiltWrap.style.transform = "rotateY(0deg) rotateX(0deg) translateZ(0px)";
-  });
-}
-
-// Scroll Intersection Observer for Viewport Laser Sweeps
-var scanObserver = new IntersectionObserver(function(entries, observer) {
-  entries.forEach(function(entry) {
-    if (entry.isIntersecting) {
-      entry.target.classList.add("scanned");
-      observer.unobserve(entry.target);
-    }
-  });
-}, { threshold: 0.25 });
-
 function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
@@ -1634,7 +1640,6 @@ function renderHomeGrid() {
   var n = 0;
   grid.innerHTML = list.map(function(p){
     var i = n++;
-    var paddedNum = String(i+1).padStart(2, "0");
     var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
     var imgSrc = esc(fixPath(p.src)); 
 
@@ -1642,10 +1647,7 @@ function renderHomeGrid() {
              '<div class="plate-tilt-wrap">'+
                '<span class="plate">'+
                  '<img loading="lazy" decoding="async" onload="this.classList.add(\'ready\')" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+esc(pos)+';">'+
-                 '<span class="scanner"></span>'+
                  '<span class="guard"></span>'+
-                 '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
-                 '<span class="telemetry">REC // '+paddedNum+'</span>'+
                '</span>'+
              '</div>'+
              '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
@@ -1656,8 +1658,6 @@ function renderHomeGrid() {
     if(img.complete) img.classList.add("ready");
   });
   $$(".shot",grid).forEach(function(b){
-    attachTilt3D(b);
-    scanObserver.observe(b);
     b.addEventListener("click",function(){ openLB(parseInt(b.dataset.i,10), b); });
   });
 }
@@ -1721,7 +1721,6 @@ function openNicheView(nicheName){
     var n = 0;
     photosHTML = '<div class="niche-work-grid" id="niche-grid-inner">' + photosInNiche.map(function(p){
       var i = n++;
-      var paddedNum = String(i+1).padStart(2, "0");
       var pos = (p.imagePosition && p.imagePosition !== "Center") ? p.imagePosition.toLowerCase() : "center";
       var imgSrc = esc(fixPath(p.src)); 
 
@@ -1729,10 +1728,7 @@ function openNicheView(nicheName){
                '<div class="plate-tilt-wrap">'+
                  '<span class="plate">'+
                    '<img loading="lazy" decoding="async" onload="this.classList.add(\'ready\')" src="'+imgSrc+'" alt="'+esc(p.caption||p.title)+'" style="object-position: '+esc(pos)+';">'+
-                   '<span class="scanner"></span>'+
                    '<span class="guard"></span>'+
-                   '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
-                   '<span class="telemetry">REC // '+paddedNum+'</span>'+
                  '</span>'+
                '</div>'+
                '<span class="cap"><span class="t">'+esc(p.title)+'</span><span class="c">'+esc(p.client)+'</span></span>'+
@@ -1747,8 +1743,12 @@ function openNicheView(nicheName){
           '<h2>' + esc(nicheData.name) + '</h2>' +
           '<p>' + esc(nicheData.line) + '</p>' +
         '</div>' +
-        '<div style="display:flex;align-items:center;gap:16px;">' +
+        '<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">' +
           '<span class="mono" style="opacity:.6;font-size:.75rem">' + countText + '</span>' +
+          '<div class="enquire-box" style="align-items: flex-start;">' +
+            '<button class="btn-enquire" data-open-enquiry="'+esc(nicheData.name)+'">Enquire ↗</button>' +
+            '<span class="enquire-tagline">// Tell us what you are shooting</span>' +
+          '</div>' +
           '<button class="niche-back" id="close-niche-view-btn">← Back to Categories</button>' +
         '</div>' +
       '</div>' +
@@ -1756,12 +1756,16 @@ function openNicheView(nicheName){
     '</div>';
 
   $$("[data-niche-i]", box).forEach(function(b){
-    attachTilt3D(b);
-    scanObserver.observe(b);
     b.addEventListener("click", function(){
       var idx = parseInt(b.dataset.nicheI, 10);
       state.visible = photosInNiche;
       openLB(idx, b);
+    });
+  });
+
+  $$("[data-open-enquiry]", box).forEach(function(btn){
+    btn.addEventListener("click", function(){
+      openEnquiryModal(btn.dataset.openEnquiry);
     });
   });
 
@@ -1876,7 +1880,103 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-/* SLIDESHOW ENGINE: RANDOM INITIALIZATION */
+/* ============================================================
+   ENQUIRY MODAL LOGIC & FORM SUBMISSION
+   ============================================================ */
+var enqModal = $("#enquiry-modal");
+var enqMsg = $("#enq-msg");
+var charCount = $("#char-count");
+var enqStatus = $("#enquiry-status");
+var enqSelect = $("#enq-niche");
+
+function openEnquiryModal(preselectedCategory) {
+  if (!enqModal) return;
+  if (preselectedCategory && enqSelect) {
+    var exists = false;
+    for (var i = 0; i < enqSelect.options.length; i++) {
+      if (enqSelect.options[i].value.toLowerCase() === preselectedCategory.toLowerCase()) {
+        enqSelect.selectedIndex = i;
+        exists = true;
+        break;
+      }
+    }
+    if (!exists) {
+      var opt = document.createElement("option");
+      opt.value = preselectedCategory;
+      opt.textContent = preselectedCategory;
+      opt.selected = true;
+      enqSelect.appendChild(opt);
+    }
+  }
+  enqModal.classList.add("open");
+  $("#enq-name").focus();
+}
+
+function closeEnquiryModal() {
+  if (!enqModal) return;
+  enqModal.classList.remove("open");
+}
+
+$("#btn-enquire-overview").addEventListener("click", function(){
+  openEnquiryModal("General Commission");
+});
+
+$("#btn-close-enquiry-modal").addEventListener("click", closeEnquiryModal);
+enqModal.addEventListener("click", function(e) {
+  if (e.target === enqModal) closeEnquiryModal();
+});
+
+if (enqMsg && charCount) {
+  enqMsg.addEventListener("input", function() {
+    charCount.textContent = enqMsg.value.length;
+  });
+}
+
+$("#enquiry-form").addEventListener("submit", function(e) {
+  e.preventDefault();
+  var btn = $("#btn-enquiry-send");
+  btn.disabled = true;
+  enqStatus.textContent = "TRANSMITTING INQUIRY...";
+
+  var payload = {
+    name: $("#enq-name").value,
+    email: $("#enq-email").value,
+    category: $("#enq-niche").value,
+    message: $("#enq-msg").value,
+    recipient: SITE.email
+  };
+
+  fetch("https://formspree.io/f/mqaejvyb", {
+    method: "POST",
+    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    body: JSON.stringify(payload)
+  })
+  .then(function(res) {
+    if (res.ok) {
+      enqStatus.textContent = "DISPATCHED // WE REPLY WITHIN 24H";
+      setTimeout(function() {
+        $("#enquiry-form").reset();
+        charCount.textContent = "0";
+        closeEnquiryModal();
+        btn.disabled = false;
+        enqStatus.textContent = "READY // INQUIRY DISPATCH";
+      }, 2000);
+    } else {
+      throw new Error("Dispatch failed");
+    }
+  })
+  .catch(function() {
+    window.location.href = "mailto:" + SITE.email + 
+      "?subject=" + encodeURIComponent("Studio Inquiry: " + payload.category + " — " + payload.name) +
+      "&body=" + encodeURIComponent("Client: " + payload.name + "\nEmail: " + payload.email + "\nCategory: " + payload.category + "\n\nDetails:\n" + payload.message);
+    
+    enqStatus.textContent = "DISPATCHED VIA MAIL CLIENT";
+    btn.disabled = false;
+    setTimeout(closeEnquiryModal, 1500);
+  });
+});
+
+/* SLIDESHOW ENGINE */
 function initSlideshow(){
   var slides = [];
   if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
@@ -2006,6 +2106,7 @@ if(lb) {
 
 document.addEventListener("keydown", function(e){
   if(e.key === "Escape"){
+    if(enqModal && enqModal.classList.contains("open")) { closeEnquiryModal(); return; }
     if(collectivePage && collectivePage.classList.contains("open")) closeCollective();
     if(nichesPage && nichesPage.classList.contains("open")) closeNiches();
     if(lb && lb.classList.contains("on")) closeLB();
@@ -2178,8 +2279,6 @@ function renderContent(){
       return '<div class="member-card">' +
                '<div class="member-plate">' +
                  '<img src="'+esc(photoSrc)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos)+';">' +
-                 '<span class="scanner"></span>'+
-                 '<span class="corners" aria-hidden="true"><i></i><i></i><i></i><i></i></span>'+
                '</div>' +
                '<div class="member-info">' +
                  '<h3>'+esc(m.name)+'</h3>' +
