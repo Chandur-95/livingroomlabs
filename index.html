@@ -866,23 +866,36 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .collective-about-logo button:hover img{transform:scale(1.03)}
 
-/* LIGHTBOX */
+/* LIGHTBOX (THEME ADAPTIVE) */
 .lb{
   position:fixed;inset:0;z-index:120;
-  background:rgba(6, 6, 6, .97);color:#FFF;
+  background:rgba(255, 255, 255, 0.96);
+  color:var(--ink);
   display:none;flex-direction:column;
   padding:calc(16px + var(--safe-top)) calc(16px + var(--safe-right)) calc(16px + var(--safe-bottom)) calc(16px + var(--safe-left));
   backdrop-filter:blur(24px);
+  -webkit-backdrop-filter:blur(24px);
+  transition:background .35s ease, color .35s ease;
 }
+
+html[data-theme="dark"] .lb {
+  background:rgba(6, 6, 6, .97);
+  color:#FFF;
+}
+
 .lb[open],.lb.on{display:flex;animation:shutterFade .32s var(--ease) forwards}
 @keyframes shutterFade{0%{opacity:0;backdrop-filter:blur(0px)}100%{opacity:1;backdrop-filter:blur(24px)}}
 
 .lb-top{
   display:flex;justify-content:space-between;align-items:center;gap:14px;
-  padding-bottom:12px;border-bottom:1px solid rgba(255,255,255,.18);
+  padding-bottom:12px;border-bottom:1px solid var(--rule);
 }
 .lb-count{font-size:var(--fs-label);letter-spacing:.14em;font-weight:600}
-.lb-close{display:inline-flex;align-items:center;gap:8px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;color:#FFF}
+.lb-close{
+  display:inline-flex;align-items:center;gap:8px;
+  font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;
+  color:inherit;
+}
 .lb-close svg{width:13px;height:13px}
 
 .lb-stage{
@@ -893,18 +906,28 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 .lb-nav{
   width:44px;height:44px;flex:none;
   display:grid;place-items:center;
-  border:1px solid rgba(255,255,255,.2);border-radius:50%;
-  color:#FFF;
-  transition:background .2s ease, color .2s ease, transform .2s ease;
+  border:1px solid var(--rule);
+  border-radius:50%;
+  color:inherit;
+  transition:background .2s ease, color .2s ease, transform .2s ease, border-color .2s ease;
 }
-.lb-nav:hover{background:#FFF;color:#000;transform:scale(1.08)}
+.lb-nav:hover{
+  background:var(--ink);
+  color:var(--paper);
+  border-color:var(--ink);
+  transform:scale(1.08);
+}
 .lb-nav svg{width:14px;height:14px}
 .lb-figure{flex:1 1 auto;min-width:0;display:flex;align-items:center;justify-content:center}
 
 .lb-frame{
   position:relative;display:block;line-height:0;
+  box-shadow:0 12px 40px rgba(0,0,0,.15);
+}
+html[data-theme="dark"] .lb-frame {
   box-shadow:0 0 40px rgba(0,0,0,.9);
 }
+
 .lb-frame img{
   display:block;width:auto;height:auto;
   max-width:calc(100vw - 120px - var(--safe-left) - var(--safe-right));
@@ -919,13 +942,13 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 
 .lb-cap{
   display:grid;grid-template-columns:1fr auto;gap:6px 20px;align-items:baseline;
-  border-top:1px solid rgba(255,255,255,.18);padding-top:12px;
+  border-top:1px solid var(--rule);padding-top:12px;
   animation:capSlide .4s var(--ease) forwards;
 }
 @keyframes capSlide{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
-.lb-cap .t{font-weight:600;font-size:clamp(.95rem, 1.6vw, 1.25rem);color:#FFF}
-.lb-cap .m{opacity:.6;font-size:.82rem;text-align:right;color:#FFF}
-.lb-cap .d{grid-column:1/-1;opacity:.75;font-size:.86rem;max-width:70ch;color:#DDD}
+.lb-cap .t{font-weight:600;font-size:clamp(.95rem, 1.6vw, 1.25rem);color:inherit}
+.lb-cap .m{opacity:.65;font-size:.82rem;text-align:right;color:inherit}
+.lb-cap .d{grid-column:1/-1;opacity:.8;font-size:.86rem;max-width:70ch;color:inherit}
 
 /* ENQUIRY MODAL DIALOG */
 .enquiry-modal {
@@ -1313,7 +1336,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       <span class="count mono" data-place2></span>
     </div>
     <a class="mail" data-mail href="#"></a>
-    <p class="contact-note" data-contact-note></p>
+    <p class="contact-note" data-contact-note>Planning something special? Tell us what you’re looking to capture, and when and where.</p>
   </section>
 
   <footer class="wrap">
@@ -1348,7 +1371,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+        <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE SHOOT // CATEGORIES</span>
@@ -2271,9 +2294,13 @@ function renderContent(){
     mail.textContent = SITE.email || "";
     mail.href = "mailto:" + (SITE.email || "");
   }
-  var note = $("[data-contact-note]"); if(note) note.textContent = SITE.contactNote || "";
+  
+  // Direct target note override
+  var targetNote = "Planning something special? Tell us what you’re looking to capture, and when and where.";
+  var note = $("[data-contact-note]"); 
+  if(note) note.textContent = targetNote;
 
-  // FOOTER INDEX (Clean: Work, What we shoot, Enquire)
+  // FOOTER INDEX
   var idxList = $("[data-foot-index]");
   if(idxList){
     idxList.innerHTML =
