@@ -69,6 +69,41 @@ body{
   transition:background .35s ease, color .35s ease;
 }
 
+/* HARDWARE VIEWFINDER RETICLE CURSOR */
+@media (pointer: fine) {
+  body { cursor: none; }
+  a, button, [role="button"], input { cursor: none; }
+}
+.cursor-dot, .cursor-ring {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 9999;
+  border-radius: 50%;
+  transform: translate(-50%, -50%);
+  display: none;
+}
+@media (pointer: fine) {
+  .cursor-dot {
+    display: block;
+    width: 6px; height: 6px;
+    background: rgb(var(--laser-red));
+    box-shadow: 0 0 6px rgba(var(--laser-red), 0.8);
+    transition: transform 0.08s ease-out;
+  }
+  .cursor-ring {
+    display: block;
+    width: 32px; height: 32px;
+    border: 1px solid rgba(var(--laser-red), 0.45);
+    transition: width 0.25s var(--ease), height 0.25s var(--ease), border-color 0.25s ease, background 0.25s ease;
+  }
+  body.cursor-active .cursor-ring {
+    width: 50px; height: 50px;
+    border-color: rgba(var(--laser-red), 0.9);
+    background: rgba(var(--laser-red), 0.04);
+  }
+}
+
 img{
   display:block;
   max-width:100%;
@@ -326,7 +361,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   height: auto !important;
 }
 
-/* WHAT WE SHOOT OVERLAY GRID: BIGGER BOXES */
+/* WHAT WE SHOOT OVERLAY GRID */
 .niche-work-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -345,11 +380,11 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   text-align: left;
   position: relative;
   width: 100%;
-  perspective: 900px;
+  perspective: 1000px;
 }
 .plate-tilt-wrap {
   width: 100%;
-  transition: transform 0.15s ease-out;
+  transition: transform 0.18s cubic-bezier(0.2, 0, 0.2, 1);
   transform-style: preserve-3d;
 }
 .plate {
@@ -378,8 +413,8 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   box-shadow:0 0 14px 2px rgba(var(--laser-red), 0.85), 0 0 4px rgba(255, 255, 255, 0.9);
   pointer-events:none;opacity:0;z-index:2;
 }
-.shot:hover .plate .scanner{
-  opacity:1;
+.shot:hover .plate .scanner,
+.shot.scanned .plate .scanner{
   animation:containedLaserSweep .7s cubic-bezier(.22, 1, .36, 1) forwards;
 }
 @keyframes containedLaserSweep{
@@ -445,7 +480,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   background:var(--ink);color:var(--paper);
 }
 
-/* MOBILE-ONLY "WHAT WE SHOOT" BOXED HYPERLINK SECTION ABOVE CONTACT */
+/* MOBILE-ONLY "WHAT WE SHOOT" BOXED SECTION */
 .mobile-shoot-sec {
   display: none;
 }
@@ -465,11 +500,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   align-items: center;
   justify-content: space-between;
   gap: 12px;
-}
-.mobile-shoot-title-group {
-  display: flex;
-  align-items: center;
-  gap: 8px;
 }
 .mobile-shoot-arrow {
   font-family: "JetBrains Mono", monospace;
@@ -549,9 +579,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   display: none;
 }
 
-/* ============================================================
-   LOGOS & DARK MODE LOGIC (Orange lamp hue-rotate preservation)
-   ============================================================ */
+/* LOGOS & DARK MODE LOGIC */
 .brand .mark img,
 .foot-logo-btn img,
 .collective-about-logo img,
@@ -572,7 +600,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   mix-blend-mode: normal !important;
 }
 
-/* OVERLAYS (THE COLLECTIVE & WHAT WE SHOOT) */
+/* OVERLAYS */
 .overlay-page {
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
@@ -973,9 +1001,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   .foot{grid-template-columns:1.2fr 1fr 1fr;gap:24px 20px}
 }
 
-/* ============================================================
-   MOBILE SPECIFICS
-   ============================================================ */
+/* MOBILE SPECIFICS */
 @media (max-width:640px){
   :root{
     --nav-h:64px;
@@ -1040,7 +1066,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
-  /* HOME WORK: SINGLE STACK 1 IMAGE PER ROW ON MOBILE */
   .home-work-grid {
     grid-template-columns: 1fr !important;
     gap: 20px !important;
@@ -1049,14 +1074,12 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     aspect-ratio: 4 / 4.5 !important;
   }
 
-  /* MOBILE-ONLY "WHAT WE SHOOT" BOXED HYPERLINK SECTION ABOVE CONTACT */
   .mobile-shoot-sec {
     display: block !important;
     padding-top: clamp(16px, 2.5vw, 28px);
     padding-bottom: clamp(12px, 1.5vw, 24px);
   }
 
-  /* FOOTER */
   .foot{
     display: grid !important;
     grid-template-columns: 110px 1fr !important;
@@ -1111,7 +1134,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     display: none !important;
   }
 
-  /* Overlay Navs on Mobile */
   .overlay-nav-brand .mark{height:40px}
   .overlay-nav-brand .mark img{height:40px}
   .overlay-nav .mono{display:none}
@@ -1156,6 +1178,9 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 </head>
 
 <body>
+<div class="cursor-dot" id="cursor-dot"></div>
+<div class="cursor-ring" id="cursor-ring"></div>
+
 <a class="skip" href="#work">Skip to work</a>
 
 <nav class="nav">
@@ -1419,6 +1444,38 @@ var SITE = {
 var $  = function(s,r){ return (r||document).querySelector(s); };
 var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
 
+// Viewfinder Reticle Cursor Tracking
+(function initReticle() {
+  var dot = $("#cursor-dot");
+  var ring = $("#cursor-ring");
+  if (!dot || !ring) return;
+
+  var mouseX = -100, mouseY = -100;
+  var ringX = -100, ringY = -100;
+
+  window.addEventListener("mousemove", function(e) {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    dot.style.transform = "translate3d(" + mouseX + "px, " + mouseY + "px, 0) translate(-50%, -50%)";
+  });
+
+  function loop() {
+    ringX += (mouseX - ringX) * 0.18;
+    ringY += (mouseY - ringY) * 0.18;
+    ring.style.transform = "translate3d(" + ringX + "px, " + ringY + "px, 0) translate(-50%, -50%)";
+    requestAnimationFrame(loop);
+  }
+  requestAnimationFrame(loop);
+
+  document.addEventListener("mouseover", function(e) {
+    if (e.target.closest("a, button, [role='button'], .shot, .niche, .band")) {
+      document.body.classList.add("cursor-active");
+    } else {
+      document.body.classList.remove("cursor-active");
+    }
+  });
+})();
+
 function fixPath(p){
   if(!p) return "";
   if(p.indexOf("://") !== -1 || p.startsWith("data:")) return p;
@@ -1489,14 +1546,24 @@ function attachTilt3D(el) {
     var dy = (y - yc) / yc;
     var tiltWrap = el.querySelector('.plate-tilt-wrap');
     if (tiltWrap) {
-      tiltWrap.style.transform = "rotateY(" + (dx * 4.5) + "deg) rotateX(" + (-dy * 4.5) + "deg)";
+      tiltWrap.style.transform = "rotateY(" + (dx * 5) + "deg) rotateX(" + (-dy * 5) + "deg) translateZ(4px)";
     }
   });
   el.addEventListener('mouseleave', function() {
     var tiltWrap = el.querySelector('.plate-tilt-wrap');
-    if (tiltWrap) tiltWrap.style.transform = "rotateY(0deg) rotateX(0deg)";
+    if (tiltWrap) tiltWrap.style.transform = "rotateY(0deg) rotateX(0deg) translateZ(0px)";
   });
 }
+
+// Scroll Intersection Observer for Viewport Laser Sweeps
+var scanObserver = new IntersectionObserver(function(entries, observer) {
+  entries.forEach(function(entry) {
+    if (entry.isIntersecting) {
+      entry.target.classList.add("scanned");
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.25 });
 
 function renderHomeGrid() {
   var grid = $("#grid");
@@ -1556,6 +1623,7 @@ function renderHomeGrid() {
   });
   $$(".shot",grid).forEach(function(b){
     attachTilt3D(b);
+    scanObserver.observe(b);
     b.addEventListener("click",function(){ openLB(parseInt(b.dataset.i,10), b); });
   });
 }
@@ -1655,6 +1723,7 @@ function openNicheView(nicheName){
 
   $$("[data-niche-i]", box).forEach(function(b){
     attachTilt3D(b);
+    scanObserver.observe(b);
     b.addEventListener("click", function(){
       var idx = parseInt(b.dataset.nicheI, 10);
       state.visible = photosInNiche;
@@ -1773,7 +1842,7 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-/* SLIDESHOW ENGINE */
+/* SLIDESHOW ENGINE: RANDOM INITIALIZATION */
 function initSlideshow(){
   var slides = [];
   if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
