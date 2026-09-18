@@ -344,9 +344,12 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   text-align: left;
   position: relative;
   width: 100%;
+  perspective: 1000px;
 }
 .plate-tilt-wrap {
   width: 100%;
+  transition: transform 0.18s cubic-bezier(0.2, 0, 0.2, 1);
+  transform-style: preserve-3d;
 }
 .plate {
   position: relative;
@@ -702,6 +705,37 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 .niche .state.open{display:inline-flex;align-items:center;gap:6px}
 .niche .state.open::before{content:"";width:5px;height:5px;background:var(--glow);box-shadow:0 0 5px var(--glow)}
 
+/* ENQUIRE UNDER NICHES */
+.niche-enquire-sec {
+  padding-top: clamp(24px, 3.5vw, 44px);
+  padding-bottom: clamp(14px, 2vw, 24px);
+  border-top: 1px solid var(--ink);
+  margin-top: clamp(24px, 3.5vw, 48px);
+}
+.niche-enquire-trigger {
+  display: inline-block;
+  font-size: clamp(1.2rem, 3vw, 2.2rem);
+  font-weight: 600;
+  letter-spacing: -0.025em;
+  line-height: 1.15;
+  padding-bottom: 0.06em;
+  background-image: linear-gradient(var(--glow), var(--glow));
+  background-repeat: no-repeat;
+  background-position: 0 100%;
+  background-size: 0% 2.5px;
+  transition: background-size 0.4s var(--ease);
+  cursor: pointer;
+}
+.niche-enquire-trigger:hover, .niche-enquire-trigger:focus-visible {
+  background-size: 100% 2.5px;
+}
+.niche-enquire-tagline {
+  margin-top: 10px;
+  font-family: "JetBrains Mono", monospace;
+  font-size: clamp(.82rem, .25vw + .78rem, .92rem);
+  opacity: 0.7;
+}
+
 .niche-view-top{
   display:flex;justify-content:space-between;align-items:flex-start;
   flex-wrap:wrap;gap:18px 30px;
@@ -730,38 +764,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   transition:background .2s ease, color .2s ease;
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
-
-/* ENQUIRE COMPONENT WITH TAGLINE */
-.enquire-box {
-  display: flex;
-  flex-direction: column;
-  gap: 4px;
-}
-.btn-enquire {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  background: var(--ink);
-  color: var(--paper);
-  border: 1px solid var(--ink);
-  padding: 10px 22px;
-  font-size: var(--fs-label);
-  letter-spacing: var(--tr-label);
-  text-transform: uppercase;
-  font-weight: 600;
-  transition: background .2s ease, color .2s ease;
-}
-.btn-enquire:hover, .btn-enquire:focus-visible {
-  background: var(--paper);
-  color: var(--ink);
-}
-.enquire-tagline {
-  font-family: "JetBrains Mono", monospace;
-  font-size: 0.65rem;
-  letter-spacing: 0.08em;
-  opacity: 0.6;
-}
 
 .collective-grid {
   display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
@@ -1339,10 +1341,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE SHOOT // CATEGORIES</span>
     <div class="overlay-nav-right">
-      <div class="enquire-box" style="margin-right: 6px; align-items: flex-end;">
-        <button class="btn-enquire" id="btn-enquire-overview">Enquire ↗</button>
-        <span class="enquire-tagline">// Tell us what you are shooting</span>
-      </div>
       <button class="overlay-close niches-close btn-close-niches">
         Back to Studio
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/></svg>
@@ -1354,8 +1352,21 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
     <div id="niches-list-container" style="flex: 1;">
       <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Shoot</h1>
       <p style="opacity:.7; max-width:600px; margin-bottom:clamp(30px, 5vw, 60px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
+      
       <div id="niches-list" data-niches></div>
+
+      <!-- PLACED DIRECTLY UNDER WHAT WE SHOOT (LIKE HOME PAGE CONTACT) -->
+      <div class="niche-enquire-sec">
+        <div class="sec-head" style="margin-bottom:12px;">
+          <span class="label">Booking & Inquiries</span>
+          <span class="fill"></span>
+          <span class="count mono">OPEN FOR COMMISSIONS</span>
+        </div>
+        <button type="button" class="niche-enquire-trigger" id="btn-enquire-overview">Enquire ↗</button>
+        <p class="niche-enquire-tagline">// Tell us what you are shooting</p>
+      </div>
     </div>
+    
     <div id="niche-view-box" style="display:none; flex: 1;"></div>
 
     <div class="collective-about-wrap">
@@ -1454,12 +1465,12 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 </div>
 
 <!-- ENQUIRY MODAL DIALOG -->
-<div class="enquiry-modal" id="enquiry-modal" role="dialog" aria-modal="true" aria-label="Commission Shoot Inquiry">
+<div class="enquiry-modal" id="enquiry-modal" role="dialog" aria-modal="true" aria-label="Enquiry">
   <div class="enquiry-card">
     <div class="enquiry-head">
       <div>
-        <h3>Commission Studio</h3>
-        <span class="enquire-tagline" style="display:block; margin-top:2px;">// Tell us what you are shooting</span>
+        <h3>Enquiry</h3>
+        <span class="mono" style="display:block; margin-top:2px; font-size:0.68rem; opacity:0.65;">// Tell us what you are shooting</span>
       </div>
       <button type="button" id="btn-close-enquiry-modal" class="mono" style="font-size: 0.8rem; opacity: 0.65;">[ ESC / CLOSE ]</button>
     </div>
@@ -1478,7 +1489,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       <div class="enquiry-field">
         <label class="enquiry-label" for="enq-niche">Shoot Category</label>
         <select class="enquiry-select" id="enq-niche" name="category">
-          <option value="General Commission">General Commission</option>
+          <option value="General Enquiry">General Enquiry</option>
           <option value="Food">Food</option>
           <option value="Pets">Pets</option>
           <option value="Architecture">Architecture</option>
@@ -1495,9 +1506,9 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       </div>
 
       <div class="enquiry-foot">
-        <span class="mono enquiry-status-msg" id="enquiry-status">READY // INQUIRY DISPATCH</span>
+        <span class="mono enquiry-status-msg" id="enquiry-status">READY</span>
         <button type="submit" class="btn-enquiry-submit" id="btn-enquiry-send">
-          Send Inquiry &rarr;
+          Send Enquiry &rarr;
         </button>
       </div>
     </form>
@@ -1605,6 +1616,28 @@ function buildFilters(){
   });
 }
 
+// 3D PERSPECTIVE TILT
+function attachTilt3D(el) {
+  if (window.innerWidth <= 640) return;
+  el.addEventListener('mousemove', function(e) {
+    var rect = el.getBoundingClientRect();
+    var x = e.clientX - rect.left;
+    var y = e.clientY - rect.top;
+    var xc = rect.width / 2;
+    var yc = rect.height / 2;
+    var dx = (x - xc) / xc;
+    var dy = (y - yc) / yc;
+    var tiltWrap = el.querySelector('.plate-tilt-wrap');
+    if (tiltWrap) {
+      tiltWrap.style.transform = "rotateY(" + (dx * 5) + "deg) rotateX(" + (-dy * 5) + "deg) translateZ(4px)";
+    }
+  });
+  el.addEventListener('mouseleave', function() {
+    var tiltWrap = el.querySelector('.plate-tilt-wrap');
+    if (tiltWrap) tiltWrap.style.transform = "rotateY(0deg) rotateX(0deg) translateZ(0px)";
+  });
+}
+
 function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
@@ -1658,6 +1691,7 @@ function renderHomeGrid() {
     if(img.complete) img.classList.add("ready");
   });
   $$(".shot",grid).forEach(function(b){
+    attachTilt3D(b);
     b.addEventListener("click",function(){ openLB(parseInt(b.dataset.i,10), b); });
   });
 }
@@ -1743,12 +1777,9 @@ function openNicheView(nicheName){
           '<h2>' + esc(nicheData.name) + '</h2>' +
           '<p>' + esc(nicheData.line) + '</p>' +
         '</div>' +
-        '<div style="display:flex;align-items:center;gap:14px;flex-wrap:wrap;">' +
+        '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
           '<span class="mono" style="opacity:.6;font-size:.75rem">' + countText + '</span>' +
-          '<div class="enquire-box" style="align-items: flex-start;">' +
-            '<button class="btn-enquire" data-open-enquiry="'+esc(nicheData.name)+'">Enquire ↗</button>' +
-            '<span class="enquire-tagline">// Tell us what you are shooting</span>' +
-          '</div>' +
+          '<button class="niche-enquire-trigger" style="font-size:1.05rem;" data-open-enquiry="'+esc(nicheData.name)+'">Enquire for ' + esc(nicheData.name) + ' ↗</button>' +
           '<button class="niche-back" id="close-niche-view-btn">← Back to Categories</button>' +
         '</div>' +
       '</div>' +
@@ -1756,6 +1787,7 @@ function openNicheView(nicheName){
     '</div>';
 
   $$("[data-niche-i]", box).forEach(function(b){
+    attachTilt3D(b);
     b.addEventListener("click", function(){
       var idx = parseInt(b.dataset.nicheI, 10);
       state.visible = photosInNiche;
@@ -1881,7 +1913,7 @@ window.addEventListener("hashchange", function(){
 });
 
 /* ============================================================
-   ENQUIRY MODAL LOGIC & FORM SUBMISSION
+   DIRECT SUBMISSION ENQUIRY MODAL LOGIC (FORMSPREE INTEGRATED)
    ============================================================ */
 var enqModal = $("#enquiry-modal");
 var enqMsg = $("#enq-msg");
@@ -1918,7 +1950,7 @@ function closeEnquiryModal() {
 }
 
 $("#btn-enquire-overview").addEventListener("click", function(){
-  openEnquiryModal("General Commission");
+  openEnquiryModal("General Enquiry");
 });
 
 $("#btn-close-enquiry-modal").addEventListener("click", closeEnquiryModal);
@@ -1936,43 +1968,40 @@ $("#enquiry-form").addEventListener("submit", function(e) {
   e.preventDefault();
   var btn = $("#btn-enquiry-send");
   btn.disabled = true;
-  enqStatus.textContent = "TRANSMITTING INQUIRY...";
+  enqStatus.textContent = "TRANSMITTING...";
 
   var payload = {
     name: $("#enq-name").value,
     email: $("#enq-email").value,
     category: $("#enq-niche").value,
-    message: $("#enq-msg").value,
-    recipient: SITE.email
+    message: $("#enq-msg").value
   };
 
-  fetch("https://formspree.io/f/mqaejvyb", {
+  fetch("https://formspree.io/f/xjykvnoz", {
     method: "POST",
-    headers: { "Content-Type": "application/json", "Accept": "application/json" },
+    headers: { 
+      "Content-Type": "application/json", 
+      "Accept": "application/json" 
+    },
     body: JSON.stringify(payload)
   })
   .then(function(res) {
     if (res.ok) {
-      enqStatus.textContent = "DISPATCHED // WE REPLY WITHIN 24H";
+      enqStatus.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
       setTimeout(function() {
         $("#enquiry-form").reset();
         charCount.textContent = "0";
         closeEnquiryModal();
         btn.disabled = false;
-        enqStatus.textContent = "READY // INQUIRY DISPATCH";
+        enqStatus.textContent = "READY";
       }, 2000);
     } else {
-      throw new Error("Dispatch failed");
+      throw new Error("Form submission error");
     }
   })
   .catch(function() {
-    window.location.href = "mailto:" + SITE.email + 
-      "?subject=" + encodeURIComponent("Studio Inquiry: " + payload.category + " — " + payload.name) +
-      "&body=" + encodeURIComponent("Client: " + payload.name + "\nEmail: " + payload.email + "\nCategory: " + payload.category + "\n\nDetails:\n" + payload.message);
-    
-    enqStatus.textContent = "DISPATCHED VIA MAIL CLIENT";
+    enqStatus.textContent = "FAILED TO SEND. TRY AGAIN.";
     btn.disabled = false;
-    setTimeout(closeEnquiryModal, 1500);
   });
 });
 
