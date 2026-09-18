@@ -87,7 +87,7 @@
       "client": "Resturant"
     },
     {
-      "featured": true,
+      "featured": false,
       "ratio": "4/5",
       "imagePosition": "Center",
       "title": "Core memory!",
