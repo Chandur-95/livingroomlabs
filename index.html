@@ -69,38 +69,70 @@ body{
   transition:background .35s ease, color .35s ease;
 }
 
-/* HARDWARE VIEWFINDER RETICLE CURSOR */
+/* ============================================================
+   CAMERA AUTOFOCUS VIEWFINDER RETICLE CURSOR
+   ============================================================ */
 @media (pointer: fine) {
-  body { cursor: none; }
-  a, button, [role="button"], input { cursor: none; }
+  body { cursor: none !important; }
+  a, button, [role="button"], input, select, textarea { cursor: none !important; }
 }
-.cursor-dot, .cursor-ring {
+
+.camera-cursor-crosshair {
   position: fixed;
   top: 0; left: 0;
   pointer-events: none;
-  z-index: 9999;
-  border-radius: 50%;
+  z-index: 99999;
+  width: 14px; height: 14px;
   transform: translate(-50%, -50%);
   display: none;
 }
+.camera-cursor-crosshair::before,
+.camera-cursor-crosshair::after {
+  content: "";
+  position: absolute;
+  background: rgb(var(--laser-red));
+  box-shadow: 0 0 5px rgba(var(--laser-red), 0.85);
+}
+.camera-cursor-crosshair::before {
+  top: 6px; left: 0; width: 14px; height: 1.8px;
+}
+.camera-cursor-crosshair::after {
+  top: 0; left: 6px; width: 1.8px; height: 14px;
+}
+
+.camera-cursor-brackets {
+  position: fixed;
+  top: 0; left: 0;
+  pointer-events: none;
+  z-index: 99998;
+  width: 34px; height: 34px;
+  transform: translate(-50%, -50%);
+  display: none;
+  transition: width 0.22s var(--ease), height 0.22s var(--ease), opacity 0.2s ease;
+}
+
+.camera-cursor-brackets i {
+  position: absolute;
+  width: 7px; height: 7px;
+  border: 1.8px solid rgba(var(--laser-red), 0.65);
+  transition: border-color 0.2s ease;
+}
+.camera-cursor-brackets i:nth-child(1) { top: 0; left: 0; border-right: 0; border-bottom: 0; }
+.camera-cursor-brackets i:nth-child(2) { top: 0; right: 0; border-left: 0; border-bottom: 0; }
+.camera-cursor-brackets i:nth-child(3) { bottom: 0; left: 0; border-right: 0; border-top: 0; }
+.camera-cursor-brackets i:nth-child(4) { bottom: 0; right: 0; border-left: 0; border-top: 0; }
+
 @media (pointer: fine) {
-  .cursor-dot {
+  .camera-cursor-crosshair,
+  .camera-cursor-brackets {
     display: block;
-    width: 6px; height: 6px;
-    background: rgb(var(--laser-red));
-    box-shadow: 0 0 6px rgba(var(--laser-red), 0.8);
-    transition: transform 0.08s ease-out;
   }
-  .cursor-ring {
-    display: block;
-    width: 32px; height: 32px;
-    border: 1px solid rgba(var(--laser-red), 0.45);
-    transition: width 0.25s var(--ease), height 0.25s var(--ease), border-color 0.25s ease, background 0.25s ease;
+  body.cursor-active .camera-cursor-brackets {
+    width: 48px; height: 48px;
   }
-  body.cursor-active .cursor-ring {
-    width: 50px; height: 50px;
-    border-color: rgba(var(--laser-red), 0.9);
-    background: rgba(var(--laser-red), 0.04);
+  body.cursor-active .camera-cursor-brackets i {
+    border-color: rgb(var(--laser-red));
+    box-shadow: 0 0 6px rgba(var(--laser-red), 0.7);
   }
 }
 
@@ -1178,8 +1210,10 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 </head>
 
 <body>
-<div class="cursor-dot" id="cursor-dot"></div>
-<div class="cursor-ring" id="cursor-ring"></div>
+<div class="camera-cursor-crosshair" id="camera-cursor-crosshair"></div>
+<div class="camera-cursor-brackets" id="camera-cursor-brackets">
+  <i></i><i></i><i></i><i></i>
+</div>
 
 <a class="skip" href="#work">Skip to work</a>
 
@@ -1445,24 +1479,24 @@ var $  = function(s,r){ return (r||document).querySelector(s); };
 var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
 
 // Viewfinder Reticle Cursor Tracking
-(function initReticle() {
-  var dot = $("#cursor-dot");
-  var ring = $("#cursor-ring");
-  if (!dot || !ring) return;
+(function initCameraReticle() {
+  var crosshair = $("#camera-cursor-crosshair");
+  var brackets = $("#camera-cursor-brackets");
+  if (!crosshair || !brackets) return;
 
   var mouseX = -100, mouseY = -100;
-  var ringX = -100, ringY = -100;
+  var bracketX = -100, bracketY = -100;
 
   window.addEventListener("mousemove", function(e) {
     mouseX = e.clientX;
     mouseY = e.clientY;
-    dot.style.transform = "translate3d(" + mouseX + "px, " + mouseY + "px, 0) translate(-50%, -50%)";
+    crosshair.style.transform = "translate3d(" + mouseX + "px, " + mouseY + "px, 0) translate(-50%, -50%)";
   });
 
   function loop() {
-    ringX += (mouseX - ringX) * 0.18;
-    ringY += (mouseY - ringY) * 0.18;
-    ring.style.transform = "translate3d(" + ringX + "px, " + ringY + "px, 0) translate(-50%, -50%)";
+    bracketX += (mouseX - bracketX) * 0.2;
+    bracketY += (mouseY - bracketY) * 0.2;
+    brackets.style.transform = "translate3d(" + bracketX + "px, " + bracketY + "px, 0) translate(-50%, -50%)";
     requestAnimationFrame(loop);
   }
   requestAnimationFrame(loop);
