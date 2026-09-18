@@ -23,7 +23,7 @@
       "category": "Pets"
     },
     {
-      "featured": true,
+      "featured": false,
       "ratio": "3/2",
       "imagePosition": "Center",
       "src": "/images/uploads/mink.png",
@@ -32,7 +32,7 @@
       "category": "Pets"
     },
     {
-      "featured": true,
+      "featured": false,
       "ratio": "3/2",
       "imagePosition": "Center",
       "src": "/images/uploads/day-3.jpg",
@@ -90,16 +90,6 @@
       "featured": true,
       "ratio": "4/5",
       "imagePosition": "Center",
-      "title": "Happy family",
-      "client": "Personal",
-      "category": "Portraits",
-      "src": "/images/uploads/img_8181.jpg",
-      "caption": "A moment frozen in time, but the love is timeless."
-    },
-    {
-      "featured": true,
-      "ratio": "4/5",
-      "imagePosition": "Center",
       "title": "Core memory!",
       "client": "Personal",
       "category": "Portraits",
@@ -115,6 +105,16 @@
       "category": "Portraits",
       "src": "/images/uploads/cr-tecni3ku3qw-unsplash.jpg",
       "caption": "Honoured to capture the brand new Family!"
+    },
+    {
+      "featured": true,
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "title": "Happy Family",
+      "client": "Private",
+      "category": "Portraits",
+      "caption": "A moment frozen in time, But love is timeless",
+      "src": "/images/uploads/img_8181.jpg"
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
