@@ -1348,7 +1348,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
+        <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE SHOOT // CATEGORIES</span>
@@ -1370,7 +1370,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       <!-- PLACED UNDER NICHES -->
       <div class="niche-enquire-sec">
         <div class="sec-head" style="margin-bottom:12px;">
-          <span class="label">Enquiry</span>
+          <span class="label">Let's make it official</span>
           <span class="fill"></span>
         </div>
         <button type="button" class="niche-enquire-trigger" id="btn-enquire-overview">Enquire ↗</button>
@@ -1386,7 +1386,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
+          <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
     </div>
@@ -1398,7 +1398,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
+        <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -1438,7 +1438,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
+          <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
     </div>
@@ -1553,7 +1553,7 @@ var SITE = {
     { name: "Events", line: "Setup to last song, edited and delivered within the week." },
     { name: "Portraits", line: "Headshots and personal work, in studio or wherever you already are." }
   ],
-  contactNote: "Tell us what you are shooting, roughly when, and where. We reply within a day.",
+  contactNote: "Planning something special? Tell us what you’re looking to capture, and when and where.",
   teamHeroImg: "/images/uploads/dsc05175.jpg",
   teamHeroImgPosition: "Center",
   teamHeroIntro: "Four distinct visual sensibilities aligned under one collective principle.",
@@ -2139,7 +2139,7 @@ document.addEventListener("dragstart", function(e){
   }
 });
 
-// GLOBAL DISPATCH INITIALIZER (CLEAN UNIFIED LISTENERS)
+// GLOBAL DISPATCH INITIALIZER
 function bindGlobalEvents() {
   document.addEventListener("click", function(e) {
     if (e.target.closest(".btn-close-collective")) {
