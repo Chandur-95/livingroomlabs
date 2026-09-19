@@ -317,24 +317,29 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   animation: imgPulse 1.8s infinite ease-in-out;
 }
 
-/* WORK HORIZONTAL CAROUSEL (MAC DOCK HOVER STYLE) */
+/* ============================================================
+   WORK HORIZONTAL CAROUSEL (WITH AUTHENTIC MAC OS DOCK HOVER)
+   ============================================================ */
 .work-carousel-container {
   position: relative;
   width: 100%;
-  margin-top: 16px;
 }
 
 .home-work-grid {
   display: flex !important;
   flex-direction: row !important;
-  gap: 22px !important;
+  gap: 12px !important; /* Tighter gap makes the dock pop-out effect much cleaner */
   overflow-x: auto !important;
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 40px; /* Space for shadow */
-  padding-top: 30px; /* Space for the Mac-style upward scale */
-  margin-top: -20px; /* Visual offset correction */
+  
+  /* MASSIVE PADDING allows the cards to scale up 160% without getting chopped off by the grid boundaries */
+  padding-top: 150px; 
+  margin-top: -120px; /* Pulls the grid visually back up into place */
+  padding-bottom: 60px; /* Space for the huge pop-out drop shadow */
+  
+  align-items: flex-end; /* Anchors the dock to the bottom */
   scrollbar-width: none;
 }
 .home-work-grid::-webkit-scrollbar {
@@ -342,28 +347,48 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 .home-work-grid .shot {
-  flex: 0 0 290px !important;
-  max-width: 290px !important;
-  scroll-snap-align: start;
+  flex: 0 0 250px !important;
+  max-width: 250px !important;
+  scroll-snap-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transform-origin: center bottom; /* Scales up from the bottom like Mac Dock */
-  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy spring effect */
+  transform-origin: center bottom; /* Expands strictly upwards like Mac OS */
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+              margin 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 1;
+  margin: 0;
+  cursor: pointer;
 }
 
-.home-work-grid .shot:hover, .home-work-grid .shot:focus-visible {
-  transform: scale(1.15); /* The entire card pops out */
-  z-index: 10;
+/* 1. MASSIVE POP OUT FOR HOVERED CARD */
+.home-work-grid .shot:hover, 
+.home-work-grid .shot:focus-visible {
+  transform: scale(1.6); /* Enormous pop out towards screen */
+  z-index: 50;
+  margin: 0 55px; /* Physically pushes neighbors out of the way */
+}
+
+/* 2. NEIGHBORING WAVE EFFECT (The card BEFORE the hovered card) */
+.home-work-grid .shot:has(+ .shot:hover) {
+  transform: scale(1.2);
+  z-index: 25;
+  margin-right: 18px;
+}
+
+/* 3. NEIGHBORING WAVE EFFECT (The card AFTER the hovered card) */
+.home-work-grid .shot:hover + .shot {
+  transform: scale(1.2);
+  z-index: 25;
+  margin-left: 18px;
 }
 
 .home-work-grid .plate {
   aspect-ratio: 3 / 4 !important;
   width: 100% !important;
   height: auto !important;
-  border-radius: 6px;
+  border-radius: 4px;
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
   transition: box-shadow 0.35s var(--ease);
@@ -373,13 +398,19 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 
 .home-work-grid .shot:hover .plate {
-  box-shadow: 0 20px 40px rgba(0,0,0,0.3); /* Deeper shadow when popped out */
+  box-shadow: 0 25px 50px rgba(0,0,0,0.4); /* Deep cinematic shadow on massive scale */
 }
 
-/* Floating Navigation Arrows */
+/* Prevent inner photo warp during massive dock scale */
+.home-work-grid .shot:hover .plate img, 
+.home-work-grid .shot:focus-visible .plate img {
+  transform: scale(1) !important; 
+}
+
+/* Floating Navigation Arrows - Adjusted for new padding offsets */
 .carousel-nav-btn {
   position: absolute;
-  top: 42%;
+  top: calc(150px + 165px); /* Accurately aligns exactly with the vertical center of the unscaled cards */
   transform: translateY(-50%);
   width: 44px;
   height: 44px;
@@ -389,7 +420,7 @@ html[data-theme="dark"] .home-work-grid .plate {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 10;
+  z-index: 60; /* Sits above the giant hovered cards */
   cursor: pointer;
   border: 1px solid rgba(255,255,255,0.25);
   backdrop-filter: blur(6px);
@@ -408,7 +439,7 @@ html[data-theme="dark"] .home-work-grid .plate {
   right: -20px;
 }
 
-/* FULL NICHE VIEW GALLERY GRID (Uses standard inner zoom) */
+/* FULL NICHE VIEW GALLERY GRID */
 .niche-work-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -459,13 +490,9 @@ html[data-theme="dark"] .home-work-grid .plate {
   opacity: 1 !important;
 }
 
-/* INNER ZOOM ON HOVER (Applies to NICHE GRID, disabled for HOME CAROUSEL) */
+/* SUBTLE INNER ZOOM ON HOVER (Applies nicely to standard grids, disabled for Dock effect) */
 .shot:hover .plate img, .shot:focus-visible .plate img {
   transform: scale(1.07);
-}
-.home-work-grid .shot:hover .plate img, 
-.home-work-grid .shot:focus-visible .plate img {
-  transform: scale(1); /* Disabled here so it doesn't look messy when the card pops out */
 }
 
 .guard{position:absolute;inset:0;z-index:3;background:transparent}
@@ -477,8 +504,13 @@ html[data-theme="dark"] .home-work-grid .plate {
   border-top:1px solid var(--rule);
   font-size:.76rem;line-height:1.35;
 }
-.cap .t{font-weight:500}
+.cap .t{font-weight:500;}
 .cap .c{opacity:.55;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+/* Ensure title doesn't wrap awkwardly when card scales up 1.6x */
+.home-work-grid .cap .t {
+  white-space: nowrap;
+}
 
 .curated-toggle-wrap{
   margin-top:clamp(24px, 3vw, 40px);
@@ -1143,6 +1175,13 @@ html[data-theme="dark"] .lb-frame {
   100%{transform:scale(1);opacity:1}
 }
 
+.lb-frame .corners{inset:-12px}
+.lb-frame .corners i{
+  opacity:1;transform:scale(1);width:20px;height:20px;
+  border-color:rgb(var(--laser-red));
+  box-shadow:0 0 10px rgba(var(--laser-red),.7);
+}
+
 .lb-cap{
   display:grid;grid-template-columns:1fr auto;gap:6px 20px;align-items:baseline;
   border-top:1px solid var(--rule);padding-top:12px;
@@ -1363,9 +1402,25 @@ html[data-theme="dark"] .lb-frame {
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
+  /* DISABLE MASSIVE DOCK HOVER ON MOBILE DEVICES */
+  .home-work-grid {
+    padding-top: 20px !important;
+    margin-top: 0px !important;
+    padding-bottom: 24px !important;
+    align-items: flex-start !important;
+  }
   .home-work-grid .shot {
-    flex: 0 0 230px !important;
-    max-width: 230px !important;
+    flex: 0 0 240px !important;
+    max-width: 240px !important;
+    transform-origin: center center !important;
+  }
+  .home-work-grid .shot:hover, .home-work-grid .shot:focus-visible {
+    transform: scale(1.02) !important;
+    margin: 0 !important;
+  }
+  .home-work-grid .shot:has(+ .shot:hover), .home-work-grid .shot:hover + .shot {
+    transform: scale(1) !important;
+    margin: 0 !important;
   }
 
   .carousel-nav-btn {
@@ -1888,33 +1943,7 @@ function buildFilters(){
   });
 }
 
-function attachTilt3D(el) {
-  if (window.innerWidth <= 640) return;
-  var rAF = null;
-  el.addEventListener('mousemove', function(e) {
-    if (rAF) cancelAnimationFrame(rAF);
-    rAF = requestAnimationFrame(function() {
-      var rect = el.getBoundingClientRect();
-      var x = e.clientX - rect.left;
-      var y = e.clientY - rect.top;
-      var xc = rect.width / 2;
-      var yc = rect.height / 2;
-      var dx = (x - xc) / xc;
-      var dy = (y - yc) / yc;
-      var tiltWrap = el.querySelector('.plate-tilt-wrap');
-      if (tiltWrap) {
-        tiltWrap.style.transform = "rotateY(" + (dx * 5) + "deg) rotateX(" + (-dy * 5) + "deg) translateZ(4px)";
-      }
-    });
-  });
-  el.addEventListener('mouseleave', function() {
-    if (rAF) cancelAnimationFrame(rAF);
-    var tiltWrap = el.querySelector('.plate-tilt-wrap');
-    if (tiltWrap) tiltWrap.style.transform = "rotateY(0deg) rotateX(0deg) translateZ(0px)";
-  });
-}
-
-/* HORIZONTAL CAROUSEL WORK GRID (WITH MAC DOCK POP-OUT HOVER) */
+/* HORIZONTAL CAROUSEL WORK GRID (WITH MAC DOCK EFFECT) */
 function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
@@ -1951,7 +1980,6 @@ function renderHomeGrid() {
   }).join("");
 
   $$("#grid .shot", grid).forEach(function(b){
-    attachTilt3D(b);
     b.addEventListener("click", function(){ openLB(parseInt(b.dataset.i, 10), b); });
   });
 }
@@ -2052,7 +2080,6 @@ function renderNichesList(){
   });
 
   $$("[data-preview-niche]", nHost).forEach(function(imgBtn){
-    attachTilt3D(imgBtn);
     imgBtn.addEventListener("click", function(e){
       e.stopPropagation();
       var nicheName = imgBtn.dataset.previewNiche;
@@ -2134,7 +2161,6 @@ function openNicheView(nicheName){
     '</div>';
 
   $$("[data-niche-i]", box).forEach(function(b){
-    attachTilt3D(b);
     b.addEventListener("click", function(){
       var idx = parseInt(b.dataset.nicheI, 10);
       state.visible = photosInNiche;
@@ -2597,12 +2623,12 @@ function toggleMemberPhoto(plate) {
   var nextIdx = (currentIdx + 1) % imgs.length;
 
   imgs.forEach(function(img) {
-    img.className = ""; // Reset all classes
+    img.className = ""; 
   });
 
-  imgs[currentIdx].classList.add("prev"); // The old image becomes the background
-  void imgs[nextIdx].offsetWidth; // Force a reflow so the browser registers the state
-  imgs[nextIdx].classList.add("active"); // The new image wipes cleanly over it
+  imgs[currentIdx].classList.add("prev"); 
+  void imgs[nextIdx].offsetWidth; 
+  imgs[nextIdx].classList.add("active"); 
 }
 
 function renderContent(){
