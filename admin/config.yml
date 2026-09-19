@@ -33,12 +33,19 @@ collections:
             fields:
               - { label: "Full Name", name: "name", widget: "string" }
               - { label: "Role / Title", name: "role", widget: "string" }
-              - { label: "Profile Photo", name: "photo", widget: "image" }
-              - label: "Photo Focal Point"
+              - { label: "Primary Photo", name: "photo", widget: "image" }
+              - label: "Primary Photo Focal Point"
                 name: "imagePosition"
                 widget: "select"
                 options: ["Top", "Center", "Bottom"]
                 default: "Center"
+              - { label: "Alternate Photo (Optional, enables slideshow)", name: "photo2", widget: "image", required: false }
+              - label: "Alternate Photo Focal Point"
+                name: "imagePosition2"
+                widget: "select"
+                options: ["Top", "Center", "Bottom"]
+                default: "Center"
+                required: false
               - { label: "Bio / Description", name: "bio", widget: "text", required: false }
               - { label: "Instagram URL", name: "instagram", widget: "string", required: false }
               - { label: "Portfolio / Work URL", name: "portfolio", widget: "string", required: false }
@@ -67,8 +74,8 @@ collections:
                 widget: "select"
                 options: ["Top", "Center", "Bottom"]
                 default: "Center"
-          
-          # FALLBACK SINGLE BAND SETTINGS (To preserve existing JSON structure)
+
+          # FALLBACK SINGLE BAND SETTINGS
           - { label: "Band Fallback Image", name: "bandImg", widget: "image", required: false }
           - label: "Band Fallback Position"
             name: "bandImgPosition"
@@ -105,8 +112,6 @@ collections:
                 options: ["Food", "Pets", "Architecture", "Products", "Events", "Portraits"]
               - { label: "Image", name: "src", widget: "image" }
               - { label: "Show in 'All' (Toggle on/off)", name: "featured", widget: "boolean", default: true }
-              - { label: "Grid Width Weight (1-12)", name: "w", widget: "number", value_type: "int", required: false }
-              - { label: "Video Link (Optional)", name: "videoUrl", widget: "string", required: false }
               - { label: "Caption", name: "caption", widget: "string", required: false }
               - label: "Aspect Ratio"
                 name: "ratio"
