@@ -228,13 +228,13 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 
 .hero-foot{
   margin-top:clamp(20px, 3vw, 38px);
-  display:flex;flex-wrap:gap:12px 24px;align-items:baseline;
+  display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;
   justify-content:space-between;
   border-top:1px solid var(--rule);
   padding-top:14px;
 }
 
-/* CINEMATIC HERO SLIDESHOW BANNER */
+/* CINEMATIC HERO SLIDESHOW BANNER (SMOOTH CROSS-FADE) */
 .band{
   position:relative;
   width:100%;
@@ -245,6 +245,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   overflow:hidden;
   background:#000;
   display:block;
+  cursor:pointer;
   user-select:none;
 }
 .band-stage{
@@ -262,7 +263,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   opacity:0;
   pointer-events:none;
   transform:scale(1.05);
-  transition: opacity 1.2s ease-in-out, transform 6.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 1s ease-in-out, transform 4s ease-out;
   will-change: transform, opacity;
   z-index:1;
 }
@@ -281,6 +282,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .sec-head .fill{flex:1;height:1px}
 .sec-head .count{font-size:var(--fs-label);letter-spacing:.1em;opacity:.55;white-space:nowrap}
+
+.swipe-hint {
+  display: none;
+  font-size: 0.65rem;
+  letter-spacing: 0.1em;
+  opacity: 0.55;
+  padding-right: 12px;
+}
 
 .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:clamp(18px, 2.5vw, 30px)}
 .chip{
@@ -308,7 +317,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   animation: imgPulse 1.8s infinite ease-in-out;
 }
 
-/* WORK HORIZONTAL CAROUSEL (KNOTSBYAMP STYLE) */
+/* WORK HORIZONTAL CAROUSEL */
 .work-carousel-container {
   position: relative;
   width: 100%;
@@ -357,28 +366,6 @@ html[data-theme="dark"] .home-work-grid .plate {
 .home-work-grid .shot:hover .plate {
   transform: translateY(-4px) scale(1.02);
   box-shadow: 0 12px 28px rgba(0,0,0,0.18);
-}
-
-.work-card-action {
-  margin-top: 14px;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  padding: 8px 24px;
-  border-radius: 4px;
-  background: var(--rule-soft);
-  border: 1px solid var(--rule);
-  font-size: var(--fs-label);
-  letter-spacing: var(--tr-label);
-  text-transform: uppercase;
-  font-weight: 600;
-  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
-  width: auto;
-}
-.home-work-grid .shot:hover .work-card-action {
-  background: var(--ink);
-  color: var(--paper);
-  border-color: var(--ink);
 }
 
 /* Floating Navigation Arrows */
@@ -476,7 +463,23 @@ html[data-theme="dark"] .home-work-grid .plate {
 .cap .t{font-weight:500}
 .cap .c{opacity:.55;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 
-/* MOBILE "WHAT WE SHOOT" LINK BOX */
+.curated-toggle-wrap{
+  margin-top:clamp(24px, 3vw, 40px);
+  display:flex;justify-content:center;
+}
+.btn-curated-expand{
+  display:inline-flex;align-items:center;gap:10px;
+  border:1px solid var(--ink);
+  padding:11px 22px;
+  font-size:var(--fs-label);letter-spacing:var(--tr-label);
+  text-transform:uppercase;font-weight:600;
+  transition:background .25s var(--ease), color .25s var(--ease);
+}
+.btn-curated-expand:hover{
+  background:var(--ink);color:var(--paper);
+}
+
+/* MOBILE "WHAT WE CAPTURE" LINK BOX */
 .mobile-shoot-sec { display: none; }
 .mobile-shoot-box {
   border: 1px solid var(--rule);
@@ -926,7 +929,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
 /* ============================================================
-   THE COLLECTIVE MEMBER CAROUSEL
+   THE COLLECTIVE MEMBER CAROUSEL (CURTAIN WIPE ANIMATION)
    ============================================================ */
 .collective-grid {
   display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
@@ -949,13 +952,29 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   width:100%;
   height:100%;
   object-fit:cover;
-  transition:transform .65s var(--ease), opacity .5s var(--ease);
-  opacity:0;
-  will-change: transform, opacity;
+  z-index: 1;
+  opacity: 0;
+  clip-path: inset(0 0 0 100%);
+  transition: transform .65s var(--ease);
 }
+/* Initial state on load, no wipe */
+.member-plate img.initial {
+  opacity: 1;
+  z-index: 2;
+  clip-path: inset(0 0 0 0);
+}
+/* Becomes the background layer */
+.member-plate img.prev {
+  opacity: 1;
+  z-index: 2;
+  clip-path: inset(0 0 0 0);
+}
+/* Wipes elegantly over the background from right to left */
 .member-plate img.active {
-  opacity:1;
-  z-index:2;
+  opacity: 1;
+  z-index: 3;
+  clip-path: inset(0 0 0 0);
+  transition: transform .65s var(--ease), clip-path 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
 .member-card:hover .member-plate img{transform:scale(1.04)}
 
@@ -1101,6 +1120,13 @@ html[data-theme="dark"] .lb-frame {
   0%{transform:scale(0.88);opacity:0;filter:blur(6px)}
   60%{transform:scale(1.02);filter:blur(0)}
   100%{transform:scale(1);opacity:1}
+}
+
+.lb-frame .corners{inset:-12px}
+.lb-frame .corners i{
+  opacity:1;transform:scale(1);width:20px;height:20px;
+  border-color:rgb(var(--laser-red));
+  box-shadow:0 0 10px rgba(var(--laser-red),.7);
 }
 
 .lb-cap{
@@ -1308,6 +1334,10 @@ html[data-theme="dark"] .lb-frame {
     max-height: 420px;
   }
 
+  .swipe-hint {
+    display: inline-block;
+  }
+
   .filters{
     flex-wrap:nowrap;
     overflow-x:auto;
@@ -1448,7 +1478,7 @@ html[data-theme="dark"] .lb-frame {
   </button>
   <div class="nav-right">
     <div class="nav-links label">
-      <button type="button" class="nav-niches-link nav-desktop-only">What we shoot</button>
+      <button type="button" class="nav-niches-link nav-desktop-only">What we Capture</button>
       <button type="button" class="nav-collective-link nav-desktop-only">The Collective</button>
       <button type="button" class="nav-collective-link-mob nav-mobile-only">The Collective</button>
     </div>
@@ -1477,6 +1507,7 @@ html[data-theme="dark"] .lb-frame {
     <div class="sec-head">
       <span class="label">Work</span>
       <span class="fill"></span>
+      <span class="swipe-hint mono">← SWIPE TO EXPLORE →</span>
       <span class="count mono" data-workcount></span>
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
@@ -1495,11 +1526,11 @@ html[data-theme="dark"] .lb-frame {
     </div>
   </section>
 
-  <!-- MOBILE-ONLY "WHAT WE SHOOT" BOXED SECTION -->
+  <!-- MOBILE-ONLY "WHAT WE CAPTURE" BOXED SECTION -->
   <section class="sec wrap mobile-shoot-sec" id="mobile-shoot">
     <div class="mobile-shoot-box nav-niches-link" role="button" tabindex="0">
       <div class="mobile-shoot-header">
-        <span class="label mono" style="opacity:0.65;">WHAT WE SHOOT</span>
+        <span class="label mono" style="opacity:0.65;">WHAT WE CAPTURE</span>
         <span class="mobile-shoot-arrow">↗</span>
       </div>
     </div>
@@ -1543,15 +1574,15 @@ html[data-theme="dark"] .lb-frame {
   </footer>
 </main>
 
-<!-- WHAT WE SHOOT OVERLAY -->
-<div class="overlay-page" id="niches-page" role="dialog" aria-modal="true" aria-label="What We Shoot">
+<!-- WHAT WE CAPTURE OVERLAY -->
+<div class="overlay-page" id="niches-page" role="dialog" aria-modal="true" aria-label="What We Capture">
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
         <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
       </span>
     </button>
-    <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE SHOOT // CATEGORIES</span>
+    <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE CAPTURE // CATEGORIES</span>
     <div class="overlay-nav-right">
       <button class="overlay-close niches-close btn-close-niches">
         Back to Studio
@@ -1562,7 +1593,7 @@ html[data-theme="dark"] .lb-frame {
 
   <div class="overlay-content-sec niches-content-sec">
     <div id="niches-list-container" style="flex: 1;">
-      <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Shoot</h1>
+      <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Capture</h1>
       <p style="opacity:.7; max-width:600px; margin-bottom:clamp(30px, 5vw, 60px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
       
       <div id="niches-list" data-niches></div>
@@ -1901,8 +1932,7 @@ function renderHomeGrid() {
                  '<span class="guard"></span>'+
                '</span>'+
              '</div>'+
-             '<span class="cap" style="border:none; padding-top:8px; margin:0; justify-content:center;"><span class="t" style="font-size:0.85rem;">'+esc(p.title || "Untitled")+'</span></span>'+
-             '<span class="work-card-action">View Frame</span>'+
+             '<span class="cap" style="border:none; padding-top:10px; margin:0; width:100%;"><span class="t" style="font-size:0.85rem;">'+esc(p.title || "Untitled")+'</span><span class="c" style="font-size:0.75rem;">'+esc(p.client || "Studio")+'</span></span>'+
            '</button>';
   }).join("");
 
@@ -2123,7 +2153,7 @@ function closeNicheView(){
   list.style.display = "block";
 
   if(window.location.hash.indexOf("niche-") !== -1){
-    window.location.hash = "what-we-shoot";
+    window.location.hash = "what-we-capture";
   }
 }
 
@@ -2155,7 +2185,7 @@ function openNiches(){
   if(nichesPage){
     nichesPage.classList.add("open");
     document.body.style.overflow = "hidden";
-    window.location.hash = "what-we-shoot";
+    window.location.hash = "what-we-capture";
     nichesPage.scrollTop = 0;
   }
 }
@@ -2165,7 +2195,7 @@ function closeNiches(){
     nichesPage.classList.remove("open");
     document.body.style.overflow = "";
     closeNicheView();
-    if(window.location.hash === "#what-we-shoot" || window.location.hash.startsWith("#niche-")){
+    if(window.location.hash === "#what-we-capture" || window.location.hash.startsWith("#niche-")){
       history.pushState("", document.title, window.location.pathname + window.location.search);
     }
   }
@@ -2181,7 +2211,7 @@ window.addEventListener("hashchange", function(){
   var hash = window.location.hash;
   if(hash === "#collective"){
     openCollective();
-  } else if(hash === "#what-we-shoot"){
+  } else if(hash === "#what-we-capture"){
     openNiches();
   } else if(hash.startsWith("#niche-")){
     openNiches();
@@ -2228,7 +2258,9 @@ function closeEnquiryModal() {
   enqModal.classList.remove("open");
 }
 
-/* CINEMATIC HERO SLIDESHOW DISSOLVE */
+/* ============================================================
+   SMOOTH HERO SLIDESHOW: CINEMATIC DISSOLVE (3 SECONDS)
+   ============================================================ */
 function initSlideshow(){
   var slides = [];
   if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
@@ -2257,6 +2289,33 @@ function initSlideshow(){
     return '<img class="band-img '+act+'" '+loadStrat+' data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+esc(pos)+';">';
   }).join("");
 
+  /* FLAWLESS TOUCH AND CLICK DETECTION */
+  var heroBox = $("#hero-slideshow");
+  if(heroBox){
+    var touchStartX = 0;
+    var touchStartY = 0;
+    heroBox.addEventListener("touchstart", function(e){
+      touchStartX = e.changedTouches[0].clientX;
+      touchStartY = e.changedTouches[0].clientY;
+    }, {passive:true});
+    
+    heroBox.addEventListener("touchend", function(e){
+      var dx = e.changedTouches[0].clientX - touchStartX;
+      var dy = e.changedTouches[0].clientY - touchStartY;
+      if(Math.abs(dx) < 15 && Math.abs(dy) < 15) { // It's a tap, not a scroll
+        resetSlideInterval();
+        nextSlide();
+      }
+    }, {passive:true});
+    
+    heroBox.addEventListener("click", function(e){
+      if(e.pointerType === "mouse") { // Triggers for physical mouse clicks
+        resetSlideInterval();
+        nextSlide();
+      }
+    });
+  }
+
   resetSlideInterval();
 }
 
@@ -2265,7 +2324,7 @@ function resetSlideInterval(){
   if(state.slides && state.slides.length > 1){
     state.slideTimer = setInterval(function(){
       nextSlide();
-    }, 6000);
+    }, 3000); // Trigger exactly every 3 seconds
   }
 }
 
@@ -2295,7 +2354,7 @@ function nextSlide(){
       newImg.style.zIndex = "2";
     }
     state.isTransitioning = false;
-  }, 1200);
+  }, 1000);
 }
 
 /* HIGH-SPEED LIGHTBOX WITH PRE-FETCHING */
@@ -2428,6 +2487,11 @@ function bindGlobalEvents() {
       e.preventDefault(); openNiches();
     } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquire-overview")) {
       e.preventDefault(); openEnquiryModal("General Enquiry");
+    } else if (e.target.closest("#btn-toggle-curated")) {
+      e.preventDefault();
+      state.showAllCurated = true;
+      buildFilters();
+      renderHomeGrid();
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
       var sec = $("#collective-members-sec");
@@ -2507,20 +2571,29 @@ function bindGlobalEvents() {
   }
 }
 
-/* MEMBER DUAL-PHOTO SLIDESHOW HANDLER */
+/* ============================================================
+   MEMBER DUAL-PHOTO SLIDESHOW: 3 SEC CURTAIN WIPE
+   ============================================================ */
 function toggleMemberPhoto(plate) {
   var imgs = plate.querySelectorAll("img");
   if (imgs.length <= 1) return;
 
-  var currentIdx = -1;
+  var currentIdx = 0;
   imgs.forEach(function(img, idx) {
-    if (img.classList.contains("active")) currentIdx = idx;
+    if (img.classList.contains("active") || img.classList.contains("initial")) {
+      currentIdx = idx;
+    }
   });
 
   var nextIdx = (currentIdx + 1) % imgs.length;
 
-  imgs[currentIdx].classList.remove("active");
-  imgs[nextIdx].classList.add("active");
+  imgs.forEach(function(img) {
+    img.className = ""; // Reset all classes
+  });
+
+  imgs[currentIdx].classList.add("prev"); // The old image becomes the background
+  void imgs[nextIdx].offsetWidth; // Force a reflow so the browser registers the state
+  imgs[nextIdx].classList.add("active"); // The new image wipes cleanly over it
 }
 
 function renderContent(){
@@ -2569,7 +2642,7 @@ function renderContent(){
   if(idxList){
     idxList.innerHTML =
       '<li><a href="#work">Work</a></li>' +
-      '<li><button type="button" class="nav-niches-link" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">What we shoot</button></li>' +
+      '<li><button type="button" class="nav-niches-link" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">What we Capture</button></li>' +
       '<li><button type="button" id="btn-foot-enquire" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">Enquire</button></li>';
   }
 
@@ -2617,7 +2690,7 @@ function renderContent(){
       
       var mPos1 = getObjPosition(m.imagePosition);
       var photoSrc1 = m.photo ? fixPath(m.photo) : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
-      var imgTags = '<img loading="lazy" decoding="async" class="active" onload="this.parentElement.classList.remove(\'skeleton-load\');" src="'+esc(photoSrc1)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos1)+';">';
+      var imgTags = '<img loading="lazy" decoding="async" class="initial" onload="this.parentElement.classList.remove(\'skeleton-load\');" src="'+esc(photoSrc1)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos1)+';">';
       
       var hasPhoto2 = Boolean(m.photo2 && String(m.photo2).trim() !== "");
       if (hasPhoto2) {
@@ -2638,10 +2711,24 @@ function renderContent(){
              '</div>';
     }).join("");
 
+    /* Automatically animate Collective photos every 3 seconds */
+    window.collectiveTimers = window.collectiveTimers || [];
+    window.collectiveTimers.forEach(clearInterval);
+    window.collectiveTimers = [];
+
     $$(".member-plate", collectiveGrid).forEach(function(plate) {
       if (plate.querySelectorAll("img").length > 1) {
-        plate.addEventListener("mouseenter", function() { toggleMemberPhoto(plate); });
-        plate.addEventListener("click", function() { toggleMemberPhoto(plate); });
+        var timer = setInterval(function() {
+          toggleMemberPhoto(plate);
+        }, 3000);
+        window.collectiveTimers.push(timer);
+
+        // Allow manual touch/click override
+        plate.addEventListener("click", function() {
+          clearInterval(timer);
+          toggleMemberPhoto(plate);
+          timer = setInterval(function(){ toggleMemberPhoto(plate); }, 3000);
+        });
       }
     });
   }
@@ -2652,7 +2739,7 @@ function renderContent(){
 
   if(window.location.hash === "#collective"){
     openCollective();
-  } else if(window.location.hash === "#what-we-shoot"){
+  } else if(window.location.hash === "#what-we-capture"){
     openNiches();
   } else if(window.location.hash.startsWith("#niche-")){
     openNiches();
