@@ -228,13 +228,13 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 
 .hero-foot{
   margin-top:clamp(20px, 3vw, 38px);
-  display:flex;flex-wrap:wrap;gap:12px 24px;align-items:baseline;
+  display:flex;flex-wrap:gap:12px 24px;align-items:baseline;
   justify-content:space-between;
   border-top:1px solid var(--rule);
   padding-top:14px;
 }
 
-/* CINEMATIC HERO SLIDESHOW BANNER WITH ANAMORPHIC LASER SWEEP */
+/* CINEMATIC HERO SLIDESHOW BANNER */
 .band{
   position:relative;
   width:100%;
@@ -245,7 +245,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   overflow:hidden;
   background:#000;
   display:block;
-  cursor:pointer;
   user-select:none;
 }
 .band-stage{
@@ -262,8 +261,8 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   object-position:center center;
   opacity:0;
   pointer-events:none;
-  transform:scale(1.04);
-  transition:opacity .7s var(--ease), transform 1.2s var(--ease);
+  transform:scale(1.05);
+  transition: opacity 1.2s ease-in-out, transform 6.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform, opacity;
   z-index:1;
 }
@@ -273,44 +272,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   transform:scale(1);
   z-index:2;
 }
-
-/* Laser sweep streak across image change */
-.band-laser{
-  position:absolute;
-  inset:0;
-  pointer-events:none;
-  z-index:6;
-  opacity:0;
-}
-.band-laser.laser-active{
-  animation:laserPass .7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-}
-@keyframes laserPass{
-  0%{
-    opacity:1;
-    background: linear-gradient(90deg, transparent 0%, rgba(var(--laser-red),0.85) 48%, #FFF 50%, rgba(var(--laser-red),0.85) 52%, transparent 100%);
-    clip-path: polygon(0 0, 4% 0, 0 100%, 0 100%);
-  }
-  50%{
-    opacity:1;
-    clip-path: polygon(46% 0, 54% 0, 50% 100%, 42% 100%);
-  }
-  100%{
-    opacity:0;
-    clip-path: polygon(96% 0, 100% 0, 100% 100%, 96% 100%);
-  }
-}
-
-.band-flash{
-  position:absolute;
-  inset:0;
-  background:radial-gradient(circle at center, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 65%);
-  pointer-events:none;
-  opacity:0;
-  z-index:5;
-}
-.band-flash.flash-active{ animation:flashBloom .5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
-@keyframes flashBloom{ 0%{opacity:0.9} 100%{opacity:0} }
 
 .sec{padding-block:var(--sec)}
 .sec-head{
@@ -347,17 +308,109 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   animation: imgPulse 1.8s infinite ease-in-out;
 }
 
-/* 4-COLUMN SQUARE GRID */
-.home-work-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  column-gap: 16px;
-  row-gap: 24px;
+/* WORK HORIZONTAL CAROUSEL (KNOTSBYAMP STYLE) */
+.work-carousel-container {
+  position: relative;
   width: 100%;
+  margin-top: 16px;
 }
+
+.home-work-grid {
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 22px !important;
+  overflow-x: auto !important;
+  scroll-behavior: smooth;
+  scroll-snap-type: x mandatory;
+  -webkit-overflow-scrolling: touch;
+  padding-bottom: 24px;
+  padding-top: 10px;
+  scrollbar-width: none;
+}
+.home-work-grid::-webkit-scrollbar {
+  display: none;
+}
+
+.home-work-grid .shot {
+  flex: 0 0 290px !important;
+  max-width: 290px !important;
+  scroll-snap-align: start;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+}
+
 .home-work-grid .plate {
-  aspect-ratio: 1 / 1 !important;
+  aspect-ratio: 3 / 4 !important;
+  width: 100% !important;
   height: auto !important;
+  border-radius: 4px;
+  overflow: hidden;
+  box-shadow: 0 6px 18px rgba(0,0,0,0.08);
+  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+}
+html[data-theme="dark"] .home-work-grid .plate {
+  box-shadow: 0 6px 20px rgba(0,0,0,0.6);
+}
+
+.home-work-grid .shot:hover .plate {
+  transform: translateY(-4px) scale(1.02);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+}
+
+.work-card-action {
+  margin-top: 14px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 8px 24px;
+  border-radius: 4px;
+  background: var(--rule-soft);
+  border: 1px solid var(--rule);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tr-label);
+  text-transform: uppercase;
+  font-weight: 600;
+  transition: background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+  width: auto;
+}
+.home-work-grid .shot:hover .work-card-action {
+  background: var(--ink);
+  color: var(--paper);
+  border-color: var(--ink);
+}
+
+/* Floating Navigation Arrows */
+.carousel-nav-btn {
+  position: absolute;
+  top: 42%;
+  transform: translateY(-50%);
+  width: 44px;
+  height: 44px;
+  background: rgba(0, 0, 0, 0.65);
+  color: #FFF;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+  cursor: pointer;
+  border: 1px solid rgba(255,255,255,0.25);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  transition: background 0.25s ease, transform 0.2s ease;
+}
+.carousel-nav-btn:hover {
+  background: var(--ink);
+  color: var(--paper);
+  transform: translateY(-50%) scale(1.08);
+}
+.carousel-nav-btn.prev {
+  left: -20px;
+}
+.carousel-nav-btn.next {
+  right: -20px;
 }
 
 /* FULL NICHE VIEW GALLERY GRID */
@@ -422,22 +475,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 .cap .t{font-weight:500}
 .cap .c{opacity:.55;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-.curated-toggle-wrap{
-  margin-top:clamp(24px, 3vw, 40px);
-  display:flex;justify-content:center;
-}
-.btn-curated-expand{
-  display:inline-flex;align-items:center;gap:10px;
-  border:1px solid var(--ink);
-  padding:11px 22px;
-  font-size:var(--fs-label);letter-spacing:var(--tr-label);
-  text-transform:uppercase;font-weight:600;
-  transition:background .25s var(--ease), color .25s var(--ease);
-}
-.btn-curated-expand:hover{
-  background:var(--ink);color:var(--paper);
-}
 
 /* MOBILE "WHAT WE SHOOT" LINK BOX */
 .mobile-shoot-sec { display: none; }
@@ -889,7 +926,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
 /* ============================================================
-   THE COLLECTIVE MEMBER CAROUSEL & LASER SCANNER
+   THE COLLECTIVE MEMBER CAROUSEL
    ============================================================ */
 .collective-grid {
   display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
@@ -921,38 +958,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   z-index:2;
 }
 .member-card:hover .member-plate img{transform:scale(1.04)}
-
-/* Member laser scanline on photo switch */
-.member-scanner {
-  position:absolute;
-  left:0;right:0;height:2.5px;top:0;
-  background:rgba(var(--laser-red), 0.95);
-  box-shadow:0 0 12px 2px rgba(var(--laser-red), 0.85);
-  pointer-events:none;
-  opacity:0;
-  z-index:4;
-}
-.member-plate.scanning .member-scanner {
-  animation:memberLaserSweep .6s cubic-bezier(.22, 1, .36, 1) forwards;
-}
-@keyframes memberLaserSweep {
-  0%{ top:0%; opacity:0; }
-  20%{ opacity:1; }
-  80%{ opacity:1; }
-  100%{ top:100%; opacity:0; }
-}
-
-.member-carousel-indicator {
-  position:absolute;
-  bottom:8px;right:8px;z-index:5;
-  font-family:"JetBrains Mono",monospace;
-  font-size:.6rem;
-  letter-spacing:.12em;
-  background:rgba(0,0,0,0.75);
-  color:#FFF;
-  padding:2px 6px;
-  border-radius:1px;
-}
 
 .member-info h3{
   margin:0;font-size:clamp(1.2rem, 1.8vw, 1.5rem);font-weight:700;
@@ -1314,12 +1319,13 @@ html[data-theme="dark"] .lb-frame {
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
-  .home-work-grid {
-    grid-template-columns: 1fr !important;
-    gap: 20px !important;
+  .home-work-grid .shot {
+    flex: 0 0 230px !important;
+    max-width: 230px !important;
   }
-  .home-work-grid .plate {
-    aspect-ratio: 4 / 4.5 !important;
+
+  .carousel-nav-btn {
+    display: none;
   }
 
   .niche-preview-grid {
@@ -1462,10 +1468,9 @@ html[data-theme="dark"] .lb-frame {
     </div>
   </header>
 
-  <div class="band" id="hero-slideshow" role="region" aria-label="Click to advance hero image slideshow" tabindex="0">
+  <!-- CINEMATIC HERO SLIDESHOW BANNER -->
+  <div class="band" id="hero-slideshow" role="region" aria-label="Hero image slideshow" tabindex="0">
     <div class="band-stage" id="band-stage"></div>
-    <div class="band-laser" id="band-laser"></div>
-    <div class="band-flash" id="band-flash"></div>
   </div>
 
   <section class="sec wrap" id="work">
@@ -1476,11 +1481,16 @@ html[data-theme="dark"] .lb-frame {
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
     
-    <div class="home-work-grid" id="grid"></div>
-    
-    <div class="curated-toggle-wrap" id="curated-wrap" style="display:none;">
-      <button type="button" class="btn-curated-expand" id="btn-toggle-curated">
-        &rarr; Click here to see all photos
+    <!-- KNOTSBYAMP STYLE HORIZONTAL CAROUSEL -->
+    <div class="work-carousel-container">
+      <button type="button" class="carousel-nav-btn prev" id="carousel-prev" aria-label="Scroll left">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 19l-7-7 7-7"/></svg>
+      </button>
+
+      <div class="home-work-grid" id="grid"></div>
+
+      <button type="button" class="carousel-nav-btn next" id="carousel-next" aria-label="Scroll right">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 5l7 7-7 7"/></svg>
       </button>
     </div>
   </section>
@@ -1859,33 +1869,19 @@ function attachTilt3D(el) {
   });
 }
 
-/* HIGH-PERFORMANCE WORK GRID */
+/* HORIZONTAL CAROUSEL WORK GRID (KNOTSBYAMP STYLE) */
 function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
   grid.className = "home-work-grid";
   
-  var list;
-  var hasUnshownPhotos = false;
-  var WORK_LIMIT = 12;
-
-  var filteredList = (SITE.photos || []).filter(function(p){
+  var list = (SITE.photos || []).filter(function(p){
     return state.filter === "All" || cleanCat(p.category) === cleanCat(state.filter);
   });
 
-  if(state.filter === "All" && !state.showAllCurated){
-    var baseList = filteredList.filter(function(p){ return p.featured !== false && String(p.featured) !== "false"; });
-    list = baseList.slice(0, WORK_LIMIT);
-    hasUnshownPhotos = (filteredList.length > list.length);
-  } else {
-    list = filteredList;
-  }
-  
   state.visible = list;
   var counter = $("[data-workcount]");
   if(counter) counter.textContent = list.length + " / " + (SITE.photos || []).length + " FRAMES";
-  var curatedWrap = $("#curated-wrap");
-  if(curatedWrap) curatedWrap.style.display = (hasUnshownPhotos && state.filter === "All") ? "flex" : "none";
 
   if(list.length === 0){
     grid.innerHTML = '<p style="opacity:0.5; padding:20px 0;">No work published in this selection yet.</p>';
@@ -1905,14 +1901,34 @@ function renderHomeGrid() {
                  '<span class="guard"></span>'+
                '</span>'+
              '</div>'+
-             '<span class="cap"><span class="t">'+esc(p.title || "Untitled")+'</span><span class="c">'+esc(p.client || "Studio")+'</span></span>'+
+             '<span class="cap" style="border:none; padding-top:8px; margin:0; justify-content:center;"><span class="t" style="font-size:0.85rem;">'+esc(p.title || "Untitled")+'</span></span>'+
+             '<span class="work-card-action">View Frame</span>'+
            '</button>';
   }).join("");
 
-  $$(".shot",grid).forEach(function(b){
+  $$("#grid .shot", grid).forEach(function(b){
     attachTilt3D(b);
-    b.addEventListener("click",function(){ openLB(parseInt(b.dataset.i,10), b); });
+    b.addEventListener("click", function(){ openLB(parseInt(b.dataset.i, 10), b); });
   });
+}
+
+function initCarouselControls() {
+  var prevBtn = $("#carousel-prev");
+  var nextBtn = $("#carousel-next");
+  var track = $("#grid");
+
+  if (prevBtn && track) {
+    prevBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      track.scrollBy({ left: -310, behavior: "smooth" });
+    });
+  }
+  if (nextBtn && track) {
+    nextBtn.addEventListener("click", function(e) {
+      e.preventDefault();
+      track.scrollBy({ left: 310, behavior: "smooth" });
+    });
+  }
 }
 
 function renderNichesList(){
@@ -2212,9 +2228,7 @@ function closeEnquiryModal() {
   enqModal.classList.remove("open");
 }
 
-/* ============================================================
-   RE-ENGINEERED HERO SLIDESHOW: INSTANT RESPONSE, NO LOCKS
-   ============================================================ */
+/* CINEMATIC HERO SLIDESHOW DISSOLVE */
 function initSlideshow(){
   var slides = [];
   if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
@@ -2243,22 +2257,6 @@ function initSlideshow(){
     return '<img class="band-img '+act+'" '+loadStrat+' data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+esc(pos)+';">';
   }).join("");
 
-  var heroBox = $("#hero-slideshow");
-  if(heroBox){
-    heroBox.onclick = function(e){
-      e.preventDefault();
-      resetSlideInterval();
-      nextSlide();
-    };
-    heroBox.onkeydown = function(e){
-      if(e.key === "Enter" || e.key === " "){
-        e.preventDefault();
-        resetSlideInterval();
-        nextSlide();
-      }
-    };
-  }
-
   resetSlideInterval();
 }
 
@@ -2267,7 +2265,7 @@ function resetSlideInterval(){
   if(state.slides && state.slides.length > 1){
     state.slideTimer = setInterval(function(){
       nextSlide();
-    }, 6500);
+    }, 6000);
   }
 }
 
@@ -2282,21 +2280,6 @@ function nextSlide(){
   var imgs = $$(".band-img", $("#band-stage"));
   var oldImg = imgs[oldIndex];
   var newImg = imgs[newIndex];
-  var laser = $("#band-laser");
-  var flash = $("#band-flash");
-
-  // Anamorphic laser flare animation
-  if(laser){
-    laser.classList.remove("laser-active");
-    void laser.offsetWidth;
-    laser.classList.add("laser-active");
-  }
-
-  if(flash){
-    flash.classList.remove("flash-active");
-    void flash.offsetWidth;
-    flash.classList.add("flash-active");
-  }
 
   if(newImg){
     newImg.style.zIndex = "3";
@@ -2312,7 +2295,7 @@ function nextSlide(){
       newImg.style.zIndex = "2";
     }
     state.isTransitioning = false;
-  }, 650);
+  }, 1200);
 }
 
 /* HIGH-SPEED LIGHTBOX WITH PRE-FETCHING */
@@ -2445,11 +2428,6 @@ function bindGlobalEvents() {
       e.preventDefault(); openNiches();
     } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquire-overview")) {
       e.preventDefault(); openEnquiryModal("General Enquiry");
-    } else if (e.target.closest("#btn-toggle-curated")) {
-      e.preventDefault();
-      state.showAllCurated = true;
-      buildFilters();
-      renderHomeGrid();
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
       var sec = $("#collective-members-sec");
@@ -2541,15 +2519,8 @@ function toggleMemberPhoto(plate) {
 
   var nextIdx = (currentIdx + 1) % imgs.length;
 
-  plate.classList.add("scanning");
-  setTimeout(function() {
-    imgs[currentIdx].classList.remove("active");
-    imgs[nextIdx].classList.add("active");
-  }, 250);
-
-  setTimeout(function() {
-    plate.classList.remove("scanning");
-  }, 620);
+  imgs[currentIdx].classList.remove("active");
+  imgs[nextIdx].classList.add("active");
 }
 
 function renderContent(){
@@ -2654,13 +2625,9 @@ function renderContent(){
         imgTags += '<img loading="lazy" decoding="async" src="'+esc(fixPath(m.photo2))+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos2)+';">';
       }
 
-      var indicatorTag = hasPhoto2 ? '<span class="member-carousel-indicator">1/2 TAP</span>' : '';
-
       return '<div class="member-card">' +
                '<div class="member-plate skeleton-load" data-member-idx="'+mIdx+'">' +
                  imgTags +
-                 '<span class="member-scanner"></span>' +
-                 indicatorTag +
                '</div>' +
                '<div class="member-info">' +
                  '<h3>'+esc(m.name)+'</h3>' +
@@ -2671,7 +2638,6 @@ function renderContent(){
              '</div>';
     }).join("");
 
-    // Bind dual-photo switch to hover and touch
     $$(".member-plate", collectiveGrid).forEach(function(plate) {
       if (plate.querySelectorAll("img").length > 1) {
         plate.addEventListener("mouseenter", function() { toggleMemberPhoto(plate); });
@@ -2698,6 +2664,7 @@ function renderContent(){
 /* INSTANT SMART REVALIDATION FETCH */
 function initApp(){
   bindGlobalEvents();
+  initCarouselControls();
   fetch('/content.json', { cache: "no-cache" })
     .then(function(res){
       if(!res.ok) throw new Error("Status " + res.status);
