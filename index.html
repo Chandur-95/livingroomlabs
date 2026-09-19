@@ -234,7 +234,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-top:14px;
 }
 
-/* CINEMATIC HERO SLIDESHOW BANNER (SMOOTH CROSS-FADE) */
+/* CINEMATIC HERO SLIDESHOW BANNER */
 .band{
   position:relative;
   width:100%;
@@ -245,7 +245,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   overflow:hidden;
   background:#000;
   display:block;
-  cursor:pointer;
   user-select:none;
 }
 .band-stage{
@@ -263,7 +262,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   opacity:0;
   pointer-events:none;
   transform:scale(1.05);
-  transition: opacity 1s ease-in-out, transform 4s ease-out;
+  transition: opacity 1.2s ease-in-out, transform 6.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
   will-change: transform, opacity;
   z-index:1;
 }
@@ -364,7 +363,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 
 .home-work-grid .shot:hover .plate {
-  transform: translateY(-4px) scale(1.02);
+  transform: translateY(-4px); /* Just a subtle lift, removed the box scale */
   box-shadow: 0 12px 28px rgba(0,0,0,0.18);
 }
 
@@ -435,6 +434,7 @@ html[data-theme="dark"] .home-work-grid .plate {
   display: block;
 }
 
+/* BUTTERY SMOOTH INNER IMAGE MAGNIFICATION ON HOVER */
 .plate img {
   position: absolute;
   top: 0;
@@ -442,14 +442,16 @@ html[data-theme="dark"] .home-work-grid .plate {
   width: 100%;
   height: 100%;
   object-fit: cover;
-  transition: transform .6s var(--ease), opacity .4s ease;
+  transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
   opacity: 0; 
   will-change: transform, opacity;
 }
 .plate img.ready {
   opacity: 1 !important;
 }
-.shot:hover .plate img,.shot:focus-visible .plate img{transform:scale(1.03)}
+.shot:hover .plate img, .shot:focus-visible .plate img {
+  transform: scale(1.07);
+}
 
 .guard{position:absolute;inset:0;z-index:3;background:transparent}
 
@@ -954,29 +956,33 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   object-fit:cover;
   z-index: 1;
   opacity: 0;
-  clip-path: inset(0 0 0 100%);
-  transition: transform .65s var(--ease);
+  clip-path: inset(0 0 0 100%); /* Hidden to the right */
+  transition: transform .6s var(--ease);
 }
-/* Initial state on load, no wipe */
+
+/* The first image loaded before any animation */
 .member-plate img.initial {
   opacity: 1;
   z-index: 2;
   clip-path: inset(0 0 0 0);
 }
-/* Becomes the background layer */
+
+/* Becomes the background layer during a wipe */
 .member-plate img.prev {
   opacity: 1;
   z-index: 2;
   clip-path: inset(0 0 0 0);
 }
-/* Wipes elegantly over the background from right to left */
+
+/* The new image wipes elegantly over the background from right to left */
 .member-plate img.active {
   opacity: 1;
   z-index: 3;
   clip-path: inset(0 0 0 0);
-  transition: transform .65s var(--ease), clip-path 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+  transition: transform .6s var(--ease), clip-path 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
-.member-card:hover .member-plate img{transform:scale(1.04)}
+
+.member-card:hover .member-plate img{transform:scale(1.06)}
 
 .member-info h3{
   margin:0;font-size:clamp(1.2rem, 1.8vw, 1.5rem);font-weight:700;
@@ -1120,13 +1126,6 @@ html[data-theme="dark"] .lb-frame {
   0%{transform:scale(0.88);opacity:0;filter:blur(6px)}
   60%{transform:scale(1.02);filter:blur(0)}
   100%{transform:scale(1);opacity:1}
-}
-
-.lb-frame .corners{inset:-12px}
-.lb-frame .corners i{
-  opacity:1;transform:scale(1);width:20px;height:20px;
-  border-color:rgb(var(--laser-red));
-  box-shadow:0 0 10px rgba(var(--laser-red),.7);
 }
 
 .lb-cap{
@@ -1900,7 +1899,7 @@ function attachTilt3D(el) {
   });
 }
 
-/* HORIZONTAL CAROUSEL WORK GRID (KNOTSBYAMP STYLE) */
+/* HORIZONTAL CAROUSEL WORK GRID */
 function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
@@ -2302,14 +2301,14 @@ function initSlideshow(){
     heroBox.addEventListener("touchend", function(e){
       var dx = e.changedTouches[0].clientX - touchStartX;
       var dy = e.changedTouches[0].clientY - touchStartY;
-      if(Math.abs(dx) < 15 && Math.abs(dy) < 15) { // It's a tap, not a scroll
+      if(Math.abs(dx) < 15 && Math.abs(dy) < 15) { 
         resetSlideInterval();
         nextSlide();
       }
     }, {passive:true});
     
     heroBox.addEventListener("click", function(e){
-      if(e.pointerType === "mouse") { // Triggers for physical mouse clicks
+      if(e.pointerType === "mouse") { 
         resetSlideInterval();
         nextSlide();
       }
@@ -2487,11 +2486,6 @@ function bindGlobalEvents() {
       e.preventDefault(); openNiches();
     } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquire-overview")) {
       e.preventDefault(); openEnquiryModal("General Enquiry");
-    } else if (e.target.closest("#btn-toggle-curated")) {
-      e.preventDefault();
-      state.showAllCurated = true;
-      buildFilters();
-      renderHomeGrid();
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
       var sec = $("#collective-members-sec");
