@@ -234,7 +234,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-top:14px;
 }
 
-/* CINEMATIC HERO SLIDESHOW BANNER */
+/* CINEMATIC HERO SLIDESHOW BANNER (SMOOTH CROSS-FADE) */
 .band{
   position:relative;
   width:100%;
@@ -245,6 +245,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   overflow:hidden;
   background:#000;
   display:block;
+  cursor:pointer;
   user-select:none;
 }
 .band-stage{
@@ -262,7 +263,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   opacity:0;
   pointer-events:none;
   transform:scale(1.05);
-  transition: opacity 1.2s ease-in-out, transform 6.5s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  transition: opacity 1s ease-in-out, transform 4s ease-out;
   will-change: transform, opacity;
   z-index:1;
 }
@@ -316,7 +317,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   animation: imgPulse 1.8s infinite ease-in-out;
 }
 
-/* WORK HORIZONTAL CAROUSEL */
+/* WORK HORIZONTAL CAROUSEL (MAC DOCK HOVER STYLE) */
 .work-carousel-container {
   position: relative;
   width: 100%;
@@ -331,8 +332,9 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   scroll-behavior: smooth;
   scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  padding-bottom: 24px;
-  padding-top: 10px;
+  padding-bottom: 40px; /* Space for shadow */
+  padding-top: 30px; /* Space for the Mac-style upward scale */
+  margin-top: -20px; /* Visual offset correction */
   scrollbar-width: none;
 }
 .home-work-grid::-webkit-scrollbar {
@@ -347,24 +349,31 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   flex-direction: column;
   align-items: center;
   text-align: center;
+  transform-origin: center bottom; /* Scales up from the bottom like Mac Dock */
+  transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275); /* Bouncy spring effect */
+  z-index: 1;
+}
+
+.home-work-grid .shot:hover, .home-work-grid .shot:focus-visible {
+  transform: scale(1.15); /* The entire card pops out */
+  z-index: 10;
 }
 
 .home-work-grid .plate {
   aspect-ratio: 3 / 4 !important;
   width: 100% !important;
   height: auto !important;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
-  transition: transform 0.4s var(--ease), box-shadow 0.4s var(--ease);
+  transition: box-shadow 0.35s var(--ease);
 }
 html[data-theme="dark"] .home-work-grid .plate {
   box-shadow: 0 6px 20px rgba(0,0,0,0.6);
 }
 
 .home-work-grid .shot:hover .plate {
-  transform: translateY(-4px); /* Just a subtle lift, removed the box scale */
-  box-shadow: 0 12px 28px rgba(0,0,0,0.18);
+  box-shadow: 0 20px 40px rgba(0,0,0,0.3); /* Deeper shadow when popped out */
 }
 
 /* Floating Navigation Arrows */
@@ -399,7 +408,7 @@ html[data-theme="dark"] .home-work-grid .plate {
   right: -20px;
 }
 
-/* FULL NICHE VIEW GALLERY GRID */
+/* FULL NICHE VIEW GALLERY GRID (Uses standard inner zoom) */
 .niche-work-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -410,6 +419,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 .niche-work-grid .plate {
   aspect-ratio: 4 / 3 !important;
   height: auto !important;
+  border-radius: 4px;
 }
 
 .shot {
@@ -434,7 +444,6 @@ html[data-theme="dark"] .home-work-grid .plate {
   display: block;
 }
 
-/* BUTTERY SMOOTH INNER IMAGE MAGNIFICATION ON HOVER */
 .plate img {
   position: absolute;
   top: 0;
@@ -449,8 +458,14 @@ html[data-theme="dark"] .home-work-grid .plate {
 .plate img.ready {
   opacity: 1 !important;
 }
+
+/* INNER ZOOM ON HOVER (Applies to NICHE GRID, disabled for HOME CAROUSEL) */
 .shot:hover .plate img, .shot:focus-visible .plate img {
   transform: scale(1.07);
+}
+.home-work-grid .shot:hover .plate img, 
+.home-work-grid .shot:focus-visible .plate img {
+  transform: scale(1); /* Disabled here so it doesn't look messy when the card pops out */
 }
 
 .guard{position:absolute;inset:0;z-index:3;background:transparent}
@@ -1511,7 +1526,7 @@ html[data-theme="dark"] .lb-frame {
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
     
-    <!-- KNOTSBYAMP STYLE HORIZONTAL CAROUSEL -->
+    <!-- HORIZONTAL CAROUSEL WITH MAC DOCK EFFECT -->
     <div class="work-carousel-container">
       <button type="button" class="carousel-nav-btn prev" id="carousel-prev" aria-label="Scroll left">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 19l-7-7 7-7"/></svg>
@@ -1899,7 +1914,7 @@ function attachTilt3D(el) {
   });
 }
 
-/* HORIZONTAL CAROUSEL WORK GRID */
+/* HORIZONTAL CAROUSEL WORK GRID (WITH MAC DOCK POP-OUT HOVER) */
 function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
