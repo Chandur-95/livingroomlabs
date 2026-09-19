@@ -12,7 +12,6 @@
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;1,500;1,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
 
 <script>
-  // Instant local theme application to prevent white flash
   (function() {
     try {
       var saved = localStorage.getItem("lrl_theme");
@@ -235,7 +234,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-top:14px;
 }
 
-/* HERO SLIDESHOW BANNER */
+/* CINEMATIC HERO SLIDESHOW BANNER WITH ANAMORPHIC LASER SWEEP */
 .band{
   position:relative;
   width:100%;
@@ -244,7 +243,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   max-height: 85vh;
   min-height: 360px;
   overflow:hidden;
-  background:#050505;
+  background:#000;
   display:block;
   cursor:pointer;
   user-select:none;
@@ -263,9 +262,10 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   object-position:center center;
   opacity:0;
   pointer-events:none;
-  transform:scale(1.02);
-  transition:transform 1s var(--ease);
+  transform:scale(1.04);
+  transition:opacity .7s var(--ease), transform 1.2s var(--ease);
   will-change: transform, opacity;
+  z-index:1;
 }
 .band-img.active{
   opacity:1;
@@ -273,26 +273,44 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   transform:scale(1);
   z-index:2;
 }
-.band-img.shutter-enter{
-  z-index:3;
-  opacity:1;
-  animation:apertureIrisIn .65s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+
+/* Laser sweep streak across image change */
+.band-laser{
+  position:absolute;
+  inset:0;
+  pointer-events:none;
+  z-index:6;
+  opacity:0;
 }
-@keyframes apertureIrisIn{
-  0%{ clip-path:circle(0% at 50% 50%); filter:brightness(1.4) contrast(1.15); transform:scale(1.04); }
-  60%{ filter:brightness(1.08) contrast(1.04); }
-  100%{ clip-path:circle(150% at 50% 50%); filter:brightness(1) contrast(1); transform:scale(1); }
+.band-laser.laser-active{
+  animation:laserPass .7s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+@keyframes laserPass{
+  0%{
+    opacity:1;
+    background: linear-gradient(90deg, transparent 0%, rgba(var(--laser-red),0.85) 48%, #FFF 50%, rgba(var(--laser-red),0.85) 52%, transparent 100%);
+    clip-path: polygon(0 0, 4% 0, 0 100%, 0 100%);
+  }
+  50%{
+    opacity:1;
+    clip-path: polygon(46% 0, 54% 0, 50% 100%, 42% 100%);
+  }
+  100%{
+    opacity:0;
+    clip-path: polygon(96% 0, 100% 0, 100% 100%, 96% 100%);
+  }
+}
+
 .band-flash{
   position:absolute;
   inset:0;
-  background:radial-gradient(circle at center, rgba(255,255,255,0.7) 0%, rgba(255,255,255,0) 70%);
+  background:radial-gradient(circle at center, rgba(255,255,255,0.75) 0%, rgba(255,255,255,0) 65%);
   pointer-events:none;
   opacity:0;
-  z-index:4;
+  z-index:5;
 }
-.band-flash.flash-active{ animation:flashBloom .45s ease-out forwards; }
-@keyframes flashBloom{ 0%{opacity:0.8} 100%{opacity:0} }
+.band-flash.flash-active{ animation:flashBloom .5s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+@keyframes flashBloom{ 0%{opacity:0.9} 100%{opacity:0} }
 
 .sec{padding-block:var(--sec)}
 .sec-head{
@@ -377,7 +395,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   display: block;
 }
 
-/* NATIVE VISIBILITY & HARDWARE ACCELERATION */
 .plate img {
   position: absolute;
   top: 0;
@@ -536,7 +553,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   mix-blend-mode: normal !important;
 }
 
-/* OVERLAYS - PERFORMANCE OPTIMIZED */
+/* OVERLAYS */
 .overlay-page {
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
@@ -871,11 +888,15 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
+/* ============================================================
+   THE COLLECTIVE MEMBER CAROUSEL & LASER SCANNER
+   ============================================================ */
 .collective-grid {
   display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
 }
 .member-card {
   display:flex;flex-direction:column;gap:14px;
+  position:relative;
 }
 .member-plate {
   position:relative;
@@ -883,16 +904,55 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   aspect-ratio:3/4;
   overflow:hidden;
   background:var(--rule-soft);
+  cursor:pointer;
 }
 .member-plate img {
+  position:absolute;
+  inset:0;
   width:100%;
   height:100%;
   object-fit:cover;
-  transition:transform .5s var(--ease), opacity .4s ease;
+  transition:transform .65s var(--ease), opacity .5s var(--ease);
   opacity:0;
+  will-change: transform, opacity;
 }
-.member-plate img.ready{opacity:1}
-.member-card:hover .member-plate img{transform:scale(1.05)}
+.member-plate img.active {
+  opacity:1;
+  z-index:2;
+}
+.member-card:hover .member-plate img{transform:scale(1.04)}
+
+/* Member laser scanline on photo switch */
+.member-scanner {
+  position:absolute;
+  left:0;right:0;height:2.5px;top:0;
+  background:rgba(var(--laser-red), 0.95);
+  box-shadow:0 0 12px 2px rgba(var(--laser-red), 0.85);
+  pointer-events:none;
+  opacity:0;
+  z-index:4;
+}
+.member-plate.scanning .member-scanner {
+  animation:memberLaserSweep .6s cubic-bezier(.22, 1, .36, 1) forwards;
+}
+@keyframes memberLaserSweep {
+  0%{ top:0%; opacity:0; }
+  20%{ opacity:1; }
+  80%{ opacity:1; }
+  100%{ top:100%; opacity:0; }
+}
+
+.member-carousel-indicator {
+  position:absolute;
+  bottom:8px;right:8px;z-index:5;
+  font-family:"JetBrains Mono",monospace;
+  font-size:.6rem;
+  letter-spacing:.12em;
+  background:rgba(0,0,0,0.75);
+  color:#FFF;
+  padding:2px 6px;
+  border-radius:1px;
+}
 
 .member-info h3{
   margin:0;font-size:clamp(1.2rem, 1.8vw, 1.5rem);font-weight:700;
@@ -963,7 +1023,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .collective-about-logo button:hover img{transform:scale(1.03)}
 
-/* LIGHTBOX PERFORMANCE UPGRADE */
+/* LIGHTBOX */
 .lb{
   position:fixed;inset:0;z-index:120;
   background:rgba(255, 255, 255, 0.96);
@@ -1189,7 +1249,7 @@ html[data-theme="dark"] .lb-frame {
   .foot{grid-template-columns:1.2fr 1fr 1fr;gap:24px 20px}
 }
 
-/* MOBILE VIEWPORT OPTIMIZATIONS */
+/* MOBILE VIEWPORT */
 @media (max-width:640px){
   :root{
     --nav-h:64px;
@@ -1404,6 +1464,7 @@ html[data-theme="dark"] .lb-frame {
 
   <div class="band" id="hero-slideshow" role="region" aria-label="Click to advance hero image slideshow" tabindex="0">
     <div class="band-stage" id="band-stage"></div>
+    <div class="band-laser" id="band-laser"></div>
     <div class="band-flash" id="band-flash"></div>
   </div>
 
@@ -1494,10 +1555,8 @@ html[data-theme="dark"] .lb-frame {
       <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Shoot</h1>
       <p style="opacity:.7; max-width:600px; margin-bottom:clamp(30px, 5vw, 60px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
       
-      <!-- ACCORDION -->
       <div id="niches-list" data-niches></div>
 
-      <!-- INLINE ENQUIRE SECTION -->
       <div class="niche-enquire-sec">
         <div class="sec-head" style="margin-bottom:12px;">
           <span class="label">Let's make it official</span>
@@ -1508,7 +1567,6 @@ html[data-theme="dark"] .lb-frame {
       </div>
     </div>
     
-    <!-- FULL GALLERY VIEW -->
     <div id="niche-view-box" style="display:none; flex: 1;"></div>
 
     <div class="collective-about-wrap">
@@ -1735,6 +1793,7 @@ var state = {
   currentSlide:0,
   slides:[],
   slideTimer:null,
+  isTransitioning:false,
   isSubmitting:false
 };
 
@@ -1800,7 +1859,7 @@ function attachTilt3D(el) {
   });
 }
 
-/* HIGH PERFORMANCE IMAGE RENDERER */
+/* HIGH-PERFORMANCE WORK GRID */
 function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
@@ -1842,7 +1901,7 @@ function renderHomeGrid() {
     return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
              '<div class="plate-tilt-wrap">'+
                '<span class="plate skeleton-load">'+
-                 '<img loading="lazy" decoding="async" onload="this.parentElement.classList.remove(\'skeleton-load\'); this.classList.add(\'ready\');" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';">'+
+                 '<img loading="lazy" decoding="async" onload="this.parentElement.classList.remove(\'skeleton-load\'); this.classList.add(\'ready\');" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.parentElement.classList.remove(\'skeleton-load\'); this.style.opacity=\'0.25\';">'+
                  '<span class="guard"></span>'+
                '</span>'+
              '</div>'+
@@ -1883,7 +1942,7 @@ function renderNichesList(){
         return '<button class="shot" data-preview-niche="'+esc(n.name)+'" data-preview-idx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
                    '<span class="plate skeleton-load">'+
-                     '<img loading="lazy" decoding="async" onload="this.parentElement.classList.remove(\'skeleton-load\'); this.classList.add(\'ready\');" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';">'+
+                     '<img loading="lazy" decoding="async" onload="this.parentElement.classList.remove(\'skeleton-load\'); this.classList.add(\'ready\');" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.parentElement.classList.remove(\'skeleton-load\'); this.style.opacity=\'0.25\';">'+
                      '<span class="guard"></span>'+
                    '</span>'+
                  '</div>'+
@@ -1989,7 +2048,7 @@ function openNicheView(nicheName){
       return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
                '<div class="plate-tilt-wrap">'+
                  '<span class="plate skeleton-load">'+
-                   '<img loading="lazy" decoding="async" onload="this.parentElement.classList.remove(\'skeleton-load\'); this.classList.add(\'ready\');" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';">'+
+                   '<img loading="lazy" decoding="async" onload="this.parentElement.classList.remove(\'skeleton-load\'); this.classList.add(\'ready\');" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.parentElement.classList.remove(\'skeleton-load\'); this.style.opacity=\'0.25\';">'+
                    '<span class="guard"></span>'+
                  '</span>'+
                '</div>'+
@@ -2153,6 +2212,9 @@ function closeEnquiryModal() {
   enqModal.classList.remove("open");
 }
 
+/* ============================================================
+   RE-ENGINEERED HERO SLIDESHOW: INSTANT RESPONSE, NO LOCKS
+   ============================================================ */
 function initSlideshow(){
   var slides = [];
   if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
@@ -2176,11 +2238,9 @@ function initSlideshow(){
     var pos = getObjPosition(s.imagePosition);
     var act = (idx === state.currentSlide) ? "active" : "";
     var imgSrc = esc(fixPath(s.src)); 
-    
-    // The very first image to render is prioritized for speed
-    var loadStrategy = (idx === state.currentSlide) ? 'fetchpriority="high" loading="eager"' : 'loading="lazy" decoding="async"';
+    var loadStrat = (idx === state.currentSlide) ? 'fetchpriority="high" loading="eager"' : 'loading="lazy" decoding="async"';
 
-    return '<img class="band-img '+act+'" '+loadStrategy+' data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+esc(pos)+';">';
+    return '<img class="band-img '+act+'" '+loadStrat+' data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+esc(pos)+';">';
   }).join("");
 
   var heroBox = $("#hero-slideshow");
@@ -2212,7 +2272,8 @@ function resetSlideInterval(){
 }
 
 function nextSlide(){
-  if(!state.slides || state.slides.length <= 1) return;
+  if(!state.slides || state.slides.length <= 1 || state.isTransitioning) return;
+  state.isTransitioning = true;
 
   var oldIndex = state.currentSlide;
   var newIndex = (state.currentSlide + 1) % state.slides.length;
@@ -2221,7 +2282,15 @@ function nextSlide(){
   var imgs = $$(".band-img", $("#band-stage"));
   var oldImg = imgs[oldIndex];
   var newImg = imgs[newIndex];
+  var laser = $("#band-laser");
   var flash = $("#band-flash");
+
+  // Anamorphic laser flare animation
+  if(laser){
+    laser.classList.remove("laser-active");
+    void laser.offsetWidth;
+    laser.classList.add("laser-active");
+  }
 
   if(flash){
     flash.classList.remove("flash-active");
@@ -2230,14 +2299,20 @@ function nextSlide(){
   }
 
   if(newImg){
-    newImg.classList.remove("shutter-enter", "active");
-    void newImg.offsetWidth;
-    newImg.classList.add("shutter-enter", "active");
+    newImg.style.zIndex = "3";
+    newImg.classList.add("active");
   }
 
   setTimeout(function(){
-    if(oldImg) oldImg.classList.remove("active", "shutter-enter");
-  }, 620);
+    if(oldImg){
+      oldImg.classList.remove("active");
+      oldImg.style.zIndex = "1";
+    }
+    if(newImg){
+      newImg.style.zIndex = "2";
+    }
+    state.isTransitioning = false;
+  }, 650);
 }
 
 /* HIGH-SPEED LIGHTBOX WITH PRE-FETCHING */
@@ -2277,7 +2352,6 @@ function paintLB(){
   $("#lb-i").textContent = String(state.index + 1).padStart(2,"0");
   $("#lb-n").textContent = String(state.visible.length).padStart(2,"0");
   
-  // Predictively load the next image in the background so it is instantly ready
   var nextIdx = (state.index + 1) % state.visible.length;
   if(state.visible[nextIdx]){
     var preloader = new Image();
@@ -2455,6 +2529,29 @@ function bindGlobalEvents() {
   }
 }
 
+/* MEMBER DUAL-PHOTO SLIDESHOW HANDLER */
+function toggleMemberPhoto(plate) {
+  var imgs = plate.querySelectorAll("img");
+  if (imgs.length <= 1) return;
+
+  var currentIdx = -1;
+  imgs.forEach(function(img, idx) {
+    if (img.classList.contains("active")) currentIdx = idx;
+  });
+
+  var nextIdx = (currentIdx + 1) % imgs.length;
+
+  plate.classList.add("scanning");
+  setTimeout(function() {
+    imgs[currentIdx].classList.remove("active");
+    imgs[nextIdx].classList.add("active");
+  }, 250);
+
+  setTimeout(function() {
+    plate.classList.remove("scanning");
+  }, 620);
+}
+
 function renderContent(){
   SITE.photos = SITE.photos || [];
   SITE.niches = SITE.niches || [];
@@ -2542,16 +2639,28 @@ function renderContent(){
 
   var collectiveGrid = $("#collective-grid");
   if(collectiveGrid){
-    collectiveGrid.innerHTML = SITE.team.map(function(m){
+    collectiveGrid.innerHTML = SITE.team.map(function(m, mIdx){
       var links = "";
       if(m.instagram) links += '<a href="'+esc(m.instagram)+'" target="_blank" rel="noopener" class="member-chip">Instagram ↗</a>';
       if(m.portfolio) links += '<a href="'+esc(m.portfolio)+'" target="_blank" rel="noopener" class="member-chip">Work ↗</a>';
-      var mPos = getObjPosition(m.imagePosition);
-      var photoSrc = m.photo ? fixPath(m.photo) : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
+      
+      var mPos1 = getObjPosition(m.imagePosition);
+      var photoSrc1 = m.photo ? fixPath(m.photo) : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
+      var imgTags = '<img loading="lazy" decoding="async" class="active" onload="this.parentElement.classList.remove(\'skeleton-load\');" src="'+esc(photoSrc1)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos1)+';">';
+      
+      var hasPhoto2 = Boolean(m.photo2 && String(m.photo2).trim() !== "");
+      if (hasPhoto2) {
+        var mPos2 = getObjPosition(m.imagePosition2);
+        imgTags += '<img loading="lazy" decoding="async" src="'+esc(fixPath(m.photo2))+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos2)+';">';
+      }
+
+      var indicatorTag = hasPhoto2 ? '<span class="member-carousel-indicator">1/2 TAP</span>' : '';
 
       return '<div class="member-card">' +
-               '<div class="member-plate">' +
-                 '<img loading="lazy" decoding="async" onload="this.classList.add(\'ready\');" src="'+esc(photoSrc)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos)+';">' +
+               '<div class="member-plate skeleton-load" data-member-idx="'+mIdx+'">' +
+                 imgTags +
+                 '<span class="member-scanner"></span>' +
+                 indicatorTag +
                '</div>' +
                '<div class="member-info">' +
                  '<h3>'+esc(m.name)+'</h3>' +
@@ -2561,6 +2670,14 @@ function renderContent(){
                '</div>' +
              '</div>';
     }).join("");
+
+    // Bind dual-photo switch to hover and touch
+    $$(".member-plate", collectiveGrid).forEach(function(plate) {
+      if (plate.querySelectorAll("img").length > 1) {
+        plate.addEventListener("mouseenter", function() { toggleMemberPhoto(plate); });
+        plate.addEventListener("click", function() { toggleMemberPhoto(plate); });
+      }
+    });
   }
 
   buildFilters();
@@ -2578,7 +2695,7 @@ function renderContent(){
   }
 }
 
-/* SMART FETCH INITIALIZER: Resolves instantly if unchanged, fetches if updated */
+/* INSTANT SMART REVALIDATION FETCH */
 function initApp(){
   bindGlobalEvents();
   fetch('/content.json', { cache: "no-cache" })
@@ -2598,7 +2715,6 @@ function initApp(){
     });
 }
 
-// Start processing immediately
 initApp();
 </script>
 </body>
