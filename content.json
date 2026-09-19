@@ -220,11 +220,12 @@
     {
       "name": "Chandu",
       "role": "Photographer",
-      "photo": "/images/uploads/y.jpeg",
+      "photo": "/images/uploads/chandu01.jpg",
       "imagePosition": "Center",
       "bio": "Software engineer by day, Photographer by night. I like to turn fleeting moments into timeless stories.",
       "instagram": "https://www.instagram.com/chandu_r25/",
-      "portfolio": "https://unsplash.com/@cr029"
+      "portfolio": "https://unsplash.com/@cr029",
+      "photo2": "/images/uploads/chandu02.jpg"
     }
   ]
 }
