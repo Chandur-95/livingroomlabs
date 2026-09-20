@@ -1,106 +1,79 @@
 backend:
-  name: git-gateway
+  name: github
+  repo: Chandur-95/livingroomlabs
   branch: main
+  # If your Cloudflare OAuth worker/Pages function uses a custom URL, keep base_url uncommented:
+  # base_url: https://livingroomlabs.in
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
 
+publish_mode: simple
+show_preview_links: false
+
 collections:
   - name: "content"
     label: "Website Content"
+    delete: false
+    editor:
+      preview: false
     files:
       - file: "content.json"
-        label: "Site Settings & Portfolio"
+        label: "Complete Studio Config"
         name: "content"
         fields:
-          - { label: "Site Name", name: "name", widget: "string", required: false }
-          - { label: "Tagline", name: "tagline", widget: "string", required: false }
-          - { label: "City", name: "city", widget: "string", required: false }
-          - { label: "Email", name: "email", widget: "string", required: false }
-          - { label: "Body Font", name: "bodyFont", widget: "string", required: false, default: "Inter" }
+          # BRAND & CORE SETTINGS
+          - { label: "Site Name", name: "name", widget: "string", default: "Living Room Labs" }
+          - { label: "Tagline", name: "tagline", widget: "string", default: "CAPTURE . CREATE . INSPIRE" }
+          - { label: "Studio Logo", name: "logo", widget: "image", default: "/logo.png?v=2", required: false }
+          - { label: "Studio City / Location", name: "city", widget: "string", default: "Hyderabad, India" }
+          - { label: "Contact Email", name: "email", widget: "string", default: "hello@livingroomlabs.in" }
+          - { label: "Formspree Form ID", name: "formspreeId", widget: "string", default: "xjykvnoz", required: false, hint: "The ID from formspree.io/f/<ID>" }
+          - { label: "Body Font", name: "bodyFont", widget: "string", default: "Inter", required: false }
 
-          - label: "Social Links"
-            name: "socials"
-            widget: "list"
-            required: false
-            fields:
-              - { label: "Platform Name", name: "name", widget: "string" }
-              - { label: "URL", name: "url", widget: "string" }
-
-          - label: "Hero Lines"
+          # HERO SECTION
+          - label: "Hero Headline Lines"
             name: "hero"
             widget: "list"
-            required: false
-            field: { label: "Line", name: "line", widget: "string" }
+            collapsed: false
+            summary: "{{fields.line}}"
+            field: { label: "Line (*wrap words in asterisks for italics*)", name: "line", widget: "string" }
 
-          - label: "Hero Slideshow Banner"
+          - label: "Hero Slideshow Images (Auto-rotates)"
             name: "bandSlides"
             widget: "list"
-            required: false
+            collapsed: true
+            summary: "{{fields.alt}} — {{fields.src}}"
             fields:
               - { label: "Image", name: "src", widget: "image" }
-              - label: "Image Position"
+              - label: "Image Focal Position"
                 name: "imagePosition"
                 widget: "select"
                 options: ["Center", "Top", "Bottom", "Left", "Right"]
                 default: "Center"
                 required: false
-              - { label: "Alt Text", name: "alt", widget: "string", required: false }
+              - { label: "Alt / Shoot Description", name: "alt", widget: "string", required: false }
 
-          - { label: "Statement", name: "statement", widget: "text", required: false }
-          - { label: "Statement By", name: "statementBy", widget: "string", required: false }
-
-          - label: "What We Capture (Niches)"
+          # WHAT WE CAPTURE (NICHES)
+          - label: "What We Capture (Categories)"
             name: "niches"
             widget: "list"
-            required: false
+            collapsed: true
+            summary: "{{fields.name}}"
             fields:
               - { label: "Category Name", name: "name", widget: "string" }
-              - { label: "Description / Tagline", name: "line", widget: "string" }
+              - { label: "Tagline / Short Line", name: "line", widget: "string" }
 
-          - { label: "Contact Note", name: "contactNote", widget: "text", required: false }
-
-          - { label: "Collective Hero Image", name: "teamHeroImg", widget: "image", required: false }
-          - label: "Collective Hero Position"
-            name: "teamHeroImgPosition"
-            widget: "select"
-            options: ["Center", "Top", "Bottom", "Left", "Right"]
-            default: "Center"
-            required: false
-          - { label: "Collective Hero Intro", name: "teamHeroIntro", widget: "text", required: false }
-
-          - label: "The Collective Team"
-            name: "team"
-            widget: "list"
-            required: false
-            fields:
-              - { label: "Name", name: "name", widget: "string" }
-              - { label: "Role", name: "role", widget: "string" }
-              - { label: "Bio", name: "bio", widget: "text", required: false }
-              - { label: "Photo 1", name: "photo", widget: "image" }
-              - label: "Photo 1 Position"
-                name: "imagePosition"
-                widget: "select"
-                options: ["Center", "Top", "Bottom", "Left", "Right"]
-                default: "Center"
-                required: false
-              - { label: "Photo 2 (Hover/Alternate)", name: "photo2", widget: "image", required: false }
-              - label: "Photo 2 Position"
-                name: "imagePosition2"
-                widget: "select"
-                options: ["Center", "Top", "Bottom", "Left", "Right"]
-                default: "Center"
-                required: false
-              - { label: "Instagram URL", name: "instagram", widget: "string", required: false }
-              - { label: "Portfolio URL", name: "portfolio", widget: "string", required: false }
-
-          - label: "Photos & Portfolio"
+          # WORK & PORTFOLIO (Streamlined, collapsed cards for fast bulk editing)
+          - label: "Portfolio Photos"
             name: "photos"
             widget: "list"
-            summary: "{{fields.title}} ({{fields.category}})"
+            collapsed: true
+            minimize_collapsed: true
+            summary: "{{fields.title}} [{{fields.category}}] — {{fields.client}}"
             fields:
-              - { label: "Title", name: "title", widget: "string" }
-              - { label: "Client", name: "client", widget: "string", required: false }
+              - { label: "Image", name: "src", widget: "image" }
+              - { label: "Photo Title", name: "title", widget: "string" }
               - label: "Category"
                 name: "category"
                 widget: "select"
@@ -112,18 +85,66 @@ collections:
                   - "Products"
                   - "Events"
                   - "Portraits"
-              - { label: "Caption (Optional)", name: "caption", widget: "text", required: false }
-              - label: "Aspect Ratio"
-                name: "ratio"
-                widget: "select"
-                options: ["1/1", "4/5", "5/4", "3/4", "4/3", "16/9", "16/10"]
-                default: "4/5"
-                required: false
-              - { label: "Image", name: "src", widget: "image" }
-              - label: "Image Position"
+              - { label: "Client / Context", name: "client", widget: "string", required: false, default: "Studio" }
+              - { label: "Caption / Description", name: "caption", widget: "text", required: false }
+              - label: "Image Focal Position"
                 name: "imagePosition"
                 widget: "select"
                 options: ["Center", "Top", "Bottom", "Left", "Right"]
                 default: "Center"
                 required: false
-              - { label: "Featured on Home Grid", name: "featured", widget: "boolean", default: true, required: false }
+              - { label: "Featured in Work Carousel", name: "featured", widget: "boolean", default: true, required: false }
+
+          # THE COLLECTIVE
+          - { label: "The Collective Hero Image", name: "teamHeroImg", widget: "image", required: false }
+          - label: "The Collective Hero Position"
+            name: "teamHeroImgPosition"
+            widget: "select"
+            options: ["Center", "Top", "Bottom", "Left", "Right"]
+            default: "Center"
+            required: false
+          - { label: "The Collective Hero Intro Text", name: "teamHeroIntro", widget: "text", required: false }
+
+          - label: "The Collective Team Members"
+            name: "team"
+            widget: "list"
+            collapsed: true
+            summary: "{{fields.name}} ({{fields.role}})"
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Role", name: "role", widget: "string" }
+              - { label: "Bio / Description", name: "bio", widget: "text", required: false }
+              - { label: "Primary Photo", name: "photo", widget: "image" }
+              - label: "Primary Photo Position"
+                name: "imagePosition"
+                widget: "select"
+                options: ["Center", "Top", "Bottom", "Left", "Right"]
+                default: "Center"
+                required: false
+              - { label: "Secondary Photo (Alternate/Hover)", name: "photo2", widget: "image", required: false }
+              - label: "Secondary Photo Position"
+                name: "imagePosition2"
+                widget: "select"
+                options: ["Center", "Top", "Bottom", "Left", "Right"]
+                default: "Center"
+                required: false
+              - { label: "Instagram URL", name: "instagram", widget: "string", required: false }
+              - { label: "Portfolio / Website URL", name: "portfolio", widget: "string", required: false }
+
+          # ABOUT & MANIFESTO
+          - { label: "Studio Statement / Manifesto", name: "statement", widget: "text", required: false }
+          - { label: "Statement Footnote / Byline", name: "statementBy", widget: "string", required: false }
+
+          # CONTACT & MOBILE CALLOUTS
+          - { label: "Mobile 'What We Capture' Note", name: "mobileShootNote", widget: "string", required: false, default: "Food, pets, architecture, products, events, and portraits — calibrated per visual requirement." }
+          - { label: "Contact Prompt Note", name: "contactNote", widget: "text", required: false }
+
+          # SOCIAL LINKS
+          - label: "Elsewhere (Social Links)"
+            name: "socials"
+            widget: "list"
+            collapsed: true
+            summary: "{{fields.name}}: {{fields.url}}"
+            fields:
+              - { label: "Platform Name", name: "name", widget: "string" }
+              - { label: "Profile URL", name: "url", widget: "string" }
