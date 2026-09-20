@@ -1,6 +1,36 @@
 {
   "photos": [
     {
+      "client": "Miss Universe 2026",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "title": "Radiant Presence",
+      "category": "Events",
+      "caption": "Silver scales and quiet poise",
+      "src": "/images/uploads/img_9282.jpg.jpeg"
+    },
+    {
+      "client": "Miss Universe 2026",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "category": "Events",
+      "title": "The Triumvirate",
+      "caption": "Three chapters of the final walk",
+      "src": "/images/uploads/img_9289.jpg.jpeg"
+    },
+    {
+      "client": "Miss Universe 2026",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "caption": "Scarlet beadwork and measured grace",
+      "title": "Crimson Sovereign",
+      "category": "Events",
+      "src": "/images/uploads/img_9301.jpg.jpeg"
+    },
+    {
       "featured": true,
       "ratio": "4/5",
       "imagePosition": "Center",
@@ -180,7 +210,7 @@
       "client": "Private",
       "ratio": "4/5",
       "imagePosition": "Center",
-      "featured": true,
+      "featured": false,
       "title": "Purvaaranga: The Preparation",
       "caption": "Monochrome stillness before the rhythm.",
       "category": "Performing Arts",
@@ -195,16 +225,6 @@
       "caption": "Candid warmth between acts.",
       "category": "Performing Arts",
       "src": "/images/uploads/img_6917.jpg.jpeg"
-    },
-    {
-      "client": "Miss Universe 2026",
-      "ratio": "4/5",
-      "imagePosition": "Center",
-      "featured": true,
-      "title": "Radiant Presence",
-      "category": "Events",
-      "caption": "Silver scales and quiet poise",
-      "src": "/images/uploads/img_9282.jpg.jpeg"
     },
     {
       "client": "Miss Universe 2026",
@@ -250,31 +270,11 @@
       "client": "Miss Universe 2026",
       "ratio": "4/5",
       "imagePosition": "Center",
-      "featured": true,
-      "category": "Events",
-      "title": "The Triumvirate",
-      "caption": "Three chapters of the final walk",
-      "src": "/images/uploads/img_9289.jpg.jpeg"
-    },
-    {
-      "client": "Miss Universe 2026",
-      "ratio": "4/5",
-      "imagePosition": "Center",
       "featured": false,
       "title": "Electric Edge",
       "category": "Events",
       "caption": "Blue fringe catching the spotlight",
       "src": "/images/uploads/img_9300.jpg.jpeg"
-    },
-    {
-      "client": "Miss Universe 2026",
-      "ratio": "4/5",
-      "imagePosition": "Center",
-      "featured": true,
-      "caption": "Scarlet beadwork and measured grace",
-      "title": "Crimson Sovereign",
-      "category": "Events",
-      "src": "/images/uploads/img_9301.jpg.jpeg"
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
