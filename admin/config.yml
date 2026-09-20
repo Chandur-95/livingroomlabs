@@ -108,17 +108,7 @@ collections:
             fields:
               - { label: "Title", name: "title", widget: "string" }
               - { label: "Client", name: "client", widget: "string", required: false, default: "Studio" }
-              - label: "Category"
-                name: "category"
-                widget: "select"
-                options:
-                  - "Performing Arts"
-                  - "Food"
-                  - "Pets"
-                  - "Architecture"
-                  - "Products"
-                  - "Events"
-                  - "Portraits"
+              - { label: "Category", name: "category", widget: "string", default: "Food" }
               - { label: "Caption (Optional)", name: "caption", widget: "text", required: false }
               - label: "Aspect Ratio"
                 name: "ratio"
