@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Living Room Labs — Photography</title>
-<link rel="icon" type="image/png" href="logo.png?v=2">
+<link rel="icon" type="image/png" href="/logo.png?v=3">
 <meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, performing arts, products, events and portraits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -281,13 +281,28 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .sec-head .fill{flex:1;height:1px}
 .sec-head .count{font-size:var(--fs-label);letter-spacing:.1em;opacity:.55;white-space:nowrap}
 
-.filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:clamp(18px, 2.5vw, 30px)}
+/* FILTERS: POSITIONED ON TOP OF THE DOCK TRACK TO PREVENT CLICK OVERLAYS */
+.filters{
+  position: relative;
+  z-index: 30;
+  display:flex;
+  flex-wrap:wrap;
+  gap:8px;
+  margin-bottom:clamp(18px, 2.5vw, 30px);
+}
 .chip{
-  display:inline-flex;align-items:center;gap:8px;
+  position: relative;
+  z-index: 31;
+  cursor: pointer;
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
   border:1px solid var(--rule);
   padding:8px 14px;
-  font-size:var(--fs-label);letter-spacing:var(--tr-label);
-  text-transform:uppercase;font-weight:600;
+  font-size:var(--fs-label);
+  letter-spacing:var(--tr-label);
+  text-transform:uppercase;
+  font-weight:600;
   transition:background .2s ease,color .2s ease,border-color .2s ease,box-shadow .2s ease;
 }
 .chip:hover{border-color:var(--ink);box-shadow:0 0 10px rgba(var(--glow-rgb),.25)}
@@ -1457,7 +1472,7 @@ html[data-theme="dark"] .lb-frame {
 <nav class="nav">
   <button class="brand logo-exit-btn" aria-label="Living Room Labs (Reload)">
     <span class="mark">
-      <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
+      <img src="/logo.png?v=3" alt="Living Room Labs">
     </span>
     <span class="wordmark" data-name></span>
   </button>
@@ -1532,7 +1547,7 @@ html[data-theme="dark"] .lb-frame {
     <div class="foot">
       <div class="foot-col-logo">
         <button class="foot-logo-btn logo-exit-btn" aria-label="Scroll to top of page">
-          <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
+          <img src="/logo.png?v=3" alt="Living Room Labs">
         </button>
       </div>
 
@@ -1560,7 +1575,7 @@ html[data-theme="dark"] .lb-frame {
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
+        <img src="/logo.png?v=3" alt="Living Room Labs">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE CAPTURE // CATEGORIES</span>
@@ -1597,7 +1612,7 @@ html[data-theme="dark"] .lb-frame {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
+          <img src="/logo.png?v=3" alt="Living Room Labs">
         </button>
       </div>
     </div>
@@ -1609,7 +1624,7 @@ html[data-theme="dark"] .lb-frame {
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
+        <img src="/logo.png?v=3" alt="Living Room Labs">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -1649,7 +1664,7 @@ html[data-theme="dark"] .lb-frame {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
+          <img src="/logo.png?v=3" alt="Living Room Labs">
         </button>
       </div>
     </div>
@@ -1748,7 +1763,12 @@ function fixPath(p){
   if(!p) return "";
   p = String(p).trim();
   if(p.indexOf("://") !== -1 || p.startsWith("data:") || p.startsWith("blob:")) return p;
-  if(p.indexOf("logo.png") !== -1) return "/logo.png?v=2";
+  
+  // Handle root logo files directly
+  if(p === "logo.png" || p === "/logo.png" || p.indexOf("logo.png") !== -1){
+    return "/logo.png?v=3";
+  }
+
   p = p.replace(/^(\.\/|\/)+/, "");
   if(p.startsWith("assets/uploads/")){
     p = p.replace("assets/uploads/", "images/uploads/");
@@ -1863,7 +1883,8 @@ function buildFilters(){
            '</button>';
   }).join("");
   $$(".chip",host).forEach(function(b){
-    b.addEventListener("click",function(){
+    b.addEventListener("click",function(e){
+      e.stopPropagation();
       state.filter = b.dataset.cat;
       state.showAllCurated = (b.dataset.cat !== "All");
       $$(".chip",host).forEach(function(x){ x.setAttribute("aria-pressed", String(x === b)); });
@@ -2655,7 +2676,9 @@ function renderContent(){
     document.body.style.fontFamily = '"' + SITE.bodyFont + '", system-ui, -apple-system, sans-serif';
   }
 
-  var logoSrc = fixPath(SITE.logo || "/logo.png?v=2");
+  // Consistent Logo Loading
+  var rawLogo = SITE.logo || "/logo.png?v=3";
+  var logoSrc = fixPath(rawLogo);
   $$(".mark img, .foot-logo-btn img, .collective-about-logo img, .overlay-nav-brand .mark img").forEach(function(img){
     img.src = logoSrc;
     img.style.opacity = "1";
