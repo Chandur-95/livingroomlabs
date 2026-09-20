@@ -115,6 +115,86 @@
       "category": "Portraits",
       "src": "/images/uploads/cr-6xn5vs2u0os-unsplash.jpg",
       "caption": "Love lives here."
+    },
+    {
+      "client": "Private",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "title": "Breath of Light",
+      "category": "Performing Arts",
+      "caption": "Geometry of grace under multi-color beams.",
+      "src": "/images/uploads/img_3063.jpg.jpeg"
+    },
+    {
+      "client": "Private",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "title": "Kanaka: Gold & Posture",
+      "caption": "Suspended in golden geometry.",
+      "src": "/images/uploads/img_3071.jpg.jpeg",
+      "category": "Performing Arts"
+    },
+    {
+      "client": "Private",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "title": "Bhakti: Inner Resonance",
+      "caption": "Devotion amidst sweeping light cones. [",
+      "category": "Performing Arts",
+      "src": "/images/uploads/img_3073.jpg.jpeg"
+    },
+    {
+      "client": "Private",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "title": "Mudrasya: Language of Hands",
+      "caption": "Traditional lines meeting dramatic shadow.",
+      "category": "Performing Arts",
+      "src": "/images/uploads/img_3434.jpg.jpeg"
+    },
+    {
+      "client": "Private",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "title": "Sculpted Leap",
+      "caption": "Mid-flight, dance in motion.",
+      "category": "Performing Arts",
+      "src": "/images/uploads/img_3439.jpg.jpeg"
+    },
+    {
+      "client": "Private",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "title": "The Storyteller",
+      "caption": "Expression as narrative: eyes, hands, gold.",
+      "category": "Performing Arts",
+      "src": "/images/uploads/img_3440.jpg.jpeg"
+    },
+    {
+      "client": "Private",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "title": "Purvaaranga: The Preparation",
+      "caption": "Monochrome stillness before the rhythm.",
+      "category": "Performing Arts",
+      "src": "/images/uploads/img_3964.jpg.jpeg"
+    },
+    {
+      "client": "Private",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "title": "Viraama: Pause in Silver",
+      "caption": "Candid warmth between acts.",
+      "category": "Performing Arts",
+      "src": "/images/uploads/img_6917.jpg.jpeg"
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
