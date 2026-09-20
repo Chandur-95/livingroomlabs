@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Living Room Labs — Photography</title>
 <link rel="icon" type="image/png" href="logo.png">
-<meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, events and portraits.">
+<meta name="description" content="Living Room Labs is a photography team. Food, pets, performing arts, architecture, products, events and portraits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="/content.json" as="fetch" crossorigin="anonymous">
@@ -598,6 +598,10 @@ html[data-theme="dark"] .home-work-grid .plate {
 .foot-logo-btn:hover img{transform:scale(1.03)}
 .foot-links-group { display: contents; }
 
+.mobile-shoot-column {
+  display: none;
+}
+
 /* DARK MODE LOGO FILTER */
 .brand .mark img,
 .foot-logo-btn img,
@@ -953,124 +957,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   transition:background .2s ease, color .2s ease;
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
-
-/* THE COLLECTIVE MEMBER CAROUSEL (CURTAIN WIPE ANIMATION) */
-.collective-grid {
-  display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
-}
-.member-card {
-  display:flex;flex-direction:column;gap:14px;
-  position:relative;
-}
-.member-plate {
-  position:relative;
-  width:100%;
-  aspect-ratio:3/4;
-  overflow:hidden;
-  background:var(--rule-soft);
-  cursor:pointer;
-}
-.member-plate img {
-  position:absolute;
-  inset:0;
-  width:100%;
-  height:100%;
-  object-fit:cover;
-  z-index: 1;
-  opacity: 0;
-  clip-path: inset(0 0 0 100%);
-  transition: transform .6s var(--ease);
-}
-
-.member-plate img.initial {
-  opacity: 1;
-  z-index: 2;
-  clip-path: inset(0 0 0 0);
-}
-
-.member-plate img.prev {
-  opacity: 1;
-  z-index: 2;
-  clip-path: inset(0 0 0 0);
-}
-
-.member-plate img.active {
-  opacity: 1;
-  z-index: 3;
-  clip-path: inset(0 0 0 0);
-  transition: transform .6s var(--ease), clip-path 0.8s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
-.member-card:hover .member-plate img{transform:scale(1.06)}
-
-.member-info h3{
-  margin:0;font-size:clamp(1.2rem, 1.8vw, 1.5rem);font-weight:700;
-  font-family:"Space Grotesk",sans-serif;letter-spacing:-0.02em;
-}
-.member-role{
-  display:block;margin-top:2px;font-size:var(--fs-label);
-  letter-spacing:var(--tr-label);text-transform:uppercase;
-  font-weight:600;opacity:0.6;
-}
-.member-bio{
-  margin-top:10px;font-size:0.85rem;line-height:1.5;opacity:0.75;
-}
-.member-links{
-  margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;
-}
-.member-chip{
-  border:1px solid var(--rule);padding:5px 10px;
-  font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;
-  font-family:"JetBrains Mono",monospace;font-weight:600;
-  transition:background .2s ease, color .2s ease, border-color .2s ease;
-}
-.member-chip:hover{
-  background:var(--ink);color:var(--paper);border-color:var(--ink);
-}
-
-.collective-about-wrap{
-  margin-top:clamp(48px, 8vw, 90px);
-  padding-top:clamp(32px, 5vw, 60px);
-  border-top:1px solid var(--ink);
-  display:grid;
-  grid-template-columns:1fr auto;
-  gap:clamp(28px, 5vw, 60px);
-  align-items:center;
-}
-.niches-content-sec .collective-about-wrap {
-  margin-top: auto;
-}
-
-.collective-about-text{
-  text-align:left;
-}
-.collective-about-text p{
-  margin:0;
-  font-size:clamp(1.4rem, 3.4vw, 2.8rem);
-  line-height:1.15;
-  letter-spacing:-.02em;
-  font-weight:500;
-  max-width:24ch;
-}
-.collective-about-text .by{margin-top:clamp(18px, 2.5vw, 32px);opacity:.55}
-
-.collective-about-logo{
-  display:flex;
-  align-items:center;
-  justify-content:flex-end;
-  padding-right:clamp(0px, 2vw, 24px);
-}
-.collective-about-logo button{
-  border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;
-}
-.collective-about-logo img{
-  width:auto;
-  max-width:260px;
-  height:auto;
-  object-fit:contain;
-  transition:transform .3s var(--ease);
-}
-.collective-about-logo button:hover img{transform:scale(1.03)}
 
 /* LIGHTBOX */
 .lb{
@@ -1585,7 +1471,7 @@ html[data-theme="dark"] .lb-frame {
         <span class="mobile-shoot-arrow">↗</span>
       </div>
     </div>
-    <p class="contact-note" style="margin-top:10px;">Food, pets, architecture, products, events, and portraits — calibrated per visual requirement.</p>
+    <p class="contact-note" style="margin-top:10px;">Food, pets, performing arts, architecture, products, events, and portraits — calibrated per visual requirement.</p>
   </section>
 
   <section class="sec wrap" id="contact">
@@ -1782,6 +1668,7 @@ html[data-theme="dark"] .lb-frame {
         <label class="enquiry-label" for="enq-niche">Shoot Category</label>
         <select class="enquiry-select" id="enq-niche" name="category">
           <option value="General Enquiry">General Enquiry</option>
+          <option value="Performing Arts">Performing Arts</option>
           <option value="Food">Food</option>
           <option value="Pets">Pets</option>
           <option value="Architecture">Architecture</option>
@@ -1889,42 +1776,58 @@ var state = {
 };
 
 /* ============================================================
-   CONTINUOUS AUTO-SCROLL ENGINE
+   ROBUST STATE-MACHINE AUTO-SCROLL ENGINE
    ============================================================ */
 var autoScrollRaf = null;
-var isAutoScrolling = false;
+var scrollState = 'stopped'; // 'scrolling', 'paused_interaction', 'stopped'
 var autoScrollSpeed = 0.85;
+var resumeTimeout = null;
 
-function stopAutoScroll() {
-  if (!isAutoScrolling) return;
-  isAutoScrolling = false;
-  if (autoScrollRaf) {
-    cancelAnimationFrame(autoScrollRaf);
-    autoScrollRaf = null;
-  }
+function stopAutoScrollPermanently() {
+  scrollState = 'stopped';
+  if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
   var hint = $(".swipe-hint");
   if (hint) hint.textContent = "← EXPLORE →";
 }
 
+function pauseAutoScrollTemporarily() {
+  if (scrollState === 'stopped') return;
+  scrollState = 'paused_interaction';
+  clearTimeout(resumeTimeout);
+}
+
+function queueAutoScrollResume() {
+  if (scrollState === 'stopped') return;
+  clearTimeout(resumeTimeout);
+  resumeTimeout = setTimeout(function() {
+    if (scrollState !== 'stopped') {
+      scrollState = 'scrolling';
+    }
+  }, 1500); // Wait 1.5s after interaction ends to resume
+}
+
 function runAutoScroll() {
-  if (!isAutoScrolling) return;
-  var track = $("#grid");
-  if (track && track.scrollWidth > track.clientWidth) {
-    track.scrollLeft += autoScrollSpeed;
-    if (track._singleSetWidth && track.scrollLeft >= track._singleSetWidth) {
-      track.scrollLeft -= track._singleSetWidth;
+  if (scrollState === 'scrolling') {
+    var track = $("#grid");
+    if (track && track._singleSetWidth) {
+      track.scrollLeft += autoScrollSpeed;
+      if (track.scrollLeft >= track._singleSetWidth) {
+        track.scrollLeft -= track._singleSetWidth;
+      }
     }
   }
-  autoScrollRaf = requestAnimationFrame(runAutoScroll);
+  if (scrollState !== 'stopped') {
+    autoScrollRaf = requestAnimationFrame(runAutoScroll);
+  }
 }
 
 function startAutoScroll(singleSetWidth) {
+  scrollState = 'scrolling';
   if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
   var track = $("#grid");
   if (track && singleSetWidth) {
     track._singleSetWidth = singleSetWidth;
   }
-  isAutoScrolling = true;
   autoScrollRaf = requestAnimationFrame(runAutoScroll);
 }
 
@@ -1979,11 +1882,10 @@ function renderHomeGrid() {
 
   if(list.length === 0){
     grid.innerHTML = '<p style="opacity:0.5; padding:20px 0;">No work published in this selection yet.</p>';
-    stopAutoScroll();
+    stopAutoScrollPermanently();
     return;
   }
 
-  // Multiply items sufficiently so that even on wide tablets/iPads it exceeds 3x screen width
   var renderList = [];
   var repeatCount = Math.max(3, Math.ceil((window.innerWidth * 3) / (list.length * 260)));
   for (var r = 0; r < repeatCount; r++) {
@@ -2009,7 +1911,6 @@ function renderHomeGrid() {
   }).join("");
 
   $$("#grid .shot", grid).forEach(function(b){
-    // Mobile and Tablet touch support: toggles Mac OS dock card scale on touch
     b.addEventListener("touchstart", function() {
       $$("#grid .shot", grid).forEach(function(other) {
         if (other !== b) other.classList.remove("touch-focus");
@@ -2017,14 +1918,18 @@ function renderHomeGrid() {
       b.classList.toggle("touch-focus");
     }, {passive:true});
 
-    // Clicking an image stops auto-scroll permanently and launches Lightbox
     b.addEventListener("click", function(){ 
-      stopAutoScroll();
+      stopAutoScrollPermanently();
       openLB(parseInt(b.dataset.realIdx, 10), b); 
     });
   });
 
-  // Calculate width of one complete repeating set
+  // Suspend auto-scroll seamlessly on interaction
+  grid.addEventListener("touchstart", pauseAutoScrollTemporarily, {passive:true});
+  grid.addEventListener("touchend", queueAutoScrollResume, {passive:true});
+  grid.addEventListener("mouseenter", pauseAutoScrollTemporarily);
+  grid.addEventListener("mouseleave", queueAutoScrollResume);
+
   var allCards = grid.querySelectorAll(".shot");
   if (allCards.length > list.length && allCards[list.length]) {
     var singleWidth = allCards[list.length].offsetLeft - allCards[0].offsetLeft;
@@ -2042,14 +1947,14 @@ function initCarouselControls() {
   if (prevBtn && track) {
     prevBtn.addEventListener("click", function(e) {
       e.preventDefault();
-      stopAutoScroll();
+      stopAutoScrollPermanently();
       track.scrollBy({ left: -310, behavior: "smooth" });
     });
   }
   if (nextBtn && track) {
     nextBtn.addEventListener("click", function(e) {
       e.preventDefault();
-      stopAutoScroll();
+      stopAutoScrollPermanently();
       track.scrollBy({ left: 310, behavior: "smooth" });
     });
   }
@@ -2350,7 +2255,6 @@ function closeEnquiryModal() {
   enqModal.classList.remove("open");
 }
 
-/* HERO SLIDESHOW: 3 SECONDS + TAP TO CHANGE */
 function initSlideshow(){
   var slides = [];
   if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
@@ -2655,7 +2559,6 @@ function bindGlobalEvents() {
   }
 }
 
-/* MEMBER DUAL-PHOTO SLIDESHOW: 3 SEC CURTAIN WIPE */
 function toggleMemberPhoto(plate) {
   var imgs = plate.querySelectorAll("img");
   if (imgs.length <= 1) return;
