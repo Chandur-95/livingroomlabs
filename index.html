@@ -142,7 +142,6 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   background:var(--paper);
   border-bottom:1px solid var(--rule);
   transition:background .35s ease, border-color .35s ease;
-  will-change: transform;
 }
 .brand{display:flex;align-items:center;gap:14px;height:100%;cursor:pointer}
 .brand .mark{display:flex;align-items:center;height:74px}
@@ -234,7 +233,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-top:14px;
 }
 
-/* HERO SLIDESHOW BANNER */
+/* HERO BANNER SLIDESHOW */
 .band{
   position:relative;
   width:100%;
@@ -264,7 +263,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   pointer-events:none;
   transform:scale(1.05);
   transition: opacity 1s ease-in-out, transform 4s ease-out;
-  will-change: transform, opacity;
   z-index:1;
 }
 .band-img.active{
@@ -299,18 +297,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-@keyframes imgPulse { 
-  0% { background-color: var(--rule-soft); } 
-  50% { background-color: var(--rule); } 
-  100% { background-color: var(--rule-soft); } 
-}
-.skeleton-load {
-  animation: imgPulse 1.8s infinite ease-in-out;
-}
-
-/* ============================================================
-   MAC OS DOCK CAROUSEL (BUTTER-SMOOTH TOUCH & DESKTOP)
-   ============================================================ */
+/* WORK CAROUSEL */
 .work-carousel-container {
   position: relative;
   width: 100%;
@@ -349,7 +336,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   cursor: pointer;
 }
 
-/* Mac OS Dock Pop-Out Effect */
 .home-work-grid .shot:hover, 
 .home-work-grid .shot:focus-visible,
 .home-work-grid .shot.touch-focus {
@@ -390,12 +376,6 @@ html[data-theme="dark"] .home-work-grid .plate {
   box-shadow: 0 25px 50px rgba(0,0,0,0.45);
 }
 
-.home-work-grid .shot:hover .plate img, 
-.home-work-grid .shot:focus-visible .plate img,
-.home-work-grid .shot.touch-focus .plate img {
-  transform: scale(1) !important;
-}
-
 .carousel-nav-btn {
   position: absolute;
   top: calc(140px + 160px);
@@ -420,14 +400,10 @@ html[data-theme="dark"] .home-work-grid .plate {
   color: var(--paper);
   transform: translateY(-50%) scale(1.08);
 }
-.carousel-nav-btn.prev {
-  left: -20px;
-}
-.carousel-nav-btn.next {
-  right: -20px;
-}
+.carousel-nav-btn.prev { left: -20px; }
+.carousel-nav-btn.next { right: -20px; }
 
-/* NICHE OVERLAY GALLERY GRID */
+/* NICHE OVERLAY GRID */
 .niche-work-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -453,7 +429,6 @@ html[data-theme="dark"] .home-work-grid .plate {
   width: 100%;
   transition: transform 0.16s cubic-bezier(0.2, 0, 0.2, 1);
   transform-style: preserve-3d;
-  will-change: transform;
 }
 .plate {
   position: relative;
@@ -462,24 +437,15 @@ html[data-theme="dark"] .home-work-grid .plate {
   width: 100%;
   display: block;
 }
-
 .plate img {
   position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
+  top: 0; left: 0; width: 100%; height: 100%;
   object-fit: cover;
   transition: transform 0.85s cubic-bezier(0.16, 1, 0.3, 1), opacity 0.4s ease;
-  opacity: 0; 
-  will-change: transform, opacity;
+  opacity: 0;
 }
 .plate img.ready {
   opacity: 1 !important;
-}
-
-.shot:hover .plate img, .shot:focus-visible .plate img {
-  transform: scale(1.07);
 }
 
 .guard{position:absolute;inset:0;z-index:3;background:transparent}
@@ -493,11 +459,9 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 .cap .t{font-weight:500;}
 .cap .c{opacity:.55;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.home-work-grid .cap .t {
-  white-space: nowrap;
-}
+.home-work-grid .cap .t { white-space: nowrap; }
 
-/* MOBILE WHAT WE CAPTURE LINK BOX */
+/* MOBILE CALLOUT SECTION */
 .mobile-shoot-sec { display: none; }
 .mobile-shoot-box {
   border: 1px solid var(--rule);
@@ -590,10 +554,6 @@ html[data-theme="dark"] .home-work-grid .plate {
 .foot-logo-btn:hover img{transform:scale(1.03)}
 .foot-links-group { display: contents; }
 
-.mobile-shoot-column {
-  display: none;
-}
-
 /* DARK MODE LOGO FILTER */
 .brand .mark img,
 .foot-logo-btn img,
@@ -628,7 +588,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   opacity:0;
   transform:translateY(24px);
   transition:opacity .35s cubic-bezier(.16, 1, .3, 1), transform .35s cubic-bezier(.16, 1, .3, 1);
-  will-change: transform, opacity;
 }
 .overlay-page.open{
   display:flex;
@@ -773,7 +732,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   flex-direction: column;
 }
 
-/* NICHES ACCORDION */
+/* NICHES ROWS & DROPDOWN ACCORDION */
 .niche-row {
   border-bottom: 1px solid var(--rule);
   width: 100%;
@@ -950,7 +909,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
-/* THE COLLECTIVE MEMBER CAROUSEL */
+/* THE COLLECTIVE */
 .collective-grid {
   display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
 }
@@ -977,26 +936,22 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   clip-path: inset(0 0 0 100%);
   transition: transform .6s var(--ease);
 }
-
 .member-plate img.initial {
   opacity: 1;
   z-index: 2;
   clip-path: inset(0 0 0 0);
 }
-
 .member-plate img.prev {
   opacity: 1;
   z-index: 2;
   clip-path: inset(0 0 0 0);
 }
-
 .member-plate img.active {
   opacity: 1;
   z-index: 3;
   clip-path: inset(0 0 0 0);
   transition: transform .6s var(--ease), clip-path 0.8s cubic-bezier(0.22, 1, 0.36, 1);
 }
-
 .member-card:hover .member-plate img{transform:scale(1.06)}
 
 .member-info h3{
@@ -1078,7 +1033,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   backdrop-filter:blur(12px);
   -webkit-backdrop-filter:blur(12px);
   transition:background .35s ease, color .35s ease;
-  will-change: transform, opacity, backdrop-filter;
 }
 
 html[data-theme="dark"] .lb {
@@ -1165,7 +1119,6 @@ html[data-theme="dark"] .lb-frame {
   align-items: center;
   justify-content: center;
   padding: 20px;
-  will-change: transform, opacity;
 }
 .enquiry-modal.open {
   display: flex;
@@ -1304,7 +1257,7 @@ html[data-theme="dark"] .lb-frame {
   }
 }
 
-/* MOBILE VIEWPORT */
+/* MOBILE SPECIFICS */
 @media (max-width:640px){
   :root{
     --nav-h:64px;
@@ -1369,7 +1322,6 @@ html[data-theme="dark"] .lb-frame {
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
-  /* MOBILE ADAPTED DOCK SCALE */
   .home-work-grid {
     padding-top: 80px !important;
     margin-top: -55px !important;
@@ -1451,20 +1403,10 @@ html[data-theme="dark"] .lb-frame {
     flex-wrap: wrap;
   }
 
-  .foot-col-index {
-    min-width: 80px;
-  }
-  .foot-col-elsewhere {
-    min-width: 80px;
-  }
-
-  .mobile-shoot-column {
-    display: none !important;
-  }
-
-  .foot-col-team {
-    display: none !important;
-  }
+  .foot-col-index { min-width: 80px; }
+  .foot-col-elsewhere { min-width: 80px; }
+  .mobile-shoot-column { display: none !important; }
+  .foot-col-team { display: none !important; }
 
   .overlay-nav-brand .mark{height:40px}
   .overlay-nav-brand .mark img{height:40px}
@@ -1515,7 +1457,7 @@ html[data-theme="dark"] .lb-frame {
 <nav class="nav">
   <button class="brand logo-exit-btn" aria-label="Living Room Labs (Reload)">
     <span class="mark">
-      <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.opacity='0'">
+      <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
     </span>
     <span class="wordmark" data-name></span>
   </button>
@@ -1541,7 +1483,6 @@ html[data-theme="dark"] .lb-frame {
     </div>
   </header>
 
-  <!-- CINEMATIC HERO SLIDESHOW BANNER -->
   <div class="band" id="hero-slideshow" role="region" aria-label="Hero image slideshow" tabindex="0">
     <div class="band-stage" id="band-stage"></div>
   </div>
@@ -1554,7 +1495,6 @@ html[data-theme="dark"] .lb-frame {
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
     
-    <!-- HORIZONTAL CAROUSEL WITH DOCK EFFECT & CONTINUOUS AUTOSCROLL -->
     <div class="work-carousel-container">
       <button type="button" class="carousel-nav-btn prev" id="carousel-prev" aria-label="Scroll left">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 19l-7-7 7-7"/></svg>
@@ -1568,7 +1508,6 @@ html[data-theme="dark"] .lb-frame {
     </div>
   </section>
 
-  <!-- MOBILE-ONLY "WHAT WE CAPTURE" BOXED SECTION -->
   <section class="sec wrap mobile-shoot-sec" id="mobile-shoot">
     <div class="mobile-shoot-box nav-niches-link" role="button" tabindex="0">
       <div class="mobile-shoot-header">
@@ -1593,7 +1532,7 @@ html[data-theme="dark"] .lb-frame {
     <div class="foot">
       <div class="foot-col-logo">
         <button class="foot-logo-btn logo-exit-btn" aria-label="Scroll to top of page">
-          <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.opacity='0'">
+          <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
         </button>
       </div>
 
@@ -1621,7 +1560,7 @@ html[data-theme="dark"] .lb-frame {
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.display='none'">
+        <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE CAPTURE // CATEGORIES</span>
@@ -1658,7 +1597,7 @@ html[data-theme="dark"] .lb-frame {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.display='none'">
+          <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
         </button>
       </div>
     </div>
@@ -1670,7 +1609,7 @@ html[data-theme="dark"] .lb-frame {
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.display='none'">
+        <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -1710,7 +1649,7 @@ html[data-theme="dark"] .lb-frame {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.display='none'">
+          <img src="/logo.png?v=2" alt="Living Room Labs" onerror="if(this.src.indexOf('logo.png')===-1) this.src='/logo.png?v=2';">
         </button>
       </div>
     </div>
@@ -1809,6 +1748,7 @@ function fixPath(p){
   if(!p) return "";
   p = String(p).trim();
   if(p.indexOf("://") !== -1 || p.startsWith("data:") || p.startsWith("blob:")) return p;
+  if(p.indexOf("logo.png") !== -1) return "/logo.png?v=2";
   p = p.replace(/^(\.\/|\/)+/, "");
   if(p.startsWith("assets/uploads/")){
     p = p.replace("assets/uploads/", "images/uploads/");
@@ -1855,9 +1795,7 @@ var state = {
   isSubmitting:false
 };
 
-/* ============================================================
-   ROBUST IOS-FRIENDLY AUTO-SCROLL ENGINE
-   ============================================================ */
+/* AUTOSCROLL ENGINE */
 var autoScrollRaf = null;
 var isUserInteracting = false;
 var autoScrollSpeed = 1;
@@ -1964,8 +1902,8 @@ function renderHomeGrid() {
 
     return '<button class="shot" data-real-idx="'+realIdx+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
              '<div class="plate-tilt-wrap">'+
-               '<span class="plate skeleton-load">'+
-                 '<img loading="lazy" decoding="async" onload="this.parentElement.classList.remove(\'skeleton-load\'); this.classList.add(\'ready\');" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.parentElement.classList.remove(\'skeleton-load\'); this.style.opacity=\'0.25\';">'+
+               '<span class="plate">'+
+                 '<img loading="lazy" decoding="async" onload="this.classList.add(\'ready\');" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.25\';">'+
                  '<span class="guard"></span>'+
                '</span>'+
              '</div>'+
@@ -2057,8 +1995,8 @@ function renderNichesList(){
         var pos = getObjPosition(p.imagePosition);
         return '<button class="shot" data-preview-niche="'+esc(n.name)+'" data-preview-idx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
-                   '<span class="plate skeleton-load">'+
-                     '<img loading="lazy" decoding="async" onload="this.parentElement.classList.remove(\'skeleton-load\'); this.classList.add(\'ready\');" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.parentElement.classList.remove(\'skeleton-load\'); this.style.opacity=\'0.25\';">'+
+                   '<span class="plate">'+
+                     '<img loading="lazy" decoding="async" onload="this.classList.add(\'ready\');" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.25\';">'+
                      '<span class="guard"></span>'+
                    '</span>'+
                  '</div>'+
@@ -2162,8 +2100,8 @@ function openNicheView(nicheName){
 
       return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
                '<div class="plate-tilt-wrap">'+
-                 '<span class="plate skeleton-load">'+
-                   '<img loading="lazy" decoding="async" onload="this.parentElement.classList.remove(\'skeleton-load\'); this.classList.add(\'ready\');" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.parentElement.classList.remove(\'skeleton-load\'); this.style.opacity=\'0.25\';">'+
+                 '<span class="plate">'+
+                   '<img loading="lazy" decoding="async" onload="this.classList.add(\'ready\');" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.25\';">'+
                    '<span class="guard"></span>'+
                  '</span>'+
                '</div>'+
@@ -2717,9 +2655,11 @@ function renderContent(){
     document.body.style.fontFamily = '"' + SITE.bodyFont + '", system-ui, -apple-system, sans-serif';
   }
 
-  var logoSrc = fixPath(SITE.logo || "logo.png?v=2");
-  $$(".mark img, .foot-logo-btn img, .collective-about-logo img").forEach(function(img){
+  var logoSrc = fixPath(SITE.logo || "/logo.png?v=2");
+  $$(".mark img, .foot-logo-btn img, .collective-about-logo img, .overlay-nav-brand .mark img").forEach(function(img){
     img.src = logoSrc;
+    img.style.opacity = "1";
+    img.style.display = "";
   });
 
   $$("[data-name]").forEach(function(n){ n.textContent = SITE.name || ""; });
@@ -2808,7 +2748,7 @@ function renderContent(){
       
       var mPos1 = getObjPosition(m.imagePosition);
       var photoSrc1 = m.photo ? fixPath(m.photo) : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
-      var imgTags = '<img loading="lazy" decoding="async" class="initial" onload="this.parentElement.classList.remove(\'skeleton-load\');" src="'+esc(photoSrc1)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos1)+';">';
+      var imgTags = '<img loading="lazy" decoding="async" class="initial" src="'+esc(photoSrc1)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos1)+';">';
       
       var hasPhoto2 = Boolean(m.photo2 && String(m.photo2).trim() !== "");
       if (hasPhoto2) {
@@ -2817,7 +2757,7 @@ function renderContent(){
       }
 
       return '<div class="member-card">' +
-               '<div class="member-plate skeleton-load" data-member-idx="'+mIdx+'">' +
+               '<div class="member-plate" data-member-idx="'+mIdx+'">' +
                  imgTags +
                '</div>' +
                '<div class="member-info">' +
