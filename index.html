@@ -234,7 +234,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-top:14px;
 }
 
-/* CINEMATIC HERO SLIDESHOW BANNER (SMOOTH CROSS-FADE) */
+/* HERO SLIDESHOW BANNER */
 .band{
   position:relative;
   width:100%;
@@ -284,7 +284,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .sec-head .count{font-size:var(--fs-label);letter-spacing:.1em;opacity:.55;white-space:nowrap}
 
 .swipe-hint {
-  display: none;
+  display: inline-block;
   font-size: 0.65rem;
   letter-spacing: 0.1em;
   opacity: 0.55;
@@ -307,7 +307,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* CSS SKELETON LOADER FOR IMAGES */
 @keyframes imgPulse { 
   0% { background-color: var(--rule-soft); } 
   50% { background-color: var(--rule); } 
@@ -318,7 +317,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 /* ============================================================
-   WORK HORIZONTAL CAROUSEL (WITH AUTHENTIC MAC OS DOCK HOVER)
+   MAC OS DOCK CAROUSEL WITH RESPONSIVE SCALING
    ============================================================ */
 .work-carousel-container {
   position: relative;
@@ -328,18 +327,13 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .home-work-grid {
   display: flex !important;
   flex-direction: row !important;
-  gap: 12px !important; /* Tighter gap makes the dock pop-out effect much cleaner */
+  gap: 16px !important;
   overflow-x: auto !important;
-  scroll-behavior: smooth;
-  scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
-  
-  /* MASSIVE PADDING allows the cards to scale up 160% without getting chopped off by the grid boundaries */
-  padding-top: 150px; 
-  margin-top: -120px; /* Pulls the grid visually back up into place */
-  padding-bottom: 60px; /* Space for the huge pop-out drop shadow */
-  
-  align-items: flex-end; /* Anchors the dock to the bottom */
+  padding-top: 140px; 
+  margin-top: -110px;
+  padding-bottom: 50px;
+  align-items: flex-end;
   scrollbar-width: none;
 }
 .home-work-grid::-webkit-scrollbar {
@@ -347,14 +341,13 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 .home-work-grid .shot {
-  flex: 0 0 250px !important;
-  max-width: 250px !important;
-  scroll-snap-align: center;
+  flex: 0 0 240px !important;
+  max-width: 240px !important;
   display: flex;
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transform-origin: center bottom; /* Expands strictly upwards like Mac OS */
+  transform-origin: center bottom;
   transition: transform 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
               margin 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 1;
@@ -362,33 +355,34 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   cursor: pointer;
 }
 
-/* 1. MASSIVE POP OUT FOR HOVERED CARD */
+/* Mac OS Dock Pop-Out Effect */
 .home-work-grid .shot:hover, 
-.home-work-grid .shot:focus-visible {
-  transform: scale(1.6); /* Enormous pop out towards screen */
+.home-work-grid .shot:focus-visible,
+.home-work-grid .shot.touch-focus {
+  transform: scale(1.5);
   z-index: 50;
-  margin: 0 55px; /* Physically pushes neighbors out of the way */
+  margin: 0 45px;
 }
 
-/* 2. NEIGHBORING WAVE EFFECT (The card BEFORE the hovered card) */
-.home-work-grid .shot:has(+ .shot:hover) {
+.home-work-grid .shot:has(+ .shot:hover),
+.home-work-grid .shot:has(+ .shot.touch-focus) {
   transform: scale(1.2);
   z-index: 25;
-  margin-right: 18px;
+  margin-right: 15px;
 }
 
-/* 3. NEIGHBORING WAVE EFFECT (The card AFTER the hovered card) */
-.home-work-grid .shot:hover + .shot {
+.home-work-grid .shot:hover + .shot,
+.home-work-grid .shot.touch-focus + .shot {
   transform: scale(1.2);
   z-index: 25;
-  margin-left: 18px;
+  margin-left: 15px;
 }
 
 .home-work-grid .plate {
   aspect-ratio: 3 / 4 !important;
   width: 100% !important;
   height: auto !important;
-  border-radius: 4px;
+  border-radius: 6px;
   overflow: hidden;
   box-shadow: 0 6px 18px rgba(0,0,0,0.08);
   transition: box-shadow 0.35s var(--ease);
@@ -397,20 +391,20 @@ html[data-theme="dark"] .home-work-grid .plate {
   box-shadow: 0 6px 20px rgba(0,0,0,0.6);
 }
 
-.home-work-grid .shot:hover .plate {
-  box-shadow: 0 25px 50px rgba(0,0,0,0.4); /* Deep cinematic shadow on massive scale */
+.home-work-grid .shot:hover .plate,
+.home-work-grid .shot.touch-focus .plate {
+  box-shadow: 0 25px 50px rgba(0,0,0,0.45);
 }
 
-/* Prevent inner photo warp during massive dock scale */
 .home-work-grid .shot:hover .plate img, 
-.home-work-grid .shot:focus-visible .plate img {
-  transform: scale(1) !important; 
+.home-work-grid .shot:focus-visible .plate img,
+.home-work-grid .shot.touch-focus .plate img {
+  transform: scale(1) !important;
 }
 
-/* Floating Navigation Arrows - Adjusted for new padding offsets */
 .carousel-nav-btn {
   position: absolute;
-  top: calc(150px + 165px); /* Accurately aligns exactly with the vertical center of the unscaled cards */
+  top: calc(140px + 160px);
   transform: translateY(-50%);
   width: 44px;
   height: 44px;
@@ -420,7 +414,7 @@ html[data-theme="dark"] .home-work-grid .plate {
   display: flex;
   align-items: center;
   justify-content: center;
-  z-index: 60; /* Sits above the giant hovered cards */
+  z-index: 60;
   cursor: pointer;
   border: 1px solid rgba(255,255,255,0.25);
   backdrop-filter: blur(6px);
@@ -439,7 +433,7 @@ html[data-theme="dark"] .home-work-grid .plate {
   right: -20px;
 }
 
-/* FULL NICHE VIEW GALLERY GRID */
+/* NICHE OVERLAY GALLERY GRID */
 .niche-work-grid {
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -490,7 +484,6 @@ html[data-theme="dark"] .home-work-grid .plate {
   opacity: 1 !important;
 }
 
-/* SUBTLE INNER ZOOM ON HOVER (Applies nicely to standard grids, disabled for Dock effect) */
 .shot:hover .plate img, .shot:focus-visible .plate img {
   transform: scale(1.07);
 }
@@ -506,29 +499,11 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 .cap .t{font-weight:500;}
 .cap .c{opacity:.55;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-
-/* Ensure title doesn't wrap awkwardly when card scales up 1.6x */
 .home-work-grid .cap .t {
   white-space: nowrap;
 }
 
-.curated-toggle-wrap{
-  margin-top:clamp(24px, 3vw, 40px);
-  display:flex;justify-content:center;
-}
-.btn-curated-expand{
-  display:inline-flex;align-items:center;gap:10px;
-  border:1px solid var(--ink);
-  padding:11px 22px;
-  font-size:var(--fs-label);letter-spacing:var(--tr-label);
-  text-transform:uppercase;font-weight:600;
-  transition:background .25s var(--ease), color .25s var(--ease);
-}
-.btn-curated-expand:hover{
-  background:var(--ink);color:var(--paper);
-}
-
-/* MOBILE "WHAT WE CAPTURE" LINK BOX */
+/* MOBILE WHAT WE CAPTURE LINK BOX */
 .mobile-shoot-sec { display: none; }
 .mobile-shoot-box {
   border: 1px solid var(--rule);
@@ -977,9 +952,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
-/* ============================================================
-   THE COLLECTIVE MEMBER CAROUSEL (CURTAIN WIPE ANIMATION)
-   ============================================================ */
+/* THE COLLECTIVE MEMBER CURTAIN WIPE */
 .collective-grid {
   display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
 }
@@ -1003,25 +976,22 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   object-fit:cover;
   z-index: 1;
   opacity: 0;
-  clip-path: inset(0 0 0 100%); /* Hidden to the right */
+  clip-path: inset(0 0 0 100%);
   transition: transform .6s var(--ease);
 }
 
-/* The first image loaded before any animation */
 .member-plate img.initial {
   opacity: 1;
   z-index: 2;
   clip-path: inset(0 0 0 0);
 }
 
-/* Becomes the background layer during a wipe */
 .member-plate img.prev {
   opacity: 1;
   z-index: 2;
   clip-path: inset(0 0 0 0);
 }
 
-/* The new image wipes elegantly over the background from right to left */
 .member-plate img.active {
   opacity: 1;
   z-index: 3;
@@ -1175,13 +1145,6 @@ html[data-theme="dark"] .lb-frame {
   100%{transform:scale(1);opacity:1}
 }
 
-.lb-frame .corners{inset:-12px}
-.lb-frame .corners i{
-  opacity:1;transform:scale(1);width:20px;height:20px;
-  border-color:rgb(var(--laser-red));
-  box-shadow:0 0 10px rgba(var(--laser-red),.7);
-}
-
 .lb-cap{
   display:grid;grid-template-columns:1fr auto;gap:6px 20px;align-items:baseline;
   border-top:1px solid var(--rule);padding-top:12px;
@@ -1331,6 +1294,16 @@ html[data-theme="dark"] .lb-frame {
   .niche p{grid-column:1/-1}
   .niche-preview-grid{grid-template-columns:repeat(2, 1fr)}
   .foot{grid-template-columns:1.2fr 1fr 1fr;gap:24px 20px}
+  
+  .home-work-grid {
+    padding-top: 90px;
+    margin-top: -65px;
+  }
+  .home-work-grid .shot:hover,
+  .home-work-grid .shot.touch-focus {
+    transform: scale(1.35);
+    margin: 0 30px;
+  }
 }
 
 /* MOBILE VIEWPORT */
@@ -1402,25 +1375,32 @@ html[data-theme="dark"] .lb-frame {
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
-  /* DISABLE MASSIVE DOCK HOVER ON MOBILE DEVICES */
+  /* MOBILE ADAPTED DOCK SCALE */
   .home-work-grid {
-    padding-top: 20px !important;
-    margin-top: 0px !important;
-    padding-bottom: 24px !important;
-    align-items: flex-start !important;
+    padding-top: 80px !important;
+    margin-top: -55px !important;
+    padding-bottom: 35px !important;
+    align-items: flex-end !important;
   }
   .home-work-grid .shot {
-    flex: 0 0 240px !important;
-    max-width: 240px !important;
-    transform-origin: center center !important;
+    flex: 0 0 190px !important;
+    max-width: 190px !important;
   }
-  .home-work-grid .shot:hover, .home-work-grid .shot:focus-visible {
-    transform: scale(1.02) !important;
-    margin: 0 !important;
+  .home-work-grid .shot:hover, 
+  .home-work-grid .shot:focus-visible,
+  .home-work-grid .shot.touch-focus {
+    transform: scale(1.28) !important;
+    margin: 0 24px !important;
   }
-  .home-work-grid .shot:has(+ .shot:hover), .home-work-grid .shot:hover + .shot {
-    transform: scale(1) !important;
-    margin: 0 !important;
+  .home-work-grid .shot:has(+ .shot:hover),
+  .home-work-grid .shot:has(+ .shot.touch-focus) {
+    transform: scale(1.12) !important;
+    margin-right: 10px !important;
+  }
+  .home-work-grid .shot:hover + .shot,
+  .home-work-grid .shot.touch-focus + .shot {
+    transform: scale(1.12) !important;
+    margin-left: 10px !important;
   }
 
   .carousel-nav-btn {
@@ -1567,7 +1547,6 @@ html[data-theme="dark"] .lb-frame {
     </div>
   </header>
 
-  <!-- CINEMATIC HERO SLIDESHOW BANNER -->
   <div class="band" id="hero-slideshow" role="region" aria-label="Hero image slideshow" tabindex="0">
     <div class="band-stage" id="band-stage"></div>
   </div>
@@ -1576,12 +1555,11 @@ html[data-theme="dark"] .lb-frame {
     <div class="sec-head">
       <span class="label">Work</span>
       <span class="fill"></span>
-      <span class="swipe-hint mono">← SWIPE TO EXPLORE →</span>
+      <span class="swipe-hint mono">← SCROLLING // CLICK TO STOP →</span>
       <span class="count mono" data-workcount></span>
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
     
-    <!-- HORIZONTAL CAROUSEL WITH MAC DOCK EFFECT -->
     <div class="work-carousel-container">
       <button type="button" class="carousel-nav-btn prev" id="carousel-prev" aria-label="Scroll left">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 19l-7-7 7-7"/></svg>
@@ -1595,7 +1573,6 @@ html[data-theme="dark"] .lb-frame {
     </div>
   </section>
 
-  <!-- MOBILE-ONLY "WHAT WE CAPTURE" BOXED SECTION -->
   <section class="sec wrap mobile-shoot-sec" id="mobile-shoot">
     <div class="mobile-shoot-box nav-niches-link" role="button" tabindex="0">
       <div class="mobile-shoot-header">
@@ -1643,7 +1620,6 @@ html[data-theme="dark"] .lb-frame {
   </footer>
 </main>
 
-<!-- WHAT WE CAPTURE OVERLAY -->
 <div class="overlay-page" id="niches-page" role="dialog" aria-modal="true" aria-label="What We Capture">
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
@@ -1684,7 +1660,7 @@ html[data-theme="dark"] .lb-frame {
         <button class="niche-back btn-close-niches" style="padding:14px 28px; cursor:pointer;">← Back to Studio</button>
       </div>
       <div class="collective-about-logo">
-        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
+        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:display:block;line-height:0;">
           <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
@@ -1692,7 +1668,6 @@ html[data-theme="dark"] .lb-frame {
   </div>
 </div>
 
-<!-- THE COLLECTIVE OVERLAY -->
 <div class="overlay-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
@@ -1744,7 +1719,6 @@ html[data-theme="dark"] .lb-frame {
   </section>
 </div>
 
-<!-- LIGHTBOX -->
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <div class="lb-top">
     <div class="lb-count mono"><b id="lb-i">01</b> <span>/</span> <span id="lb-n">01</span></div>
@@ -1774,7 +1748,6 @@ html[data-theme="dark"] .lb-frame {
   </div>
 </div>
 
-<!-- ENQUIRY MODAL DIALOG -->
 <div class="enquiry-modal" id="enquiry-modal" role="dialog" aria-modal="true" aria-label="Enquiry">
   <div class="enquiry-card">
     <div class="enquiry-head">
@@ -1856,7 +1829,6 @@ var SITE = {
 var $  = function(s,r){ return (r||document).querySelector(s); };
 var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
 
-/* BULLETPROOF PATH NORMALIZER */
 function fixPath(p){
   if(!p) return "";
   p = String(p).trim();
@@ -1907,6 +1879,39 @@ var state = {
   isSubmitting:false
 };
 
+/* ============================================================
+   INFINITE AUTO-SCROLL ENGINE
+   ============================================================ */
+var autoScrollRaf = null;
+var isAutoScrolling = true;
+var autoScrollSpeed = 0.85;
+
+function stopAutoScroll() {
+  if (!isAutoScrolling) return;
+  isAutoScrolling = false;
+  if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
+  var hint = $(".swipe-hint");
+  if (hint) hint.textContent = "← EXPLORE →";
+}
+
+function runAutoScroll() {
+  if (!isAutoScrolling) return;
+  var track = $("#grid");
+  if (track) {
+    track.scrollLeft += autoScrollSpeed;
+    if (track.scrollLeft >= track.scrollWidth / 2) {
+      track.scrollLeft = 0;
+    }
+  }
+  autoScrollRaf = requestAnimationFrame(runAutoScroll);
+}
+
+function startAutoScroll() {
+  if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
+  isAutoScrolling = true;
+  autoScrollRaf = requestAnimationFrame(runAutoScroll);
+}
+
 function categories(){
   var seen = [];
   (SITE.photos || []).forEach(function(p){
@@ -1943,7 +1948,6 @@ function buildFilters(){
   });
 }
 
-/* HORIZONTAL CAROUSEL WORK GRID (WITH MAC DOCK EFFECT) */
 function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
@@ -1959,16 +1963,24 @@ function renderHomeGrid() {
 
   if(list.length === 0){
     grid.innerHTML = '<p style="opacity:0.5; padding:20px 0;">No work published in this selection yet.</p>';
+    stopAutoScroll();
     return;
   }
 
+  // Duplicate items if needed to allow seamless wrap scrolling
+  var renderList = list;
+  if (list.length >= 3) {
+    renderList = list.concat(list);
+  }
+
   var n = 0;
-  grid.innerHTML = list.map(function(p){
-    var i = n++;
+  grid.innerHTML = renderList.map(function(p){
+    var realIdx = n % list.length;
+    n++;
     var pos = getObjPosition(p.imagePosition);
     var imgSrc = esc(fixPath(p.src)); 
 
-    return '<button class="shot" data-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
+    return '<button class="shot" data-real-idx="'+realIdx+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
              '<div class="plate-tilt-wrap">'+
                '<span class="plate skeleton-load">'+
                  '<img loading="lazy" decoding="async" onload="this.parentElement.classList.remove(\'skeleton-load\'); this.classList.add(\'ready\');" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.parentElement.classList.remove(\'skeleton-load\'); this.style.opacity=\'0.25\';">'+
@@ -1980,8 +1992,24 @@ function renderHomeGrid() {
   }).join("");
 
   $$("#grid .shot", grid).forEach(function(b){
-    b.addEventListener("click", function(){ openLB(parseInt(b.dataset.i, 10), b); });
+    // Mobile / Touch Mac Dock interaction
+    b.addEventListener("touchstart", function() {
+      $$("#grid .shot", grid).forEach(function(other) { other.classList.remove("touch-focus"); });
+      b.classList.add("touch-focus");
+    }, {passive:true});
+
+    // Clicking ANY image stops the scroll permanently and opens the Lightbox
+    b.addEventListener("click", function(){ 
+      stopAutoScroll();
+      openLB(parseInt(b.dataset.realIdx, 10), b); 
+    });
   });
+
+  // User manually dragging or scrolling the track stops the auto-scroller
+  grid.addEventListener("wheel", stopAutoScroll, {passive:true});
+  grid.addEventListener("touchstart", stopAutoScroll, {passive:true});
+
+  startAutoScroll();
 }
 
 function initCarouselControls() {
@@ -1992,12 +2020,14 @@ function initCarouselControls() {
   if (prevBtn && track) {
     prevBtn.addEventListener("click", function(e) {
       e.preventDefault();
+      stopAutoScroll();
       track.scrollBy({ left: -310, behavior: "smooth" });
     });
   }
   if (nextBtn && track) {
     nextBtn.addEventListener("click", function(e) {
       e.preventDefault();
+      stopAutoScroll();
       track.scrollBy({ left: 310, behavior: "smooth" });
     });
   }
@@ -2298,9 +2328,7 @@ function closeEnquiryModal() {
   enqModal.classList.remove("open");
 }
 
-/* ============================================================
-   SMOOTH HERO SLIDESHOW: CINEMATIC DISSOLVE (3 SECONDS)
-   ============================================================ */
+/* HERO SLIDESHOW: 3 SECONDS + TAP TO CHANGE */
 function initSlideshow(){
   var slides = [];
   if(SITE.bandSlides && Array.isArray(SITE.bandSlides) && SITE.bandSlides.length > 0){
@@ -2329,7 +2357,6 @@ function initSlideshow(){
     return '<img class="band-img '+act+'" '+loadStrat+' data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+esc(pos)+';">';
   }).join("");
 
-  /* FLAWLESS TOUCH AND CLICK DETECTION */
   var heroBox = $("#hero-slideshow");
   if(heroBox){
     var touchStartX = 0;
@@ -2364,7 +2391,7 @@ function resetSlideInterval(){
   if(state.slides && state.slides.length > 1){
     state.slideTimer = setInterval(function(){
       nextSlide();
-    }, 3000); // Trigger exactly every 3 seconds
+    }, 3000);
   }
 }
 
@@ -2397,7 +2424,7 @@ function nextSlide(){
   }, 1000);
 }
 
-/* HIGH-SPEED LIGHTBOX WITH PRE-FETCHING */
+/* LIGHTBOX */
 var lb = $("#lb");
 function openLB(i, opener){
   state.index = i; state.opener = opener || null;
@@ -2606,9 +2633,7 @@ function bindGlobalEvents() {
   }
 }
 
-/* ============================================================
-   MEMBER DUAL-PHOTO SLIDESHOW: 3 SEC CURTAIN WIPE
-   ============================================================ */
+/* COLLECTIVE CURTAIN WIPE */
 function toggleMemberPhoto(plate) {
   var imgs = plate.querySelectorAll("img");
   if (imgs.length <= 1) return;
@@ -2746,7 +2771,6 @@ function renderContent(){
              '</div>';
     }).join("");
 
-    /* Automatically animate Collective photos every 3 seconds */
     window.collectiveTimers = window.collectiveTimers || [];
     window.collectiveTimers.forEach(clearInterval);
     window.collectiveTimers = [];
@@ -2758,7 +2782,6 @@ function renderContent(){
         }, 3000);
         window.collectiveTimers.push(timer);
 
-        // Allow manual touch/click override
         plate.addEventListener("click", function() {
           clearInterval(timer);
           toggleMemberPhoto(plate);
@@ -2783,7 +2806,6 @@ function renderContent(){
   }
 }
 
-/* INSTANT SMART REVALIDATION FETCH */
 function initApp(){
   bindGlobalEvents();
   initCarouselControls();
