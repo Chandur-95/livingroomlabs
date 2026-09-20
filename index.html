@@ -418,16 +418,27 @@ html[data-theme="dark"] .home-work-grid .plate {
 .carousel-nav-btn.prev { left: -14px; }
 .carousel-nav-btn.next { right: -14px; }
 
-/* NICHE OVERLAY GRID */
+/* PORTRAIT-SAFE NICHE PREVIEW & WORK GRID (PREVENTS PET/PORTRAIT DECAPITATION) */
+.niche-preview-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: clamp(14px, 2vw, 20px);
+  width: 100%;
+}
+.niche-preview-grid .plate {
+  aspect-ratio: 3 / 4 !important;
+  border-radius: 1px;
+}
+
 .niche-work-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
   column-gap: clamp(20px, 3vw, 32px);
   row-gap: clamp(32px, 5vw, 56px);
   width: 100%;
 }
 .niche-work-grid .plate {
-  aspect-ratio: 4 / 3 !important;
+  aspect-ratio: 3 / 4 !important;
   height: auto !important;
   border-radius: 4px;
 }
@@ -563,7 +574,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 .foot-logo-btn:hover img{transform:scale(1.03)}
 .foot-links-group { display: contents; }
 
-/* CLEAN ALIGNED LOGOS (NO MULTIPLY OVERLAY ARTIFACTS ON TRANSPARENT PNG) */
+/* CLEAN ALIGNED LOGOS */
 .brand .mark img,
 .foot-logo-btn img,
 .collective-about-logo img,
@@ -809,17 +820,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   100% { opacity: 1; transform: translateY(0) scale(1); }
 }
 
-.niche-preview-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: clamp(14px, 2vw, 20px);
-  width: 100%;
-}
-.niche-preview-grid .plate {
-  aspect-ratio: 1 / 1 !important;
-  border-radius: 1px;
-}
-
 .niche-dropdown-foot {
   margin-top: clamp(20px, 2.5vw, 28px);
   display: flex;
@@ -963,7 +963,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   object-fit: contain;
 }
 
-.member- info h3{
+.member-info h3{
   margin:0;font-size:clamp(1.2rem, 1.8vw, 1.5rem);font-weight:700;
   font-family:"Space Grotesk",sans-serif;letter-spacing:-0.02em;
 }
@@ -1025,7 +1025,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .collective-about-logo button:hover img{transform:scale(1.03)}
 
-/* LIGHTBOX (THEME ADAPTIVE) */
+/* LIGHTBOX */
 .lb{
   position:fixed;inset:0;z-index:120;
   background:rgba(255, 255, 255, 0.96);
@@ -1791,23 +1791,22 @@ var state = {
   isSubmitting:false
 };
 
-/* AUTOSCROLL ENGINE (SINGLE-SET, NO DUPLICATES, WEBKIT INTEGER-SAFE) */
+/* TIME-BASED FLUID AUTOSCROLL ENGINE (DELTA-TIMED, WEBKIT/MOTION SAFE) */
 var autoScrollRaf = null;
+var lastScrollTime = 0;
+var autoScrollSpeedPxPerSec = 45; 
 var isUserInteracting = false;
-var autoScrollSpeed = 0.8; 
-var scrollAccumulator = 0;
 var isLoopingBack = false;
 var resumeTimer = null;
 
-function runAutoScroll() {
+function runAutoScroll(now) {
+  if (!lastScrollTime) lastScrollTime = now;
+  var delta = (now - lastScrollTime) / 1000;
+  lastScrollTime = now;
+
   var track = $("#grid");
-  if (track && track.scrollWidth > (track.clientWidth + 5) && !isUserInteracting && !isLoopingBack) {
-    scrollAccumulator += autoScrollSpeed;
-    if (scrollAccumulator >= 1) {
-      var step = Math.floor(scrollAccumulator);
-      scrollAccumulator -= step;
-      track.scrollLeft += step;
-    }
+  if (track && track.scrollWidth > (track.clientWidth + 5) && !isUserInteracting && !isLoopingBack && delta < 0.2) {
+    track.scrollLeft += autoScrollSpeedPxPerSec * delta;
 
     var maxScroll = track.scrollWidth - track.clientWidth;
     if (track.scrollLeft >= maxScroll - 2) {
@@ -1818,9 +1817,9 @@ function runAutoScroll() {
           track.scrollTo({ left: 0, behavior: 'smooth' });
         }
         setTimeout(function() {
-          scrollAccumulator = 0;
           if (track) track.scrollLeft = 0;
           isLoopingBack = false;
+          lastScrollTime = performance.now();
         }, 850);
       }, 1200);
     }
@@ -1837,14 +1836,15 @@ function resumeAutoScroll(delay) {
   clearTimeout(resumeTimer);
   resumeTimer = setTimeout(function() {
     isUserInteracting = false;
+    lastScrollTime = performance.now();
   }, delay || 600);
 }
 
 function startAutoScroll() {
   if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
-  scrollAccumulator = 0;
   isLoopingBack = false;
   isUserInteracting = false;
+  lastScrollTime = performance.now();
   autoScrollRaf = requestAnimationFrame(runAutoScroll);
 }
 
@@ -2006,9 +2006,9 @@ function renderNichesList(){
     var dropdownFootHTML = "";
 
     if (previewPhotos.length > 0) {
-      previewGridHTML = '<div class="niche-preview-grid">' + previewPhotos.map(function(p, pIdx){
+      previewGridHTML = '<div class="niche-preview-grid">' + previewPhotos.map(function(p){
         var pos = getObjPosition(p.imagePosition);
-        return '<button class="shot" data-preview-niche="'+esc(n.name)+'" data-preview-idx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
+        return '<button class="shot" data-preview-niche="'+esc(n.name)+'" data-preview-title="'+esc(p.title||"")+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
                    '<span class="plate">'+
                      '<img decoding="async" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
@@ -2064,12 +2064,16 @@ function renderNichesList(){
     imgBtn.addEventListener("click", function(e){
       e.stopPropagation();
       var nicheName = imgBtn.dataset.previewNiche;
-      var pIdx = parseInt(imgBtn.dataset.previewIdx, 10);
+      var titleTarget = imgBtn.dataset.previewTitle;
       var fullList = (SITE.photos || []).filter(function(p){
         return cleanCat(p.category) === cleanCat(nicheName);
       });
       state.visible = fullList;
-      openLB(pIdx, imgBtn);
+      var foundIdx = -1;
+      fullList.forEach(function(p, idx){
+        if ((p.title || "") === titleTarget && foundIdx === -1) foundIdx = idx;
+      });
+      openLB(foundIdx !== -1 ? foundIdx : 0, imgBtn);
     });
   });
 
@@ -2377,7 +2381,8 @@ function nextSlide(){
 /* LIGHTBOX */
 var lb = $("#lb");
 function openLB(i, opener){
-  state.index = i; state.opener = opener || null;
+  state.index = i >= 0 ? i : 0; 
+  state.opener = opener || null;
   lb.classList.add("on");
   document.body.style.overflow = "hidden";
   paintLB();
@@ -2791,7 +2796,6 @@ function renderContent(){
   }
 }
 
-/* AGGRESSIVE FRESH CACHE-BUILT INIT (NO STALE CACHE LAG) */
 function initApp(){
   bindGlobalEvents();
   initCarouselControls();
