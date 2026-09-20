@@ -1,125 +1,129 @@
 backend:
-  name: github
-  repo: Chandur-95/livingroomlabs
+  name: git-gateway
   branch: main
-  base_url: https://decap-cms-oauth.vercel.app
-  auth_endpoint: auth
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
 
 collections:
-  - name: "website"
+  - name: "content"
     label: "Website Content"
     files:
       - file: "content.json"
-        label: "Settings & Portfolio"
+        label: "Site Settings & Portfolio"
         name: "content"
         fields:
-          - { label: "Site Name", name: "name", widget: "string" }
-          - { label: "Tagline", name: "tagline", widget: "string" }
-          - { label: "City", name: "city", widget: "string" }
-          - { label: "Email", name: "email", widget: "string" }
-          - label: "Body Font"
-            name: "bodyFont"
-            widget: "select"
-            options: ["Inter", "Archivo", "Playfair Display", "Space Grotesk"]
-            default: "Inter"
+          - { label: "Site Name", name: "name", widget: "string", required: false }
+          - { label: "Tagline", name: "tagline", widget: "string", required: false }
+          - { label: "City", name: "city", widget: "string", required: false }
+          - { label: "Email", name: "email", widget: "string", required: false }
+          - { label: "Body Font", name: "bodyFont", widget: "string", required: false, default: "Inter" }
 
-          # PRINCIPALS & VISUAL CREATORS (THE COLLECTIVE)
-          - label: "The Collective (Principals & Visual Creators)"
-            name: "team"
+          - label: "Social Links"
+            name: "socials"
             widget: "list"
+            required: false
             fields:
-              - { label: "Full Name", name: "name", widget: "string" }
-              - { label: "Role / Title", name: "role", widget: "string" }
-              - { label: "Primary Photo", name: "photo", widget: "image" }
-              - label: "Primary Photo Focal Point"
+              - { label: "Platform Name", name: "name", widget: "string" }
+              - { label: "URL", name: "url", widget: "string" }
+
+          - label: "Hero Lines"
+            name: "hero"
+            widget: "list"
+            required: false
+            field: { label: "Line", name: "line", widget: "string" }
+
+          - label: "Hero Slideshow Banner"
+            name: "bandSlides"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Image", name: "src", widget: "image" }
+              - label: "Image Position"
                 name: "imagePosition"
                 widget: "select"
-                options: ["Top", "Center", "Bottom"]
-                default: "Center"
-              - { label: "Alternate Photo (Optional, enables slideshow)", name: "photo2", widget: "image", required: false }
-              - label: "Alternate Photo Focal Point"
-                name: "imagePosition2"
-                widget: "select"
-                options: ["Top", "Center", "Bottom"]
+                options: ["Center", "Top", "Bottom", "Left", "Right"]
                 default: "Center"
                 required: false
-              - { label: "Bio / Description", name: "bio", widget: "text", required: false }
-              - { label: "Instagram URL", name: "instagram", widget: "string", required: false }
-              - { label: "Portfolio / Work URL", name: "portfolio", widget: "string", required: false }
+              - { label: "Alt Text", name: "alt", widget: "string", required: false }
 
-          - label: "Collective Hero Image"
-            name: "teamHeroImg"
-            widget: "image"
+          - { label: "Statement", name: "statement", widget: "text", required: false }
+          - { label: "Statement By", name: "statementBy", widget: "string", required: false }
+
+          - label: "What We Capture (Niches)"
+            name: "niches"
+            widget: "list"
             required: false
-          - label: "Collective Hero Image Position"
+            fields:
+              - { label: "Category Name", name: "name", widget: "string" }
+              - { label: "Description / Tagline", name: "line", widget: "string" }
+
+          - { label: "Contact Note", name: "contactNote", widget: "text", required: false }
+
+          - { label: "Collective Hero Image", name: "teamHeroImg", widget: "image", required: false }
+          - label: "Collective Hero Position"
             name: "teamHeroImgPosition"
             widget: "select"
-            options: ["Top", "Center", "Bottom"]
+            options: ["Center", "Top", "Bottom", "Left", "Right"]
             default: "Center"
             required: false
           - { label: "Collective Hero Intro", name: "teamHeroIntro", widget: "text", required: false }
 
-          # HERO SLIDESHOW (MULTIPLE PHOTOS)
-          - label: "Hero Banner Slideshow"
-            name: "bandSlides"
+          - label: "The Collective Team"
+            name: "team"
             widget: "list"
+            required: false
             fields:
-              - { label: "Image", name: "src", widget: "image" }
-              - { label: "Alt Text", name: "alt", widget: "string", required: false }
-              - label: "Focal Position"
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Role", name: "role", widget: "string" }
+              - { label: "Bio", name: "bio", widget: "text", required: false }
+              - { label: "Photo 1", name: "photo", widget: "image" }
+              - label: "Photo 1 Position"
                 name: "imagePosition"
                 widget: "select"
-                options: ["Top", "Center", "Bottom"]
+                options: ["Center", "Top", "Bottom", "Left", "Right"]
                 default: "Center"
+                required: false
+              - { label: "Photo 2 (Hover/Alternate)", name: "photo2", widget: "image", required: false }
+              - label: "Photo 2 Position"
+                name: "imagePosition2"
+                widget: "select"
+                options: ["Center", "Top", "Bottom", "Left", "Right"]
+                default: "Center"
+                required: false
+              - { label: "Instagram URL", name: "instagram", widget: "string", required: false }
+              - { label: "Portfolio URL", name: "portfolio", widget: "string", required: false }
 
-          # FALLBACK SINGLE BAND SETTINGS
-          - { label: "Band Fallback Image", name: "bandImg", widget: "image", required: false }
-          - label: "Band Fallback Position"
-            name: "bandImgPosition"
-            widget: "select"
-            options: ["Top", "Center", "Bottom"]
-            default: "Center"
-            required: false
-          - { label: "Band Fallback Alt", name: "bandAlt", widget: "string", required: false }
-
-          # HERO BANNER & NICHES
-          - label: "Hero Lines"
-            name: "hero"
-            widget: "list"
-          - { label: "Statement", name: "statement", widget: "string" }
-          - { label: "Statement Attribution", name: "statementBy", widget: "string" }
-          - label: "What We Shoot (Niches)"
-            name: "niches"
-            widget: "list"
-            fields:
-              - { label: "Niche Name", name: "name", widget: "string" }
-              - { label: "Description Line", name: "line", widget: "string" }
-          - { label: "Contact Note", name: "contactNote", widget: "text" }
-
-          # PHOTOS & PORTFOLIO
           - label: "Photos & Portfolio"
             name: "photos"
             widget: "list"
+            summary: "{{fields.title}} ({{fields.category}})"
             fields:
               - { label: "Title", name: "title", widget: "string" }
-              - { label: "Client", name: "client", widget: "string" }
+              - { label: "Client", name: "client", widget: "string", required: false }
               - label: "Category"
                 name: "category"
                 widget: "select"
-                options: ["Food", "Pets", "Architecture", "Products", "Events", "Portraits"]
-              - { label: "Image", name: "src", widget: "image" }
-              - { label: "Show in 'All' (Toggle on/off)", name: "featured", widget: "boolean", default: true }
-              - { label: "Caption", name: "caption", widget: "string", required: false }
+                options:
+                  - "Performing Arts"
+                  - "Food"
+                  - "Pets"
+                  - "Architecture"
+                  - "Products"
+                  - "Events"
+                  - "Portraits"
+              - { label: "Caption (Optional)", name: "caption", widget: "text", required: false }
               - label: "Aspect Ratio"
                 name: "ratio"
                 widget: "select"
-                options: ["4/5", "1/1", "3/4", "3/2", "16/9"]
+                options: ["1/1", "4/5", "5/4", "3/4", "4/3", "16/9", "16/10"]
                 default: "4/5"
-              - label: "Image Vertical Focal Point"
+                required: false
+              - { label: "Image", name: "src", widget: "image" }
+              - label: "Image Position"
                 name: "imagePosition"
                 widget: "select"
-                options: ["Top", "Center", "Bottom"]
+                options: ["Center", "Top", "Bottom", "Left", "Right"]
                 default: "Center"
+                required: false
+              - { label: "Featured on Home Grid", name: "featured", widget: "boolean", default: true, required: false }
