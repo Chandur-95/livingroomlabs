@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Living Room Labs — Photography</title>
 <link rel="icon" type="image/png" href="/logo.png">
-<meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, performing arts, products, events, travel and portraits.">
+<meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, performing arts, products, events and portraits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="/content.json" as="fetch" crossorigin="anonymous">
@@ -131,7 +131,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   letter-spacing:.08em;
 }
 
-/* NAVIGATION */
+/* NAVIGATION & FLUSH TRANSPARENT LOGO ALIGNMENT */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
   height:calc(var(--nav-h) + var(--safe-top));
@@ -143,10 +143,9 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   transition:background .35s ease, border-color .35s ease;
 }
 .brand{display:flex;align-items:center;gap:14px;height:100%;cursor:pointer}
-.brand .mark{display:flex;align-items:center;height:92px}
+.brand .mark{display:flex;align-items:center;height:100%}
 .brand .mark img{
-  height:92px;width:auto;object-fit:contain;
-  mix-blend-mode:multiply;
+  max-height:44px;width:auto;object-fit:contain;
   transition:transform .3s var(--ease);
 }
 .brand .wordmark{
@@ -280,7 +279,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .sec-head .fill{flex:1;height:1px}
 .sec-head .count{font-size:var(--fs-label);letter-spacing:.1em;opacity:.55;white-space:nowrap}
 
-/* FILTERS */
+/* FILTERS: KEEP ON TOP LAYER */
 .filters{
   position: relative;
   z-index: 30;
@@ -311,7 +310,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* WORK CAROUSEL */
+/* WORK CAROUSEL WITH DOCK MAGNIFICATION (NO DUPLICATES) */
 .work-carousel-container {
   position: relative;
   width: 100%;
@@ -350,6 +349,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   cursor: pointer;
 }
 
+/* Mac OS Dock Magnification on Hover & Touch-Focus */
 .home-work-grid .shot:hover, 
 .home-work-grid .shot:focus-visible,
 .home-work-grid .shot.touch-focus {
@@ -529,7 +529,7 @@ html[data-theme="dark"] .home-work-grid .plate {
   line-height:1.5;
 }
 
-/* FOOTER */
+/* FOOTER LOGO FLUSH ALIGNMENT */
 .foot{
   margin-top:clamp(22px, 3vw, 40px);
   border-top:1px solid var(--ink);
@@ -539,11 +539,6 @@ html[data-theme="dark"] .home-work-grid .plate {
   grid-template-columns:1.2fr 1fr 1fr 1.3fr;
   gap:28px clamp(24px, 3vw, 44px);
   align-items:start;
-}
-.foot-col-logo {
-  display: flex;
-  align-items: flex-start;
-  padding-top: 0;
 }
 .foot h4{margin:0 0 12px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;opacity:.5}
 .foot ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
@@ -560,21 +555,20 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 .foot-logo-btn img{
   width:100%;
-  max-width: 250px;
+  max-width:180px;
   height:auto;
   object-fit:contain;
-  mix-blend-mode:multiply;
   transition:transform .3s var(--ease);
 }
 .foot-logo-btn:hover img{transform:scale(1.03)}
 .foot-links-group { display: contents; }
 
-/* DARK MODE LOGO FILTER SAFEGUARD */
+/* CLEAN ALIGNED LOGOS (NO MULTIPLY OVERLAY ARTIFACTS ON TRANSPARENT PNG) */
 .brand .mark img,
 .foot-logo-btn img,
 .collective-about-logo img,
 .overlay-nav-brand .mark img {
-  mix-blend-mode: multiply;
+  mix-blend-mode: normal;
 }
 
 html[data-theme="dark"] .brand .mark img,
@@ -582,12 +576,10 @@ html[data-theme="dark"] .foot-logo-btn img,
 html[data-theme="dark"] .collective-about-logo img,
 html[data-theme="dark"] .overlay-nav-brand .mark img {
   filter: invert(1) hue-rotate(180deg) brightness(1.25);
-  mix-blend-mode: normal;
 }
 
 .collective-nav .overlay-nav-brand .mark img {
   filter: invert(1) hue-rotate(180deg) brightness(1.25) !important;
-  mix-blend-mode: normal !important;
 }
 
 /* OVERLAYS */
@@ -630,10 +622,10 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   background:none;border:none;padding:0;
 }
 .overlay-nav-brand .mark{
-  display:flex;align-items:center;height:68px;
+  display:flex;align-items:center;height:100%;
 }
 .overlay-nav-brand .mark img{
-  height:68px;width:auto;object-fit:contain;
+  max-height:40px;width:auto;object-fit:contain;
   transition:transform .3s var(--ease);
 }
 .overlay-nav-brand:hover .mark img{transform:scale(1.04)}
@@ -741,8 +733,10 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .niches-content-sec {
   padding-top: calc(var(--nav-h) + clamp(30px, 5vw, 60px));
-  min-height: auto;
-  display: block;
+  min-height: 100vh;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
 }
 
 /* NICHES ACCORDION */
@@ -861,7 +855,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 
 .niche-enquire-sec {
   padding-top: clamp(24px, 3.5vw, 44px);
-  padding-bottom: 0px;
+  padding-bottom: clamp(14px, 2vw, 24px);
   border-top: 1px solid var(--ink);
   margin-top: clamp(24px, 3.5vw, 48px);
 }
@@ -963,7 +957,13 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .member-card:hover .member-plate img{transform:scale(1.06)}
 
-.member-info h3{
+.collective-about-logo img {
+  max-width: 200px;
+  height: auto;
+  object-fit: contain;
+}
+
+.member- info h3{
   margin:0;font-size:clamp(1.2rem, 1.8vw, 1.5rem);font-weight:700;
   font-family:"Space Grotesk",sans-serif;letter-spacing:-0.02em;
 }
@@ -988,18 +988,17 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   background:var(--ink);color:var(--paper);border-color:var(--ink);
 }
 
-/* BALANCED ABOUT / BOTTOM SECTIONS */
 .collective-about-wrap{
-  margin-top:clamp(32px, 5vw, 56px);
-  padding-top:clamp(28px, 4vw, 48px);
+  margin-top:clamp(48px, 8vw, 90px);
+  padding-top:clamp(32px, 5vw, 60px);
   border-top:1px solid var(--ink);
   display:grid;
   grid-template-columns:1fr auto;
-  gap:clamp(24px, 4vw, 50px);
+  gap:clamp(28px, 5vw, 60px);
   align-items:center;
 }
 .niches-content-sec .collective-about-wrap {
-  margin-top:clamp(32px, 5vw, 56px);
+  margin-top: auto;
 }
 
 .collective-about-text{
@@ -1007,33 +1006,26 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .collective-about-text p{
   margin:0;
-  font-family:"Space Grotesk", sans-serif;
-  font-size:clamp(1.5rem, 3.2vw, 2.6rem);
+  font-size:clamp(1.4rem, 3.4vw, 2.8rem);
   line-height:1.15;
   letter-spacing:-.02em;
   font-weight:500;
-  max-width:28ch;
+  max-width:24ch;
 }
-.collective-about-text .by{margin-top:clamp(16px, 2vw, 28px);opacity:.55}
+.collective-about-text .by{margin-top:clamp(18px, 2.5vw, 32px);opacity:.55}
 
 .collective-about-logo{
   display:flex;
   align-items:center;
   justify-content:flex-end;
+  padding-right:clamp(0px, 2vw, 24px);
 }
 .collective-about-logo button{
   border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;
 }
-.collective-about-logo img{
-  width:100%;
-  max-width: 250px;
-  height:auto;
-  object-fit:contain;
-  transition:transform .3s var(--ease);
-}
 .collective-about-logo button:hover img{transform:scale(1.03)}
 
-/* LIGHTBOX */
+/* LIGHTBOX (THEME ADAPTIVE) */
 .lb{
   position:fixed;inset:0;z-index:120;
   background:rgba(255, 255, 255, 0.96);
@@ -1279,9 +1271,9 @@ html[data-theme="dark"] .lb-frame {
   }
   .nav{padding-inline:12px; gap:8px;}
   
-  .brand .mark { height: 60px; }
-  .brand .mark img { height: 60px; width: auto; }
   .brand{flex-direction:row;justify-content:flex-start}
+  .brand .mark{height:100%}
+  .brand .mark img{max-height:36px}
   .brand .wordmark{display:none}
   
   .nav-right{gap:14px}
@@ -1347,16 +1339,6 @@ html[data-theme="dark"] .lb-frame {
     transform: scale(1.22) !important;
     margin: 0 16px !important;
   }
-  .home-work-grid .shot:has(+ .shot:hover),
-  .home-work-grid .shot:has(+ .shot.touch-focus) {
-    transform: scale(1.1) !important;
-    margin-right: 8px !important;
-  }
-  .home-work-grid .shot:hover + .shot,
-  .home-work-grid .shot.touch-focus + .shot {
-    transform: scale(1.1) !important;
-    margin-left: 8px !important;
-  }
 
   .carousel-nav-btn { display: none; }
 
@@ -1373,7 +1355,7 @@ html[data-theme="dark"] .lb-frame {
 
   .foot{
     display: grid !important;
-    grid-template-columns: 140px 1fr !important;
+    grid-template-columns: 110px 1fr !important;
     gap: 16px 20px !important;
     padding-top: 24px !important;
     padding-bottom: 32px !important;
@@ -1395,7 +1377,7 @@ html[data-theme="dark"] .lb-frame {
   }
 
   .foot-logo-btn img{
-    max-width: 170px !important;
+    max-width: 120px !important;
     width: 100% !important;
     margin: 0 !important;
   }
@@ -1415,8 +1397,8 @@ html[data-theme="dark"] .lb-frame {
   .mobile-shoot-column { display: none !important; }
   .foot-col-team { display: none !important; }
 
-  .overlay-nav-brand .mark{height:46px}
-  .overlay-nav-brand .mark img{height:46px}
+  .overlay-nav-brand .mark{height:100%}
+  .overlay-nav-brand .mark img{max-height:34px}
   .overlay-nav .mono{display:none}
 
   .collective-hero{
@@ -1440,13 +1422,12 @@ html[data-theme="dark"] .lb-frame {
     flex-direction: column !important;
     align-items: center !important;
     text-align: center !important;
-    gap: 24px !important;
+    gap: 32px !important;
   }
   .collective-about-text{ text-align: center !important; }
   .collective-about-logo{
     justify-content: center !important;
     padding-right: 0 !important;
-    width: 100% !important;
   }
   .collective-about-logo img{max-width:180px !important}
 
@@ -1463,7 +1444,7 @@ html[data-theme="dark"] .lb-frame {
 <nav class="nav">
   <button class="brand logo-exit-btn" aria-label="Living Room Labs (Reload)">
     <span class="mark">
-      <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
+      <img src="/logo.png" alt="Living Room Labs">
     </span>
     <span class="wordmark" data-name></span>
   </button>
@@ -1538,7 +1519,7 @@ html[data-theme="dark"] .lb-frame {
     <div class="foot">
       <div class="foot-col-logo">
         <button class="foot-logo-btn logo-exit-btn" aria-label="Scroll to top of page">
-          <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
+          <img src="/logo.png" alt="Living Room Labs">
         </button>
       </div>
 
@@ -1566,7 +1547,7 @@ html[data-theme="dark"] .lb-frame {
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
+        <img src="/logo.png" alt="Living Room Labs">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE CAPTURE // CATEGORIES</span>
@@ -1579,7 +1560,7 @@ html[data-theme="dark"] .lb-frame {
   </div>
 
   <div class="overlay-content-sec niches-content-sec">
-    <div id="niches-list-container">
+    <div id="niches-list-container" style="flex: 1;">
       <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Capture</h1>
       <p style="opacity:.7; max-width:600px; margin-bottom:clamp(30px, 5vw, 60px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
       
@@ -1595,20 +1576,15 @@ html[data-theme="dark"] .lb-frame {
       </div>
     </div>
     
-    <div id="niche-view-box" style="display:none;"></div>
+    <div id="niche-view-box" style="display:none; flex: 1;"></div>
 
     <div class="collective-about-wrap">
       <div class="collective-about-text">
-        <span class="label mono" style="opacity:.5;display:block;margin-bottom:12px;">About Living Room Labs</span>
-        <p data-statement></p>
-        <div class="label by" data-statement-by></div>
-        <div style="margin-top: 20px;">
-          <button class="niche-back btn-close-niches" style="padding:10px 20px; cursor:pointer;">← Back to Studio</button>
-        </div>
+        <button class="niche-back btn-close-niches" style="padding:14px 28px; cursor:pointer;">← Back to Studio</button>
       </div>
       <div class="collective-about-logo">
-        <button class="logo-exit-btn" aria-label="Back to Home">
-          <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
+        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
+          <img src="/logo.png" alt="Living Room Labs">
         </button>
       </div>
     </div>
@@ -1620,7 +1596,7 @@ html[data-theme="dark"] .lb-frame {
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
+        <img src="/logo.png" alt="Living Room Labs">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -1659,8 +1635,8 @@ html[data-theme="dark"] .lb-frame {
         <div class="label by" data-statement-by></div>
       </div>
       <div class="collective-about-logo">
-        <button class="logo-exit-btn" aria-label="Back to Home">
-          <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
+        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
+          <img src="/logo.png" alt="Living Room Labs">
         </button>
       </div>
     </div>
@@ -1723,6 +1699,13 @@ html[data-theme="dark"] .lb-frame {
         <label class="enquiry-label" for="enq-niche">Shoot Category</label>
         <select class="enquiry-select" id="enq-niche" name="category">
           <option value="General Enquiry">General Enquiry</option>
+          <option value="Performing Arts">Performing Arts</option>
+          <option value="Food">Food</option>
+          <option value="Pets">Pets</option>
+          <option value="Architecture">Architecture</option>
+          <option value="Products">Products</option>
+          <option value="Events">Events</option>
+          <option value="Portraits">Portraits</option>
         </select>
       </div>
 
@@ -1808,6 +1791,7 @@ var state = {
   isSubmitting:false
 };
 
+/* AUTOSCROLL ENGINE (SINGLE-SET, NO DUPLICATES, WEBKIT INTEGER-SAFE) */
 var autoScrollRaf = null;
 var isUserInteracting = false;
 var autoScrollSpeed = 0.8; 
@@ -1928,7 +1912,7 @@ function renderHomeGrid() {
     return '<button class="shot" data-idx="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
              '<div class="plate-tilt-wrap">'+
                '<span class="plate">'+
-                 '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">'+
+                 '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
                  '<span class="guard"></span>'+
                '</span>'+
              '</div>'+
@@ -2027,7 +2011,7 @@ function renderNichesList(){
         return '<button class="shot" data-preview-niche="'+esc(n.name)+'" data-preview-idx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
                    '<span class="plate">'+
-                     '<img decoding="async" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">'+
+                     '<img decoding="async" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
                      '<span class="guard"></span>'+
                    '</span>'+
                  '</div>'+
@@ -2132,7 +2116,7 @@ function openNicheView(nicheName){
       return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
                '<div class="plate-tilt-wrap">'+
                  '<span class="plate">'+
-                   '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">'+
+                   '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
                    '<span class="guard"></span>'+
                  '</span>'+
                '</div>'+
@@ -2338,7 +2322,7 @@ function initSlideshow(){
     var imgSrc = esc(fixPath(s.src)); 
     var loadStrat = (idx === state.currentSlide) ? 'fetchpriority="high" loading="eager"' : 'decoding="async"';
 
-    return '<img class="band-img '+act+'" '+loadStrat+' data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+esc(pos)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">';
+    return '<img class="band-img '+act+'" '+loadStrat+' data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+esc(pos)+';">';
   }).join("");
 
   var heroBox = $("#hero-slideshow");
@@ -2659,8 +2643,6 @@ function renderContent(){
     img.onerror = function() {
       if (this.src.indexOf("/logo.png") === -1) {
         this.src = "/logo.png";
-      } else {
-        this.style.opacity = '0';
       }
     };
     img.style.display = "";
@@ -2685,13 +2667,8 @@ function renderContent(){
 
   initSlideshow();
 
-  // Multi-element statement and statementBy population
-  $$("[data-statement]").forEach(function(stmt){
-    stmt.innerHTML = italics(SITE.statement || "");
-  });
-  $$("[data-statement-by]").forEach(function(stmtBy){
-    stmtBy.textContent = SITE.statementBy || "";
-  });
+  var stmt = $("[data-statement]"); if(stmt) stmt.innerHTML = italics(SITE.statement || "");
+  var stmtBy = $("[data-statement-by]"); if(stmtBy) stmtBy.textContent = SITE.statementBy || "";
 
   var mail = $("[data-mail]");
   if(mail){
@@ -2703,7 +2680,7 @@ function renderContent(){
   if(note) note.textContent = SITE.contactNote || "Planning something special? Tell us what you’re looking to capture, and when and where.";
 
   var mobNote = $("[data-mobile-shoot-note]");
-  if(mobNote) mobNote.textContent = SITE.mobileShootNote || "Food, pets, architecture, products, events, travel and portraits — calibrated per visual requirement.";
+  if(mobNote) mobNote.textContent = SITE.mobileShootNote || "Food, pets, architecture, products, events, and portraits — calibrated per visual requirement.";
 
   var idxList = $("[data-foot-index]");
   if(idxList){
@@ -2757,12 +2734,12 @@ function renderContent(){
       
       var mPos1 = getObjPosition(m.imagePosition);
       var photoSrc1 = m.photo ? fixPath(m.photo) : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
-      var imgTags = '<img class="initial" src="'+esc(photoSrc1)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos1)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">';
+      var imgTags = '<img class="initial" src="'+esc(photoSrc1)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos1)+';">';
       
       var hasPhoto2 = Boolean(m.photo2 && String(m.photo2).trim() !== "");
       if (hasPhoto2) {
         var mPos2 = getObjPosition(m.imagePosition2);
-        imgTags += '<img src="'+esc(fixPath(m.photo2))+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos2)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">';
+        imgTags += '<img src="'+esc(fixPath(m.photo2))+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos2)+';" onerror="this.style.opacity=\'0.3\';">';
       }
 
       return '<div class="member-card">' +
@@ -2814,10 +2791,11 @@ function renderContent(){
   }
 }
 
+/* AGGRESSIVE FRESH CACHE-BUILT INIT (NO STALE CACHE LAG) */
 function initApp(){
   bindGlobalEvents();
   initCarouselControls();
-  fetch('/content.json', { cache: "no-cache" })
+  fetch('/content.json?_t=' + Date.now(), { cache: "no-store", headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache' } })
     .then(function(res){
       if(!res.ok) throw new Error("Status " + res.status);
       return res.json();
