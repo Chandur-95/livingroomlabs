@@ -279,7 +279,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .sec-head .fill{flex:1;height:1px}
 .sec-head .count{font-size:var(--fs-label);letter-spacing:.1em;opacity:.55;white-space:nowrap}
 
-/* FILTERS: KEEP ON TOP LAYER */
 .filters{
   position: relative;
   z-index: 30;
@@ -310,7 +309,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* WORK CAROUSEL WITH DOCK MAGNIFICATION */
 .work-carousel-container {
   position: relative;
   width: 100%;
@@ -417,7 +415,6 @@ html[data-theme="dark"] .home-work-grid .plate {
 .carousel-nav-btn.prev { left: -14px; }
 .carousel-nav-btn.next { right: -14px; }
 
-/* HORIZONTAL MARQUEE NICHE PREVIEW STRIP (NO DUPLICATION) */
 .niche-preview-grid {
   display: flex !important;
   flex-direction: row !important;
@@ -500,7 +497,6 @@ html[data-theme="dark"] .home-work-grid .plate {
 .cap .c{opacity:.55;text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .home-work-grid .cap .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-/* MOBILE CALLOUT SECTION */
 .mobile-shoot-sec { display: none; }
 .mobile-shoot-box {
   border: 1px solid var(--rule);
@@ -558,7 +554,6 @@ html[data-theme="dark"] .home-work-grid .plate {
   line-height:1.5;
 }
 
-/* 4-COLUMN COMPACT FOOTER - TOP-ALIGNED WITH INDEX & ELSEWHERE & THE COLLECTIVE */
 .foot{
   margin-top: 32px;
   border-top: 1px solid var(--ink);
@@ -611,7 +606,6 @@ html[data-theme="dark"] .home-work-grid .plate {
   margin-top: 20px;
 }
 
-/* CLEAN ALIGNED LOGOS */
 .brand .mark img,
 .foot-logo-btn img,
 .collective-about-logo img,
@@ -630,7 +624,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   filter: invert(1) hue-rotate(180deg) brightness(1.25) !important;
 }
 
-/* OVERLAYS */
 .overlay-page {
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
@@ -666,7 +659,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   color:var(--ink);
 }
 
-/* OVERLAY HEADER LOGO RESTORED TO FULL 74PX */
 .overlay-nav-brand{
   display:flex;align-items:center;gap:12px;cursor:pointer;height:100%;
   background:none;border:none;padding:0;
@@ -787,7 +779,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   padding-bottom: 36px;
 }
 
-/* NICHES ACCORDION */
 .niche-row {
   border-bottom: 1px solid var(--rule);
   width: 100%;
@@ -949,7 +940,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
-/* THE COLLECTIVE */
 .collective-grid {
   display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
 }
@@ -1062,7 +1052,6 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .collective-about-logo button:hover img{transform:scale(1.03)}
 
-/* LIGHTBOX (PRIORITY Z-INDEX: 500) */
 .lb{
   position:fixed;inset:0;z-index:500;
   background:rgba(255, 255, 255, 0.96);
@@ -1146,7 +1135,6 @@ html[data-theme="dark"] .lb-frame {
 .lb-cap .m{opacity:.65;font-size:.82rem;text-align:right;color:inherit}
 .lb-cap .d{grid-column:1/-1;opacity:.8;font-size:.86rem;max-width:70ch;color:inherit}
 
-/* ENQUIRY MODAL DIALOG (Z-INDEX: 400) */
 .enquiry-modal {
   position: fixed;
   inset: 0;
@@ -1302,7 +1290,6 @@ html[data-theme="dark"] .lb-frame {
   }
 }
 
-/* MOBILE SPECIFICS (≤ 640px) */
 @media (max-width:640px){
   :root{
     --nav-h:64px;
@@ -1483,7 +1470,6 @@ html[data-theme="dark"] .lb-frame {
   .lb-cap .m{text-align:left}
 }
 
-/* HIDE THE COLLECTIVE ON MOBILE (<640px) */
 @media (max-width: 640px) {
   .nav-mobile-only .nav-collective-link-mob { display: none !important; }
   .foot-col-team { display: none !important; }
@@ -1595,7 +1581,6 @@ html[data-theme="dark"] .lb-frame {
   </footer>
 </main>
 
-<!-- WHAT WE CAPTURE OVERLAY -->
 <div class="overlay-page" id="niches-page" role="dialog" aria-modal="true" aria-label="What We Capture">
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
@@ -1644,7 +1629,6 @@ html[data-theme="dark"] .lb-frame {
   </div>
 </div>
 
-<!-- THE COLLECTIVE OVERLAY -->
 <div class="overlay-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
@@ -1696,7 +1680,6 @@ html[data-theme="dark"] .lb-frame {
   </section>
 </div>
 
-<!-- LIGHTBOX (Z-INDEX: 500) -->
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <div class="lb-top">
     <div class="lb-count mono"><b id="lb-i">01</b> <span>/</span> <span id="lb-n">01</span></div>
@@ -1726,7 +1709,6 @@ html[data-theme="dark"] .lb-frame {
   </div>
 </div>
 
-<!-- ENQUIRY MODAL DIALOG (Z-INDEX: 400) -->
 <div class="enquiry-modal" id="enquiry-modal" role="dialog" aria-modal="true" aria-label="Enquiry">
   <div class="enquiry-card">
     <div class="enquiry-head">
@@ -1824,11 +1806,6 @@ function getObjPosition(pos){
 }
 
 function italics(str){
-  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;)
-                    .replace(/\*(.+?)\*/g,"<em>$1</em>");
-}
-// Quick fix for my replace line safety
-function italics(str){
   return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\*(.+?)\*/g,"<em>$1</em>");
 }
 function esc(str){
@@ -1862,7 +1839,6 @@ function runAutoScroll(now) {
   var delta = Math.min((now - lastScrollTime) / 1000, 0.05);
   lastScrollTime = now;
 
-  // Watch-dog fail-safe: if touch/pointer interaction ended or stalled, force resume after 1200ms
   if (isUserInteracting && (performance.now() - lastInteractionTime > 1200)) {
     isUserInteracting = false;
   }
@@ -1888,7 +1864,6 @@ function runAutoScroll(now) {
     }
   }
 
-  // Also auto-scroll niche preview tracks if expanded cleanly (non-infinite loop bounce/loop)
   $$(".niche-preview-grid").forEach(function(pTrack) {
     if (pTrack.scrollWidth > pTrack.clientWidth + 4 && !pTrack.matches(":hover") && !isUserInteracting) {
       pTrack.scrollLeft += 22 * delta;
@@ -2086,7 +2061,6 @@ function renderNichesList(){
     var photosInNiche = (SITE.photos || []).filter(function(p){
       return cleanCat(p.category) === cName;
     });
-    // Standard slice without duplication/infinite loop
     var previewPhotos = photosInNiche.slice(0, 4);
 
     var previewGridHTML = "";
@@ -2617,7 +2591,6 @@ function bindGlobalEvents() {
   }, {passive:true});
 
   document.addEventListener("click", function(e) {
-    // Universal delegate for data-open-enquiry
     var enqAttr = e.target.closest("[data-open-enquiry]");
     if (enqAttr) {
       e.preventDefault();
