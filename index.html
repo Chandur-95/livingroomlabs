@@ -143,9 +143,9 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   transition:background .35s ease, border-color .35s ease;
 }
 .brand{display:flex;align-items:center;gap:14px;height:100%;cursor:pointer}
-.brand .mark{display:flex;align-items:center;height:68px}
+.brand .mark{display:flex;align-items:center;height:92px}
 .brand .mark img{
-  height:68px;width:auto;object-fit:contain;
+  height:92px;width:auto;object-fit:contain;
   mix-blend-mode:multiply;
   transition:transform .3s var(--ease);
 }
@@ -555,7 +555,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 .foot-logo-btn img{
   width:100%;
-  max-width: 190px;
+  max-width: 240px;
   height:auto;
   object-fit:contain;
   mix-blend-mode:multiply;
@@ -625,10 +625,10 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   background:none;border:none;padding:0;
 }
 .overlay-nav-brand .mark{
-  display:flex;align-items:center;height:48px;
+  display:flex;align-items:center;height:68px;
 }
 .overlay-nav-brand .mark img{
-  height:48px;width:auto;object-fit:contain;
+  height:68px;width:auto;object-fit:contain;
   transition:transform .3s var(--ease);
 }
 .overlay-nav-brand:hover .mark img{transform:scale(1.04)}
@@ -1023,7 +1023,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .collective-about-logo img{
   width:auto;
-  max-width: 190px;
+  max-width: 240px;
   height:auto;
   object-fit:contain;
   transition:transform .3s var(--ease);
@@ -1276,8 +1276,8 @@ html[data-theme="dark"] .lb-frame {
   }
   .nav{padding-inline:12px; gap:8px;}
   
-  .brand .mark { height: 52px; }
-  .brand .mark img { height: 52px; width: auto; }
+  .brand .mark { height: 60px; }
+  .brand .mark img { height: 60px; width: auto; }
   .brand{flex-direction:row;justify-content:flex-start}
   .brand .wordmark{display:none}
   
@@ -1392,7 +1392,7 @@ html[data-theme="dark"] .lb-frame {
   }
 
   .foot-logo-btn img{
-    max-width: 140px !important;
+    max-width: 170px !important;
     width: 100% !important;
     margin: 0 !important;
   }
@@ -1412,8 +1412,8 @@ html[data-theme="dark"] .lb-frame {
   .mobile-shoot-column { display: none !important; }
   .foot-col-team { display: none !important; }
 
-  .overlay-nav-brand .mark{height:40px}
-  .overlay-nav-brand .mark img{height:40px}
+  .overlay-nav-brand .mark{height:46px}
+  .overlay-nav-brand .mark img{height:46px}
   .overlay-nav .mono{display:none}
 
   .collective-hero{
@@ -1445,7 +1445,7 @@ html[data-theme="dark"] .lb-frame {
     padding-right: 0 !important;
     width: 100% !important;
   }
-  .collective-about-logo img{max-width:140px !important}
+  .collective-about-logo img{max-width:170px !important}
 
   .lb-frame img{max-width:calc(100vw - 24px);max-height:calc(100vh - 140px)}
   .lb-cap{grid-template-columns:1fr}
@@ -2534,7 +2534,7 @@ function bindGlobalEvents() {
       e.preventDefault(); openCollective();
     } else if (e.target.closest(".nav-niches-link, .mobile-shoot-box")) {
       e.preventDefault(); openNiches();
-    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquire-overview")) {
+    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquiry-overview")) {
       e.preventDefault(); openEnquiryModal("General Enquiry");
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
