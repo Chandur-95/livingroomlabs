@@ -295,6 +295,26 @@
       "category": "Pets",
       "caption": "Blue",
       "src": "/images/uploads/blue.jpeg"
+    },
+    {
+      "client": "Studio",
+      "category": "Travel",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "title": "New York ",
+      "caption": "NYC dream",
+      "src": "/images/uploads/new-york-city.jpeg"
+    },
+    {
+      "client": "Studio",
+      "category": "Travel",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "src": "/images/uploads/people.jpeg",
+      "title": "Shadows and Light",
+      "caption": "The frame that found me - Pooja"
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
