@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Living Room Labs — Photography</title>
-<link rel="icon" type="image/png" href="logo.png">
+<link rel="icon" type="image/png" href="logo.png?v=2">
 <meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, performing arts, products, events and portraits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1515,7 +1515,7 @@ html[data-theme="dark"] .lb-frame {
 <nav class="nav">
   <button class="brand logo-exit-btn" aria-label="Living Room Labs (Reload)">
     <span class="mark">
-      <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
+      <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.opacity='0'">
     </span>
     <span class="wordmark" data-name></span>
   </button>
@@ -1593,7 +1593,7 @@ html[data-theme="dark"] .lb-frame {
     <div class="foot">
       <div class="foot-col-logo">
         <button class="foot-logo-btn logo-exit-btn" aria-label="Scroll to top of page">
-          <img src="logo.png" alt="Living Room Labs" onerror="this.style.opacity='0'">
+          <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.opacity='0'">
         </button>
       </div>
 
@@ -1621,7 +1621,7 @@ html[data-theme="dark"] .lb-frame {
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+        <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.display='none'">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE CAPTURE // CATEGORIES</span>
@@ -1658,7 +1658,7 @@ html[data-theme="dark"] .lb-frame {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+          <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
     </div>
@@ -1670,7 +1670,7 @@ html[data-theme="dark"] .lb-frame {
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+        <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.display='none'">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -1710,7 +1710,7 @@ html[data-theme="dark"] .lb-frame {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="logo.png" alt="Living Room Labs" onerror="this.style.display='none'">
+          <img src="logo.png?v=2" alt="Living Room Labs" onerror="this.style.display='none'">
         </button>
       </div>
     </div>
@@ -1881,13 +1881,13 @@ function pauseAutoScroll() {
 
 function resumeAutoScroll() {
   clearTimeout(resumeTimer);
-  // Delay slightly to prevent stutter when moving between photos
+  // Wait exactly 400ms to allow the CSS margin transition (0.35s) to finish completely.
+  // This prevents the mobile browser jitter/popping glitch when closing a photo.
   resumeTimer = setTimeout(function() {
-    // Only resume if absolutely no photo is clicked/focused on mobile
     if ($$("#grid .shot.touch-focus").length === 0) {
       isUserInteracting = false;
     }
-  }, 150); 
+  }, 400); 
 }
 
 function startAutoScroll(singleSetWidth) {
@@ -2452,8 +2452,8 @@ function closeLB(){
     state.opener.focus();
   }
   
-  isUserInteracting = false; // Force true resume
-  resumeAutoScroll(); // Immediately resume grid
+  isUserInteracting = false; 
+  resumeAutoScroll(); // triggers the 400ms jitter-proof wait
 }
 
 function stepLB(d){
@@ -2559,7 +2559,7 @@ document.addEventListener("dragstart", function(e){
 
 function bindGlobalEvents() {
   
-  // Clear mobile focus when touching ANYWHERE else on screen
+  // Clear mobile focus when touching ANYWHERE else on screen (Jitter fix)
   document.addEventListener("touchstart", function(e) {
     if (!e.target.closest("#grid .shot")) {
       var cleared = false;
@@ -2567,19 +2567,25 @@ function bindGlobalEvents() {
         s.classList.remove("touch-focus");
         cleared = true;
       });
-      if (cleared) resumeAutoScroll();
+      if (cleared) {
+        pauseAutoScroll(); 
+        resumeAutoScroll(); 
+      }
     }
   }, {passive:true});
 
   document.addEventListener("click", function(e) {
-    // Clear mobile focus when clicking ANYWHERE else on screen
+    // Clear mobile focus when clicking ANYWHERE else on screen (Jitter fix)
     if (!e.target.closest("#grid .shot")) {
       var cleared = false;
       $$("#grid .shot.touch-focus").forEach(function(s) {
         s.classList.remove("touch-focus");
         cleared = true;
       });
-      if (cleared) resumeAutoScroll();
+      if (cleared) {
+        pauseAutoScroll();
+        resumeAutoScroll();
+      }
     }
     
     if (e.target.closest(".btn-close-collective")) {
