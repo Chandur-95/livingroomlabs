@@ -1881,8 +1881,7 @@ function pauseAutoScroll() {
 
 function resumeAutoScroll() {
   clearTimeout(resumeTimer);
-  // Wait exactly 400ms to allow the CSS margin transition (0.35s) to finish completely.
-  // This prevents the mobile browser jitter/popping glitch when closing a photo.
+  // Wait 400ms to allow CSS margin/scale transitions to finish completely (fixes mobile jitter)
   resumeTimer = setTimeout(function() {
     if ($$("#grid .shot.touch-focus").length === 0) {
       isUserInteracting = false;
@@ -1955,7 +1954,6 @@ function renderHomeGrid() {
     return;
   }
 
-  // Duplicate the array twice so it forms a seamless loop
   var renderList = list.concat(list).concat(list);
 
   var n = 0;
@@ -1977,18 +1975,13 @@ function renderHomeGrid() {
   }).join("");
 
   $$("#grid .shot", grid).forEach(function(b){
-    
-    // Desktop: Pause when cursor is exactly ON an image
     b.addEventListener("mouseenter", pauseAutoScroll);
-    
-    // Desktop: Resume the millisecond the cursor moves AWAY from an image
     b.addEventListener("mouseleave", function() {
-      b.classList.remove("touch-focus"); // safety clear
+      b.classList.remove("touch-focus");
       resumeAutoScroll();
     });
 
     b.addEventListener("click", function(e){ 
-      // Mobile logic: First tap shows dock effect. Second tap opens lightbox.
       if (window.matchMedia("(hover: none)").matches && !b.classList.contains("touch-focus")) {
         e.preventDefault();
         $$("#grid .shot", grid).forEach(function(other) {
@@ -1998,14 +1991,11 @@ function renderHomeGrid() {
         pauseAutoScroll();
         return;
       }
-      
-      // Desktop click, or Mobile second tap
       pauseAutoScroll();
       openLB(parseInt(b.dataset.realIdx, 10), b); 
     });
   });
 
-  // Track dragging to pause
   grid.addEventListener("touchstart", pauseAutoScroll, {passive:true});
   grid.addEventListener("touchmove", pauseAutoScroll, {passive:true});
   grid.addEventListener("touchend", resumeAutoScroll, {passive:true});
@@ -2448,12 +2438,12 @@ function closeLB(){
   document.body.style.overflow = (collectivePage.classList.contains("open") || nichesPage.classList.contains("open")) ? "hidden" : "";
   
   if(state.opener) {
-    state.opener.classList.remove("touch-focus"); // Un-pop the image
+    state.opener.classList.remove("touch-focus");
     state.opener.focus();
   }
   
   isUserInteracting = false; 
-  resumeAutoScroll(); // triggers the 400ms jitter-proof wait
+  resumeAutoScroll();
 }
 
 function stepLB(d){
@@ -2558,8 +2548,6 @@ document.addEventListener("dragstart", function(e){
 });
 
 function bindGlobalEvents() {
-  
-  // Clear mobile focus when touching ANYWHERE else on screen (Jitter fix)
   document.addEventListener("touchstart", function(e) {
     if (!e.target.closest("#grid .shot")) {
       var cleared = false;
@@ -2575,7 +2563,6 @@ function bindGlobalEvents() {
   }, {passive:true});
 
   document.addEventListener("click", function(e) {
-    // Clear mobile focus when clicking ANYWHERE else on screen (Jitter fix)
     if (!e.target.closest("#grid .shot")) {
       var cleared = false;
       $$("#grid .shot.touch-focus").forEach(function(s) {
