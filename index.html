@@ -540,14 +540,14 @@ html[data-theme="dark"] .home-work-grid .plate {
   line-height:1.5;
 }
 
-/* COMPACT FOOTER - GRID ALIGNED FLUSH AT TOP */
+/* SYMMETRICAL COMPACT FOOTER - TOP-ALIGNED WITH INDEX */
 .foot{
-  margin-top: 24px;
+  margin-top: 32px;
   border-top: 1px solid var(--ink);
-  padding-top: 18px;
-  padding-bottom: 24px;
+  padding-top: 20px;
+  padding-bottom: 28px;
   display: grid;
-  grid-template-columns: 240px 1fr 1fr 1fr;
+  grid-template-columns: 220px 1fr 1fr 1.2fr;
   gap: 24px 32px;
   align-items: start;
 }
@@ -575,11 +575,11 @@ html[data-theme="dark"] .home-work-grid .plate {
   display:block;
   text-align:left;
   line-height:0;
-  margin-top: -6px; /* Flush camera graphic top with text top */
+  margin-top: 0; /* Align top edge directly with text columns */
 }
 .foot-logo-btn img{
   width:100%;
-  max-width:230px;
+  max-width:210px;
   height:auto;
   object-fit:contain;
   display:block;
@@ -1370,10 +1370,10 @@ html[data-theme="dark"] .lb-frame {
 
   .foot{
     display: grid !important;
-    grid-template-columns: 120px 1fr !important;
+    grid-template-columns: 140px 1fr !important;
     gap: 16px 20px !important;
-    padding-top: 16px !important;
-    padding-bottom: 20px !important;
+    padding-top: 20px !important;
+    padding-bottom: 24px !important;
     align-items: start !important;
   }
   
@@ -1391,7 +1391,7 @@ html[data-theme="dark"] .lb-frame {
     text-align: left !important;
     width: 100% !important;
     line-height: 1 !important;
-    margin-top: -3px !important;
+    margin-top: 0 !important;
   }
 
   .foot-logo-btn img{
@@ -1823,7 +1823,7 @@ function runAutoScroll(now) {
   lastScrollTime = now;
 
   var track = $("#grid");
-  if (track && track.scrollWidth > (track.clientWidth + 5) && !isUserInteracting && !isLoopingBack && delta < 0.2) {
+  if (track && track.scrollWidth > (track.clientWidth + 5) && !isUserInteracting && !isLoopingBack && delta < 0.25) {
     track.scrollLeft += autoScrollSpeedPxPerSec * delta;
 
     var maxScroll = track.scrollWidth - track.clientWidth;
@@ -1976,9 +1976,12 @@ function renderHomeGrid() {
   }, {passive:true});
 
   grid.addEventListener("touchend", function() {
-    if ($$("#grid .shot.touch-focus").length === 0) {
-      resumeAutoScroll(1000);
-    }
+    $$("#grid .shot.touch-focus").forEach(function(s) { s.classList.remove("touch-focus"); });
+    resumeAutoScroll(600);
+  }, {passive:true});
+
+  grid.addEventListener("touchcancel", function() {
+    resumeAutoScroll(400);
   }, {passive:true});
 
   grid.scrollLeft = 0;
@@ -2558,7 +2561,7 @@ function bindGlobalEvents() {
       e.preventDefault(); openCollective();
     } else if (e.target.closest(".nav-niches-link, .mobile-shoot-box")) {
       e.preventDefault(); openNiches();
-    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquire-overview")) {
+    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquiry-overview")) {
       e.preventDefault(); openEnquiryModal("General Enquiry");
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
