@@ -1283,7 +1283,7 @@ html[data-theme="dark"] .lb-frame {
   }
 }
 
-/* MOBILE SPECIFICS */
+/* MOBILE SPECIFICS (≤ 640px) */
 @media (max-width:640px){
   :root{
     --nav-h:64px;
@@ -1306,7 +1306,7 @@ html[data-theme="dark"] .lb-frame {
     letter-spacing:0.14em;
     white-space:nowrap;
   }
-  .nav-mobile-only .nav-niches-link-mob { display: none !important; }
+  .nav-mobile-only .nav-collective-link-mob { display: none !important; }
   .nav-desktop-only{display:none !important}
   .nav-mobile-only{display:inline-block !important}
 
@@ -1377,9 +1377,9 @@ html[data-theme="dark"] .lb-frame {
 
   .foot{
     display: grid !important;
-    grid-template-columns: 120px 1fr 1fr 1fr !important;
-    gap: 12px 14px !important;
-    padding-top: 18px !important;
+    grid-template-columns: 110px 1fr 1fr !important;
+    gap: 16px 20px !important;
+    padding-top: 20px !important;
     padding-bottom: 24px !important;
     align-items: start !important;
   }
@@ -1402,22 +1402,23 @@ html[data-theme="dark"] .lb-frame {
   }
 
   .foot-logo-btn img{
-    max-width: 110px !important;
+    max-width: 100px !important;
     width: 100% !important;
     margin: 0 !important;
   }
 
   .foot-links-group {
-    grid-column: 2 / 5 !important;
-    display: grid !important;
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 12px !important;
+    grid-column: 2 / 4 !important;
+    display: flex !important;
+    flex-direction: row !important;
+    justify-content: flex-start !important;
+    gap: 24px !important;
     width: 100% !important;
   }
 
-  .foot-col-index { min-width: 60px; margin-top: 0 !important; }
-  .foot-col-elsewhere { min-width: 60px; margin-top: 0 !important; }
-  .foot-col-team { min-width: 70px; margin-top: 0 !important; }
+  .foot-col-index { min-width: 70px; margin-top: 0 !important; }
+  .foot-col-elsewhere { min-width: 70px; margin-top: 0 !important; }
+  .foot-col-team { display: none !important; }
 
   .overlay-nav-brand .mark{height:52px}
   .overlay-nav-brand .mark img{height:52px;max-height:52px}
@@ -1474,7 +1475,7 @@ html[data-theme="dark"] .lb-frame {
     <div class="nav-links label">
       <button type="button" class="nav-niches-link nav-desktop-only">What we Capture</button>
       <button type="button" class="nav-collective-link nav-desktop-only">The Collective</button>
-      <button type="button" class="nav-collective-link-mob nav-mobile-only">The Collective</button>
+      <button type="button" class="nav-collective-link-mob nav-mobile-only" style="display:none;">The Collective</button>
     </div>
     <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
       <span class="cord" aria-hidden="true"></span>
