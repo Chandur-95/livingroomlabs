@@ -309,7 +309,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 /* ============================================================
-   MAC OS DOCK CAROUSEL
+   MAC OS DOCK CAROUSEL (BUTTER-SMOOTH TOUCH & DESKTOP)
    ============================================================ */
 .work-carousel-container {
   position: relative;
@@ -1576,7 +1576,7 @@ html[data-theme="dark"] .lb-frame {
         <span class="mobile-shoot-arrow">↗</span>
       </div>
     </div>
-    <p class="contact-note" style="margin-top:10px;">Food, pets, architecture, products, events, and portraits — calibrated per visual requirement.</p>
+    <p class="contact-note" data-mobile-shoot-note style="margin-top:10px;"></p>
   </section>
 
   <section class="sec wrap" id="contact">
@@ -1881,7 +1881,6 @@ function pauseAutoScroll() {
 
 function resumeAutoScroll() {
   clearTimeout(resumeTimer);
-  // Wait 400ms to allow CSS margin/scale transitions to finish completely (fixes mobile jitter)
   resumeTimer = setTimeout(function() {
     if ($$("#grid .shot.touch-focus").length === 0) {
       isUserInteracting = false;
@@ -2298,8 +2297,26 @@ var charCount = $("#char-count");
 var enqStatus = $("#enquiry-status");
 var enqSelect = $("#enq-niche");
 
+function populateEnquirySelect() {
+  if (!enqSelect) return;
+  var currentVal = enqSelect.value;
+  var cats = ["General Enquiry"];
+  (SITE.niches || []).forEach(function(n) {
+    if (n.name && cats.indexOf(n.name) === -1) {
+      cats.push(n.name);
+    }
+  });
+  enqSelect.innerHTML = cats.map(function(c) {
+    return '<option value="' + esc(c) + '">' + esc(c) + '</option>';
+  }).join("");
+  if (currentVal && cats.indexOf(currentVal) !== -1) {
+    enqSelect.value = currentVal;
+  }
+}
+
 function openEnquiryModal(preselectedCategory) {
   if (!enqModal) return;
+  populateEnquirySelect();
   if (preselectedCategory && enqSelect) {
     var exists = false;
     for (var i = 0; i < enqSelect.options.length; i++) {
@@ -2630,7 +2647,9 @@ function bindGlobalEvents() {
         message: $("#enq-msg").value
       };
 
-      fetch("https://formspree.io/f/xjykvnoz", {
+      var formId = SITE.formspreeId || "xjykvnoz";
+
+      fetch("https://formspree.io/f/" + formId, {
         method: "POST",
         headers: { 
           "Content-Type": "application/json", 
@@ -2698,6 +2717,11 @@ function renderContent(){
     document.body.style.fontFamily = '"' + SITE.bodyFont + '", system-ui, -apple-system, sans-serif';
   }
 
+  var logoSrc = fixPath(SITE.logo || "logo.png?v=2");
+  $$(".mark img, .foot-logo-btn img, .collective-about-logo img").forEach(function(img){
+    img.src = logoSrc;
+  });
+
   $$("[data-name]").forEach(function(n){ n.textContent = SITE.name || ""; });
   $$("[data-tagline]").forEach(function(n){ n.textContent = SITE.tagline || ""; });
   var pl1 = $("[data-place]"); if(pl1) pl1.textContent = SITE.city || "";
@@ -2726,9 +2750,11 @@ function renderContent(){
     mail.href = "mailto:" + (SITE.email || "");
   }
   
-  var targetNote = "Planning something special? Tell us what you’re looking to capture, and when and where.";
   var note = $("[data-contact-note]"); 
-  if(note) note.textContent = targetNote;
+  if(note) note.textContent = SITE.contactNote || "Planning something special? Tell us what you’re looking to capture, and when and where.";
+
+  var mobNote = $("[data-mobile-shoot-note]");
+  if(mobNote) mobNote.textContent = SITE.mobileShootNote || "Food, pets, architecture, products, events, and portraits — calibrated per visual requirement.";
 
   var idxList = $("[data-foot-index]");
   if(idxList){
@@ -2826,6 +2852,7 @@ function renderContent(){
   buildFilters();
   renderHomeGrid();
   renderNichesList();
+  populateEnquirySelect();
 
   if(window.location.hash === "#collective"){
     openCollective();
@@ -2853,8 +2880,12 @@ function initApp(){
       renderContent();
     })
     .catch(function(err){
-      console.warn("Using baseline fallback:", err);
-      renderContent();
+      console.warn("Using baseline fallback due to:", err);
+      try {
+        renderContent();
+      } catch(innerErr) {
+        console.error("Critical render failure:", innerErr);
+      }
     });
 }
 
