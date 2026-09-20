@@ -1,4 +1,116 @@
 {
+  "name": "Living Room Labs",
+  "tagline": "CAPTURE . CREATE . INSPIRE",
+  "city": "Hyderabad/India",
+  "email": "hello@livingroomlabs.in",
+  "bodyFont": "Inter",
+  "contactNote": "Planning something special? Tell us what you’re looking to capture, and when and where.",
+  "statement": "A portfolio is not a *promise*. It is a receipt.",
+  "statementBy": "Everything on this page was shot by us, for someone who needed it.",
+  "teamHeroImg": "/images/uploads/img_3095.jpg.jpeg",
+  "teamHeroImgPosition": "Center",
+  "teamHeroIntro": "Four distinct visual sensibilities aligned under one collective principle: unfiltered truth in every frame.",
+  "bandImg": "/images/uploads/dsc05175.jpg",
+  "bandImgPosition": "Center",
+  "bandAlt": "Studio shoot overview",
+  "hero": [
+    "A visual collective",
+    "built on *curiosity*.",
+    "Every niche, every frame,",
+    "*uncompromisingly real*."
+  ],
+  "socials": [
+    {
+      "name": "Instagram",
+      "url": "https://www.instagram.com/fromlivingroomlabs/"
+    }
+  ],
+  "bandSlides": [
+    {
+      "imagePosition": "Center",
+      "src": "/images/uploads/dsc05175.jpg",
+      "alt": "Portland Head Light, Rodhe Island"
+    },
+    {
+      "imagePosition": "Center",
+      "src": "/images/uploads/dsc09341.jpg",
+      "alt": "Chicago, IL"
+    },
+    {
+      "imagePosition": "Center",
+      "src": "/images/uploads/mink.png",
+      "alt": "Mink"
+    }
+  ],
+  "team": [
+    {
+      "name": "Pooja",
+      "role": "Lead / Photographer",
+      "photo": "/images/uploads/pooja.jpeg",
+      "imagePosition": "Center",
+      "bio": "Hello folks! I am a photographer who finds little stories in everyday moments. Always curious of exploring new ideas to capture images that feel alive.",
+      "instagram": "https://www.instagram.com/pooja.and.hachi?stkn=MXVuc2pwbXhmZHVxNA==",
+      "portfolio": ""
+    },
+    {
+      "name": "Chikita",
+      "role": "Photographer / Creative Head",
+      "photo": "/images/uploads/whatsapp-image-2026-09-16-at-9.25.07-pm.jpeg",
+      "imagePosition": "Center",
+      "bio": "I am a photographer and creative collaborator who brings fresh ideas to every shoot. I don't just capture moments, I help shape the vision behind them to bring your stories to life.",
+      "instagram": "https://www.instagram.com/m._.chikita?stkn=YTN0ejZoNzBmMWln",
+      "portfolio": ""
+    },
+    {
+      "name": "Cherry",
+      "role": "DOP / Filmmaker",
+      "photo": "/images/uploads/whatsapp-image-2026-09-16-at-1.52.56-pm.jpeg",
+      "imagePosition": "Center",
+      "bio": "Specializing in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
+      "instagram": "https://www.instagram.com/documentarian_?stkn=amZmYXI5dWprYjI0",
+      "portfolio": ""
+    },
+    {
+      "name": "Chandu",
+      "role": "Photographer",
+      "photo": "/images/uploads/chandu01.jpg",
+      "imagePosition": "Center",
+      "bio": "Software engineer by day, Photographer by night. I like to turn fleeting moments into timeless stories.",
+      "instagram": "https://www.instagram.com/chandu_r25/",
+      "portfolio": "https://unsplash.com/@cr029",
+      "photo2": "/images/uploads/chandu02.jpg"
+    }
+  ],
+  "niches": [
+    {
+      "name": "Performing Arts",
+      "line": "capturing rhythm expressions, traditional forms, and uncompromising energy on stage."
+    },
+    {
+      "name": "Food",
+      "line": "Commercial kitchen or street counter, captured before the first bite."
+    },
+    {
+      "name": "Pets",
+      "line": "Unpredictable energy, floor-level focus, zero stiff posing."
+    },
+    {
+      "name": "Real Estate",
+      "line": "Listings, developments, and commercial properties documented exactly as they feel."
+    },
+    {
+      "name": "Products",
+      "line": "Studio lighting, sharp edges, and textures that sell without explaining."
+    },
+    {
+      "name": "Events",
+      "line": "Candid moments, crowd energy, and just raw atmosphere from soundcheck to afterparty."
+    },
+    {
+      "name": "Portraits",
+      "line": "Headshots and personal work, in studio or wherever you already are."
+    }
+  ],
   "photos": [
     {
       "featured": true,
@@ -115,117 +227,6 @@
       "category": "Portraits",
       "src": "/images/uploads/cr-6xn5vs2u0os-unsplash.jpg",
       "caption": "Love lives here."
-    }
-  ],
-  "statementBy": "Everything on this page was shot by us, for someone who needed it.",
-  "socials": [
-    {
-      "name": "Instagram",
-      "url": "https://www.instagram.com/fromlivingroomlabs/"
-    }
-  ],
-  "city": "Hyderabad/India",
-  "name": "Living Room Labs",
-  "teamHeroImg": "/images/uploads/img_3095.jpg.jpeg",
-  "niches": [
-    {
-      "name": "Food",
-      "line": "Commercial kitchen or street counter, captured before the first bite."
-    },
-    {
-      "name": "Pets",
-      "line": "Unpredictable energy, floor-level focus, zero stiff posing."
-    },
-    {
-      "name": "Real Estate",
-      "line": "Listings, developments, and commercial properties documented exactly as they feel."
-    },
-    {
-      "name": "Products",
-      "line": "Studio lighting, sharp edges, and textures that sell without explaining."
-    },
-    {
-      "name": "Events",
-      "line": "Candid moments, crowd energy, and just raw atmosphere from soundcheck to afterparty."
-    },
-    {
-      "name": "Portraits",
-      "line": "Headshots and personal work, in studio or wherever you already are."
-    }
-  ],
-  "bandImg": "/images/uploads/dsc05175.jpg",
-  "tagline": "CAPTURE . CREATE . INSPIRE",
-  "statement": "A portfolio is not a *promise*. It is a receipt.",
-  "bodyFont": "Inter",
-  "contactNote": "Tell us what you are shooting, roughly when, and where. We reply within a day.",
-  "bandAlt": "Studio shoot overview",
-  "teamHeroIntro": "Four distinct visual sensibilities aligned under one collective principle: unfiltered truth in every frame.",
-  "teamHeroImgPosition": "Center",
-  "band": {
-    "src": "/images/uploads/dsc05175.jpg"
-  },
-  "bandImgPosition": "Center",
-  "bandSlides": [
-    {
-      "imagePosition": "Center",
-      "src": "/images/uploads/dsc05175.jpg",
-      "alt": " Portland Head Light, Rodhe Island"
-    },
-    {
-      "imagePosition": "Center",
-      "src": "/images/uploads/dsc09341.jpg",
-      "alt": "Chicago, IL"
-    },
-    {
-      "imagePosition": "Center",
-      "src": "/images/uploads/mink.png",
-      "alt": "Mink"
-    }
-  ],
-  "hero": [
-    "A visual collective",
-    "built on *curiosity*.",
-    "Every niche, every frame,",
-    "*uncompromisingly real*."
-  ],
-  "email": "hello@livingroomlabs.in",
-  "team": [
-    {
-      "name": "Pooja",
-      "role": "Lead / Photographer",
-      "photo": "/images/uploads/pooja.jpeg",
-      "imagePosition": "Center",
-      "bio": "Hello folks! I am a photographer who finds little stories in everyday moments. Always curious of exploring new ideas to capture images that feel alive.",
-      "instagram": "https://www.instagram.com/pooja.and.hachi?stkn=MXVuc2pwbXhmZHVxNA==",
-      "portfolio": ""
-    },
-    {
-      "name": "Chikita",
-      "role": "Photographer / Creative Head",
-      "photo": "/images/uploads/whatsapp-image-2026-09-16-at-9.25.07-pm.jpeg",
-      "imagePosition": "Center",
-      "bio": "I am a photographer and creative collaborator who brings fresh ideas to every shoot. I don't just capture moments,I help shape the vision behind them to bring your stories to life.",
-      "instagram": "https://www.instagram.com/m._.chikita?stkn=YTN0ejZoNzBmMWln",
-      "portfolio": ""
-    },
-    {
-      "name": "Cherry",
-      "role": "DOP / Filmmaker",
-      "photo": "/images/uploads/whatsapp-image-2026-09-16-at-1.52.56-pm.jpeg",
-      "imagePosition": "Center",
-      "bio": "Specializing in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
-      "instagram": "https://www.instagram.com/documentarian_?stkn=amZmYXI5dWprYjI0",
-      "portfolio": ""
-    },
-    {
-      "name": "Chandu",
-      "role": "Photographer",
-      "photo": "/images/uploads/chandu01.jpg",
-      "imagePosition": "Center",
-      "bio": "Software engineer by day, Photographer by night. I like to turn fleeting moments into timeless stories.",
-      "instagram": "https://www.instagram.com/chandu_r25/",
-      "portfolio": "https://unsplash.com/@cr029",
-      "photo2": "/images/uploads/chandu02.jpg"
     }
   ]
 }
