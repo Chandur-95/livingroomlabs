@@ -131,7 +131,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   letter-spacing:.08em;
 }
 
-/* NAVIGATION & FLUSH TRANSPARENT LOGO ALIGNMENT */
+/* NAVIGATION & PROMINENT HEADER LOGO */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
   height:calc(var(--nav-h) + var(--safe-top));
@@ -143,9 +143,9 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   transition:background .35s ease, border-color .35s ease;
 }
 .brand{display:flex;align-items:center;gap:14px;height:100%;cursor:pointer}
-.brand .mark{display:flex;align-items:center;height:100%}
+.brand .mark{display:flex;align-items:center;height:74px}
 .brand .mark img{
-  max-height:44px;width:auto;object-fit:contain;
+  height:74px;width:auto;object-fit:contain;
   transition:transform .3s var(--ease);
 }
 .brand .wordmark{
@@ -418,7 +418,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 .carousel-nav-btn.prev { left: -14px; }
 .carousel-nav-btn.next { right: -14px; }
 
-/* PORTRAIT-SAFE NICHE PREVIEW & WORK GRID (PREVENTS PET/PORTRAIT DECAPITATION) */
+/* PORTRAIT-SAFE NICHE PREVIEW & WORK GRID */
 .niche-preview-grid {
   display: grid;
   grid-template-columns: repeat(4, 1fr);
@@ -540,7 +540,7 @@ html[data-theme="dark"] .home-work-grid .plate {
   line-height:1.5;
 }
 
-/* FOOTER LOGO FLUSH ALIGNMENT */
+/* FOOTER LOGO FLUSH ALIGNMENT LEVEL WITH INDEX */
 .foot{
   margin-top:clamp(22px, 3vw, 40px);
   border-top:1px solid var(--ink);
@@ -550,6 +550,9 @@ html[data-theme="dark"] .home-work-grid .plate {
   grid-template-columns:1.2fr 1fr 1fr 1.3fr;
   gap:28px clamp(24px, 3vw, 44px);
   align-items:start;
+}
+.foot-col-logo {
+  align-self: start;
 }
 .foot h4{margin:0 0 12px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;opacity:.5}
 .foot ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
@@ -562,7 +565,7 @@ html[data-theme="dark"] .home-work-grid .plate {
   cursor:pointer;
   display:block;
   text-align:left;
-  line-height:0;
+  line-height:1;
 }
 .foot-logo-btn img{
   width:100%;
@@ -1272,8 +1275,8 @@ html[data-theme="dark"] .lb-frame {
   .nav{padding-inline:12px; gap:8px;}
   
   .brand{flex-direction:row;justify-content:flex-start}
-  .brand .mark{height:100%}
-  .brand .mark img{max-height:36px}
+  .brand .mark{height:52px}
+  .brand .mark img{height:52px}
   .brand .wordmark{display:none}
   
   .nav-right{gap:14px}
@@ -1367,6 +1370,7 @@ html[data-theme="dark"] .lb-frame {
     display: flex !important;
     justify-content: flex-start !important;
     align-items: flex-start !important;
+    align-self: start !important;
     width: 100% !important;
   }
 
@@ -1374,6 +1378,7 @@ html[data-theme="dark"] .lb-frame {
     display: block !important;
     text-align: left !important;
     width: 100% !important;
+    line-height: 1 !important;
   }
 
   .foot-logo-btn img{
@@ -1397,8 +1402,8 @@ html[data-theme="dark"] .lb-frame {
   .mobile-shoot-column { display: none !important; }
   .foot-col-team { display: none !important; }
 
-  .overlay-nav-brand .mark{height:100%}
-  .overlay-nav-brand .mark img{max-height:34px}
+  .overlay-nav-brand .mark{height:40px}
+  .overlay-nav-brand .mark img{height:40px}
   .overlay-nav .mono{display:none}
 
   .collective-hero{
