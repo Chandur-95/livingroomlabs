@@ -417,7 +417,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 .carousel-nav-btn.prev { left: -14px; }
 .carousel-nav-btn.next { right: -14px; }
 
-/* HORIZONTAL AUTO-SCROLLING NICHE PREVIEW STRIP */
+/* HORIZONTAL MARQUEE NICHE PREVIEW STRIP */
 .niche-preview-grid {
   display: flex !important;
   flex-direction: row !important;
@@ -748,7 +748,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   font-size:clamp(3rem, 7.5vw, 6.5rem);
   line-height:0.95;
   font-weight:700;
-  letter-spacing:-.035em;
+  letter-spacing:-0.035em;
 }
 .collective-hero-overlay p{
   margin:18px 0 0 0;
@@ -1855,7 +1855,7 @@ var resumeTimer = null;
 
 function runAutoScroll(now) {
   if (!lastScrollTime) lastScrollTime = now;
-  var delta = (now - lastScrollTime) / 1000;
+  var delta = Math.min((now - lastScrollTime) / 1000, 0.05);
   lastScrollTime = now;
 
   // Watch-dog fail-safe: if touch/pointer interaction ended or stalled, force resume after 1200ms
@@ -1886,10 +1886,11 @@ function runAutoScroll(now) {
 
   // Also auto-scroll niche preview tracks if expanded
   $$(".niche-preview-grid").forEach(function(pTrack) {
-    if (pTrack.scrollWidth > pTrack.clientWidth + 4 && !pTrack.matches(":hover")) {
-      pTrack.scrollLeft += 20 * delta;
-      if (pTrack.scrollLeft >= pTrack.scrollWidth - pTrack.clientWidth - 2) {
-        pTrack.scrollLeft = 0;
+    if (pTrack.scrollWidth > pTrack.clientWidth + 4 && !pTrack.matches(":hover") && !isUserInteracting) {
+      pTrack.scrollLeft += 22 * delta;
+      var halfW = pTrack.scrollWidth / 2;
+      if (halfW > 0 && pTrack.scrollLeft >= halfW) {
+        pTrack.scrollLeft -= halfW;
       }
     }
   });
@@ -2021,6 +2022,7 @@ function renderHomeGrid() {
     });
   });
 
+  // Touch handlers for iPad & mobile browsers
   grid.addEventListener("touchstart", function() {
     pauseAutoScroll();
   }, {passive:true});
@@ -2031,11 +2033,11 @@ function renderHomeGrid() {
 
   grid.addEventListener("touchend", function() {
     $$("#grid .shot.touch-focus").forEach(function(s) { s.classList.remove("touch-focus"); });
-    resumeAutoScroll(800);
+    resumeAutoScroll(1000);
   }, {passive:true});
 
   grid.addEventListener("touchcancel", function() {
-    resumeAutoScroll(400);
+    resumeAutoScroll(600);
   }, {passive:true});
 
   grid.scrollLeft = 0;
@@ -2081,7 +2083,8 @@ function renderNichesList(){
     var photosInNiche = (SITE.photos || []).filter(function(p){
       return cleanCat(p.category) === cName;
     });
-    var previewPhotos = photosInNiche.slice(0, 4);
+    // Duplicate subset so smooth marquee wrapping works seamlessly
+    var previewPhotos = photosInNiche.length > 0 ? photosInNiche.slice(0, 4).concat(photosInNiche.slice(0, 4)) : [];
 
     var previewGridHTML = "";
     var dropdownFootHTML = "";
@@ -2089,7 +2092,8 @@ function renderNichesList(){
     if (previewPhotos.length > 0) {
       previewGridHTML = '<div class="niche-preview-grid">' + previewPhotos.map(function(p, pIdx){
         var pos = getObjPosition(p.imagePosition);
-        return '<button type="button" class="shot btn-preview-shot" data-niche-cat="'+esc(n.name)+'" data-niche-subidx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
+        var baseIdx = pIdx % photosInNiche.length;
+        return '<button type="button" class="shot btn-preview-shot" data-niche-cat="'+esc(n.name)+'" data-niche-subidx="'+baseIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
                    '<span class="plate">'+
                      '<img decoding="async" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
@@ -2102,7 +2106,7 @@ function renderNichesList(){
       dropdownFootHTML = 
         '<div class="niche-dropdown-foot">' +
           '<button type="button" class="btn-niche-view-more" data-go-niche="'+esc(n.name)+'">' +
-            'View all ' + totalCount + ' photos in ' + esc(n.name) + ' &rarr;' +
+            'View all ' + countIn(n.name) + ' photos in ' + esc(n.name) + ' &rarr;' +
           '</button>' +
         '</div>';
     } else {
@@ -2137,14 +2141,27 @@ function renderNichesList(){
       if (!isExpanded) {
         row.classList.add("expanded");
         btn.setAttribute("aria-expanded", "true");
+        // Reset scroll position of preview grid upon expand
+        var pGrid = row.querySelector(".niche-preview-grid");
+        if (pGrid) pGrid.scrollLeft = 0;
       }
     });
   });
 
   $$(".btn-preview-shot", nHost).forEach(function(imgBtn){
+    imgBtn.addEventListener("mouseenter", pauseAutoScroll);
+    imgBtn.addEventListener("mouseleave", function() { resumeAutoScroll(300); });
     imgBtn.addEventListener("click", function(e){
       e.stopPropagation();
       e.preventDefault();
+      var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+      if (isTouch && !imgBtn.classList.contains("touch-focus")) {
+        e.preventDefault();
+        $$(".btn-preview-shot", nHost).forEach(function(other) { other.classList.remove("touch-focus"); });
+        imgBtn.classList.add("touch-focus");
+        pauseAutoScroll();
+        return;
+      }
       var nicheName = imgBtn.dataset.nicheCat;
       var subIdx = parseInt(imgBtn.dataset.nicheSubidx, 10);
       var fullList = (SITE.photos || []).filter(function(p){
@@ -2153,6 +2170,11 @@ function renderNichesList(){
       state.visible = fullList;
       openLB(isNaN(subIdx) ? 0 : subIdx, imgBtn);
     });
+  });
+
+  $$(".niche-preview-grid", nHost).forEach(function(pTrack) {
+    pTrack.addEventListener("touchstart", function() { pauseAutoScroll(); }, {passive:true});
+    pTrack.addEventListener("touchend", function() { resumeAutoScroll(1000); }, {passive:true});
   });
 
   $$("[data-go-niche]", nHost).forEach(function(btn){
@@ -2581,9 +2603,9 @@ document.addEventListener("dragstart", function(e){
 
 function bindGlobalEvents() {
   document.addEventListener("touchstart", function(e) {
-    if (!e.target.closest("#grid .shot")) {
+    if (!e.target.closest("#grid .shot") && !e.target.closest(".niche-preview-grid")) {
       var hadFocus = false;
-      $$("#grid .shot.touch-focus").forEach(function(s) {
+      $$("#grid .shot.touch-focus, .btn-preview-shot.touch-focus").forEach(function(s) {
         s.classList.remove("touch-focus");
         hadFocus = true;
       });
@@ -2594,9 +2616,9 @@ function bindGlobalEvents() {
   }, {passive:true});
 
   document.addEventListener("click", function(e) {
-    if (!e.target.closest("#grid .shot")) {
+    if (!e.target.closest("#grid .shot") && !e.target.closest(".niche-preview-grid")) {
       var hadFocus = false;
-      $$("#grid .shot.touch-focus").forEach(function(s) {
+      $$("#grid .shot.touch-focus, .btn-preview-shot.touch-focus").forEach(function(s) {
         s.classList.remove("touch-focus");
         hadFocus = true;
       });
