@@ -275,6 +275,26 @@
       "category": "Events",
       "caption": "Blue fringe catching the spotlight",
       "src": "/images/uploads/img_9300.jpg.jpeg"
+    },
+    {
+      "client": "Personal",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "src": "/images/uploads/pup-hachi.jpeg",
+      "title": "Hachi",
+      "category": "Pets",
+      "caption": "Pup Hachi"
+    },
+    {
+      "client": "Personal",
+      "ratio": "4/5",
+      "imagePosition": "Center",
+      "featured": true,
+      "title": "Blue",
+      "category": "Pets",
+      "caption": "Blue",
+      "src": "/images/uploads/blue.jpeg"
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
@@ -285,7 +305,7 @@
     }
   ],
   "city": "Hyderabad/India",
-  "logo": "/images/uploads/logo.png.png",
+  "logo": "/images/uploads/img_4292.png",
   "name": "Living Room Labs",
   "teamHeroImg": "/images/uploads/img_3095.jpg.jpeg",
   "niches": [
@@ -316,6 +336,10 @@
     {
       "name": "Portraits",
       "line": "Headshots and personal work, in studio or wherever you already are."
+    },
+    {
+      "name": "Travel",
+      "line": "Natural terrain, transit moments, and locations captured without staged spectacle."
     }
   ],
   "bandImg": "/images/uploads/dsc05175.jpg",
@@ -342,6 +366,11 @@
       "imagePosition": "Center",
       "src": "/images/uploads/mink.png",
       "alt": "Mink"
+    },
+    {
+      "imagePosition": "Center",
+      "src": "/images/uploads/new-york-city.jpeg",
+      "alt": "NYC"
     }
   ],
   "hero": [
