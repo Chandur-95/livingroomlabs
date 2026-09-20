@@ -417,16 +417,35 @@ html[data-theme="dark"] .home-work-grid .plate {
 .carousel-nav-btn.prev { left: -14px; }
 .carousel-nav-btn.next { right: -14px; }
 
-/* PORTRAIT-SAFE NICHE PREVIEW & WORK GRID */
+/* HORIZONTAL AUTO-SCROLLING NICHE PREVIEW STRIP */
 .niche-preview-grid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: clamp(14px, 2vw, 20px);
-  width: 100%;
+  display: flex !important;
+  flex-direction: row !important;
+  gap: 16px !important;
+  overflow-x: auto !important;
+  overflow-y: hidden !important;
+  scroll-behavior: auto !important;
+  -webkit-overflow-scrolling: touch;
+  scrollbar-width: none;
+  padding-bottom: 8px;
+}
+.niche-preview-grid::-webkit-scrollbar {
+  display: none;
+}
+.niche-preview-grid .shot {
+  flex: 0 0 220px !important;
+  max-width: 220px !important;
+  transform-origin: center bottom;
+  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+}
+.niche-preview-grid .shot:hover,
+.niche-preview-grid .shot.touch-focus {
+  transform: scale(1.18);
+  z-index: 10;
 }
 .niche-preview-grid .plate {
   aspect-ratio: 3 / 4 !important;
-  border-radius: 1px;
+  border-radius: 4px;
 }
 
 .niche-work-grid {
@@ -729,7 +748,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   font-size:clamp(3rem, 7.5vw, 6.5rem);
   line-height:0.95;
   font-weight:700;
-  letter-spacing:-0.035em;
+  letter-spacing:-.035em;
 }
 .collective-hero-overlay p{
   margin:18px 0 0 0;
@@ -1365,8 +1384,13 @@ html[data-theme="dark"] .lb-frame {
   .carousel-nav-btn { display: none; }
 
   .niche-preview-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
+    display: flex !important;
+    flex-direction: row !important;
     gap: 12px !important;
+  }
+  .niche-preview-grid .shot {
+    flex: 0 0 160px !important;
+    max-width: 160px !important;
   }
 
   .mobile-shoot-sec {
@@ -1457,6 +1481,13 @@ html[data-theme="dark"] .lb-frame {
   .lb-frame img{max-width:calc(100vw - 24px);max-height:calc(100vh - 140px)}
   .lb-cap{grid-template-columns:1fr}
   .lb-cap .m{text-align:left}
+}
+
+/* HIDE THE COLLECTIVE ON MOBILE (<640px) */
+@media (max-width: 640px) {
+  .nav-mobile-only .nav-collective-link-mob { display: none !important; }
+  .foot-col-team { display: none !important; }
+  .foot-links-group { grid-template-columns: repeat(2, 1fr) !important; }
 }
 </style>
 </head>
@@ -1827,8 +1858,8 @@ function runAutoScroll(now) {
   var delta = (now - lastScrollTime) / 1000;
   lastScrollTime = now;
 
-  // Watch-dog fail-safe: if touch/pointer interaction ended or stalled, force resume after 1500ms
-  if (isUserInteracting && (performance.now() - lastInteractionTime > 1500)) {
+  // Watch-dog fail-safe: if touch/pointer interaction ended or stalled, force resume after 1200ms
+  if (isUserInteracting && (performance.now() - lastInteractionTime > 1200)) {
     isUserInteracting = false;
   }
 
@@ -1852,6 +1883,17 @@ function runAutoScroll(now) {
       }, 1200);
     }
   }
+
+  // Also auto-scroll niche preview tracks if expanded
+  $$(".niche-preview-grid").forEach(function(pTrack) {
+    if (pTrack.scrollWidth > pTrack.clientWidth + 4 && !pTrack.matches(":hover")) {
+      pTrack.scrollLeft += 20 * delta;
+      if (pTrack.scrollLeft >= pTrack.scrollWidth - pTrack.clientWidth - 2) {
+        pTrack.scrollLeft = 0;
+      }
+    }
+  });
+
   autoScrollRaf = requestAnimationFrame(runAutoScroll);
 }
 
@@ -1867,7 +1909,7 @@ function resumeAutoScroll(delay) {
   resumeTimer = setTimeout(function() {
     isUserInteracting = false;
     lastScrollTime = performance.now();
-  }, delay || 1500);
+  }, delay || 1000);
 }
 
 function startAutoScroll() {
@@ -1979,7 +2021,6 @@ function renderHomeGrid() {
     });
   });
 
-  // Touch handlers for iPad & mobile browsers
   grid.addEventListener("touchstart", function() {
     pauseAutoScroll();
   }, {passive:true});
@@ -1990,11 +2031,11 @@ function renderHomeGrid() {
 
   grid.addEventListener("touchend", function() {
     $$("#grid .shot.touch-focus").forEach(function(s) { s.classList.remove("touch-focus"); });
-    resumeAutoScroll(1200);
+    resumeAutoScroll(800);
   }, {passive:true});
 
   grid.addEventListener("touchcancel", function() {
-    resumeAutoScroll(800);
+    resumeAutoScroll(400);
   }, {passive:true});
 
   grid.scrollLeft = 0;
