@@ -2,6 +2,8 @@ backend:
   name: github
   repo: Chandur-95/livingroomlabs
   branch: main
+  base_url: https://livingroomlabs.in
+  auth_endpoint: api/auth
 
 media_folder: "images/uploads"
 public_folder: "/images/uploads"
@@ -14,16 +16,14 @@ collections:
         label: "Site Settings & Portfolio"
         name: "content"
         fields:
-          # CORE BRANDING
           - { label: "Site Name", name: "name", widget: "string", required: false, default: "Living Room Labs" }
           - { label: "Tagline", name: "tagline", widget: "string", required: false, default: "CAPTURE . CREATE . INSPIRE" }
-          - { label: "Studio Logo", name: "logo", widget: "image", required: false, default: "/logo.png?v=2" }
+          - { label: "Studio Logo", name: "logo", widget: "image", required: false, default: "/logo.png" }
           - { label: "City", name: "city", widget: "string", required: false, default: "Hyderabad, India" }
           - { label: "Email", name: "email", widget: "string", required: false, default: "hello@livingroomlabs.in" }
           - { label: "Formspree Form ID", name: "formspreeId", widget: "string", required: false, default: "xjykvnoz" }
           - { label: "Body Font", name: "bodyFont", widget: "string", required: false, default: "Inter" }
 
-          # SOCIAL LINKS
           - label: "Social Links"
             name: "socials"
             widget: "list"
@@ -32,14 +32,12 @@ collections:
               - { label: "Platform Name", name: "name", widget: "string" }
               - { label: "URL", name: "url", widget: "string" }
 
-          # HERO HEADLINE
           - label: "Hero Lines"
             name: "hero"
             widget: "list"
             required: false
             field: { label: "Line (*asterisks for italics*)", name: "line", widget: "string" }
 
-          # HERO BANNER SLIDESHOW
           - label: "Hero Slideshow Banner"
             name: "bandSlides"
             widget: "list"
@@ -54,11 +52,9 @@ collections:
                 required: false
               - { label: "Alt Text", name: "alt", widget: "string", required: false }
 
-          # MANIFESTO
           - { label: "Statement", name: "statement", widget: "text", required: false }
           - { label: "Statement By", name: "statementBy", widget: "string", required: false }
 
-          # WHAT WE CAPTURE
           - label: "What We Capture (Niches)"
             name: "niches"
             widget: "list"
@@ -67,11 +63,9 @@ collections:
               - { label: "Category Name", name: "name", widget: "string" }
               - { label: "Description / Tagline", name: "line", widget: "string" }
 
-          # CONTACT & MOBILE NOTES
           - { label: "Contact Note", name: "contactNote", widget: "text", required: false }
           - { label: "Mobile Shoot Note", name: "mobileShootNote", widget: "string", required: false }
 
-          # THE COLLECTIVE
           - { label: "Collective Hero Image", name: "teamHeroImg", widget: "image", required: false }
           - label: "Collective Hero Position"
             name: "teamHeroImgPosition"
@@ -106,7 +100,6 @@ collections:
               - { label: "Instagram URL", name: "instagram", widget: "string", required: false }
               - { label: "Portfolio URL", name: "portfolio", widget: "string", required: false }
 
-          # PHOTOS & PORTFOLIO
           - label: "Photos & Portfolio"
             name: "photos"
             widget: "list"
