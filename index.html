@@ -415,6 +415,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 .carousel-nav-btn.prev { left: -14px; }
 .carousel-nav-btn.next { right: -14px; }
 
+/* HORIZONTAL MARQUEE NICHE PREVIEW STRIP (CLEAN RESET LOOP) */
 .niche-preview-grid {
   display: flex !important;
   flex-direction: row !important;
@@ -1864,6 +1865,7 @@ function runAutoScroll(now) {
     }
   }
 
+  // Auto-scroll non-duplicate niche preview tracks (clean reset to 0 at end)
   $$(".niche-preview-grid").forEach(function(pTrack) {
     if (pTrack.scrollWidth > pTrack.clientWidth + 4 && !pTrack.matches(":hover") && !isUserInteracting) {
       pTrack.scrollLeft += 22 * delta;
@@ -2061,6 +2063,7 @@ function renderNichesList(){
     var photosInNiche = (SITE.photos || []).filter(function(p){
       return cleanCat(p.category) === cName;
     });
+    // Clean slice without duplication
     var previewPhotos = photosInNiche.slice(0, 4);
 
     var previewGridHTML = "";
@@ -2150,6 +2153,7 @@ function renderNichesList(){
   $$(".niche-preview-grid", nHost).forEach(function(pTrack) {
     pTrack.addEventListener("touchstart", function() { pauseAutoScroll(); }, {passive:true});
     pTrack.addEventListener("touchend", function() { resumeAutoScroll(1000); }, {passive:true});
+    pTrack.addEventListener("wheel", function() { pauseAutoScroll(); resumeAutoScroll(1000); }, {passive:true});
   });
 
   $$("[data-go-niche]", nHost).forEach(function(btn){
@@ -2231,7 +2235,8 @@ function openNicheView(nicheName){
   $$("[data-open-enquiry]", box).forEach(function(btn){
     btn.addEventListener("click", function(e){
       e.preventDefault();
-      openEnquiryModal(btn.dataset.openEnquiry);
+      e.stopPropagation();
+      openEnquiryModal(btn.getAttribute("data-open-enquiry"));
     });
   });
 
@@ -2594,7 +2599,15 @@ function bindGlobalEvents() {
     var enqAttr = e.target.closest("[data-open-enquiry]");
     if (enqAttr) {
       e.preventDefault();
+      e.stopPropagation();
       openEnquiryModal(enqAttr.getAttribute("data-open-enquiry"));
+      return;
+    }
+
+    if (e.target.closest("#btn-enquiry-overview")) {
+      e.preventDefault();
+      e.stopPropagation();
+      openEnquiryModal("General Enquiry");
       return;
     }
 
@@ -2619,7 +2632,7 @@ function bindGlobalEvents() {
       e.preventDefault(); openCollective();
     } else if (e.target.closest(".nav-niches-link, .mobile-shoot-box")) {
       e.preventDefault(); openNiches();
-    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquiry-overview")) {
+    } else if (e.target.closest("#btn-foot-enquire")) {
       e.preventDefault(); openEnquiryModal("General Enquiry");
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
