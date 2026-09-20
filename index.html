@@ -539,14 +539,14 @@ html[data-theme="dark"] .home-work-grid .plate {
   line-height:1.5;
 }
 
-/* SYMMETRICAL COMPACT FOOTER - ALIGNED SYMMETRICALLY */
+/* SYMMETRICAL 3-COLUMN COMPACT FOOTER (CLEAN, NO ELSEWHERE) */
 .foot{
   margin-top: 32px;
   border-top: 1px solid var(--ink);
   padding-top: 24px;
   padding-bottom: 32px;
   display: grid;
-  grid-template-columns: 220px 1fr 1fr 1.2fr;
+  grid-template-columns: 220px 1fr 1fr;
   gap: 24px 32px;
   align-items: start;
 }
@@ -588,7 +588,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 .foot-logo-btn:hover img{transform:scale(1.02)}
 .foot-links-group { display: contents; }
-.foot-col-index, .foot-col-elsewhere, .foot-col-team {
+.foot-col-index, .foot-col-team {
   margin-top: 20px;
 }
 
@@ -1264,7 +1264,7 @@ html[data-theme="dark"] .lb-frame {
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
   .niche-preview-grid{grid-template-columns:repeat(2, 1fr)}
-  .foot{grid-template-columns:1.2fr 1fr 1fr;gap:24px 20px}
+  .foot{grid-template-columns:200px 1fr 1fr;gap:20px 24px}
   
   .home-work-grid {
     padding-top: 90px;
@@ -1417,9 +1417,8 @@ html[data-theme="dark"] .lb-frame {
     flex-wrap: wrap;
   }
 
-  .foot-col-index { min-width: 80px; margin-top: 10px !important; }
-  .foot-col-elsewhere { min-width: 80px; margin-top: 10px !important; }
-  .foot-col-team { margin-top: 10px !important; }
+  .foot-col-index { min-width: 80px; margin-top: 14px !important; }
+  .foot-col-team { min-width: 100px; margin-top: 14px !important; }
   .mobile-shoot-column { display: none !important; }
 
   .overlay-nav-brand .mark{height:52px}
@@ -1553,15 +1552,10 @@ html[data-theme="dark"] .lb-frame {
           <h4>Index</h4>
           <ul data-foot-index></ul>
         </div>
-        <div class="foot-col-elsewhere">
-          <h4>Elsewhere</h4>
-          <ul data-foot-social></ul>
+        <div class="foot-col-team">
+          <h4><button class="nav-collective-link" style="text-decoration:underline;text-underline-offset:3px;cursor:pointer;border:none;background:none;padding:0;font:inherit;">The Collective ↗</button></h4>
+          <ul data-foot-team></ul>
         </div>
-      </div>
-
-      <div class="foot-col-team">
-        <h4><button class="nav-collective-link" style="text-decoration:underline;text-underline-offset:3px;cursor:pointer;border:none;background:none;padding:0;font:inherit;">The Collective ↗</button></h4>
-        <ul data-foot-team></ul>
       </div>
     </div>
   </footer>
@@ -1816,7 +1810,7 @@ var state = {
   isSubmitting:false
 };
 
-/* TIME-BASED FLUID AUTOSCROLL ENGINE */
+/* TIME-BASED FLUID AUTOSCROLL ENGINE WITH FAIL-SAFE RESUME */
 var autoScrollRaf = null;
 var lastScrollTime = 0;
 var autoScrollSpeedPxPerSec = 45; 
@@ -1862,7 +1856,7 @@ function resumeAutoScroll(delay) {
   resumeTimer = setTimeout(function() {
     isUserInteracting = false;
     lastScrollTime = performance.now();
-  }, delay || 600);
+  }, delay || 2000);
 }
 
 function startAutoScroll() {
@@ -1974,6 +1968,7 @@ function renderHomeGrid() {
     });
   });
 
+  // Hybrid touch/scroll behavior for mobile/iPad
   grid.addEventListener("touchstart", function() {
     pauseAutoScroll();
   }, {passive:true});
@@ -1984,11 +1979,11 @@ function renderHomeGrid() {
 
   grid.addEventListener("touchend", function() {
     $$("#grid .shot.touch-focus").forEach(function(s) { s.classList.remove("touch-focus"); });
-    resumeAutoScroll(800);
+    resumeAutoScroll(1500);
   }, {passive:true});
 
   grid.addEventListener("touchcancel", function() {
-    resumeAutoScroll(400);
+    resumeAutoScroll(1000);
   }, {passive:true});
 
   grid.scrollLeft = 0;
@@ -2568,7 +2563,7 @@ function bindGlobalEvents() {
       e.preventDefault(); openCollective();
     } else if (e.target.closest(".nav-niches-link, .mobile-shoot-box")) {
       e.preventDefault(); openNiches();
-    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquiry-overview")) {
+    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquire-overview")) {
       e.preventDefault(); openEnquiryModal("General Enquiry");
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
@@ -2730,13 +2725,6 @@ function renderContent(){
       '<li><a href="#work">Work</a></li>' +
       '<li><button type="button" class="nav-niches-link" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">What we Capture</button></li>' +
       '<li><button type="button" id="btn-foot-enquire" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">Enquire</button></li>';
-  }
-
-  var socList = $("[data-foot-social]");
-  if(socList && SITE.socials){
-    socList.innerHTML = SITE.socials.map(function(s){
-      return '<li><a href="'+esc(s.url)+'" target="_blank" rel="noopener">'+esc(s.name)+'</a></li>';
-    }).join("");
   }
 
   var teamList = $("[data-foot-team]");
