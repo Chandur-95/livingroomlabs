@@ -425,20 +425,20 @@ html[data-theme="dark"] .home-work-grid .plate {
   scroll-behavior: auto !important;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding-bottom: 8px;
+  padding-bottom: 12px;
 }
 .niche-preview-grid::-webkit-scrollbar {
   display: none;
 }
 .niche-preview-grid .shot {
-  flex: 0 0 220px !important;
-  max-width: 220px !important;
+  flex: 0 0 clamp(240px, 30vw, 340px) !important;
+  max-width: 340px !important;
   transform-origin: center bottom;
   transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 .niche-preview-grid .shot:hover,
 .niche-preview-grid .shot.touch-focus {
-  transform: scale(1.18);
+  transform: scale(1.12);
   z-index: 10;
 }
 .niche-preview-grid .plate {
@@ -1136,10 +1136,11 @@ html[data-theme="dark"] .lb-frame {
 .lb-cap .m{opacity:.65;font-size:.82rem;text-align:right;color:inherit}
 .lb-cap .d{grid-column:1/-1;opacity:.8;font-size:.86rem;max-width:70ch;color:inherit}
 
+/* ENQUIRY MODAL (ELEVATED Z-INDEX TO PREVENT STACKING LOCKS) */
 .enquiry-modal {
   position: fixed;
   inset: 0;
-  z-index: 400;
+  z-index: 9999 !important;
   background: rgba(0, 0, 0, 0.78);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -1149,7 +1150,7 @@ html[data-theme="dark"] .lb-frame {
   padding: 20px;
 }
 .enquiry-modal.open {
-  display: flex;
+  display: flex !important;
   animation: modalFadeIn .25s var(--ease) forwards;
 }
 @keyframes modalFadeIn {
@@ -1271,7 +1272,6 @@ html[data-theme="dark"] .lb-frame {
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
-  .niche-preview-grid{grid-template-columns:repeat(2, 1fr)}
   .foot{grid-template-columns:180px 1fr 1fr 1fr;gap:20px 24px}
   
   .home-work-grid {
@@ -1372,13 +1372,11 @@ html[data-theme="dark"] .lb-frame {
   .carousel-nav-btn { display: none; }
 
   .niche-preview-grid {
-    display: flex !important;
-    flex-direction: row !important;
     gap: 12px !important;
   }
   .niche-preview-grid .shot {
-    flex: 0 0 160px !important;
-    max-width: 160px !important;
+    flex: 0 0 180px !important;
+    max-width: 180px !important;
   }
 
   .mobile-shoot-sec {
@@ -1810,7 +1808,7 @@ function italics(str){
   return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\*(.+?)\*/g,"<em>$1</em>");
 }
 function esc(str){
-  return String(str==null?"":str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+  return String(str == null ? "" : str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 }
 
 var state = { 
@@ -1826,78 +1824,65 @@ var state = {
   isSubmitting:false
 };
 
-/* TIME-BASED FLUID AUTOSCROLL ENGINE WITH FAIL-SAFE RESUME */
+/* INDEPENDENT AUTO-SCROLL ENGINE */
 var autoScrollRaf = null;
 var lastScrollTime = 0;
-var autoScrollSpeedPxPerSec = 45; 
-var isUserInteracting = false;
-var lastInteractionTime = 0;
-var isLoopingBack = false;
-var resumeTimer = null;
 
 function runAutoScroll(now) {
   if (!lastScrollTime) lastScrollTime = now;
-  var delta = Math.min((now - lastScrollTime) / 1000, 0.05);
+  var delta = Math.min((now - lastScrollTime) / 1000, 0.1);
   lastScrollTime = now;
 
-  if (isUserInteracting && (performance.now() - lastInteractionTime > 1200)) {
-    isUserInteracting = false;
-  }
-
-  var track = $("#grid");
-  if (track && track.scrollWidth > (track.clientWidth + 5) && !isUserInteracting && !isLoopingBack && delta < 0.25) {
-    track.scrollLeft += autoScrollSpeedPxPerSec * delta;
-
-    var maxScroll = track.scrollWidth - track.clientWidth;
-    if (track.scrollLeft >= maxScroll - 2) {
-      isLoopingBack = true;
-      clearTimeout(resumeTimer);
-      resumeTimer = setTimeout(function() {
-        if (track) {
-          track.scrollTo({ left: 0, behavior: 'smooth' });
-        }
+  // 1. Home Grid
+  var homeTrack = document.getElementById("grid");
+  if (homeTrack && homeTrack.scrollWidth > homeTrack.clientWidth + 4) {
+    if (!homeTrack._isPaused && !homeTrack._isLooping) {
+      homeTrack.scrollLeft += 45 * delta;
+      var maxH = homeTrack.scrollWidth - homeTrack.clientWidth;
+      if (homeTrack.scrollLeft >= maxH - 2) {
+        homeTrack._isLooping = true;
         setTimeout(function() {
-          if (track) track.scrollLeft = 0;
-          isLoopingBack = false;
-          lastScrollTime = performance.now();
-        }, 850);
-      }, 1200);
-    }
-  }
-
-  // Auto-scroll non-duplicate niche preview tracks (clean reset to 0 at end)
-  $$(".niche-preview-grid").forEach(function(pTrack) {
-    if (pTrack.scrollWidth > pTrack.clientWidth + 4 && !pTrack.matches(":hover") && !isUserInteracting) {
-      pTrack.scrollLeft += 22 * delta;
-      var maxs = pTrack.scrollWidth - pTrack.clientWidth;
-      if (maxs > 0 && pTrack.scrollLeft >= maxs) {
-        pTrack.scrollLeft = 0;
+          if (homeTrack) homeTrack.scrollTo({ left: 0, behavior: 'smooth' });
+          setTimeout(function() {
+            if (homeTrack) {
+              homeTrack.scrollLeft = 0;
+              homeTrack._isLooping = false;
+            }
+          }, 800);
+        }, 1200);
       }
     }
-  });
+  }
+
+  // 2. What We Capture Preview Grid (Clean, non-duplicate linear loop)
+  var expandedRow = document.querySelector(".niche-row.expanded");
+  if (expandedRow) {
+    var pTrack = expandedRow.querySelector(".niche-preview-grid");
+    if (pTrack && pTrack.scrollWidth > pTrack.clientWidth + 4) {
+      if (!pTrack._isPaused && !pTrack._isLooping) {
+        pTrack.scrollLeft += 36 * delta;
+        var maxP = pTrack.scrollWidth - pTrack.clientWidth;
+        if (pTrack.scrollLeft >= maxP - 2) {
+          pTrack._isLooping = true;
+          setTimeout(function() {
+            if (pTrack) pTrack.scrollTo({ left: 0, behavior: 'smooth' });
+            setTimeout(function() {
+              if (pTrack) {
+                pTrack.scrollLeft = 0;
+                pTrack._isLooping = false;
+              }
+            }, 800);
+          }, 1000);
+        }
+      }
+    }
+  }
 
   autoScrollRaf = requestAnimationFrame(runAutoScroll);
 }
 
-function pauseAutoScroll() {
-  isUserInteracting = true;
-  lastInteractionTime = performance.now();
-  clearTimeout(resumeTimer);
-}
-
-function resumeAutoScroll(delay) {
-  clearTimeout(resumeTimer);
-  lastInteractionTime = performance.now();
-  resumeTimer = setTimeout(function() {
-    isUserInteracting = false;
-    lastScrollTime = performance.now();
-  }, delay || 1000);
-}
-
 function startAutoScroll() {
   if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
-  isLoopingBack = false;
-  isUserInteracting = false;
   lastScrollTime = performance.now();
   autoScrollRaf = requestAnimationFrame(runAutoScroll);
 }
@@ -1958,7 +1943,6 @@ function renderHomeGrid() {
 
   if(list.length === 0){
     grid.innerHTML = '<p style="opacity:0.5; padding:20px 0;">No work published in this category yet.</p>';
-    if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
     return;
   }
 
@@ -1980,10 +1964,10 @@ function renderHomeGrid() {
   }).join("");
 
   $$("#grid .shot", grid).forEach(function(b){
-    b.addEventListener("mouseenter", pauseAutoScroll);
+    b.addEventListener("mouseenter", function() { grid._isPaused = true; });
     b.addEventListener("mouseleave", function() {
       b.classList.remove("touch-focus");
-      resumeAutoScroll(300);
+      grid._isPaused = false;
     });
 
     b.addEventListener("click", function(e){ 
@@ -1995,33 +1979,24 @@ function renderHomeGrid() {
           other.classList.remove("touch-focus");
         });
         b.classList.add("touch-focus");
-        pauseAutoScroll();
+        grid._isPaused = true;
         return;
       }
-      pauseAutoScroll();
+      grid._isPaused = true;
       openLB(parseInt(b.dataset.idx, 10), b); 
     });
   });
 
   grid.addEventListener("touchstart", function() {
-    pauseAutoScroll();
-  }, {passive:true});
-
-  grid.addEventListener("touchmove", function() {
-    pauseAutoScroll();
+    grid._isPaused = true;
   }, {passive:true});
 
   grid.addEventListener("touchend", function() {
     $$("#grid .shot.touch-focus").forEach(function(s) { s.classList.remove("touch-focus"); });
-    resumeAutoScroll(800);
-  }, {passive:true});
-
-  grid.addEventListener("touchcancel", function() {
-    resumeAutoScroll(400);
+    setTimeout(function() { grid._isPaused = false; }, 800);
   }, {passive:true});
 
   grid.scrollLeft = 0;
-  startAutoScroll();
 }
 
 function initCarouselControls() {
@@ -2032,17 +2007,17 @@ function initCarouselControls() {
   if (prevBtn && track) {
     prevBtn.addEventListener("click", function(e) {
       e.preventDefault();
-      pauseAutoScroll();
+      track._isPaused = true;
       track.scrollBy({ left: -310, behavior: "smooth" });
-      resumeAutoScroll(1200);
+      setTimeout(function() { track._isPaused = false; }, 1200);
     });
   }
   if (nextBtn && track) {
     nextBtn.addEventListener("click", function(e) {
       e.preventDefault();
-      pauseAutoScroll();
+      track._isPaused = true;
       track.scrollBy({ left: 310, behavior: "smooth" });
-      resumeAutoScroll(1200);
+      setTimeout(function() { track._isPaused = false; }, 1200);
     });
   }
 }
@@ -2060,17 +2035,16 @@ function renderNichesList(){
       ? '<span class="state has mono">'+totalCount+' FRAMES</span>'
       : '<span class="state open mono">AVAILABLE</span>';
 
+    // RENDER ALL REAL PHOTOS FOR THIS NICHE (NO CONCAT / NO DUPLICATES)
     var photosInNiche = (SITE.photos || []).filter(function(p){
       return cleanCat(p.category) === cName;
     });
-    // Clean slice without duplication
-    var previewPhotos = photosInNiche.slice(0, 4);
 
     var previewGridHTML = "";
     var dropdownFootHTML = "";
 
-    if (previewPhotos.length > 0) {
-      previewGridHTML = '<div class="niche-preview-grid">' + previewPhotos.map(function(p, pIdx){
+    if (photosInNiche.length > 0) {
+      previewGridHTML = '<div class="niche-preview-grid">' + photosInNiche.map(function(p, pIdx){
         var pos = getObjPosition(p.imagePosition);
         return '<button type="button" class="shot btn-preview-shot" data-niche-cat="'+esc(n.name)+'" data-niche-subidx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
@@ -2121,14 +2095,25 @@ function renderNichesList(){
         row.classList.add("expanded");
         btn.setAttribute("aria-expanded", "true");
         var pGrid = row.querySelector(".niche-preview-grid");
-        if (pGrid) pGrid.scrollLeft = 0;
+        if (pGrid) {
+          pGrid.scrollLeft = 0;
+          pGrid._isPaused = false;
+          pGrid._isLooping = false;
+        }
       }
     });
   });
 
   $$(".btn-preview-shot", nHost).forEach(function(imgBtn){
-    imgBtn.addEventListener("mouseenter", pauseAutoScroll);
-    imgBtn.addEventListener("mouseleave", function() { resumeAutoScroll(300); });
+    imgBtn.addEventListener("mouseenter", function() {
+      var track = imgBtn.closest(".niche-preview-grid");
+      if (track) track._isPaused = true;
+    });
+    imgBtn.addEventListener("mouseleave", function() {
+      var track = imgBtn.closest(".niche-preview-grid");
+      if (track) track._isPaused = false;
+    });
+
     imgBtn.addEventListener("click", function(e){
       e.stopPropagation();
       e.preventDefault();
@@ -2137,7 +2122,8 @@ function renderNichesList(){
         e.preventDefault();
         $$(".btn-preview-shot", nHost).forEach(function(other) { other.classList.remove("touch-focus"); });
         imgBtn.classList.add("touch-focus");
-        pauseAutoScroll();
+        var track = imgBtn.closest(".niche-preview-grid");
+        if (track) track._isPaused = true;
         return;
       }
       var nicheName = imgBtn.dataset.nicheCat;
@@ -2151,9 +2137,13 @@ function renderNichesList(){
   });
 
   $$(".niche-preview-grid", nHost).forEach(function(pTrack) {
-    pTrack.addEventListener("touchstart", function() { pauseAutoScroll(); }, {passive:true});
-    pTrack.addEventListener("touchend", function() { resumeAutoScroll(1000); }, {passive:true});
-    pTrack.addEventListener("wheel", function() { pauseAutoScroll(); resumeAutoScroll(1000); }, {passive:true});
+    pTrack.addEventListener("touchstart", function() { pTrack._isPaused = true; }, {passive:true});
+    pTrack.addEventListener("touchend", function() {
+      setTimeout(function() { pTrack._isPaused = false; }, 800);
+    }, {passive:true});
+    pTrack.addEventListener("touchcancel", function() {
+      setTimeout(function() { pTrack._isPaused = false; }, 400);
+    }, {passive:true});
   });
 
   $$("[data-go-niche]", nHost).forEach(function(btn){
@@ -2165,6 +2155,16 @@ function renderNichesList(){
       openNicheView(nicheName);
     });
   });
+
+  // Attach direct click handler to overview enquire button
+  var btnOver = document.getElementById("btn-enquire-overview");
+  if (btnOver) {
+    btnOver.onclick = function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      openEnquiryModal("General Enquiry");
+    };
+  }
 }
 
 function openNicheView(nicheName){
@@ -2215,7 +2215,7 @@ function openNicheView(nicheName){
         '</div>' +
         '<div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">' +
           '<span class="mono" style="opacity:.6;font-size:.75rem">' + countText + '</span>' +
-          '<button type="button" class="niche-enquire-trigger" style="font-size:1.05rem;" data-open-enquiry="'+esc(nicheData.name)+'">Enquire for ' + esc(nicheData.name) + ' ↗</button>' +
+          '<button type="button" class="niche-enquire-trigger" id="btn-enquire-niche-view" style="font-size:1.05rem;" data-open-enquiry="'+esc(nicheData.name)+'">Enquire for ' + esc(nicheData.name) + ' ↗</button>' +
           '<button type="button" class="niche-back" id="close-niche-view-btn">← Back to Categories</button>' +
         '</div>' +
       '</div>' +
@@ -2232,13 +2232,15 @@ function openNicheView(nicheName){
     });
   });
 
-  $$("[data-open-enquiry]", box).forEach(function(btn){
-    btn.addEventListener("click", function(e){
+  // Direct click handler for category enquire button
+  var nicheEnqBtn = document.getElementById("btn-enquire-niche-view");
+  if (nicheEnqBtn) {
+    nicheEnqBtn.onclick = function(e) {
       e.preventDefault();
       e.stopPropagation();
-      openEnquiryModal(btn.getAttribute("data-open-enquiry"));
-    });
-  });
+      openEnquiryModal(this.getAttribute("data-open-enquiry"));
+    };
+  }
 
   var closeBtn = $("#close-niche-view-btn");
   if (closeBtn) {
@@ -2332,18 +2334,14 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-var enqModal = $("#enquiry-modal");
-var enqMsg = $("#enq-msg");
-var charCount = $("#char-count");
-var enqStatus = $("#enquiry-status");
-var enqSelect = $("#enq-niche");
-
+/* ROBUST ENQUIRY MODAL SYSTEM */
 function populateEnquirySelect() {
+  var enqSelect = document.getElementById("enq-niche");
   if (!enqSelect) return;
   var currentVal = enqSelect.value;
   var cats = ["General Enquiry"];
   (SITE.niches || []).forEach(function(n) {
-    if (n.name && cats.indexOf(n.name) === -1) {
+    if (n && n.name && cats.indexOf(n.name) === -1) {
       cats.push(n.name);
     }
   });
@@ -2356,33 +2354,40 @@ function populateEnquirySelect() {
 }
 
 function openEnquiryModal(preselectedCategory) {
-  if (!enqModal) return;
+  var modal = document.getElementById("enquiry-modal");
+  if (!modal) return;
+  
   populateEnquirySelect();
-  if (preselectedCategory && enqSelect) {
-    var exists = false;
-    for (var i = 0; i < enqSelect.options.length; i++) {
-      if (enqSelect.options[i].value.toLowerCase() === preselectedCategory.toLowerCase()) {
-        enqSelect.selectedIndex = i;
-        exists = true;
+  var select = document.getElementById("enq-niche");
+  if (select && preselectedCategory) {
+    var cleanTarget = String(preselectedCategory).trim().toLowerCase();
+    var found = false;
+    for (var i = 0; i < select.options.length; i++) {
+      if (select.options[i] && select.options[i].value && select.options[i].value.trim().toLowerCase() === cleanTarget) {
+        select.selectedIndex = i;
+        found = true;
         break;
       }
     }
-    if (!exists) {
+    if (!found) {
       var opt = document.createElement("option");
       opt.value = preselectedCategory;
       opt.textContent = preselectedCategory;
       opt.selected = true;
-      enqSelect.appendChild(opt);
+      select.appendChild(opt);
     }
   }
-  enqModal.classList.add("open");
-  var nameInput = $("#enq-name");
-  if (nameInput) nameInput.focus();
+  
+  modal.classList.add("open");
+  var nameInput = document.getElementById("enq-name");
+  if (nameInput) {
+    setTimeout(function() { nameInput.focus(); }, 80);
+  }
 }
 
 function closeEnquiryModal() {
-  if (!enqModal) return;
-  enqModal.classList.remove("open");
+  var modal = document.getElementById("enquiry-modal");
+  if (modal) modal.classList.remove("open");
 }
 
 function initSlideshow(){
@@ -2483,7 +2488,6 @@ function closeLB(){
     state.opener.classList.remove("touch-focus");
     state.opener.focus();
   }
-  resumeAutoScroll(500);
 }
 
 function stepLB(d){
@@ -2551,7 +2555,8 @@ if(pull) {
 
 document.addEventListener("keydown", function(e){
   if(e.key === "Escape"){
-    if(enqModal && enqModal.classList.contains("open")) { closeEnquiryModal(); return; }
+    var modal = document.getElementById("enquiry-modal");
+    if(modal && modal.classList.contains("open")) { closeEnquiryModal(); return; }
     if(collectivePage && collectivePage.classList.contains("open")) { closeCollective(); return; }
     if(nichesPage && nichesPage.classList.contains("open")) { closeNiches(); return; }
     if(lb && lb.classList.contains("on")) { closeLB(); return; }
@@ -2589,37 +2594,37 @@ function bindGlobalEvents() {
         s.classList.remove("touch-focus");
         hadFocus = true;
       });
-      if (hadFocus) {
-        resumeAutoScroll(400);
-      }
     }
   }, {passive:true});
 
   document.addEventListener("click", function(e) {
-    var enqAttr = e.target.closest("[data-open-enquiry]");
-    if (enqAttr) {
+    // Universal Enquire button handler
+    var enqBtn = e.target.closest("#btn-enquire-overview, #btn-enquire-niche-view, [data-open-enquiry], .niche-enquire-trigger, #btn-foot-enquire");
+    if (enqBtn) {
       e.preventDefault();
       e.stopPropagation();
-      openEnquiryModal(enqAttr.getAttribute("data-open-enquiry"));
+      var targetCat = enqBtn.getAttribute("data-open-enquiry") || "General Enquiry";
+      openEnquiryModal(targetCat);
       return;
     }
 
-    if (e.target.closest("#btn-enquiry-overview")) {
+    // Modal Close handlers
+    var closeEnq = e.target.closest("#btn-close-enquiry-modal");
+    if (closeEnq) {
       e.preventDefault();
-      e.stopPropagation();
-      openEnquiryModal("General Enquiry");
+      closeEnquiryModal();
+      return;
+    }
+    var modal = document.getElementById("enquiry-modal");
+    if (e.target === modal) {
+      closeEnquiryModal();
       return;
     }
 
     if (!e.target.closest("#grid .shot") && !e.target.closest(".niche-preview-grid")) {
-      var hadFocus = false;
       $$("#grid .shot.touch-focus, .btn-preview-shot.touch-focus").forEach(function(s) {
         s.classList.remove("touch-focus");
-        hadFocus = true;
       });
-      if (hadFocus) {
-        resumeAutoScroll(400);
-      }
     }
     
     if (e.target.closest(".btn-close-collective")) {
@@ -2632,16 +2637,10 @@ function bindGlobalEvents() {
       e.preventDefault(); openCollective();
     } else if (e.target.closest(".nav-niches-link, .mobile-shoot-box")) {
       e.preventDefault(); openNiches();
-    } else if (e.target.closest("#btn-foot-enquire")) {
-      e.preventDefault(); openEnquiryModal("General Enquiry");
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
       var sec = $("#collective-members-sec");
       if (sec) sec.scrollIntoView({ behavior: 'smooth' });
-    } else if (e.target.closest("#btn-close-enquiry-modal")) {
-      e.preventDefault(); closeEnquiryModal();
-    } else if (e.target === enqModal) {
-      closeEnquiryModal();
     } else if (e.target.closest("#lb-close")) {
       closeLB();
     } else if (e.target.closest("#lb-prev")) {
@@ -2653,19 +2652,22 @@ function bindGlobalEvents() {
     }
   });
 
+  var enqMsg = document.getElementById("enq-msg");
+  var charCount = document.getElementById("char-count");
   if (enqMsg && charCount) {
     enqMsg.addEventListener("input", function() {
       charCount.textContent = enqMsg.value.length;
     });
   }
 
-  var enqForm = $("#enquiry-form");
+  var enqForm = document.getElementById("enquiry-form");
   if (enqForm) {
     enqForm.addEventListener("submit", function(e) {
       e.preventDefault();
       if (state.isSubmitting) return;
 
-      var btn = $("#btn-enquiry-send");
+      var btn = document.getElementById("btn-enquiry-send");
+      var enqStatus = document.getElementById("enquiry-status");
       state.isSubmitting = true;
       if (btn) btn.disabled = true;
       if (enqStatus) enqStatus.textContent = "TRANSMITTING...";
@@ -2703,9 +2705,13 @@ function bindGlobalEvents() {
         }
       })
       .catch(function() {
-        if (enqStatus) enqStatus.textContent = "FAILED TO SEND. CHECK FORMSPREE ID.";
+        if (enqStatus) enqStatus.textContent = "DISPATCHING VIA MAIL CLIENT...";
+        window.location.href = "mailto:" + (SITE.email || "hello@livingroomlabs.in") +
+          "?subject=" + encodeURIComponent("Enquiry: " + payload.category + " — " + payload.name) +
+          "&body=" + encodeURIComponent("Name: " + payload.name + "\nEmail: " + payload.email + "\nCategory: " + payload.category + "\n\nMessage:\n" + payload.message);
         state.isSubmitting = false;
         if (btn) btn.disabled = false;
+        setTimeout(closeEnquiryModal, 1500);
       });
     });
   }
@@ -2922,7 +2928,7 @@ function initApp(){
 }
 
 window.addEventListener('load', function() {
-  if (!autoScrollRaf) startAutoScroll(performance.now());
+  if (!autoScrollRaf) startAutoScroll();
 });
 
 initApp();
