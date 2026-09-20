@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Living Room Labs — Photography</title>
 <link rel="icon" type="image/png" href="logo.png">
-<meta name="description" content="Living Room Labs is a photography team. Food, pets, performing arts, architecture, products, events and portraits.">
+<meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, performing arts, products, events and portraits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="/content.json" as="fetch" crossorigin="anonymous">
@@ -283,14 +283,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .sec-head .fill{flex:1;height:1px}
 .sec-head .count{font-size:var(--fs-label);letter-spacing:.1em;opacity:.55;white-space:nowrap}
 
-.swipe-hint {
-  display: inline-block;
-  font-size: 0.65rem;
-  letter-spacing: 0.1em;
-  opacity: 0.55;
-  padding-right: 12px;
-}
-
 .filters{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:clamp(18px, 2.5vw, 30px)}
 .chip{
   display:inline-flex;align-items:center;gap:8px;
@@ -328,9 +320,9 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   display: flex !important;
   flex-direction: row !important;
   gap: 16px !important;
-  overflow-x: scroll !important;
+  overflow-x: auto !important; /* CRITICAL FOR IOS */
   overflow-y: hidden !important;
-  scroll-behavior: auto !important; /* CRITICAL: Must be auto so rAF updates never fight WebKit */
+  scroll-behavior: auto !important; 
   -webkit-overflow-scrolling: touch;
   padding-top: 140px; 
   margin-top: -110px;
@@ -958,6 +950,124 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
+/* THE COLLECTIVE MEMBER CAROUSEL (CURTAIN WIPE ANIMATION) */
+.collective-grid {
+  display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
+}
+.member-card {
+  display:flex;flex-direction:column;gap:14px;
+  position:relative;
+}
+.member-plate {
+  position:relative;
+  width:100%;
+  aspect-ratio:3/4;
+  overflow:hidden;
+  background:var(--rule-soft);
+  cursor:pointer;
+}
+.member-plate img {
+  position:absolute;
+  inset:0;
+  width:100%;
+  height:100%;
+  object-fit:cover;
+  z-index: 1;
+  opacity: 0;
+  clip-path: inset(0 0 0 100%);
+  transition: transform .6s var(--ease);
+}
+
+.member-plate img.initial {
+  opacity: 1;
+  z-index: 2;
+  clip-path: inset(0 0 0 0);
+}
+
+.member-plate img.prev {
+  opacity: 1;
+  z-index: 2;
+  clip-path: inset(0 0 0 0);
+}
+
+.member-plate img.active {
+  opacity: 1;
+  z-index: 3;
+  clip-path: inset(0 0 0 0);
+  transition: transform .6s var(--ease), clip-path 0.8s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.member-card:hover .member-plate img{transform:scale(1.06)}
+
+.member-info h3{
+  margin:0;font-size:clamp(1.2rem, 1.8vw, 1.5rem);font-weight:700;
+  font-family:"Space Grotesk",sans-serif;letter-spacing:-0.02em;
+}
+.member-role{
+  display:block;margin-top:2px;font-size:var(--fs-label);
+  letter-spacing:var(--tr-label);text-transform:uppercase;
+  font-weight:600;opacity:0.6;
+}
+.member-bio{
+  margin-top:10px;font-size:0.85rem;line-height:1.5;opacity:0.75;
+}
+.member-links{
+  margin-top:14px;display:flex;flex-wrap:wrap;gap:8px;
+}
+.member-chip{
+  border:1px solid var(--rule);padding:5px 10px;
+  font-size:0.65rem;letter-spacing:0.12em;text-transform:uppercase;
+  font-family:"JetBrains Mono",monospace;font-weight:600;
+  transition:background .2s ease, color .2s ease, border-color .2s ease;
+}
+.member-chip:hover{
+  background:var(--ink);color:var(--paper);border-color:var(--ink);
+}
+
+.collective-about-wrap{
+  margin-top:clamp(48px, 8vw, 90px);
+  padding-top:clamp(32px, 5vw, 60px);
+  border-top:1px solid var(--ink);
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:clamp(28px, 5vw, 60px);
+  align-items:center;
+}
+.niches-content-sec .collective-about-wrap {
+  margin-top: auto;
+}
+
+.collective-about-text{
+  text-align:left;
+}
+.collective-about-text p{
+  margin:0;
+  font-size:clamp(1.4rem, 3.4vw, 2.8rem);
+  line-height:1.15;
+  letter-spacing:-.02em;
+  font-weight:500;
+  max-width:24ch;
+}
+.collective-about-text .by{margin-top:clamp(18px, 2.5vw, 32px);opacity:.55}
+
+.collective-about-logo{
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  padding-right:clamp(0px, 2vw, 24px);
+}
+.collective-about-logo button{
+  border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;
+}
+.collective-about-logo img{
+  width:auto;
+  max-width:260px;
+  height:auto;
+  object-fit:contain;
+  transition:transform .3s var(--ease);
+}
+.collective-about-logo button:hover img{transform:scale(1.03)}
+
 /* LIGHTBOX */
 .lb{
   position:fixed;inset:0;z-index:120;
@@ -1248,10 +1358,6 @@ html[data-theme="dark"] .lb-frame {
     max-height: 420px;
   }
 
-  .swipe-hint {
-    display: inline-block;
-  }
-
   .filters{
     flex-wrap:nowrap;
     overflow-x:auto;
@@ -1444,7 +1550,6 @@ html[data-theme="dark"] .lb-frame {
     <div class="sec-head">
       <span class="label">Work</span>
       <span class="fill"></span>
-      <span class="swipe-hint mono">← SCROLLING // CLICK TO STOP →</span>
       <span class="count mono" data-workcount></span>
     </div>
     <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
@@ -1471,7 +1576,7 @@ html[data-theme="dark"] .lb-frame {
         <span class="mobile-shoot-arrow">↗</span>
       </div>
     </div>
-    <p class="contact-note" style="margin-top:10px;">Food, pets, performing arts, architecture, products, events, and portraits — calibrated per visual requirement.</p>
+    <p class="contact-note" style="margin-top:10px;">Food, pets, architecture, products, events, and portraits — calibrated per visual requirement.</p>
   </section>
 
   <section class="sec wrap" id="contact">
@@ -1695,32 +1800,7 @@ html[data-theme="dark"] .lb-frame {
 </div>
 
 <script>
-var SITE = {
-  name: "Living Room Labs",
-  tagline: "CAPTURE . CREATE . INSPIRE",
-  city: "Hyderabad, India",
-  email: "hello@livingroomlabs.in",
-  bodyFont: "Inter",
-  socials: [
-    { name: "Instagram", url: "https://www.instagram.com/fromlivingroomlabs/" }
-  ],
-  hero: [
-    "A visual collective",
-    "built on *curiosity*.",
-    "Every niche, every frame,",
-    "*uncompromisingly real*."
-  ],
-  bandSlides: [],
-  statement: "A portfolio is not a *promise*. It is a receipt.",
-  statementBy: "Everything on this page was shot by us, for someone who needed it.",
-  niches: [],
-  contactNote: "Planning something special? Tell us what you’re looking to capture, and when and where.",
-  teamHeroImg: "/images/uploads/dsc05175.jpg",
-  teamHeroImgPosition: "Center",
-  teamHeroIntro: "Four distinct visual sensibilities aligned under one collective principle.",
-  team: [],
-  photos: []
-};
+var SITE = {};
 
 var $  = function(s,r){ return (r||document).querySelector(s); };
 var $$ = function(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); };
@@ -1776,58 +1856,43 @@ var state = {
 };
 
 /* ============================================================
-   ROBUST STATE-MACHINE AUTO-SCROLL ENGINE
+   ROBUST IOS-FRIENDLY AUTO-SCROLL ENGINE
    ============================================================ */
 var autoScrollRaf = null;
-var scrollState = 'stopped'; // 'scrolling', 'paused_interaction', 'stopped'
-var autoScrollSpeed = 0.85;
-var resumeTimeout = null;
-
-function stopAutoScrollPermanently() {
-  scrollState = 'stopped';
-  if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
-  var hint = $(".swipe-hint");
-  if (hint) hint.textContent = "← EXPLORE →";
-}
-
-function pauseAutoScrollTemporarily() {
-  if (scrollState === 'stopped') return;
-  scrollState = 'paused_interaction';
-  clearTimeout(resumeTimeout);
-}
-
-function queueAutoScrollResume() {
-  if (scrollState === 'stopped') return;
-  clearTimeout(resumeTimeout);
-  resumeTimeout = setTimeout(function() {
-    if (scrollState !== 'stopped') {
-      scrollState = 'scrolling';
-    }
-  }, 1500); // Wait 1.5s after interaction ends to resume
-}
+var isUserInteracting = false;
+var autoScrollSpeed = 1;
+var resumeTimer = null;
 
 function runAutoScroll() {
-  if (scrollState === 'scrolling') {
-    var track = $("#grid");
-    if (track && track._singleSetWidth) {
-      track.scrollLeft += autoScrollSpeed;
-      if (track.scrollLeft >= track._singleSetWidth) {
-        track.scrollLeft -= track._singleSetWidth;
-      }
+  var track = $("#grid");
+  if (track && track.scrollWidth > track.clientWidth && !isUserInteracting) {
+    track.scrollLeft += autoScrollSpeed;
+    if (track._singleSetWidth && track.scrollLeft >= track._singleSetWidth) {
+      track.scrollLeft -= track._singleSetWidth;
     }
   }
-  if (scrollState !== 'stopped') {
-    autoScrollRaf = requestAnimationFrame(runAutoScroll);
-  }
+  autoScrollRaf = requestAnimationFrame(runAutoScroll);
+}
+
+function pauseAutoScroll() {
+  isUserInteracting = true;
+  clearTimeout(resumeTimer);
+}
+
+function resumeAutoScroll() {
+  clearTimeout(resumeTimer);
+  resumeTimer = setTimeout(function() {
+    isUserInteracting = false;
+  }, 1200);
 }
 
 function startAutoScroll(singleSetWidth) {
-  scrollState = 'scrolling';
   if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
   var track = $("#grid");
   if (track && singleSetWidth) {
     track._singleSetWidth = singleSetWidth;
   }
+  isUserInteracting = false;
   autoScrollRaf = requestAnimationFrame(runAutoScroll);
 }
 
@@ -1882,15 +1947,12 @@ function renderHomeGrid() {
 
   if(list.length === 0){
     grid.innerHTML = '<p style="opacity:0.5; padding:20px 0;">No work published in this selection yet.</p>';
-    stopAutoScrollPermanently();
+    if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
     return;
   }
 
-  var renderList = [];
-  var repeatCount = Math.max(3, Math.ceil((window.innerWidth * 3) / (list.length * 260)));
-  for (var r = 0; r < repeatCount; r++) {
-    renderList = renderList.concat(list);
-  }
+  // Duplicate the array twice so it forms a seamless loop
+  var renderList = list.concat(list).concat(list);
 
   var n = 0;
   grid.innerHTML = renderList.map(function(p){
@@ -1919,23 +1981,25 @@ function renderHomeGrid() {
     }, {passive:true});
 
     b.addEventListener("click", function(){ 
-      stopAutoScrollPermanently();
+      pauseAutoScroll();
       openLB(parseInt(b.dataset.realIdx, 10), b); 
     });
   });
 
-  // Suspend auto-scroll seamlessly on interaction
-  grid.addEventListener("touchstart", pauseAutoScrollTemporarily, {passive:true});
-  grid.addEventListener("touchend", queueAutoScrollResume, {passive:true});
-  grid.addEventListener("mouseenter", pauseAutoScrollTemporarily);
-  grid.addEventListener("mouseleave", queueAutoScrollResume);
+  // Attach iOS-Proof Interruption Events
+  grid.addEventListener("touchstart", pauseAutoScroll, {passive:true});
+  grid.addEventListener("touchmove", pauseAutoScroll, {passive:true});
+  grid.addEventListener("touchend", resumeAutoScroll, {passive:true});
+  grid.addEventListener("wheel", pauseAutoScroll, {passive:true});
+  grid.addEventListener("mouseenter", pauseAutoScroll);
+  grid.addEventListener("mouseleave", resumeAutoScroll);
 
   var allCards = grid.querySelectorAll(".shot");
   if (allCards.length > list.length && allCards[list.length]) {
     var singleWidth = allCards[list.length].offsetLeft - allCards[0].offsetLeft;
     startAutoScroll(singleWidth);
   } else {
-    startAutoScroll(grid.scrollWidth / repeatCount);
+    startAutoScroll(grid.scrollWidth / 3);
   }
 }
 
@@ -1947,15 +2011,17 @@ function initCarouselControls() {
   if (prevBtn && track) {
     prevBtn.addEventListener("click", function(e) {
       e.preventDefault();
-      stopAutoScrollPermanently();
+      pauseAutoScroll();
       track.scrollBy({ left: -310, behavior: "smooth" });
+      resumeAutoScroll();
     });
   }
   if (nextBtn && track) {
     nextBtn.addEventListener("click", function(e) {
       e.preventDefault();
-      stopAutoScrollPermanently();
+      pauseAutoScroll();
       track.scrollBy({ left: 310, behavior: "smooth" });
+      resumeAutoScroll();
     });
   }
 }
@@ -2364,6 +2430,7 @@ function closeLB(){
   lb.classList.remove("on");
   document.body.style.overflow = (collectivePage.classList.contains("open") || nichesPage.classList.contains("open")) ? "hidden" : "";
   if(state.opener) state.opener.focus();
+  resumeAutoScroll();
 }
 function stepLB(d){
   if(!state.visible.length) return;
@@ -2731,7 +2798,6 @@ function renderContent(){
   }
 }
 
-/* INSTANT SMART REVALIDATION FETCH */
 function initApp(){
   bindGlobalEvents();
   initCarouselControls();
