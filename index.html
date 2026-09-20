@@ -131,7 +131,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   letter-spacing:.08em;
 }
 
-/* NAVIGATION & PROMINENT HEADER LOGO */
+/* NAVIGATION & PROMINENT HEADER LOGO (74PX) */
 .nav{
   position:fixed;top:0;left:0;right:0;z-index:70;
   height:calc(var(--nav-h) + var(--safe-top));
@@ -514,8 +514,8 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 
 #contact{
-  padding-top:clamp(24px, 3vw, 48px);
-  padding-bottom:clamp(12px, 1.5vw, 24px);
+  padding-top:clamp(20px, 2.5vw, 36px);
+  padding-bottom:clamp(8px, 1.2vw, 16px);
 }
 .mail{
   display:inline-block;
@@ -540,21 +540,31 @@ html[data-theme="dark"] .home-work-grid .plate {
   line-height:1.5;
 }
 
-/* COMPACT FOOTER BALANCED LEVEL WITH INDEX */
+/* COMPACT FOOTER - PERFECTLY LEVEL WITH INDEX & NO DEAD SPACE */
 .foot{
-  margin-top:clamp(20px, 3vw, 36px);
-  border-top:1px solid var(--ink);
-  padding-top:clamp(20px, 3vw, 28px);
-  padding-bottom:clamp(24px, 3.5vw, 36px);
-  display:grid;
-  grid-template-columns:1.2fr 1fr 1fr 1.3fr;
-  gap:24px clamp(24px, 3vw, 40px);
+  margin-top: 24px;
+  border-top: 1px solid var(--ink);
+  padding-top: 16px;
+  padding-bottom: 20px;
+  display: grid;
+  grid-template-columns: 1.3fr 1fr 1fr 1.3fr;
+  gap: 20px clamp(24px, 3vw, 40px);
   align-items: start;
 }
 .foot-col-logo {
   align-self: start;
+  display: flex;
+  align-items: flex-start;
 }
-.foot h4{margin:0 0 10px;font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;opacity:.5}
+.foot h4{
+  margin:0 0 10px;
+  font-size:var(--fs-label);
+  letter-spacing:var(--tr-label);
+  text-transform:uppercase;
+  font-weight:600;
+  opacity:.5;
+  line-height: 1;
+}
 .foot ul{margin:0;padding:0;list-style:none;display:grid;gap:6px}
 .foot a:hover,.foot a:focus-visible, .foot button:hover, .foot button:focus-visible{text-decoration:underline;text-underline-offset:3px}
 
@@ -566,15 +576,17 @@ html[data-theme="dark"] .home-work-grid .plate {
   display:block;
   text-align:left;
   line-height:0;
+  margin-top: -6px; /* Aligns top of camera graphic precisely level with INDEX */
 }
 .foot-logo-btn img{
   width:100%;
-  max-width:220px;
+  max-width:240px;
   height:auto;
   object-fit:contain;
+  display:block;
   transition:transform .3s var(--ease);
 }
-.foot-logo-btn:hover img{transform:scale(1.03)}
+.foot-logo-btn:hover img{transform:scale(1.02)}
 .foot-links-group { display: contents; }
 
 /* CLEAN ALIGNED LOGOS */
@@ -618,7 +630,8 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 
 .overlay-nav {
   position:fixed;top:0;left:0;right:0;z-index:30;
-  height:var(--nav-h);padding-inline:calc(var(--pad) + var(--safe-right)) 0 calc(var(--pad) + var(--safe-left));
+  height:calc(var(--nav-h) + var(--safe-top));
+  padding:var(--safe-top) calc(var(--pad) + var(--safe-right)) 0 calc(var(--pad) + var(--safe-left));
   display:flex;align-items:center;justify-content:space-between;
 }
 .collective-nav {
@@ -631,15 +644,16 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   color:var(--ink);
 }
 
+/* OVERLAY HEADER LOGO RESTORED TO FULL 74PX */
 .overlay-nav-brand{
   display:flex;align-items:center;gap:12px;cursor:pointer;height:100%;
   background:none;border:none;padding:0;
 }
 .overlay-nav-brand .mark{
-  display:flex;align-items:center;height:100%;
+  display:flex;align-items:center;height:74px;
 }
 .overlay-nav-brand .mark img{
-  height:56px;max-height:56px;width:auto;object-fit:contain;
+  height:74px;max-height:74px;width:auto;object-fit:contain;
   transition:transform .3s var(--ease);
 }
 .overlay-nav-brand:hover .mark img{transform:scale(1.04)}
@@ -745,9 +759,11 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   padding:var(--sec) calc(var(--pad) + 12px);
   max-width:1440px;margin-inline:auto;width:100%;
 }
+
+/* COMPACT SPACING FOR WHAT WE CAPTURE - NO EXPANSIVE GAPS */
 .niches-content-sec {
-  padding-top: calc(var(--nav-h) + clamp(24px, 4vw, 48px));
-  padding-bottom: clamp(48px, 6vw, 80px);
+  padding-top: calc(var(--nav-h) + 24px);
+  padding-bottom: 36px;
 }
 
 /* NICHES ACCORDION */
@@ -811,7 +827,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 
 .niche-dropdown {
   display: none;
-  padding: clamp(24px, 3.2vw, 38px) 14px clamp(24px, 3.2vw, 36px);
+  padding: clamp(20px, 2.8vw, 32px) 14px clamp(20px, 2.8vw, 30px);
   animation: dropdownSlide .4s cubic-bezier(.16, 1, .3, 1) forwards;
 }
 .niche-row.expanded .niche-dropdown { display: block; }
@@ -821,7 +837,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 
 .niche-dropdown-foot {
-  margin-top: clamp(20px, 2.5vw, 28px);
+  margin-top: clamp(16px, 2vw, 24px);
   display: flex;
   justify-content: flex-end;
   align-items: center;
@@ -854,10 +870,10 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 
 .niche-enquire-sec {
-  padding-top: clamp(24px, 3.5vw, 44px);
-  padding-bottom: clamp(14px, 2vw, 24px);
+  padding-top: clamp(20px, 3vw, 36px);
+  padding-bottom: clamp(10px, 1.5vw, 20px);
   border-top: 1px solid var(--ink);
-  margin-top: clamp(24px, 3.5vw, 48px);
+  margin-top: clamp(24px, 3.5vw, 40px);
 }
 .niche-enquire-trigger {
   display: inline-block;
@@ -958,7 +974,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 .member-card:hover .member-plate img{transform:scale(1.06)}
 
 .collective-about-logo img {
-  max-width: 230px;
+  max-width: 220px;
   height: auto;
   object-fit: contain;
 }
@@ -989,16 +1005,16 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 
 .collective-about-wrap{
-  margin-top:clamp(40px, 6vw, 64px);
-  padding-top:clamp(28px, 4vw, 40px);
+  margin-top: 32px;
+  padding-top: 24px;
   border-top:1px solid var(--ink);
   display:grid;
   grid-template-columns:1fr auto;
-  gap:clamp(28px, 5vw, 60px);
+  gap:clamp(20px, 4vw, 48px);
   align-items:center;
 }
 .niches-content-sec .collective-about-wrap {
-  margin-top: 40px;
+  margin-top: 32px;
 }
 
 .collective-about-text{
@@ -1012,7 +1028,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   font-weight:500;
   max-width:24ch;
 }
-.collective-about-text .by{margin-top:clamp(18px, 2.5vw, 32px);opacity:.55}
+.collective-about-text .by{margin-top:clamp(16px, 2vw, 28px);opacity:.55}
 
 .collective-about-logo{
   display:flex;
@@ -1025,9 +1041,9 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .collective-about-logo button:hover img{transform:scale(1.03)}
 
-/* LIGHTBOX */
+/* LIGHTBOX (PRIORITY Z-INDEX: 500 - GUARANTEED ON TOP OF EVERYTHING) */
 .lb{
-  position:fixed;inset:0;z-index:120;
+  position:fixed;inset:0;z-index:500;
   background:rgba(255, 255, 255, 0.96);
   color:var(--ink);
   display:none;flex-direction:column;
@@ -1109,11 +1125,11 @@ html[data-theme="dark"] .lb-frame {
 .lb-cap .m{opacity:.65;font-size:.82rem;text-align:right;color:inherit}
 .lb-cap .d{grid-column:1/-1;opacity:.8;font-size:.86rem;max-width:70ch;color:inherit}
 
-/* ENQUIRY MODAL DIALOG */
+/* ENQUIRY MODAL DIALOG (Z-INDEX: 400) */
 .enquiry-modal {
   position: fixed;
   inset: 0;
-  z-index: 180;
+  z-index: 400;
   background: rgba(0, 0, 0, 0.78);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
@@ -1357,8 +1373,8 @@ html[data-theme="dark"] .lb-frame {
     display: grid !important;
     grid-template-columns: 120px 1fr !important;
     gap: 16px 20px !important;
-    padding-top: 20px !important;
-    padding-bottom: 28px !important;
+    padding-top: 16px !important;
+    padding-bottom: 20px !important;
     align-items: start !important;
   }
   
@@ -1376,6 +1392,7 @@ html[data-theme="dark"] .lb-frame {
     text-align: left !important;
     width: 100% !important;
     line-height: 1 !important;
+    margin-top: -3px !important;
   }
 
   .foot-logo-btn img{
@@ -1399,8 +1416,8 @@ html[data-theme="dark"] .lb-frame {
   .mobile-shoot-column { display: none !important; }
   .foot-col-team { display: none !important; }
 
-  .overlay-nav-brand .mark{height:100%}
-  .overlay-nav-brand .mark img{max-height:44px}
+  .overlay-nav-brand .mark{height:52px}
+  .overlay-nav-brand .mark img{height:52px;max-height:52px}
   .overlay-nav .mono{display:none}
 
   .collective-hero{
@@ -1562,9 +1579,9 @@ html[data-theme="dark"] .lb-frame {
   </div>
 
   <div class="overlay-content-sec niches-content-sec">
-    <div id="niches-list-container" style="flex: 1;">
+    <div id="niches-list-container">
       <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Capture</h1>
-      <p style="opacity:.7; max-width:600px; margin-bottom:clamp(30px, 5vw, 60px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
+      <p style="opacity:.7; max-width:600px; margin-bottom:clamp(24px, 4vw, 44px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
       
       <div id="niches-list" data-niches></div>
 
@@ -1578,11 +1595,11 @@ html[data-theme="dark"] .lb-frame {
       </div>
     </div>
     
-    <div id="niche-view-box" style="display:none; flex: 1;"></div>
+    <div id="niche-view-box" style="display:none;"></div>
 
     <div class="collective-about-wrap">
       <div class="collective-about-text">
-        <button type="button" class="niche-back btn-close-niches" style="padding:14px 28px; cursor:pointer;">← Back to Studio</button>
+        <button type="button" class="niche-back btn-close-niches" style="padding:10px 20px; cursor:pointer;">← Back to Studio</button>
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
@@ -1645,7 +1662,7 @@ html[data-theme="dark"] .lb-frame {
   </section>
 </div>
 
-<!-- LIGHTBOX -->
+<!-- LIGHTBOX (Z-INDEX: 500) -->
 <div class="lb" id="lb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <div class="lb-top">
     <div class="lb-count mono"><b id="lb-i">01</b> <span>/</span> <span id="lb-n">01</span></div>
@@ -1675,7 +1692,7 @@ html[data-theme="dark"] .lb-frame {
   </div>
 </div>
 
-<!-- ENQUIRY MODAL DIALOG -->
+<!-- ENQUIRY MODAL DIALOG (Z-INDEX: 400) -->
 <div class="enquiry-modal" id="enquiry-modal" role="dialog" aria-modal="true" aria-label="Enquiry">
   <div class="enquiry-card">
     <div class="enquiry-head">
@@ -1862,7 +1879,8 @@ function categories(){
 function countIn(cat){
   var target = cleanCat(cat);
   return (SITE.photos || []).filter(function(p){ 
-    return cleanCat(p.category) === target && (p.featured !== false); 
+    var isFeat = (p.featured !== false && String(p.featured).toLowerCase() !== "false");
+    return cleanCat(p.category) === target && isFeat; 
   }).length;
 }
 
@@ -1893,7 +1911,7 @@ function renderHomeGrid() {
   
   var list = (SITE.photos || []).filter(function(p){
     var matchesCat = state.filter === "All" || cleanCat(p.category) === cleanCat(state.filter);
-    return matchesCat && (p.featured !== false);
+    return matchesCat && (p.featured !== false && String(p.featured).toLowerCase() !== "false");
   });
 
   state.visible = list;
@@ -1995,7 +2013,7 @@ function renderNichesList(){
 
   nHost.innerHTML = SITE.niches.map(function(n){
     var cName = cleanCat(n.name);
-    var totalCount = countIn(n.name);
+    var totalCount = (SITE.photos || []).filter(function(p){ return cleanCat(p.category) === cName; }).length;
     var has = totalCount > 0 || made.indexOf(cName) !== -1;
     var right = has
       ? '<span class="state has mono">'+totalCount+' FRAMES</span>'
@@ -2116,7 +2134,7 @@ function openNicheView(nicheName){
       var pos = getObjPosition(p.imagePosition);
       var imgSrc = esc(fixPath(p.src)); 
 
-      return '<button type="button" class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
+      return '<button type="button" class="shot btn-niche-shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
                '<div class="plate-tilt-wrap">'+
                  '<span class="plate">'+
                    '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
@@ -2144,7 +2162,7 @@ function openNicheView(nicheName){
       '<div id="niche-grid-host">' + photosHTML + '</div>' +
     '</div>';
 
-  $$("[data-niche-i]", box).forEach(function(b){
+  $$(".btn-niche-shot", box).forEach(function(b){
     b.addEventListener("click", function(e){
       e.preventDefault();
       e.stopPropagation();
