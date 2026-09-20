@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>Living Room Labs — Photography</title>
 <link rel="icon" type="image/png" href="/logo.png">
-<meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, performing arts, products, events and portraits.">
+<meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, performing arts, products, events, travel and portraits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="preload" href="/content.json" as="fetch" crossorigin="anonymous">
@@ -323,7 +323,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   gap: 16px !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
-  scroll-behavior: auto !important; /* CRITICAL FOR WEBKIT AUTOSCROLL */
+  scroll-behavior: auto !important;
   -webkit-overflow-scrolling: touch;
   padding-top: 130px; 
   margin-top: -100px;
@@ -350,7 +350,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   cursor: pointer;
 }
 
-/* Mac OS Dock Magnification on Hover & Touch-Focus */
 .home-work-grid .shot:hover, 
 .home-work-grid .shot:focus-visible,
 .home-work-grid .shot.touch-focus {
@@ -565,12 +564,14 @@ html[data-theme="dark"] .home-work-grid .plate {
 .foot-logo-btn:hover img{transform:scale(1.03)}
 .foot-links-group { display: contents; }
 
-/* DARK MODE LOGO FILTER */
+/* DARK MODE LOGO FILTER SAFEGUARD */
 .brand .mark img,
 .foot-logo-btn img,
 .collective-about-logo img,
 .overlay-nav-brand .mark img {
   mix-blend-mode: multiply;
+  max-height: 74px;
+  width: auto;
 }
 
 html[data-theme="dark"] .brand .mark img,
@@ -1459,7 +1460,7 @@ html[data-theme="dark"] .lb-frame {
 <nav class="nav">
   <button class="brand logo-exit-btn" aria-label="Living Room Labs (Reload)">
     <span class="mark">
-      <img src="/logo.png" alt="Living Room Labs">
+      <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
     </span>
     <span class="wordmark" data-name></span>
   </button>
@@ -1534,7 +1535,7 @@ html[data-theme="dark"] .lb-frame {
     <div class="foot">
       <div class="foot-col-logo">
         <button class="foot-logo-btn logo-exit-btn" aria-label="Scroll to top of page">
-          <img src="/logo.png" alt="Living Room Labs">
+          <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
         </button>
       </div>
 
@@ -1562,7 +1563,7 @@ html[data-theme="dark"] .lb-frame {
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="/logo.png" alt="Living Room Labs">
+        <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE CAPTURE // CATEGORIES</span>
@@ -1599,7 +1600,7 @@ html[data-theme="dark"] .lb-frame {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="/logo.png" alt="Living Room Labs">
+          <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
         </button>
       </div>
     </div>
@@ -1611,7 +1612,7 @@ html[data-theme="dark"] .lb-frame {
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
       <span class="mark">
-        <img src="/logo.png" alt="Living Room Labs">
+        <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -1651,7 +1652,7 @@ html[data-theme="dark"] .lb-frame {
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="/logo.png" alt="Living Room Labs">
+          <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
         </button>
       </div>
     </div>
@@ -1712,15 +1713,9 @@ html[data-theme="dark"] .lb-frame {
 
       <div class="enquiry-field">
         <label class="enquiry-label" for="enq-niche">Shoot Category</label>
+        <!-- Dynamically populated from SITE.niches -->
         <select class="enquiry-select" id="enq-niche" name="category">
           <option value="General Enquiry">General Enquiry</option>
-          <option value="Performing Arts">Performing Arts</option>
-          <option value="Food">Food</option>
-          <option value="Pets">Pets</option>
-          <option value="Architecture">Architecture</option>
-          <option value="Products">Products</option>
-          <option value="Events">Events</option>
-          <option value="Portraits">Portraits</option>
         </select>
       </div>
 
@@ -1817,7 +1812,6 @@ var resumeTimer = null;
 function runAutoScroll() {
   var track = $("#grid");
   if (track && track.scrollWidth > (track.clientWidth + 5) && !isUserInteracting && !isLoopingBack) {
-    // Accumulate float increments and apply integer steps to prevent WebKit truncation on iOS/iPadOS
     scrollAccumulator += autoScrollSpeed;
     if (scrollAccumulator >= 1) {
       var step = Math.floor(scrollAccumulator);
@@ -1919,7 +1913,6 @@ function renderHomeGrid() {
     return;
   }
 
-  // RENDER ONCE: Absolutely NO list triplication or duplicate cards
   var n = 0;
   grid.innerHTML = list.map(function(p){
     var i = n++;
@@ -1929,7 +1922,7 @@ function renderHomeGrid() {
     return '<button class="shot" data-idx="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
              '<div class="plate-tilt-wrap">'+
                '<span class="plate">'+
-                 '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
+                 '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">'+
                  '<span class="guard"></span>'+
                '</span>'+
              '</div>'+
@@ -1970,7 +1963,7 @@ function renderHomeGrid() {
 
   grid.addEventListener("touchend", function() {
     if ($$("#grid .shot.touch-focus").length === 0) {
-      resumeAutoScroll(1000); // 1-second buffer for iOS inertia to settle
+      resumeAutoScroll(1000);
     }
   }, {passive:true});
 
@@ -2028,7 +2021,7 @@ function renderNichesList(){
         return '<button class="shot" data-preview-niche="'+esc(n.name)+'" data-preview-idx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
                    '<span class="plate">'+
-                     '<img decoding="async" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
+                     '<img decoding="async" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">'+
                      '<span class="guard"></span>'+
                    '</span>'+
                  '</div>'+
@@ -2133,7 +2126,7 @@ function openNicheView(nicheName){
       return '<button class="shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
                '<div class="plate-tilt-wrap">'+
                  '<span class="plate">'+
-                   '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
+                   '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">'+
                    '<span class="guard"></span>'+
                  '</span>'+
                '</div>'+
@@ -2339,7 +2332,7 @@ function initSlideshow(){
     var imgSrc = esc(fixPath(s.src)); 
     var loadStrat = (idx === state.currentSlide) ? 'fetchpriority="high" loading="eager"' : 'decoding="async"';
 
-    return '<img class="band-img '+act+'" '+loadStrat+' data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+esc(pos)+';">';
+    return '<img class="band-img '+act+'" '+loadStrat+' data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+esc(pos)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">';
   }).join("");
 
   var heroBox = $("#hero-slideshow");
@@ -2543,7 +2536,7 @@ function bindGlobalEvents() {
       e.preventDefault(); openCollective();
     } else if (e.target.closest(".nav-niches-link, .mobile-shoot-box")) {
       e.preventDefault(); openNiches();
-    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquire-overview")) {
+    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquiry-overview")) {
       e.preventDefault(); openEnquiryModal("General Enquiry");
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
@@ -2654,13 +2647,14 @@ function renderContent(){
     document.body.style.fontFamily = '"' + SITE.bodyFont + '", system-ui, -apple-system, sans-serif';
   }
 
-  // Consistent Logo Loading
   var logoSrc = fixPath(SITE.logo || "logo.png");
   $$(".mark img, .foot-logo-btn img, .collective-about-logo img, .overlay-nav-brand .mark img").forEach(function(img){
     img.src = logoSrc;
     img.onerror = function() {
       if (this.src.indexOf("/logo.png") === -1) {
         this.src = "/logo.png";
+      } else {
+        this.style.opacity = '0';
       }
     };
     img.style.display = "";
@@ -2698,7 +2692,7 @@ function renderContent(){
   if(note) note.textContent = SITE.contactNote || "Planning something special? Tell us what you’re looking to capture, and when and where.";
 
   var mobNote = $("[data-mobile-shoot-note]");
-  if(mobNote) mobNote.textContent = SITE.mobileShootNote || "Food, pets, architecture, products, events, and portraits — calibrated per visual requirement.";
+  if(mobNote) mobNote.textContent = SITE.mobileShootNote || "Food, pets, architecture, products, events, travel and portraits — calibrated per visual requirement.";
 
   var idxList = $("[data-foot-index]");
   if(idxList){
@@ -2752,12 +2746,12 @@ function renderContent(){
       
       var mPos1 = getObjPosition(m.imagePosition);
       var photoSrc1 = m.photo ? fixPath(m.photo) : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
-      var imgTags = '<img class="initial" src="'+esc(photoSrc1)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos1)+';">';
+      var imgTags = '<img class="initial" src="'+esc(photoSrc1)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos1)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">';
       
       var hasPhoto2 = Boolean(m.photo2 && String(m.photo2).trim() !== "");
       if (hasPhoto2) {
         var mPos2 = getObjPosition(m.imagePosition2);
-        imgTags += '<img src="'+esc(fixPath(m.photo2))+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos2)+';" onerror="this.style.opacity=\'0.3\';">';
+        imgTags += '<img src="'+esc(fixPath(m.photo2))+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos2)+';" onerror="this.onerror=null;this.style.opacity=\'0.3\';">';
       }
 
       return '<div class="member-card">' +
