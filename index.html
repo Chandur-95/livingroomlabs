@@ -539,14 +539,14 @@ html[data-theme="dark"] .home-work-grid .plate {
   line-height:1.5;
 }
 
-/* SYMMETRICAL 3-COLUMN COMPACT FOOTER (CLEAN, NO ELSEWHERE) */
+/* 4-COLUMN COMPACT FOOTER - TOP-ALIGNED WITH INDEX & ELSEWHERE & THE COLLECTIVE */
 .foot{
   margin-top: 32px;
   border-top: 1px solid var(--ink);
   padding-top: 24px;
   padding-bottom: 32px;
   display: grid;
-  grid-template-columns: 220px 1fr 1fr;
+  grid-template-columns: 200px 1fr 1fr 1.2fr;
   gap: 24px 32px;
   align-items: start;
 }
@@ -580,7 +580,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 .foot-logo-btn img{
   width:100%;
-  max-width:210px;
+  max-width:190px;
   height:auto;
   object-fit:contain;
   display:block;
@@ -588,7 +588,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 .foot-logo-btn:hover img{transform:scale(1.02)}
 .foot-links-group { display: contents; }
-.foot-col-index, .foot-col-team {
+.foot-col-index, .foot-col-elsewhere, .foot-col-team {
   margin-top: 20px;
 }
 
@@ -1264,7 +1264,7 @@ html[data-theme="dark"] .lb-frame {
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
   .niche-preview-grid{grid-template-columns:repeat(2, 1fr)}
-  .foot{grid-template-columns:200px 1fr 1fr;gap:20px 24px}
+  .foot{grid-template-columns:180px 1fr 1fr 1fr;gap:20px 24px}
   
   .home-work-grid {
     padding-top: 90px;
@@ -1377,9 +1377,9 @@ html[data-theme="dark"] .lb-frame {
 
   .foot{
     display: grid !important;
-    grid-template-columns: 140px 1fr !important;
-    gap: 16px 20px !important;
-    padding-top: 20px !important;
+    grid-template-columns: 120px 1fr 1fr 1fr !important;
+    gap: 12px 14px !important;
+    padding-top: 18px !important;
     padding-bottom: 24px !important;
     align-items: start !important;
   }
@@ -1402,24 +1402,22 @@ html[data-theme="dark"] .lb-frame {
   }
 
   .foot-logo-btn img{
-    max-width: 130px !important;
+    max-width: 110px !important;
     width: 100% !important;
     margin: 0 !important;
   }
 
   .foot-links-group {
-    grid-column: 2 / 3 !important;
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: flex-start !important;
-    gap: 20px !important;
+    grid-column: 2 / 5 !important;
+    display: grid !important;
+    grid-template-columns: repeat(3, 1fr) !important;
+    gap: 12px !important;
     width: 100% !important;
-    flex-wrap: wrap;
   }
 
-  .foot-col-index { min-width: 80px; margin-top: 14px !important; }
-  .foot-col-team { min-width: 100px; margin-top: 14px !important; }
-  .mobile-shoot-column { display: none !important; }
+  .foot-col-index { min-width: 60px; margin-top: 0 !important; }
+  .foot-col-elsewhere { min-width: 60px; margin-top: 0 !important; }
+  .foot-col-team { min-width: 70px; margin-top: 0 !important; }
 
   .overlay-nav-brand .mark{height:52px}
   .overlay-nav-brand .mark img{height:52px;max-height:52px}
@@ -1551,6 +1549,10 @@ html[data-theme="dark"] .lb-frame {
         <div class="foot-col-index">
           <h4>Index</h4>
           <ul data-foot-index></ul>
+        </div>
+        <div class="foot-col-elsewhere">
+          <h4>Elsewhere</h4>
+          <ul data-foot-social></ul>
         </div>
         <div class="foot-col-team">
           <h4><button class="nav-collective-link" style="text-decoration:underline;text-underline-offset:3px;cursor:pointer;border:none;background:none;padding:0;font:inherit;">The Collective ↗</button></h4>
@@ -1815,6 +1817,7 @@ var autoScrollRaf = null;
 var lastScrollTime = 0;
 var autoScrollSpeedPxPerSec = 45; 
 var isUserInteracting = false;
+var lastInteractionTime = 0;
 var isLoopingBack = false;
 var resumeTimer = null;
 
@@ -1822,6 +1825,11 @@ function runAutoScroll(now) {
   if (!lastScrollTime) lastScrollTime = now;
   var delta = (now - lastScrollTime) / 1000;
   lastScrollTime = now;
+
+  // Watch-dog fail-safe: if touch/pointer interaction ended or stalled, force resume after 1500ms
+  if (isUserInteracting && (performance.now() - lastInteractionTime > 1500)) {
+    isUserInteracting = false;
+  }
 
   var track = $("#grid");
   if (track && track.scrollWidth > (track.clientWidth + 5) && !isUserInteracting && !isLoopingBack && delta < 0.25) {
@@ -1848,15 +1856,17 @@ function runAutoScroll(now) {
 
 function pauseAutoScroll() {
   isUserInteracting = true;
+  lastInteractionTime = performance.now();
   clearTimeout(resumeTimer);
 }
 
 function resumeAutoScroll(delay) {
   clearTimeout(resumeTimer);
+  lastInteractionTime = performance.now();
   resumeTimer = setTimeout(function() {
     isUserInteracting = false;
     lastScrollTime = performance.now();
-  }, delay || 2000);
+  }, delay || 1500);
 }
 
 function startAutoScroll() {
@@ -1968,7 +1978,7 @@ function renderHomeGrid() {
     });
   });
 
-  // Hybrid touch/scroll behavior for mobile/iPad
+  // Touch handlers for iPad & mobile browsers
   grid.addEventListener("touchstart", function() {
     pauseAutoScroll();
   }, {passive:true});
@@ -1979,11 +1989,11 @@ function renderHomeGrid() {
 
   grid.addEventListener("touchend", function() {
     $$("#grid .shot.touch-focus").forEach(function(s) { s.classList.remove("touch-focus"); });
-    resumeAutoScroll(1500);
+    resumeAutoScroll(1200);
   }, {passive:true});
 
   grid.addEventListener("touchcancel", function() {
-    resumeAutoScroll(1000);
+    resumeAutoScroll(800);
   }, {passive:true});
 
   grid.scrollLeft = 0;
@@ -2563,7 +2573,7 @@ function bindGlobalEvents() {
       e.preventDefault(); openCollective();
     } else if (e.target.closest(".nav-niches-link, .mobile-shoot-box")) {
       e.preventDefault(); openNiches();
-    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquire-overview")) {
+    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquiry-overview")) {
       e.preventDefault(); openEnquiryModal("General Enquiry");
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
@@ -2725,6 +2735,13 @@ function renderContent(){
       '<li><a href="#work">Work</a></li>' +
       '<li><button type="button" class="nav-niches-link" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">What we Capture</button></li>' +
       '<li><button type="button" id="btn-foot-enquire" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">Enquire</button></li>';
+  }
+
+  var socList = $("[data-foot-social]");
+  if(socList && SITE.socials){
+    socList.innerHTML = SITE.socials.map(function(s){
+      return '<li><a href="'+esc(s.url)+'" target="_blank" rel="noopener">'+esc(s.name)+'</a></li>';
+    }).join("");
   }
 
   var teamList = $("[data-foot-team]");
