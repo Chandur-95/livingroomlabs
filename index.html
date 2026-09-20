@@ -323,6 +323,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   overflow-x: auto !important;
   overflow-y: hidden !important;
   scroll-behavior: auto !important;
+  scroll-snap-type: x mandatory;
   -webkit-overflow-scrolling: touch;
   padding-top: 130px; 
   margin-top: -100px;
@@ -347,6 +348,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   z-index: 1;
   margin: 0;
   cursor: pointer;
+  scroll-snap-align: center;
 }
 
 /* Mac OS Dock Magnification on Hover & Touch-Focus */
@@ -554,6 +556,8 @@ html[data-theme="dark"] .home-work-grid .plate {
 .foot-col-logo {
   align-self: start;
   margin-top: 0;
+  display: flex;
+  align-items: start;
 }
 .foot h4{
   margin:0 0 10px;
@@ -575,7 +579,7 @@ html[data-theme="dark"] .home-work-grid .plate {
   display:block;
   text-align:left;
   line-height:0;
-  margin-top: 0; /* Align top edge directly with text columns */
+  margin-top: 0; 
 }
 .foot-logo-btn img{
   width:100%;
@@ -587,6 +591,9 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 .foot-logo-btn:hover img{transform:scale(1.02)}
 .foot-links-group { display: contents; }
+.foot-col-index, .foot-col-elsewhere, .foot-col-team {
+  margin-top: 12px;
+}
 
 /* CLEAN ALIGNED LOGOS */
 .brand .mark img,
@@ -1343,10 +1350,12 @@ html[data-theme="dark"] .lb-frame {
     margin-top: -50px !important;
     padding-bottom: 30px !important;
     align-items: flex-end !important;
+    scroll-snap-type: none !important;
   }
   .home-work-grid .shot {
     flex: 0 0 170px !important;
     max-width: 170px !important;
+    scroll-snap-align: none !important;
   }
   .home-work-grid .shot:hover, 
   .home-work-grid .shot:focus-visible,
@@ -1913,7 +1922,7 @@ function renderHomeGrid() {
     if (state.filter === "All") {
       return (p.featured !== false && String(p.featured).toLowerCase() !== "false");
     }
-    return true; // category chip selected -> show all in that category
+    return true; 
   });
 
   state.visible = list;
@@ -1977,7 +1986,7 @@ function renderHomeGrid() {
 
   grid.addEventListener("touchend", function() {
     $$("#grid .shot.touch-focus").forEach(function(s) { s.classList.remove("touch-focus"); });
-    resumeAutoScroll(600);
+    resumeAutoScroll(800);
   }, {passive:true});
 
   grid.addEventListener("touchcancel", function() {
@@ -2561,7 +2570,7 @@ function bindGlobalEvents() {
       e.preventDefault(); openCollective();
     } else if (e.target.closest(".nav-niches-link, .mobile-shoot-box")) {
       e.preventDefault(); openNiches();
-    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquiry-overview")) {
+    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquire-overview")) {
       e.preventDefault(); openEnquiryModal("General Enquiry");
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
