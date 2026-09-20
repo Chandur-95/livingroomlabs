@@ -540,21 +540,20 @@ html[data-theme="dark"] .home-work-grid .plate {
   line-height:1.5;
 }
 
-/* COMPACT FOOTER - PERFECTLY LEVEL WITH INDEX & NO DEAD SPACE */
+/* COMPACT FOOTER - GRID ALIGNED FLUSH AT TOP */
 .foot{
   margin-top: 24px;
   border-top: 1px solid var(--ink);
-  padding-top: 16px;
-  padding-bottom: 20px;
+  padding-top: 18px;
+  padding-bottom: 24px;
   display: grid;
-  grid-template-columns: 1.3fr 1fr 1fr 1.3fr;
-  gap: 20px clamp(24px, 3vw, 40px);
+  grid-template-columns: 240px 1fr 1fr 1fr;
+  gap: 24px 32px;
   align-items: start;
 }
 .foot-col-logo {
   align-self: start;
-  display: flex;
-  align-items: flex-start;
+  margin-top: 0;
 }
 .foot h4{
   margin:0 0 10px;
@@ -576,11 +575,11 @@ html[data-theme="dark"] .home-work-grid .plate {
   display:block;
   text-align:left;
   line-height:0;
-  margin-top: -6px; /* Aligns top of camera graphic precisely level with INDEX */
+  margin-top: -6px; /* Flush camera graphic top with text top */
 }
 .foot-logo-btn img{
   width:100%;
-  max-width:240px;
+  max-width:230px;
   height:auto;
   object-fit:contain;
   display:block;
@@ -1041,7 +1040,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .collective-about-logo button:hover img{transform:scale(1.03)}
 
-/* LIGHTBOX (PRIORITY Z-INDEX: 500 - GUARANTEED ON TOP OF EVERYTHING) */
+/* LIGHTBOX (PRIORITY Z-INDEX: 500) */
 .lb{
   position:fixed;inset:0;z-index:500;
   background:rgba(255, 255, 255, 0.96);
@@ -1879,8 +1878,7 @@ function categories(){
 function countIn(cat){
   var target = cleanCat(cat);
   return (SITE.photos || []).filter(function(p){ 
-    var isFeat = (p.featured !== false && String(p.featured).toLowerCase() !== "false");
-    return cleanCat(p.category) === target && isFeat; 
+    return cleanCat(p.category) === target; 
   }).length;
 }
 
@@ -1911,7 +1909,11 @@ function renderHomeGrid() {
   
   var list = (SITE.photos || []).filter(function(p){
     var matchesCat = state.filter === "All" || cleanCat(p.category) === cleanCat(state.filter);
-    return matchesCat && (p.featured !== false && String(p.featured).toLowerCase() !== "false");
+    if (!matchesCat) return false;
+    if (state.filter === "All") {
+      return (p.featured !== false && String(p.featured).toLowerCase() !== "false");
+    }
+    return true; // category chip selected -> show all in that category
   });
 
   state.visible = list;
@@ -2013,7 +2015,7 @@ function renderNichesList(){
 
   nHost.innerHTML = SITE.niches.map(function(n){
     var cName = cleanCat(n.name);
-    var totalCount = (SITE.photos || []).filter(function(p){ return cleanCat(p.category) === cName; }).length;
+    var totalCount = countIn(n.name);
     var has = totalCount > 0 || made.indexOf(cName) !== -1;
     var right = has
       ? '<span class="state has mono">'+totalCount+' FRAMES</span>'
@@ -2407,6 +2409,7 @@ function openLB(i, opener){
   state.index = i >= 0 ? i : 0; 
   state.opener = opener || null;
   lb.classList.add("on");
+  lb.setAttribute("open", "");
   document.body.style.overflow = "hidden";
   paintLB();
   var closeEl = $("#lb-close");
@@ -2415,6 +2418,7 @@ function openLB(i, opener){
 
 function closeLB(){
   lb.classList.remove("on");
+  lb.removeAttribute("open");
   document.body.style.overflow = (collectivePage.classList.contains("open") || nichesPage.classList.contains("open")) ? "hidden" : "";
   if(state.opener) {
     state.opener.classList.remove("touch-focus");
