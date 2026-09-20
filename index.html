@@ -280,7 +280,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .sec-head .fill{flex:1;height:1px}
 .sec-head .count{font-size:var(--fs-label);letter-spacing:.1em;opacity:.55;white-space:nowrap}
 
-/* FILTERS: KEEP ON TOP LAYER */
+/* FILTERS */
 .filters{
   position: relative;
   z-index: 30;
@@ -311,7 +311,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .chip[aria-pressed="true"] .dot{opacity:1;box-shadow:0 0 6px var(--glow)}
 .chip[aria-pressed="true"] .n{opacity:.6}
 
-/* WORK CAROUSEL WITH DOCK MAGNIFICATION (NO DUPLICATES) */
+/* WORK CAROUSEL */
 .work-carousel-container {
   position: relative;
   width: 100%;
@@ -734,12 +734,11 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   padding:var(--sec) calc(var(--pad) + 12px);
   max-width:1440px;margin-inline:auto;width:100%;
 }
+/* FIXED: Remove artificial 100vh stretch to eliminate huge black gap */
 .niches-content-sec {
   padding-top: calc(var(--nav-h) + clamp(30px, 5vw, 60px));
-  min-height: 100vh;
-  min-height: 100dvh;
-  display: flex;
-  flex-direction: column;
+  min-height: auto;
+  display: block;
 }
 
 /* NICHES ACCORDION */
@@ -985,52 +984,52 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   background:var(--ink);color:var(--paper);border-color:var(--ink);
 }
 
+/* FIXED: Unified Alignment & Spacing for About/Bottom Section across All Views */
 .collective-about-wrap{
-  margin-top:clamp(48px, 8vw, 90px);
-  padding-top:clamp(32px, 5vw, 60px);
+  margin-top:clamp(40px, 6vw, 72px);
+  padding-top:clamp(32px, 4vw, 54px);
   border-top:1px solid var(--ink);
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-  gap:clamp(28px, 5vw, 60px);
+  display:grid;
+  grid-template-columns:1fr auto;
+  gap:clamp(24px, 4vw, 50px);
+  align-items:center;
 }
 .niches-content-sec .collective-about-wrap {
-  margin-top: auto;
+  margin-top: clamp(40px, 6vw, 72px);
 }
 
 .collective-about-text{
   text-align:left;
-  max-width: 65%;
 }
 .collective-about-text p{
   margin:0;
-  font-size:clamp(1.4rem, 3.4vw, 2.8rem);
+  font-family:"Space Grotesk", sans-serif;
+  font-size:clamp(1.5rem, 3.2vw, 2.6rem);
   line-height:1.15;
   letter-spacing:-.02em;
   font-weight:500;
-  max-width:24ch;
+  max-width:28ch;
 }
-.collective-about-text .by{margin-top:clamp(18px, 2.5vw, 32px);opacity:.55}
+.collective-about-text .by{margin-top:clamp(16px, 2vw, 28px);opacity:.55}
 
 .collective-about-logo{
   display:flex;
-  align-items:flex-end;
+  align-items:center;
   justify-content:flex-end;
-  flex: none;
 }
 .collective-about-logo button{
   border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;
 }
 .collective-about-logo img{
-  width:auto;
-  max-width: 240px;
+  width:100%;
+  max-width: 250px;
   height:auto;
   object-fit:contain;
   transition:transform .3s var(--ease);
 }
 .collective-about-logo button:hover img{transform:scale(1.03)}
 
-/* LIGHTBOX (THEME ADAPTIVE) */
+/* LIGHTBOX */
 .lb{
   position:fixed;inset:0;z-index:120;
   background:rgba(255, 255, 255, 0.96);
@@ -1435,17 +1434,17 @@ html[data-theme="dark"] .lb-frame {
   .collective-about-wrap{
     display: flex !important;
     flex-direction: column !important;
-    align-items: flex-start !important;
-    text-align: left !important;
+    align-items: center !important;
+    text-align: center !important;
     gap: 24px !important;
   }
-  .collective-about-text{ max-width: 100% !important; text-align: left !important; }
+  .collective-about-text{ text-align: center !important; }
   .collective-about-logo{
-    justify-content: flex-start !important;
+    justify-content: center !important;
     padding-right: 0 !important;
     width: 100% !important;
   }
-  .collective-about-logo img{max-width:170px !important}
+  .collective-about-logo img{max-width:180px !important}
 
   .lb-frame img{max-width:calc(100vw - 24px);max-height:calc(100vh - 140px)}
   .lb-cap{grid-template-columns:1fr}
@@ -1576,7 +1575,7 @@ html[data-theme="dark"] .lb-frame {
   </div>
 
   <div class="overlay-content-sec niches-content-sec">
-    <div id="niches-list-container" style="flex: 1;">
+    <div id="niches-list-container">
       <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Capture</h1>
       <p style="opacity:.7; max-width:600px; margin-bottom:clamp(30px, 5vw, 60px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
       
@@ -1592,14 +1591,19 @@ html[data-theme="dark"] .lb-frame {
       </div>
     </div>
     
-    <div id="niche-view-box" style="display:none; flex: 1;"></div>
+    <div id="niche-view-box" style="display:none;"></div>
 
+    <!-- BALANCED ABOUT STRIP ON NICHES PAGE: Text on Left, Logo on Right -->
     <div class="collective-about-wrap">
       <div class="collective-about-text">
-        <button class="niche-back btn-close-niches" style="padding:14px 28px; cursor:pointer;">← Back to Studio</button>
+        <p data-statement></p>
+        <div class="label by" data-statement-by></div>
+        <div style="margin-top: 20px;">
+          <button class="niche-back btn-close-niches" style="padding:10px 20px; cursor:pointer;">← Back to Studio</button>
+        </div>
       </div>
       <div class="collective-about-logo">
-        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
+        <button class="logo-exit-btn" aria-label="Back to Home">
           <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
         </button>
       </div>
@@ -1644,6 +1648,7 @@ html[data-theme="dark"] .lb-frame {
     </div>
     <div class="collective-grid" id="collective-grid"></div>
 
+    <!-- BALANCED ABOUT STRIP ON COLLECTIVE PAGE -->
     <div class="collective-about-wrap">
       <div class="collective-about-text">
         <span class="label mono" style="opacity:.5;display:block;margin-bottom:12px;">About Living Room Labs</span>
@@ -1651,7 +1656,7 @@ html[data-theme="dark"] .lb-frame {
         <div class="label by" data-statement-by></div>
       </div>
       <div class="collective-about-logo">
-        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
+        <button class="logo-exit-btn" aria-label="Back to Home">
           <img src="/logo.png" alt="Living Room Labs" onerror="this.onerror=null;this.src='logo.png';">
         </button>
       </div>
@@ -2534,7 +2539,7 @@ function bindGlobalEvents() {
       e.preventDefault(); openCollective();
     } else if (e.target.closest(".nav-niches-link, .mobile-shoot-box")) {
       e.preventDefault(); openNiches();
-    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquiry-overview")) {
+    } else if (e.target.closest("#btn-foot-enquire") || e.target.closest("#btn-enquire-overview")) {
       e.preventDefault(); openEnquiryModal("General Enquiry");
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
