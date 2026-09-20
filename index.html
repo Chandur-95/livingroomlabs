@@ -309,7 +309,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 /* ============================================================
-   MAC OS DOCK CAROUSEL (NO SNAP OR SMOOTH CONFLICTS)
+   MAC OS DOCK CAROUSEL
    ============================================================ */
 .work-carousel-container {
   position: relative;
@@ -320,7 +320,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   display: flex !important;
   flex-direction: row !important;
   gap: 16px !important;
-  overflow-x: auto !important; /* CRITICAL FOR IOS */
+  overflow-x: auto !important;
   overflow-y: hidden !important;
   scroll-behavior: auto !important; 
   -webkit-overflow-scrolling: touch;
@@ -950,7 +950,7 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .niche-back:hover{background:var(--ink);color:var(--paper)}
 
-/* THE COLLECTIVE MEMBER CAROUSEL (CURTAIN WIPE ANIMATION) */
+/* THE COLLECTIVE MEMBER CAROUSEL */
 .collective-grid {
   display:grid;grid-template-columns:repeat(4, 1fr);gap:clamp(16px, 2.5vw, 32px);
 }
@@ -1881,9 +1881,13 @@ function pauseAutoScroll() {
 
 function resumeAutoScroll() {
   clearTimeout(resumeTimer);
+  // Delay slightly to prevent stutter when moving between photos
   resumeTimer = setTimeout(function() {
-    isUserInteracting = false;
-  }, 1200);
+    // Only resume if absolutely no photo is clicked/focused on mobile
+    if ($$("#grid .shot.touch-focus").length === 0) {
+      isUserInteracting = false;
+    }
+  }, 150); 
 }
 
 function startAutoScroll(singleSetWidth) {
@@ -1973,26 +1977,38 @@ function renderHomeGrid() {
   }).join("");
 
   $$("#grid .shot", grid).forEach(function(b){
-    b.addEventListener("touchstart", function() {
-      $$("#grid .shot", grid).forEach(function(other) {
-        if (other !== b) other.classList.remove("touch-focus");
-      });
-      b.classList.toggle("touch-focus");
-    }, {passive:true});
+    
+    // Desktop: Pause when cursor is exactly ON an image
+    b.addEventListener("mouseenter", pauseAutoScroll);
+    
+    // Desktop: Resume the millisecond the cursor moves AWAY from an image
+    b.addEventListener("mouseleave", function() {
+      b.classList.remove("touch-focus"); // safety clear
+      resumeAutoScroll();
+    });
 
-    b.addEventListener("click", function(){ 
+    b.addEventListener("click", function(e){ 
+      // Mobile logic: First tap shows dock effect. Second tap opens lightbox.
+      if (window.matchMedia("(hover: none)").matches && !b.classList.contains("touch-focus")) {
+        e.preventDefault();
+        $$("#grid .shot", grid).forEach(function(other) {
+          other.classList.remove("touch-focus");
+        });
+        b.classList.add("touch-focus");
+        pauseAutoScroll();
+        return;
+      }
+      
+      // Desktop click, or Mobile second tap
       pauseAutoScroll();
       openLB(parseInt(b.dataset.realIdx, 10), b); 
     });
   });
 
-  // Attach iOS-Proof Interruption Events
+  // Track dragging to pause
   grid.addEventListener("touchstart", pauseAutoScroll, {passive:true});
   grid.addEventListener("touchmove", pauseAutoScroll, {passive:true});
   grid.addEventListener("touchend", resumeAutoScroll, {passive:true});
-  grid.addEventListener("wheel", pauseAutoScroll, {passive:true});
-  grid.addEventListener("mouseenter", pauseAutoScroll);
-  grid.addEventListener("mouseleave", resumeAutoScroll);
 
   var allCards = grid.querySelectorAll(".shot");
   if (allCards.length > list.length && allCards[list.length]) {
@@ -2426,12 +2442,20 @@ function openLB(i, opener){
   var closeEl = $("#lb-close");
   if (closeEl) closeEl.focus();
 }
+
 function closeLB(){
   lb.classList.remove("on");
   document.body.style.overflow = (collectivePage.classList.contains("open") || nichesPage.classList.contains("open")) ? "hidden" : "";
-  if(state.opener) state.opener.focus();
-  resumeAutoScroll();
+  
+  if(state.opener) {
+    state.opener.classList.remove("touch-focus"); // Un-pop the image
+    state.opener.focus();
+  }
+  
+  isUserInteracting = false; // Force true resume
+  resumeAutoScroll(); // Immediately resume grid
 }
+
 function stepLB(d){
   if(!state.visible.length) return;
   state.index = (state.index + d + state.visible.length) % state.visible.length;
@@ -2534,7 +2558,30 @@ document.addEventListener("dragstart", function(e){
 });
 
 function bindGlobalEvents() {
+  
+  // Clear mobile focus when touching ANYWHERE else on screen
+  document.addEventListener("touchstart", function(e) {
+    if (!e.target.closest("#grid .shot")) {
+      var cleared = false;
+      $$("#grid .shot.touch-focus").forEach(function(s) {
+        s.classList.remove("touch-focus");
+        cleared = true;
+      });
+      if (cleared) resumeAutoScroll();
+    }
+  }, {passive:true});
+
   document.addEventListener("click", function(e) {
+    // Clear mobile focus when clicking ANYWHERE else on screen
+    if (!e.target.closest("#grid .shot")) {
+      var cleared = false;
+      $$("#grid .shot.touch-focus").forEach(function(s) {
+        s.classList.remove("touch-focus");
+        cleared = true;
+      });
+      if (cleared) resumeAutoScroll();
+    }
+    
     if (e.target.closest(".btn-close-collective")) {
       e.preventDefault(); closeCollective();
     } else if (e.target.closest(".btn-close-niches")) {
