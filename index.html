@@ -417,7 +417,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 .carousel-nav-btn.prev { left: -14px; }
 .carousel-nav-btn.next { right: -14px; }
 
-/* HORIZONTAL MARQUEE NICHE PREVIEW STRIP */
+/* HORIZONTAL MARQUEE NICHE PREVIEW STRIP (NO DUPLICATION) */
 .niche-preview-grid {
   display: flex !important;
   flex-direction: row !important;
@@ -1824,8 +1824,12 @@ function getObjPosition(pos){
 }
 
 function italics(str){
-  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;")
+  return String(str).replace(/&/g,"&amp;").replace(/</g,"&lt;)
                     .replace(/\*(.+?)\*/g,"<em>$1</em>");
+}
+// Quick fix for my replace line safety
+function italics(str){
+  return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\*(.+?)\*/g,"<em>$1</em>");
 }
 function esc(str){
   return String(str==null?"":str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
@@ -1884,13 +1888,13 @@ function runAutoScroll(now) {
     }
   }
 
-  // Also auto-scroll niche preview tracks if expanded
+  // Also auto-scroll niche preview tracks if expanded cleanly (non-infinite loop bounce/loop)
   $$(".niche-preview-grid").forEach(function(pTrack) {
     if (pTrack.scrollWidth > pTrack.clientWidth + 4 && !pTrack.matches(":hover") && !isUserInteracting) {
       pTrack.scrollLeft += 22 * delta;
-      var halfW = pTrack.scrollWidth / 2;
-      if (halfW > 0 && pTrack.scrollLeft >= halfW) {
-        pTrack.scrollLeft -= halfW;
+      var maxs = pTrack.scrollWidth - pTrack.clientWidth;
+      if (maxs > 0 && pTrack.scrollLeft >= maxs) {
+        pTrack.scrollLeft = 0;
       }
     }
   });
@@ -2022,7 +2026,6 @@ function renderHomeGrid() {
     });
   });
 
-  // Touch handlers for iPad & mobile browsers
   grid.addEventListener("touchstart", function() {
     pauseAutoScroll();
   }, {passive:true});
@@ -2033,11 +2036,11 @@ function renderHomeGrid() {
 
   grid.addEventListener("touchend", function() {
     $$("#grid .shot.touch-focus").forEach(function(s) { s.classList.remove("touch-focus"); });
-    resumeAutoScroll(1000);
+    resumeAutoScroll(800);
   }, {passive:true});
 
   grid.addEventListener("touchcancel", function() {
-    resumeAutoScroll(600);
+    resumeAutoScroll(400);
   }, {passive:true});
 
   grid.scrollLeft = 0;
@@ -2083,8 +2086,8 @@ function renderNichesList(){
     var photosInNiche = (SITE.photos || []).filter(function(p){
       return cleanCat(p.category) === cName;
     });
-    // Duplicate subset so smooth marquee wrapping works seamlessly
-    var previewPhotos = photosInNiche.length > 0 ? photosInNiche.slice(0, 4).concat(photosInNiche.slice(0, 4)) : [];
+    // Standard slice without duplication/infinite loop
+    var previewPhotos = photosInNiche.slice(0, 4);
 
     var previewGridHTML = "";
     var dropdownFootHTML = "";
@@ -2092,8 +2095,7 @@ function renderNichesList(){
     if (previewPhotos.length > 0) {
       previewGridHTML = '<div class="niche-preview-grid">' + previewPhotos.map(function(p, pIdx){
         var pos = getObjPosition(p.imagePosition);
-        var baseIdx = pIdx % photosInNiche.length;
-        return '<button type="button" class="shot btn-preview-shot" data-niche-cat="'+esc(n.name)+'" data-niche-subidx="'+baseIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
+        return '<button type="button" class="shot btn-preview-shot" data-niche-cat="'+esc(n.name)+'" data-niche-subidx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
                    '<span class="plate">'+
                      '<img decoding="async" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
@@ -2106,7 +2108,7 @@ function renderNichesList(){
       dropdownFootHTML = 
         '<div class="niche-dropdown-foot">' +
           '<button type="button" class="btn-niche-view-more" data-go-niche="'+esc(n.name)+'">' +
-            'View all ' + countIn(n.name) + ' photos in ' + esc(n.name) + ' &rarr;' +
+            'View all ' + totalCount + ' photos in ' + esc(n.name) + ' &rarr;' +
           '</button>' +
         '</div>';
     } else {
@@ -2141,7 +2143,6 @@ function renderNichesList(){
       if (!isExpanded) {
         row.classList.add("expanded");
         btn.setAttribute("aria-expanded", "true");
-        // Reset scroll position of preview grid upon expand
         var pGrid = row.querySelector(".niche-preview-grid");
         if (pGrid) pGrid.scrollLeft = 0;
       }
@@ -2616,6 +2617,14 @@ function bindGlobalEvents() {
   }, {passive:true});
 
   document.addEventListener("click", function(e) {
+    // Universal delegate for data-open-enquiry
+    var enqAttr = e.target.closest("[data-open-enquiry]");
+    if (enqAttr) {
+      e.preventDefault();
+      openEnquiryModal(enqAttr.getAttribute("data-open-enquiry"));
+      return;
+    }
+
     if (!e.target.closest("#grid .shot") && !e.target.closest(".niche-preview-grid")) {
       var hadFocus = false;
       $$("#grid .shot.touch-focus, .btn-preview-shot.touch-focus").forEach(function(s) {
