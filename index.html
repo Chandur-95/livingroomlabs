@@ -3,9 +3,83 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>Living Room Labs — Photography</title>
+<title>Living Room Labs | Photography Collective in Hyderabad</title>
 <link rel="icon" type="image/png" href="/logo.png">
-<meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, performing arts, products, events and portraits.">
+<meta name="description" content="Living Room Labs is a Hyderabad photography collective. We shoot food, pets, real estate, performing arts, products, events, portraits and travel.">
+<link rel="canonical" href="https://livingroomlabs.in/">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Living Room Labs">
+<meta property="og:title" content="Living Room Labs | Photography Collective in Hyderabad">
+<meta property="og:description" content="Living Room Labs is a Hyderabad photography collective. We shoot food, pets, real estate, performing arts, products, events, portraits and travel.">
+<meta property="og:url" content="https://livingroomlabs.in/">
+<meta property="og:image" content="https://livingroomlabs.in/og-image.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Living Room Labs, a photography collective in Hyderabad">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Living Room Labs | Photography Collective in Hyderabad">
+<meta name="twitter:description" content="Living Room Labs is a Hyderabad photography collective. We shoot food, pets, real estate, performing arts, products, events, portraits and travel.">
+<meta name="twitter:image" content="https://livingroomlabs.in/og-image.jpg">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "ProfessionalService",
+  "name": "Living Room Labs",
+  "url": "https://livingroomlabs.in/",
+  "logo": "https://livingroomlabs.in/logo.png",
+  "image": "https://livingroomlabs.in/og-image.jpg",
+  "description": "Living Room Labs is a Hyderabad photography collective. We shoot food, pets, real estate, performing arts, products, events, portraits and travel.",
+  "slogan": "Capture. Create. Inspire.",
+  "email": "hello@livingroomlabs.in",
+  "address": {
+    "@type": "PostalAddress",
+    "addressLocality": "Hyderabad",
+    "addressRegion": "Telangana",
+    "addressCountry": "IN"
+  },
+  "areaServed": {
+    "@type": "City",
+    "name": "Hyderabad"
+  },
+  "sameAs": [
+    "https://www.instagram.com/fromlivingroomlabs/"
+  ],
+  "knowsAbout": [
+    "Performing Arts photography",
+    "Food photography",
+    "Pets photography",
+    "Real Estate photography",
+    "Products photography",
+    "Events photography",
+    "Portraits photography",
+    "Travel photography"
+  ],
+  "member": [
+    {
+      "@type": "Person",
+      "name": "Pooja",
+      "jobTitle": "Lead / Photographer"
+    },
+    {
+      "@type": "Person",
+      "name": "Chikita",
+      "jobTitle": "Photographer / Creative Head"
+    },
+    {
+      "@type": "Person",
+      "name": "Cherry",
+      "jobTitle": "DOP / Filmmaker"
+    },
+    {
+      "@type": "Person",
+      "name": "Chandu",
+      "jobTitle": "Photographer"
+    }
+  ]
+}
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <script>
@@ -265,7 +339,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   height:100%;
 }
 .band-img{
-  will-change: opacity, transform;
   position:absolute;
   inset:0;
   width:100%;
@@ -1530,10 +1603,32 @@ html[data-theme="dark"] .lb-frame {
   .nav-mobile-only .nav-collective-link-mob { display: none !important; }
   .foot-col-team { display: none !important; }
 }
+
+/* ===== Skip link (keyboard users) ===== */
+.skip-link{position:absolute;left:12px;top:-64px;z-index:1000;background:var(--ink);color:var(--paper);padding:10px 16px;font-weight:600;font-size:.85rem;text-decoration:none;transition:top .15s ease}
+.skip-link:focus{top:calc(var(--safe-top) + 10px)}
+#work:focus{outline:none}
+
+/* ===== Contact form: hidden trap field for bots (people never see or reach it) ===== */
+.hp-field{position:absolute !important;left:-10000px !important;top:auto;width:1px;height:1px;overflow:hidden;opacity:0;pointer-events:none}
+
+/* ===== Touch screens: bigger invisible tap areas (nothing changes visually) ===== */
+@media (pointer:coarse){
+  .nav-links a::before,.nav-links button::before{content:"";position:absolute;inset:-12px -8px}
+  .pull::before{content:"";position:absolute;top:0;bottom:-8px;left:-14px;right:-14px}
+  .chip::before{content:"";position:absolute;inset:-8px -2px}
+  .overlay-close{position:relative}
+  .overlay-close::before{content:"";position:absolute;inset:-8px}
+  .lb-close,.lb-nav{min-width:44px;min-height:44px}
+}
+
+/* ===== Footer: keep the logo vertically centred beside the link columns on every screen size ===== */
+.foot .foot-col-logo{align-self:center !important}
 </style>
 </head>
 
 <body>
+<a class="skip-link" href="#work">Skip to the photos</a>
 <a class="skip" href="#work">Skip to work</a>
 
 <nav class="nav">
@@ -1569,7 +1664,7 @@ html[data-theme="dark"] .lb-frame {
     <div class="band-stage" id="band-stage"></div>
   </div>
 
-  <section class="sec wrap" id="work">
+  <section class="sec wrap" id="work" tabindex="-1">
     <div class="sec-head">
       <span class="label">Work</span>
       <span class="fill"></span>
@@ -1781,12 +1876,12 @@ html[data-theme="dark"] .lb-frame {
     <form class="enquiry-form" id="enquiry-form">
       <div class="enquiry-field">
         <label class="enquiry-label" for="enq-name">Your Name</label>
-        <input class="enquiry-input" type="text" id="enq-name" name="name" required placeholder="Jane Doe" autocomplete="name">
+        <input class="enquiry-input" type="text" id="enq-name" name="name" required maxlength="100" placeholder="Jane Doe" autocomplete="name">
       </div>
 
       <div class="enquiry-field">
         <label class="enquiry-label" for="enq-email">Your Email</label>
-        <input class="enquiry-input" type="email" id="enq-email" name="email" required placeholder="name@domain.com" autocomplete="email">
+        <input class="enquiry-input" type="email" id="enq-email" name="email" required maxlength="254" placeholder="name@domain.com" autocomplete="email">
       </div>
 
       <div class="enquiry-field">
@@ -1809,8 +1904,13 @@ html[data-theme="dark"] .lb-frame {
         <div class="char-counter mono"><span id="char-count">0</span> / 500 CHARACTERS</div>
       </div>
 
+      <div class="hp-field" aria-hidden="true">
+        <label for="enq-website">Leave this field empty</label>
+        <input type="text" id="enq-website" name="_gotcha" tabindex="-1" autocomplete="off">
+      </div>
+
       <div class="enquiry-foot">
-        <span class="mono enquiry-status-msg" id="enquiry-status">READY</span>
+        <span class="mono enquiry-status-msg" id="enquiry-status" role="status" aria-live="polite">READY</span>
         <button type="submit" class="btn-enquiry-submit" id="btn-enquiry-send">
           Send Enquiry &rarr;
         </button>
@@ -1867,6 +1967,19 @@ function getObjPosition(pos){
 function italics(str){
   return String(str || "").replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/\*(.+?)\*/g,"<em>$1</em>");
 }
+/* Strip cards are small, so they load a small copy (images/thumbs/<name>.jpg). If a thumbnail doesn't exist
+   (for example a photo uploaded later), the card quietly falls back to the full photo. */
+function thumbFor(src){
+  var s = fixPath(src);
+  var m = /^\/images\/uploads\/([^\/?#]+)$/.exec(s);
+  return m ? "/images/thumbs/" + m[1] + ".jpg" : s;
+}
+var THUMB_FALLBACK = "if(this.dataset.full){var f=this.dataset.full;this.removeAttribute('data-full');this.src=f;}else{this.style.opacity='0.3';}";
+function stripImgAttrs(rawSrc){
+  var full = fixPath(rawSrc), th = thumbFor(rawSrc);
+  return 'src="' + esc(th) + '"' + (th !== full ? ' data-full="' + esc(full) + '"' : '') + ' onerror="' + THUMB_FALLBACK + '"';
+}
+
 function esc(str){
   return String(str == null ? "" : str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 }
@@ -1914,7 +2027,6 @@ var scrollPlan = null;
 var reduceMotionMQ = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
 
 function prefersReducedMotion(){ return !!(reduceMotionMQ && reduceMotionMQ.matches); }
-function deviceScale(){ return window.devicePixelRatio || 1; }
 
 function noteFrame(dt){
   if(dt > 2 && dt < 60){
@@ -1927,11 +2039,12 @@ function noteFrame(dt){
   }
 }
 
-/* How many device pixels to move, and on which frames, so every step is identical. */
+/* Browsers only scroll in whole CSS pixels, so we move exactly 1px on a fixed rhythm: every frame at 60Hz,
+   every 2nd frame at 120Hz, and so on. Identical steps at identical intervals = smooth on every screen. */
 function refreshScrollPlan(){
-  var perFrame = SCROLL_SPEED * deviceScale() * frameEst / 1000;
-  var plan = perFrame >= 1
-    ? { px: Math.max(1, Math.round(perFrame)), every: 1, perFrame: perFrame }
+  var perFrame = SCROLL_SPEED * frameEst / 1000;            /* px per screen refresh at the target speed */
+  var plan = perFrame >= 1.5
+    ? { px: Math.round(perFrame), every: 1, perFrame: perFrame }
     : { px: 1, every: Math.max(1, Math.round(1 / perFrame)), perFrame: perFrame };
   /* keep the current plan unless the screen really changed (avoids speed flip-flopping) */
   if(!scrollPlan || Math.abs(plan.perFrame - scrollPlan.perFrame) / scrollPlan.perFrame > 0.12) scrollPlan = plan;
@@ -1943,36 +2056,36 @@ function homeCovered(){
             (typeof nichesPage !== "undefined" && nichesPage && nichesPage.classList.contains("open")));
 }
 
-/* One strip, one step. deviceStep = device pixels to advance this frame. */
-function stepTrack(track, deviceStep){
+/* One strip, one step. step = CSS pixels to advance this frame. */
+function stepTrack(track, step){
   if(!track || track._isPaused || track._isTouching || track._offscreen) return;
-  var max = track.scrollWidth - track.clientWidth;
-  if(max <= 2) return;
-
-  var dpr = deviceScale();
-  var actual = track.scrollLeft * dpr;
-  var tol = Math.max(1.5, dpr * 0.6);
   var now = performance.now();
+  if(!track._maxAt || now - track._maxAt > 500){          /* measuring the strip forces layout, so do it twice a second, not every frame */
+    track._max = track.scrollWidth - track.clientWidth;
+    track._maxAt = now;
+  }
+  if(track._max <= 2) return;
 
-  if(typeof track._dp !== "number"){
-    track._dp = Math.round(actual);
-  } else if(Math.abs(actual - track._dp) > tol){
+  var actual = track.scrollLeft;
+  if(typeof track._pos !== "number"){
+    track._pos = Math.round(actual);
+  } else if(Math.abs(actual - track._pos) > 1.5){
     /* someone else moved it (finger, wheel, arrow button, keyboard): don't fight it */
-    track._dp = Math.round(actual);
+    track._pos = Math.round(actual);
     track._extAt = now;
     return;
   }
   if(track._extAt && now - track._extAt < 250) return;   /* let a swipe's momentum finish */
 
-  track._dp += deviceStep;
+  track._pos += step;
   if(track._looped && track._loopW > 0){
-    var loopDev = Math.round(track._loopW * dpr);
-    if(track._dp >= loopDev) track._dp -= loopDev;        /* identical picture -> seamless */
-  } else if(track._dp / dpr >= max){
-    track._dp = Math.round(max * dpr);                    /* no copy to loop into: hold at the end */
+    var loopPx = Math.round(track._loopW);
+    if(track._pos >= loopPx) track._pos -= loopPx;        /* identical picture -> seamless */
+  } else if(track._pos >= track._max){
+    track._pos = Math.round(track._max);                  /* no copy to loop into: hold at the end */
     return;
   }
-  track.scrollLeft = track._dp / dpr;
+  track.scrollLeft = track._pos;
 }
 
 function runAutoScroll(now){
@@ -1986,14 +2099,14 @@ function runAutoScroll(now){
   if(frameTick % scrollPlan.every === 0 && !document.hidden && !prefersReducedMotion() && !lightboxIsOpen()){
     /* after a dropped frame, catch up so the pace stays honest */
     var n = Math.min(8, Math.max(1, Math.round(dt / (frameEst * scrollPlan.every))));
-    var deviceStep = n * scrollPlan.px;
+    var stepPx = n * scrollPlan.px;
 
-    if(!homeCovered()) stepTrack(document.getElementById("grid"), deviceStep);
+    if(!homeCovered()) stepTrack(document.getElementById("grid"), stepPx);
 
     var expandedRow = document.querySelector(".niche-row.expanded");
     if(expandedRow){
       var pTrack = expandedRow.querySelector(".niche-preview-grid");
-      if(pTrack) stepTrack(pTrack, deviceStep);
+      if(pTrack) stepTrack(pTrack, stepPx);
     }
   }
   autoScrollRaf = requestAnimationFrame(runAutoScroll);
@@ -2038,7 +2151,8 @@ function refreshLoop(track){
     clones.forEach(function(c){ c.parentNode && c.parentNode.removeChild(c); });
     track._looped = false;
   }
-  track._dp = undefined;
+  track._pos = undefined;
+  track._maxAt = 0;
 }
 
 function bindTrackInteractions(track) {
@@ -2057,7 +2171,7 @@ function bindTrackInteractions(track) {
     touchTimer = setTimeout(function() {
       if (!track._isTouching) {
         track._isPaused = false;
-        track._dp = undefined;
+        track._pos = undefined;
       }
     }, delay || 600);
   }
@@ -2071,7 +2185,7 @@ function bindTrackInteractions(track) {
     track.addEventListener("mouseenter", function() { track._isPaused = true; });
     track.addEventListener("mouseleave", function() {
       track._isPaused = false;
-      track._dp = undefined;
+      track._pos = undefined;
     });
   }
 
@@ -2085,7 +2199,7 @@ function bindTrackInteractions(track) {
     setTimeout(function() {
       if (!track.contains(document.activeElement) && !track._isTouching) {
         track._isPaused = false;
-        track._dp = undefined;
+        track._pos = undefined;
       }
     }, 300);
   });
@@ -2142,6 +2256,7 @@ function renderHomeGrid() {
   });
 
   state.visible = list;
+  grid._list = list;                 /* remember which photos this strip shows */
   var counter = $("[data-workcount]");
   if(counter) counter.textContent = list.length + " / " + (SITE.photos || []).length + " FRAMES";
 
@@ -2159,7 +2274,7 @@ function renderHomeGrid() {
     return '<button type="button" class="shot" data-idx="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
              '<div class="plate-tilt-wrap">'+
                '<span class="plate">'+
-                 '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(altFor(p))+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
+                 '<img loading="lazy" decoding="async" '+stripImgAttrs(p.src)+' alt="'+esc(altFor(p))+'" style="object-position: '+esc(pos)+';">'+
                  '<span class="guard"></span>'+
                '</span>'+
              '</div>'+
@@ -2170,7 +2285,7 @@ function renderHomeGrid() {
   bindGridClicks(grid);
   bindTrackInteractions(grid);
   grid.scrollLeft = 0;
-  grid._dp = 0;
+  grid._pos = 0;
   refreshLoop(grid);
 }
 
@@ -2191,6 +2306,7 @@ function bindGridClicks(grid){
       return;
     }
     grid._isPaused = true;
+    if (grid._list) state.visible = grid._list;      /* always use THIS strip's photos, not whatever was opened last */
     openLB(parseInt(b.dataset.idx, 10), b);
   });
 }
@@ -2216,7 +2332,7 @@ function initCarouselControls() {
         track.scrollLeft = track.scrollLeft + track._loopW;
       }
       track.scrollBy({ left: -310, behavior: "smooth" });
-      setTimeout(function() { track._isPaused = false; track._dp = undefined; }, 1200);
+      setTimeout(function() { track._isPaused = false; track._pos = undefined; }, 1200);
     });
   }
   if (nextBtn && track) {
@@ -2227,7 +2343,7 @@ function initCarouselControls() {
         track.scrollLeft = track.scrollLeft - track._loopW;
       }
       track.scrollBy({ left: 310, behavior: "smooth" });
-      setTimeout(function() { track._isPaused = false; track._dp = undefined; }, 1200);
+      setTimeout(function() { track._isPaused = false; track._pos = undefined; }, 1200);
     });
   }
 }
@@ -2258,7 +2374,7 @@ function renderNichesList(){
         return '<button type="button" class="shot btn-preview-shot" data-niche-cat="'+esc(n.name)+'" data-niche-subidx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
                    '<span class="plate">'+
-                     '<img loading="lazy" decoding="async" src="'+esc(fixPath(p.src))+'" alt="'+esc(altFor(p))+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
+                     '<img loading="lazy" decoding="async" '+stripImgAttrs(p.src)+' alt="'+esc(altFor(p))+'" style="object-position: '+esc(pos)+';">'+
                      '<span class="guard"></span>'+
                    '</span>'+
                  '</div>'+
@@ -2306,7 +2422,7 @@ function renderNichesList(){
         var pGrid = row.querySelector(".niche-preview-grid");
         if (pGrid) {
           pGrid.scrollLeft = 0;
-          pGrid._dp = 0;
+          pGrid._pos = 0;
           pGrid._isPaused = false;
           bindTrackInteractions(pGrid);
           refreshLoop(pGrid);
@@ -2393,7 +2509,7 @@ function openNicheView(nicheName){
       return '<button type="button" class="shot btn-niche-shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
                '<div class="plate-tilt-wrap">'+
                  '<span class="plate">'+
-                   '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(altFor(p))+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
+                   '<img loading="lazy" decoding="async" '+stripImgAttrs(p.src)+' alt="'+esc(altFor(p))+'" style="object-position: '+esc(pos)+';">'+
                    '<span class="guard"></span>'+
                  '</span>'+
                '</div>'+
@@ -2466,44 +2582,94 @@ function closeNicheView(){
 var collectivePage = $("#collective-page");
 var nichesPage = $("#niches-page");
 
+/* ============================================================
+   POP-UP KEYBOARD SUPPORT
+   - Esc closes only the pop-up that is on top
+   - Tab / Shift+Tab stay inside the open pop-up
+   - focus moves into a pop-up when it opens and goes back to the button that opened it when it closes
+   ============================================================ */
+var dialogOpeners = {};
+function rememberOpener(key){
+  var a = document.activeElement;
+  dialogOpeners[key] = (a && a !== document.body && a !== document.documentElement) ? a : null;
+}
+function restoreOpener(key){
+  var el = dialogOpeners[key]; dialogOpeners[key] = null;
+  if(el && document.contains(el) && typeof el.focus === "function"){
+    try { el.focus({ preventScroll: true }); } catch(err) { el.focus(); }
+  }
+}
+function focusDialog(dlg){
+  if(!dlg) return;
+  setTimeout(function(){
+    var target = dlg.querySelector(".overlay-close, #lb-close, #btn-close-enquiry-modal");
+    if(!target){ dlg.setAttribute("tabindex", "-1"); target = dlg; }
+    try { target.focus({ preventScroll: true }); } catch(err) { target.focus(); }
+  }, 60);
+}
+function topDialog(){
+  var modal = document.getElementById("enquiry-modal");
+  if(modal && modal.classList.contains("open")) return modal;
+  if(typeof lb !== "undefined" && lb && lb.classList.contains("on")) return lb;
+  if(collectivePage && collectivePage.classList.contains("open")) return collectivePage;
+  if(nichesPage && nichesPage.classList.contains("open")) return nichesPage;
+  return null;
+}
+function focusableIn(root){
+  return $$('a[href],button:not([disabled]),input:not([disabled]):not([type="hidden"]),select:not([disabled]),textarea:not([disabled]),[tabindex]:not([tabindex="-1"])', root).filter(function(el){
+    if(el.tabIndex < 0) return false;
+    if(el.closest('[aria-hidden="true"]')) return false;
+    if(!el.getClientRects().length) return false;
+    return window.getComputedStyle(el).visibility !== "hidden";
+  });
+}
+
 function openCollective(){
+  if(collectivePage && !collectivePage.classList.contains("open")) rememberOpener("collective");
   if(nichesPage && nichesPage.classList.contains("open")) closeNiches();
   if(collectivePage){
     collectivePage.classList.add("open");
     document.body.style.overflow = "hidden";
     window.location.hash = "collective";
     collectivePage.scrollTop = 0;
+    focusDialog(collectivePage);
   }
 }
 
 function closeCollective(){
   if(collectivePage){
+    var wasOpen = collectivePage.classList.contains("open");
     collectivePage.classList.remove("open");
     document.body.style.overflow = "";
     if(window.location.hash === "#collective"){
       history.pushState("", document.title, window.location.pathname + window.location.search);
     }
+    if(wasOpen) restoreOpener("collective");
   }
 }
 
 function openNiches(){
+  if(nichesPage && !nichesPage.classList.contains("open")) rememberOpener("niches");
   if(collectivePage && collectivePage.classList.contains("open")) closeCollective();
   if(nichesPage){
     nichesPage.classList.add("open");
     document.body.style.overflow = "hidden";
     window.location.hash = "what-we-capture";
     nichesPage.scrollTop = 0;
+    focusDialog(nichesPage);
   }
 }
 
 function closeNiches(){
   if(nichesPage){
+    var wasOpen = nichesPage.classList.contains("open");
     nichesPage.classList.remove("open");
     document.body.style.overflow = "";
     closeNicheView();
     if(window.location.hash === "#what-we-capture" || window.location.hash.startsWith("#niche-")){
       history.pushState("", document.title, window.location.pathname + window.location.search);
     }
+    if(wasOpen) restoreOpener("niches");
   }
 }
 
@@ -2573,6 +2739,9 @@ function openEnquiryModal(preselectedCategory) {
     }
   }
   
+  if (!modal.classList.contains("open")) rememberOpener("enquiry");
+  state.enqOpenedAt = Date.now();
+  state.enqWarned = false;
   modal.classList.add("open");
   var nameInput = document.getElementById("enq-name");
   if (nameInput) {
@@ -2582,7 +2751,9 @@ function openEnquiryModal(preselectedCategory) {
 
 function closeEnquiryModal() {
   var modal = document.getElementById("enquiry-modal");
+  var wasOpen = !!(modal && modal.classList.contains("open"));
   if (modal) modal.classList.remove("open");
+  if (wasOpen) restoreOpener("enquiry");
 }
 
 function initSlideshow(){
@@ -2777,13 +2948,28 @@ if(pull) {
 })();
 
 document.addEventListener("keydown", function(e){
-  if(e.key === "Escape"){
-    var modal = document.getElementById("enquiry-modal");
-    if(modal && modal.classList.contains("open")) { closeEnquiryModal(); return; }
-    if(collectivePage && collectivePage.classList.contains("open")) { closeCollective(); return; }
-    if(nichesPage && nichesPage.classList.contains("open")) { closeNiches(); return; }
-    if(lb && lb.classList.contains("on")) { closeLB(); return; }
+  var top = topDialog();
+
+  if(e.key === "Escape" && top){
+    /* close only the pop-up that is on top (a photo opened inside "What we capture" closes first) */
+    if(top.id === "enquiry-modal") closeEnquiryModal();
+    else if(top === lb) closeLB();
+    else if(top === collectivePage) closeCollective();
+    else closeNiches();
+    return;
   }
+
+  if(e.key === "Tab" && top){
+    /* keep keyboard focus inside the open pop-up */
+    var items = focusableIn(top);
+    if(!items.length){ e.preventDefault(); return; }
+    var first = items[0], last = items[items.length - 1], active = document.activeElement;
+    if(!top.contains(active)){ e.preventDefault(); first.focus(); }
+    else if(e.shiftKey && active === first){ e.preventDefault(); last.focus(); }
+    else if(!e.shiftKey && active === last){ e.preventDefault(); first.focus(); }
+    return;
+  }
+
   if(!lb || !lb.classList.contains("on")) return;
   if(e.key === "ArrowLeft") stepLB(-1);
   else if(e.key === "ArrowRight") stepLB(1);
@@ -2887,6 +3073,26 @@ function bindGlobalEvents() {
       e.preventDefault();
       if (state.isSubmitting) return;
 
+      /* --- spam checks (people never notice these) --- */
+      var enqStatusEl = document.getElementById("enquiry-status");
+      var hpEl = document.getElementById("enq-website");
+      if (hpEl && hpEl.value) {
+        /* a bot filled the hidden field: look successful, send nothing */
+        if (enqStatusEl) enqStatusEl.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
+        return;
+      }
+      var nowMs = Date.now();
+      if (state.enqOpenedAt && nowMs - state.enqOpenedAt < 4000 && !state.enqWarned) {
+        /* impossibly fast: ask once for a double-check (a real person just presses Send again) */
+        state.enqWarned = true;
+        if (enqStatusEl) enqStatusEl.textContent = "PLEASE DOUBLE-CHECK, THEN PRESS SEND AGAIN";
+        return;
+      }
+      if (state.lastEnqSentAt && nowMs - state.lastEnqSentAt < 30000) {
+        if (enqStatusEl) enqStatusEl.textContent = "ALREADY SENT // PLEASE WAIT A MOMENT";
+        return;
+      }
+
       var btn = document.getElementById("btn-enquiry-send");
       var enqStatus = document.getElementById("enquiry-status");
       state.isSubmitting = true;
@@ -2897,7 +3103,8 @@ function bindGlobalEvents() {
         name: $("#enq-name").value,
         email: $("#enq-email").value,
         category: $("#enq-niche").value,
-        message: $("#enq-msg").value
+        message: $("#enq-msg").value,
+        _gotcha: hpEl ? hpEl.value : ""
       };
 
       var formId = SITE.formspreeId || "xjykvnoz";
@@ -2912,6 +3119,7 @@ function bindGlobalEvents() {
       })
       .then(function(res) {
         if (res.ok) {
+          state.lastEnqSentAt = Date.now();
           if (enqStatus) enqStatus.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
           setTimeout(function() {
             enqForm.reset();
@@ -3197,7 +3405,12 @@ window.addEventListener('load', function() {
     if(open) refreshLoop(open);
     frameLog = []; scrollPlan = null;
   }
-  window.addEventListener("resize", function(){ clearTimeout(t); t = setTimeout(refreshAll, 200); });
+  var lastW = window.innerWidth;
+  window.addEventListener("resize", function(){
+    if(window.innerWidth === lastW) return;                /* address bar showing/hiding is not a real resize */
+    lastW = window.innerWidth;
+    clearTimeout(t); t = setTimeout(refreshAll, 200);
+  });
   document.addEventListener("visibilitychange", function(){ lastScrollTime = performance.now(); });
   if(reduceMotionMQ && reduceMotionMQ.addEventListener){
     reduceMotionMQ.addEventListener("change", refreshAll);
