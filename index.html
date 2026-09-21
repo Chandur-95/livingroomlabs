@@ -8,8 +8,22 @@
 <meta name="description" content="Living Room Labs is a photography team. Food, pets, real estate, performing arts, products, events and portraits.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="preload" href="/content.json" as="fetch" crossorigin="anonymous">
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@400;500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;1,500;1,600&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet">
+<script>
+  /* Start downloading the site content right away, in parallel with fonts/CSS.
+     "no-cache" = always check for the newest version, but reuse it if unchanged (fast). */
+  (function () {
+    try {
+      var p = fetch('/content.json', { cache: 'no-cache' }).then(function (r) {
+        if (!r.ok) throw new Error('Status ' + r.status);
+        return r.json();
+      });
+      p.catch(function () {});
+      window.__lrlContent = p;
+    } catch (e) {}
+  })();
+</script>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;1,500;1,600&family=Space+Grotesk:wght@500;600;700&display=swap" media="print" onload="this.media='all'">
+<noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500&family=Playfair+Display:ital,wght@0,500;1,500;1,600&family=Space+Grotesk:wght@500;600;700&display=swap"></noscript>
 
 <script>
   (function() {
@@ -1685,7 +1699,7 @@ html[data-theme="dark"] .lb-frame {
   </div>
 
   <div class="collective-hero">
-    <img id="team-hero-img" alt="The Collective">
+    <img id="team-hero-img" alt="The Collective" loading="lazy" decoding="async">
     <div class="collective-hero-overlay">
       <h1>The Collective</h1>
       <p id="team-hero-intro"></p>
@@ -1851,6 +1865,18 @@ function italics(str){
 }
 function esc(str){
   return String(str == null ? "" : str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
+}
+
+/* Alt text for screen readers and Google Images:
+   uses the "Alt Text" box from the CMS if filled in, otherwise "Title — Category photography". */
+function altFor(p){
+  if(!p) return "Photograph";
+  var custom = String(p.alt || "").trim();
+  if(custom) return custom;
+  var title = String(p.title || "").trim();
+  var cat = String(p.category || "").trim();
+  if(title && cat) return title + " \u2014 " + cat + " photography";
+  return title || String(p.caption || "").trim() || "Photograph";
 }
 
 var state = { 
@@ -2038,7 +2064,7 @@ function renderHomeGrid() {
     return '<button type="button" class="shot" data-idx="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
              '<div class="plate-tilt-wrap">'+
                '<span class="plate">'+
-                 '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
+                 '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(altFor(p))+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
                  '<span class="guard"></span>'+
                '</span>'+
              '</div>'+
@@ -2116,7 +2142,7 @@ function renderNichesList(){
         return '<button type="button" class="shot btn-preview-shot" data-niche-cat="'+esc(n.name)+'" data-niche-subidx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
                    '<span class="plate">'+
-                     '<img decoding="async" src="'+esc(fixPath(p.src))+'" alt="'+esc(p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
+                     '<img loading="lazy" decoding="async" src="'+esc(fixPath(p.src))+'" alt="'+esc(altFor(p))+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
                      '<span class="guard"></span>'+
                    '</span>'+
                  '</div>'+
@@ -2250,7 +2276,7 @@ function openNicheView(nicheName){
       return '<button type="button" class="shot btn-niche-shot" data-niche-i="'+i+'" aria-label="Open '+esc(p.title || "Frame")+'">'+
                '<div class="plate-tilt-wrap">'+
                  '<span class="plate">'+
-                   '<img decoding="async" src="'+imgSrc+'" alt="'+esc(p.caption||p.title||"Frame")+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
+                   '<img loading="lazy" decoding="async" src="'+imgSrc+'" alt="'+esc(altFor(p))+'" style="object-position: '+esc(pos)+';" onerror="this.style.opacity=\'0.3\';">'+
                    '<span class="guard"></span>'+
                  '</span>'+
                '</div>'+
@@ -2465,10 +2491,19 @@ function initSlideshow(){
     var pos = getObjPosition(s.imagePosition);
     var act = (idx === state.currentSlide) ? "active" : "";
     var imgSrc = esc(fixPath(s.src)); 
-    var loadStrat = (idx === state.currentSlide) ? 'fetchpriority="high" loading="eager"' : 'decoding="async"';
+    /* The photo you see first loads right away. The others wait (data-src) until the page has settled. */
+    var loadStrat = (idx === state.currentSlide)
+      ? 'fetchpriority="high" loading="eager" decoding="async" src="'+imgSrc+'"'
+      : 'decoding="async" data-src="'+imgSrc+'"';
 
-    return '<img class="band-img '+act+'" '+loadStrat+' data-slide-i="'+idx+'" src="'+imgSrc+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+esc(pos)+';">';
+    return '<img class="band-img '+act+'" '+loadStrat+' data-slide-i="'+idx+'" alt="'+esc(s.alt||"Shoot")+'" style="object-position: '+esc(pos)+';">';
   }).join("");
+
+  if(document.readyState === "complete"){
+    setTimeout(loadRemainingSlides, 1200);
+  } else {
+    window.addEventListener("load", function(){ setTimeout(loadRemainingSlides, 1200); });
+  }
 
   var heroBox = $("#hero-slideshow");
   if(heroBox){
@@ -2479,6 +2514,19 @@ function initSlideshow(){
   }
 
   resetSlideInterval();
+}
+
+function loadSlideImg(img){
+  if(img && img.getAttribute("data-src")){
+    img.src = img.getAttribute("data-src");
+    img.removeAttribute("data-src");
+  }
+}
+
+function loadRemainingSlides(){
+  var stage = $("#band-stage");
+  if(!stage) return;
+  $$(".band-img", stage).forEach(loadSlideImg);
 }
 
 function resetSlideInterval(){
@@ -2492,15 +2540,21 @@ function resetSlideInterval(){
 
 function nextSlide(){
   if(!state.slides || state.slides.length <= 1 || state.isTransitioning) return;
-  state.isTransitioning = true;
-
-  var oldIndex = state.currentSlide;
-  var newIndex = (state.currentSlide + 1) % state.slides.length;
-  state.currentSlide = newIndex;
 
   var imgs = $$(".band-img", $("#band-stage"));
-  var oldImg = imgs[oldIndex];
+  var oldIndex = state.currentSlide;
+  var newIndex = (state.currentSlide + 1) % state.slides.length;
   var newImg = imgs[newIndex];
+
+  /* Don't fade to a photo that is still downloading (it would flash black). Start it and try next tick. */
+  if(newImg && (newImg.getAttribute("data-src") || !newImg.complete)){
+    loadSlideImg(newImg);
+    return;
+  }
+
+  state.isTransitioning = true;
+  state.currentSlide = newIndex;
+  var oldImg = imgs[oldIndex];
 
   if(newImg){
     newImg.style.zIndex = "3";
@@ -2557,7 +2611,7 @@ function paintLB(){
   imgEl.style.animation = "";
   
   imgEl.src = fixPath(p.src); 
-  imgEl.alt = p.caption || p.title || "Frame";
+  imgEl.alt = altFor(p);
   $("#lb-title").textContent = p.title || "Untitled";
   $("#lb-meta").textContent = (p.client || "Studio") + " — " + (p.category || "General");
   $("#lb-desc").textContent = p.caption || "";
@@ -2896,12 +2950,12 @@ function renderContent(){
       
       var mPos1 = getObjPosition(m.imagePosition);
       var photoSrc1 = m.photo ? fixPath(m.photo) : 'https://picsum.photos/seed/' + encodeURIComponent(m.name) + '/600/800';
-      var imgTags = '<img class="initial" src="'+esc(photoSrc1)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos1)+';">';
+      var imgTags = '<img class="initial" loading="lazy" decoding="async" src="'+esc(photoSrc1)+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos1)+';">';
       
       var hasPhoto2 = Boolean(m.photo2 && String(m.photo2).trim() !== "");
       if (hasPhoto2) {
         var mPos2 = getObjPosition(m.imagePosition2);
-        imgTags += '<img src="'+esc(fixPath(m.photo2))+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos2)+';" onerror="this.style.opacity=\'0.3\';">';
+        imgTags += '<img loading="lazy" decoding="async" src="'+esc(fixPath(m.photo2))+'" alt="'+esc(m.name)+'" style="object-position: '+esc(mPos2)+';" onerror="this.style.opacity=\'0.3\';">';
       }
 
       return '<div class="member-card">' +
@@ -2953,27 +3007,63 @@ function renderContent(){
   }
 }
 
+/* Basic details shown if the site content cannot be loaded (e.g. bad connection). */
+var FALLBACK_SITE = {
+  name: "Living Room Labs",
+  tagline: "CAPTURE . CREATE . INSPIRE",
+  city: "Hyderabad/India",
+  email: "hello@livingroomlabs.in",
+  hero: ["A visual collective", "built on *curiosity*.", "Every niche, every frame,", "*uncompromisingly real*."],
+  socials: [{ name: "Instagram", url: "https://www.instagram.com/fromlivingroomlabs/" }]
+};
+
+function fetchContent(){
+  return fetch('/content.json', { cache: 'no-cache' }).then(function(res){
+    if(!res.ok) throw new Error("Status " + res.status);
+    return res.json();
+  });
+}
+
+/* Uses the download started in <head>; if that failed, waits a moment and tries once more. */
+function loadContent(){
+  var first = window.__lrlContent || fetchContent();
+  return first.catch(function(){
+    return new Promise(function(resolve){ setTimeout(resolve, 1500); }).then(fetchContent);
+  });
+}
+
+function showLoadProblem(){
+  var grid = $("#grid");
+  var mail = esc(SITE.email || "");
+  if(grid){
+    grid.innerHTML = '<p style="opacity:.75;padding:20px 0;">We couldn\'t load the portfolio just now. Please refresh the page' +
+      (mail ? ', or email us at <a href="mailto:' + mail + '">' + mail + '</a>' : '') + '.</p>';
+  }
+  var counter = $("[data-workcount]");
+  if(counter) counter.textContent = "";
+}
+
 function initApp(){
   bindGlobalEvents();
   initCarouselControls();
-  fetch('/content.json?_t=' + Date.now(), { cache: "no-store", headers: { 'Pragma': 'no-cache', 'Cache-Control': 'no-cache' } })
-    .then(function(res){
-      if(!res.ok) throw new Error("Status " + res.status);
-      return res.json();
-    })
+  loadContent()
     .then(function(data){
-      if(data && typeof data === 'object'){
-        SITE = Object.assign({}, SITE, data);
-      }
-      renderContent();
+      if(!data || typeof data !== "object") throw new Error("Unexpected content format");
+      SITE = Object.assign({}, SITE, data);
+      return true;
     })
     .catch(function(err){
-      console.warn("Using baseline fallback due to:", err);
+      console.warn("Could not load content.json, showing basic page:", err);
+      SITE = Object.assign({}, FALLBACK_SITE);
+      return false;
+    })
+    .then(function(ok){
       try {
         renderContent();
-      } catch(innerErr) {
-        console.error("Critical render failure:", innerErr);
+      } catch(renderErr) {
+        console.error("Render failure:", renderErr);
       }
+      if(!ok) showLoadProblem();
     });
 }
 
