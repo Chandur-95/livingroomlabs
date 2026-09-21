@@ -381,6 +381,11 @@
       "imagePosition": "Center",
       "src": "/images/uploads/new-york-city.jpeg",
       "alt": "NYC"
+    },
+    {
+      "imagePosition": "Center",
+      "src": "/images/uploads/the-view.jpg",
+      "alt": "The View-NYC"
     }
   ],
   "hero": [
