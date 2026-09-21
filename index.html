@@ -265,6 +265,7 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   height:100%;
 }
 .band-img{
+  will-change: opacity, transform;
   position:absolute;
   inset:0;
   width:100%;
@@ -346,6 +347,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   display: none;
 }
 
+.home-work-grid {
+  /* Hover zoom uses transforms only (no margins), so nothing reflows and the strip never jumps. */
+  --hv-scale: 1.45;   /* the photo under the cursor */
+  --hv-shift: 55px;   /* it slides this far right ... */
+  --hv-push: 110px;   /* ... and the photos after it slide this far, to make room */
+  --nb-scale: 1.2;    /* its two neighbours grow a little */
+}
+
 .home-work-grid .shot {
   flex: 0 0 240px !important;
   max-width: 240px !important;
@@ -354,33 +363,39 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   align-items: center;
   text-align: center;
   transform-origin: center bottom;
-  transition: transform 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
-              margin 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275);
   z-index: 1;
   margin: 0;
   cursor: pointer;
 }
 
-.home-work-grid .shot:hover, 
-.home-work-grid .shot:focus-visible,
-.home-work-grid .shot.touch-focus {
-  transform: scale(1.45);
-  z-index: 50;
-  margin: 0 40px;
+/* photos after the hovered one slide right to make room */
+.home-work-grid .shot:hover ~ .shot,
+.home-work-grid .shot:focus-visible ~ .shot,
+.home-work-grid .shot.touch-focus ~ .shot {
+  transform: translateX(var(--hv-push));
 }
 
+/* the photo before the hovered one grows a little */
 .home-work-grid .shot:has(+ .shot:hover),
 .home-work-grid .shot:has(+ .shot.touch-focus) {
-  transform: scale(1.2);
+  transform: scale(var(--nb-scale));
   z-index: 25;
-  margin-right: 15px;
 }
 
+/* the photo right after the hovered one slides and grows a little */
 .home-work-grid .shot:hover + .shot,
 .home-work-grid .shot.touch-focus + .shot {
-  transform: scale(1.2);
+  transform: translateX(var(--hv-push)) scale(var(--nb-scale));
   z-index: 25;
-  margin-left: 15px;
+}
+
+/* the hovered photo itself */
+.home-work-grid .shot:hover,
+.home-work-grid .shot:focus-visible,
+.home-work-grid .shot.touch-focus {
+  transform: translateX(var(--hv-shift)) scale(var(--hv-scale));
+  z-index: 50;
 }
 
 .home-work-grid .plate {
@@ -417,8 +432,6 @@ html[data-theme="dark"] .home-work-grid .plate {
   z-index: 60;
   cursor: pointer;
   border: 1px solid rgba(255,255,255,0.25);
-  backdrop-filter: blur(6px);
-  -webkit-backdrop-filter: blur(6px);
   transition: background 0.25s ease, transform 0.2s ease;
 }
 .carousel-nav-btn:hover {
@@ -1330,16 +1343,12 @@ html[data-theme="dark"] .lb-frame {
     padding-top: 90px;
     margin-top: -65px;
     scroll-snap-type: none !important;
+    --hv-scale: 1.3; --hv-shift: 41px; --hv-push: 82px;
   }
   .home-work-grid .shot {
     flex: 0 0 210px !important;
     max-width: 210px !important;
     scroll-snap-align: none !important;
-  }
-  .home-work-grid .shot:hover,
-  .home-work-grid .shot.touch-focus {
-    transform: scale(1.3);
-    margin: 0 26px;
   }
 }
 
@@ -1408,17 +1417,12 @@ html[data-theme="dark"] .lb-frame {
     padding-bottom: 30px !important;
     align-items: flex-end !important;
     scroll-snap-type: none !important;
+    --hv-scale: 1.22; --hv-shift: 31px; --hv-push: 62px;
   }
   .home-work-grid .shot {
     flex: 0 0 170px !important;
     max-width: 170px !important;
     scroll-snap-align: none !important;
-  }
-  .home-work-grid .shot:hover, 
-  .home-work-grid .shot:focus-visible,
-  .home-work-grid .shot.touch-focus {
-    transform: scale(1.22) !important;
-    margin: 0 16px !important;
   }
 
   .carousel-nav-btn { display: none; }
@@ -1893,65 +1897,105 @@ var state = {
 };
 
 /* ============================================================
-   SUBPIXEL ACCUMULATOR AUTO-SCROLL ENGINE (IPAD & MOBILE BULLETPROOF)
+   AUTO-SCROLL ENGINE
+   Moves the photo strips in perfectly even steps locked to the screen's refresh rate
+   (the old engine moved by fractions of a pixel and froze on every 4th frame).
+   - loops seamlessly: a second copy of the photos follows the last one, so it never rewinds
+   - pauses on hover / touch / keyboard focus / hidden tab / off-screen / a pop-up on top
+   - stays still if the visitor's device asks for reduced motion
    ============================================================ */
 var autoScrollRaf = null;
 var lastScrollTime = 0;
+var SCROLL_SPEED = 60;              /* CSS px per second - snapped to whole device pixels below */
+var frameEst = 1000 / 60;           /* ms between screen refreshes, measured live */
+var frameLog = [];
+var frameTick = 0;
+var scrollPlan = null;
+var reduceMotionMQ = window.matchMedia ? window.matchMedia("(prefers-reduced-motion: reduce)") : null;
 
-function stepScrollTrack(track, speed, delta) {
-  if (!track) return;
-  var maxScroll = track.scrollWidth - track.clientWidth;
-  if (maxScroll <= 2) return;
+function prefersReducedMotion(){ return !!(reduceMotionMQ && reduceMotionMQ.matches); }
+function deviceScale(){ return window.devicePixelRatio || 1; }
 
-  if (track._isPaused || track._isTouching || track._isLooping) return;
-
-  // Resync accumulator if user manually dragged the track
-  if (typeof track._scrollPos !== 'number' || Math.abs(track._scrollPos - track.scrollLeft) > 8) {
-    track._scrollPos = track.scrollLeft;
-  }
-
-  // Accumulate float value to bypass WebKit subpixel truncation
-  track._scrollPos += speed * delta;
-  track.scrollLeft = Math.round(track._scrollPos);
-
-  // Check end reached
-  if (track.scrollLeft >= maxScroll - 1) {
-    track._isLooping = true;
-    setTimeout(function() {
-      if (track) {
-        track.scrollTo({ left: 0, behavior: 'smooth' });
-        setTimeout(function() {
-          if (track) {
-            track.scrollLeft = 0;
-            track._scrollPos = 0;
-            track._isLooping = false;
-          }
-        }, 750);
-      }
-    }, 1000);
+function noteFrame(dt){
+  if(dt > 2 && dt < 60){
+    frameLog.push(dt);
+    if(frameLog.length > 30) frameLog.shift();
+    if(frameLog.length >= 8){
+      var s = frameLog.slice().sort(function(a,b){ return a-b; });
+      frameEst = s[s.length >> 1];
+    }
   }
 }
 
-function runAutoScroll(now) {
-  if (!lastScrollTime) lastScrollTime = now;
-  var delta = Math.min((now - lastScrollTime) / 1000, 0.1);
-  lastScrollTime = now;
+/* How many device pixels to move, and on which frames, so every step is identical. */
+function refreshScrollPlan(){
+  var perFrame = SCROLL_SPEED * deviceScale() * frameEst / 1000;
+  var plan = perFrame >= 1
+    ? { px: Math.max(1, Math.round(perFrame)), every: 1, perFrame: perFrame }
+    : { px: 1, every: Math.max(1, Math.round(1 / perFrame)), perFrame: perFrame };
+  /* keep the current plan unless the screen really changed (avoids speed flip-flopping) */
+  if(!scrollPlan || Math.abs(plan.perFrame - scrollPlan.perFrame) / scrollPlan.perFrame > 0.12) scrollPlan = plan;
+}
 
-  // 1. Home Grid
-  var homeTrack = document.getElementById("grid");
-  if (homeTrack) {
-    stepScrollTrack(homeTrack, 45, delta);
+function lightboxIsOpen(){ return !!(typeof lb !== "undefined" && lb && lb.classList.contains("on")); }
+function homeCovered(){
+  return !!((typeof collectivePage !== "undefined" && collectivePage && collectivePage.classList.contains("open")) ||
+            (typeof nichesPage !== "undefined" && nichesPage && nichesPage.classList.contains("open")));
+}
+
+/* One strip, one step. deviceStep = device pixels to advance this frame. */
+function stepTrack(track, deviceStep){
+  if(!track || track._isPaused || track._isTouching || track._offscreen) return;
+  var max = track.scrollWidth - track.clientWidth;
+  if(max <= 2) return;
+
+  var dpr = deviceScale();
+  var actual = track.scrollLeft * dpr;
+  var tol = Math.max(1.5, dpr * 0.6);
+  var now = performance.now();
+
+  if(typeof track._dp !== "number"){
+    track._dp = Math.round(actual);
+  } else if(Math.abs(actual - track._dp) > tol){
+    /* someone else moved it (finger, wheel, arrow button, keyboard): don't fight it */
+    track._dp = Math.round(actual);
+    track._extAt = now;
+    return;
   }
+  if(track._extAt && now - track._extAt < 250) return;   /* let a swipe's momentum finish */
 
-  // 2. What We Capture Expanded Preview Grid
-  var expandedRow = document.querySelector(".niche-row.expanded");
-  if (expandedRow) {
-    var pTrack = expandedRow.querySelector(".niche-preview-grid");
-    if (pTrack) {
-      stepScrollTrack(pTrack, 38, delta);
+  track._dp += deviceStep;
+  if(track._looped && track._loopW > 0){
+    var loopDev = Math.round(track._loopW * dpr);
+    if(track._dp >= loopDev) track._dp -= loopDev;        /* identical picture -> seamless */
+  } else if(track._dp / dpr >= max){
+    track._dp = Math.round(max * dpr);                    /* no copy to loop into: hold at the end */
+    return;
+  }
+  track.scrollLeft = track._dp / dpr;
+}
+
+function runAutoScroll(now){
+  if(!lastScrollTime) lastScrollTime = now;
+  var dt = now - lastScrollTime;
+  lastScrollTime = now;
+  noteFrame(dt);
+  frameTick++;
+  if(!scrollPlan || frameTick % 30 === 0) refreshScrollPlan();
+
+  if(frameTick % scrollPlan.every === 0 && !document.hidden && !prefersReducedMotion() && !lightboxIsOpen()){
+    /* after a dropped frame, catch up so the pace stays honest */
+    var n = Math.min(8, Math.max(1, Math.round(dt / (frameEst * scrollPlan.every))));
+    var deviceStep = n * scrollPlan.px;
+
+    if(!homeCovered()) stepTrack(document.getElementById("grid"), deviceStep);
+
+    var expandedRow = document.querySelector(".niche-row.expanded");
+    if(expandedRow){
+      var pTrack = expandedRow.querySelector(".niche-preview-grid");
+      if(pTrack) stepTrack(pTrack, deviceStep);
     }
   }
-
   autoScrollRaf = requestAnimationFrame(runAutoScroll);
 }
 
@@ -1959,6 +2003,42 @@ function startAutoScroll() {
   if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
   lastScrollTime = performance.now();
   autoScrollRaf = requestAnimationFrame(runAutoScroll);
+}
+
+/* Seamless loop: put a second copy of the photos after the last one (only if the strip is wider than its window). */
+function refreshLoop(track){
+  if(!track) return;
+  var originals = $$(".shot:not([data-clone])", track);
+  var clones = $$(".shot[data-clone]", track);
+  var want = !prefersReducedMotion() && originals.length >= 2;
+
+  if(!want){
+    clones.forEach(function(c){ c.parentNode && c.parentNode.removeChild(c); });
+    track._looped = false;
+    return;
+  }
+  if(!clones.length){
+    if(track.scrollWidth <= track.clientWidth + 2){ track._looped = false; return; }
+    originals.forEach(function(el){
+      var c = el.cloneNode(true);
+      c.setAttribute("data-clone", "1");
+      c.setAttribute("aria-hidden", "true");
+      c.setAttribute("tabindex", "-1");
+      c.classList.remove("touch-focus");
+      track.appendChild(c);
+    });
+    clones = $$(".shot[data-clone]", track);
+  }
+  var w = clones[0].getBoundingClientRect().left - originals[0].getBoundingClientRect().left;
+  if(w >= track.clientWidth - 1){
+    track._looped = true;
+    track._loopW = w;
+  } else {
+    /* one set is narrower than the window: a loop would show repeats, so keep it a plain strip */
+    clones.forEach(function(c){ c.parentNode && c.parentNode.removeChild(c); });
+    track._looped = false;
+  }
+  track._dp = undefined;
 }
 
 function bindTrackInteractions(track) {
@@ -1977,7 +2057,7 @@ function bindTrackInteractions(track) {
     touchTimer = setTimeout(function() {
       if (!track._isTouching) {
         track._isPaused = false;
-        track._scrollPos = track.scrollLeft;
+        track._dp = undefined;
       }
     }, delay || 600);
   }
@@ -1991,9 +2071,24 @@ function bindTrackInteractions(track) {
     track.addEventListener("mouseenter", function() { track._isPaused = true; });
     track.addEventListener("mouseleave", function() {
       track._isPaused = false;
-      track._scrollPos = track.scrollLeft;
+      track._dp = undefined;
     });
   }
+
+  /* keyboard users: stop moving while a photo has keyboard focus */
+  track.addEventListener("focusin", function(e) {
+    var kb = false;
+    try { kb = e.target.matches(":focus-visible"); } catch(err) {}
+    if (kb) track._isPaused = true;
+  });
+  track.addEventListener("focusout", function() {
+    setTimeout(function() {
+      if (!track.contains(document.activeElement) && !track._isTouching) {
+        track._isPaused = false;
+        track._dp = undefined;
+      }
+    }, 300);
+  });
 }
 
 function categories(){
@@ -2072,25 +2167,32 @@ function renderHomeGrid() {
            '</button>';
   }).join("");
 
-  $$("#grid .shot", grid).forEach(function(b){
-    b.addEventListener("click", function(e){ 
-      e.stopPropagation();
-      var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-      if (isTouch && !b.classList.contains("touch-focus")) {
-        e.preventDefault();
-        $$("#grid .shot", grid).forEach(function(other) { other.classList.remove("touch-focus"); });
-        b.classList.add("touch-focus");
-        grid._isPaused = true;
-        return;
-      }
-      grid._isPaused = true;
-      openLB(parseInt(b.dataset.idx, 10), b); 
-    });
-  });
-
+  bindGridClicks(grid);
   bindTrackInteractions(grid);
   grid.scrollLeft = 0;
-  grid._scrollPos = 0;
+  grid._dp = 0;
+  refreshLoop(grid);
+}
+
+/* One click handler for the whole strip, so the looping copies work exactly like the originals. */
+function bindGridClicks(grid){
+  if(grid._clicksBound) return;
+  grid._clicksBound = true;
+  grid.addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest(".shot") : null;
+    if(!b || !grid.contains(b)) return;
+    e.stopPropagation();
+    var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
+    if (isTouch && !b.classList.contains("touch-focus")) {
+      e.preventDefault();
+      $$(".shot", grid).forEach(function(other) { other.classList.remove("touch-focus"); });
+      b.classList.add("touch-focus");
+      grid._isPaused = true;
+      return;
+    }
+    grid._isPaused = true;
+    openLB(parseInt(b.dataset.idx, 10), b);
+  });
 }
 
 function initCarouselControls() {
@@ -2098,20 +2200,34 @@ function initCarouselControls() {
   var nextBtn = $("#carousel-next");
   var track = $("#grid");
 
+  /* stop moving while the strip is scrolled off-screen (saves battery) */
+  if (track && "IntersectionObserver" in window) {
+    new IntersectionObserver(function(entries) {
+      track._offscreen = !entries[entries.length - 1].isIntersecting;
+    }, { threshold: 0 }).observe(track);
+  }
+
   if (prevBtn && track) {
     prevBtn.addEventListener("click", function(e) {
       e.preventDefault();
       track._isPaused = true;
+      /* near the start? hop back one full loop first (same picture) so "previous" never hits a wall */
+      if (track._looped && track.scrollLeft < 310 && track.scrollLeft + track._loopW <= track.scrollWidth - track.clientWidth) {
+        track.scrollLeft = track.scrollLeft + track._loopW;
+      }
       track.scrollBy({ left: -310, behavior: "smooth" });
-      setTimeout(function() { track._isPaused = false; track._scrollPos = track.scrollLeft; }, 1200);
+      setTimeout(function() { track._isPaused = false; track._dp = undefined; }, 1200);
     });
   }
   if (nextBtn && track) {
     nextBtn.addEventListener("click", function(e) {
       e.preventDefault();
       track._isPaused = true;
+      if (track._looped && track.scrollLeft + 310 > track.scrollWidth - track.clientWidth && track.scrollLeft - track._loopW >= 0) {
+        track.scrollLeft = track.scrollLeft - track._loopW;
+      }
       track.scrollBy({ left: 310, behavior: "smooth" });
-      setTimeout(function() { track._isPaused = false; track._scrollPos = track.scrollLeft; }, 1200);
+      setTimeout(function() { track._isPaused = false; track._dp = undefined; }, 1200);
     });
   }
 }
@@ -2190,26 +2306,27 @@ function renderNichesList(){
         var pGrid = row.querySelector(".niche-preview-grid");
         if (pGrid) {
           pGrid.scrollLeft = 0;
-          pGrid._scrollPos = 0;
+          pGrid._dp = 0;
           pGrid._isPaused = false;
-          pGrid._isLooping = false;
           bindTrackInteractions(pGrid);
+          refreshLoop(pGrid);
         }
       }
     });
   });
 
-  $$(".btn-preview-shot", nHost).forEach(function(imgBtn){
-    imgBtn.addEventListener("click", function(e){
+  /* one click handler per strip (works for the looping copies too) */
+  $$(".niche-preview-grid", nHost).forEach(function(strip){
+    strip.addEventListener("click", function(e){
+      var imgBtn = e.target.closest ? e.target.closest(".btn-preview-shot") : null;
+      if(!imgBtn || !strip.contains(imgBtn)) return;
       e.stopPropagation();
       e.preventDefault();
       var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
       if (isTouch && !imgBtn.classList.contains("touch-focus")) {
-        e.preventDefault();
         $$(".btn-preview-shot", nHost).forEach(function(other) { other.classList.remove("touch-focus"); });
         imgBtn.classList.add("touch-focus");
-        var track = imgBtn.closest(".niche-preview-grid");
-        if (track) track._isPaused = true;
+        strip._isPaused = true;
         return;
       }
       var nicheName = imgBtn.dataset.nicheCat;
@@ -3070,6 +3187,22 @@ function initApp(){
 window.addEventListener('load', function() {
   if (!autoScrollRaf) startAutoScroll();
 });
+
+/* When the window changes size (or the screen scale changes) re-check the loops and re-measure the pace. */
+(function(){
+  var t = null;
+  function refreshAll(){
+    refreshLoop(document.getElementById("grid"));
+    var open = document.querySelector(".niche-row.expanded .niche-preview-grid");
+    if(open) refreshLoop(open);
+    frameLog = []; scrollPlan = null;
+  }
+  window.addEventListener("resize", function(){ clearTimeout(t); t = setTimeout(refreshAll, 200); });
+  document.addEventListener("visibilitychange", function(){ lastScrollTime = performance.now(); });
+  if(reduceMotionMQ && reduceMotionMQ.addEventListener){
+    reduceMotionMQ.addEventListener("change", refreshAll);
+  }
+})();
 
 initApp();
 </script>
