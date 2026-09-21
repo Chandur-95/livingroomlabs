@@ -421,11 +421,20 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 }
 
 .home-work-grid {
-  /* Hover zoom uses transforms only (no margins), so nothing reflows and the strip never jumps. */
-  --hv-scale: 1.45;   /* the photo under the cursor */
-  --hv-shift: 55px;   /* it slides this far right ... */
-  --hv-push: 110px;   /* ... and the photos after it slide this far, to make room */
+  /* HOVER / TAP ZOOM
+     - only the PHOTO grows, from its centre; the caption keeps its normal size and slides down with the photo's bottom edge
+     - the photos around it slide apart by exactly enough that nothing overlaps (numbers are worked out from the values below)
+     - the growth is kept small enough that the photo never reaches the filter boxes above it or the edge of the strip */
+  --card-w: 240px;    /* must match the card width below */
+  --hv-scale: 1.32;   /* the photo under the cursor */
   --nb-scale: 1.2;    /* its two neighbours grow a little */
+  --push-near: calc((var(--hv-scale) + var(--nb-scale)) * var(--card-w) / 2 + 14px - var(--card-w) - 16px);
+  --push-far: calc(var(--push-near) + (var(--nb-scale) - 1) * var(--card-w) / 2 - 2px);
+  --grow-up: calc((var(--hv-scale) - 1) * var(--card-w) * 2 / 3);
+  --grow-nb: calc((var(--nb-scale) - 1) * var(--card-w) * 2 / 3);
+  --drop-room: calc(var(--grow-up) + 14px);   /* room under the strip for the caption to slide down */
+  padding-bottom: calc(45px + var(--drop-room));
+  margin-bottom: calc(-1 * var(--drop-room));
 }
 
 .home-work-grid .shot {
@@ -435,41 +444,52 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   flex-direction: column;
   align-items: center;
   text-align: center;
-  transform-origin: center bottom;
-  transition: transform 0.32s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
   z-index: 1;
   margin: 0;
   cursor: pointer;
 }
+.home-work-grid .plate-tilt-wrap { transform-origin: center center; transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1); }
+.home-work-grid .shot .cap { transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1); }
 
-/* photos after the hovered one slide right to make room */
+/* every photo BEFORE the hovered one slides left, every photo AFTER it slides right */
+.home-work-grid .shot:has(~ .shot:hover),
+.home-work-grid .shot:has(~ .shot:focus-visible),
+.home-work-grid .shot:has(~ .shot.touch-focus) { transform: translateX(calc(-1 * var(--push-far))); }
 .home-work-grid .shot:hover ~ .shot,
 .home-work-grid .shot:focus-visible ~ .shot,
-.home-work-grid .shot.touch-focus ~ .shot {
-  transform: translateX(var(--hv-push));
-}
+.home-work-grid .shot.touch-focus ~ .shot { transform: translateX(var(--push-far)); }
 
-/* the photo before the hovered one grows a little */
+/* the two right next to it slide a little less, and grow a little */
 .home-work-grid .shot:has(+ .shot:hover),
-.home-work-grid .shot:has(+ .shot.touch-focus) {
-  transform: scale(var(--nb-scale));
-  z-index: 25;
-}
-
-/* the photo right after the hovered one slides and grows a little */
+.home-work-grid .shot:has(+ .shot:focus-visible),
+.home-work-grid .shot:has(+ .shot.touch-focus) { transform: translateX(calc(-1 * var(--push-near))); z-index: 25; }
 .home-work-grid .shot:hover + .shot,
-.home-work-grid .shot.touch-focus + .shot {
-  transform: translateX(var(--hv-push)) scale(var(--nb-scale));
-  z-index: 25;
-}
+.home-work-grid .shot:focus-visible + .shot,
+.home-work-grid .shot.touch-focus + .shot { transform: translateX(var(--push-near)); z-index: 25; }
+.home-work-grid .shot:has(+ .shot:hover) .plate-tilt-wrap,
+.home-work-grid .shot:has(+ .shot:focus-visible) .plate-tilt-wrap,
+.home-work-grid .shot:has(+ .shot.touch-focus) .plate-tilt-wrap,
+.home-work-grid .shot:hover + .shot .plate-tilt-wrap,
+.home-work-grid .shot:focus-visible + .shot .plate-tilt-wrap,
+.home-work-grid .shot.touch-focus + .shot .plate-tilt-wrap { transform: scale(var(--nb-scale)); }
+.home-work-grid .shot:has(+ .shot:hover) .cap,
+.home-work-grid .shot:has(+ .shot:focus-visible) .cap,
+.home-work-grid .shot:has(+ .shot.touch-focus) .cap,
+.home-work-grid .shot:hover + .shot .cap,
+.home-work-grid .shot:focus-visible + .shot .cap,
+.home-work-grid .shot.touch-focus + .shot .cap { transform: translateY(var(--grow-nb)); }
 
 /* the hovered photo itself */
 .home-work-grid .shot:hover,
 .home-work-grid .shot:focus-visible,
-.home-work-grid .shot.touch-focus {
-  transform: translateX(var(--hv-shift)) scale(var(--hv-scale));
-  z-index: 50;
-}
+.home-work-grid .shot.touch-focus { z-index: 50; }
+.home-work-grid .shot:hover .plate-tilt-wrap,
+.home-work-grid .shot:focus-visible .plate-tilt-wrap,
+.home-work-grid .shot.touch-focus .plate-tilt-wrap { transform: scale(var(--hv-scale)); }
+.home-work-grid .shot:hover .cap,
+.home-work-grid .shot:focus-visible .cap,
+.home-work-grid .shot.touch-focus .cap { transform: translateY(var(--grow-up)); }
 
 .home-work-grid .plate {
   aspect-ratio: 3 / 4 !important;
@@ -519,13 +539,24 @@ html[data-theme="dark"] .home-work-grid .plate {
 .niche-preview-grid {
   display: flex !important;
   flex-direction: row !important;
-  gap: 16px !important;
+  gap: var(--gap) !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
   scroll-behavior: auto !important;
   -webkit-overflow-scrolling: touch;
   scrollbar-width: none;
-  padding-bottom: 12px;
+
+  /* HOVER / TAP ZOOM (same idea as the main strip): the photo grows from its centre, its neighbours slide apart so nothing
+     overlaps, and the strip has just enough room above and below so the enlarged photo is never cut off. */
+  --card-w: clamp(260px, 34vw, 360px);   /* must match the card width below */
+  --gap: 16px;
+  --hv-scale: 1.1;
+  --nb-scale: 1.04;
+  --push-near: calc((var(--hv-scale) + var(--nb-scale)) * var(--card-w) / 2 + 14px - var(--card-w) - var(--gap));
+  --push-far: calc(var(--push-near) + (var(--nb-scale) - 1) * var(--card-w) / 2 - 2px);
+  --grow-up: calc((var(--hv-scale) - 1) * var(--card-w) * 2 / 3);
+  padding-top: calc(var(--grow-up) + 8px);
+  padding-bottom: calc(12px + var(--grow-up) + 6px);
 }
 .niche-preview-grid::-webkit-scrollbar {
   display: none;
@@ -534,14 +565,37 @@ html[data-theme="dark"] .home-work-grid .plate {
   flex: 0 0 clamp(260px, 34vw, 360px) !important;
   min-width: clamp(260px, 34vw, 360px) !important;
   max-width: 360px !important;
-  transform-origin: center bottom;
-  transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+  transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1);
 }
+.niche-preview-grid .plate-tilt-wrap { transform-origin: center center; transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1); }
+
+/* photos before the hovered one slide left, photos after it slide right */
+.niche-preview-grid .shot:has(~ .shot:hover),
+.niche-preview-grid .shot:has(~ .shot:focus-visible),
+.niche-preview-grid .shot:has(~ .shot.touch-focus) { transform: translateX(calc(-1 * var(--push-far))); }
+.niche-preview-grid .shot:hover ~ .shot,
+.niche-preview-grid .shot:focus-visible ~ .shot,
+.niche-preview-grid .shot.touch-focus ~ .shot { transform: translateX(var(--push-far)); }
+/* the two right next to it */
+.niche-preview-grid .shot:has(+ .shot:hover),
+.niche-preview-grid .shot:has(+ .shot:focus-visible),
+.niche-preview-grid .shot:has(+ .shot.touch-focus) { transform: translateX(calc(-1 * var(--push-near))); z-index: 5; }
+.niche-preview-grid .shot:hover + .shot,
+.niche-preview-grid .shot:focus-visible + .shot,
+.niche-preview-grid .shot.touch-focus + .shot { transform: translateX(var(--push-near)); z-index: 5; }
+.niche-preview-grid .shot:has(+ .shot:hover) .plate-tilt-wrap,
+.niche-preview-grid .shot:has(+ .shot:focus-visible) .plate-tilt-wrap,
+.niche-preview-grid .shot:has(+ .shot.touch-focus) .plate-tilt-wrap,
+.niche-preview-grid .shot:hover + .shot .plate-tilt-wrap,
+.niche-preview-grid .shot:focus-visible + .shot .plate-tilt-wrap,
+.niche-preview-grid .shot.touch-focus + .shot .plate-tilt-wrap { transform: scale(var(--nb-scale)); }
+/* the hovered photo */
 .niche-preview-grid .shot:hover,
-.niche-preview-grid .shot.touch-focus {
-  transform: scale(1.12);
-  z-index: 10;
-}
+.niche-preview-grid .shot:focus-visible,
+.niche-preview-grid .shot.touch-focus { z-index: 10; }
+.niche-preview-grid .shot:hover .plate-tilt-wrap,
+.niche-preview-grid .shot:focus-visible .plate-tilt-wrap,
+.niche-preview-grid .shot.touch-focus .plate-tilt-wrap { transform: scale(var(--hv-scale)); }
 .niche-preview-grid .plate {
   aspect-ratio: 3 / 4 !important;
   border-radius: 4px;
@@ -1416,7 +1470,7 @@ html[data-theme="dark"] .lb-frame {
     padding-top: 90px;
     margin-top: -65px;
     scroll-snap-type: none !important;
-    --hv-scale: 1.3; --hv-shift: 41px; --hv-push: 82px;
+    --card-w: 210px; --hv-scale: 1.25; --nb-scale: 1.15;
   }
   .home-work-grid .shot {
     flex: 0 0 210px !important;
@@ -1487,10 +1541,10 @@ html[data-theme="dark"] .lb-frame {
   .home-work-grid {
     padding-top: 70px !important;
     margin-top: -50px !important;
-    padding-bottom: 30px !important;
+    padding-bottom: calc(30px + var(--drop-room)) !important;
     align-items: flex-end !important;
     scroll-snap-type: none !important;
-    --hv-scale: 1.22; --hv-shift: 31px; --hv-push: 62px;
+    --card-w: 170px; --hv-scale: 1.28; --nb-scale: 1.12;
   }
   .home-work-grid .shot {
     flex: 0 0 170px !important;
@@ -1501,7 +1555,8 @@ html[data-theme="dark"] .lb-frame {
   .carousel-nav-btn { display: none; }
 
   .niche-preview-grid {
-    gap: 12px !important;
+    --gap: 12px;
+    --card-w: 200px;
   }
   .niche-preview-grid .shot {
     flex: 0 0 200px !important;
@@ -1624,6 +1679,9 @@ html[data-theme="dark"] .lb-frame {
 
 /* ===== Footer: keep the logo vertically centred beside the link columns on every screen size ===== */
 .foot .foot-col-logo{align-self:center !important}
+
+/* Very narrow phones (320px): a long footer label could spill a few px sideways and make the whole page wiggle. */
+footer.wrap{overflow-x:clip}
 </style>
 </head>
 
@@ -3221,7 +3279,11 @@ function renderContent(){
   if(note) note.textContent = SITE.contactNote || "Planning something special? Tell us what you’re looking to capture, and when and where.";
 
   var mobNote = $("[data-mobile-shoot-note]");
-  if(mobNote) mobNote.textContent = SITE.mobileShootNote || "Food, pets, architecture, products, events, and portraits — calibrated per visual requirement.";
+  if(mobNote){
+    var nicheNames = (SITE.niches || []).map(function(n){ return String(n && n.name || "").trim().toLowerCase(); }).filter(Boolean);
+    var nicheText = nicheNames.length > 1 ? nicheNames.slice(0, -1).join(", ") + " and " + nicheNames[nicheNames.length - 1] : (nicheNames[0] || "food, pets, real estate, products, events and portraits");
+    mobNote.textContent = SITE.mobileShootNote || (nicheText.charAt(0).toUpperCase() + nicheText.slice(1) + " — calibrated per visual requirement.");
+  }
 
   var idxList = $("[data-foot-index]");
   if(idxList){

@@ -94,7 +94,7 @@
       "featured": true,
       "ratio": "3/2",
       "imagePosition": "Center",
-      "title": "Watch ",
+      "title": "Watch",
       "category": "Products",
       "src": "/images/uploads/durgam-1.jpg",
       "client": "Private"
@@ -113,7 +113,7 @@
       "ratio": "4/5",
       "imagePosition": "Center",
       "title": "Momo",
-      "client": "Resturant",
+      "client": "Restaurant",
       "category": "Food",
       "src": "/images/uploads/cr-xb1h54wwhiq-unsplash.jpg",
       "w": 5
@@ -123,7 +123,7 @@
       "ratio": "4/5",
       "imagePosition": "Center",
       "title": "Fried chicken",
-      "client": "Resturant",
+      "client": "Restaurant",
       "category": "Food",
       "src": "/images/uploads/dsc07195.jpg"
     },
@@ -134,7 +134,7 @@
       "src": "/images/uploads/dsc07197.jpg",
       "category": "Food",
       "title": "Dragon Paneer",
-      "client": "Resturant"
+      "client": "Restaurant"
     },
     {
       "featured": false,
@@ -172,7 +172,7 @@
       "imagePosition": "Center",
       "featured": true,
       "title": "Bhakti: Inner Resonance",
-      "caption": "Devotion amidst sweeping light cones. [",
+      "caption": "Devotion amidst sweeping light cones.",
       "category": "Performing Arts",
       "src": "/images/uploads/img_3073.jpg.jpeg"
     },
@@ -234,7 +234,7 @@
       "caption": "Royal blue and the touch of light",
       "src": "/images/uploads/img_9283.jpg.jpeg",
       "category": "Events",
-      "title": "Royal "
+      "title": "Royal"
     },
     {
       "client": "Miss Universe 2026",
@@ -243,7 +243,7 @@
       "featured": false,
       "title": "Shadow Line",
       "category": "Events",
-      "caption": "Fringe, shadow, and composure ",
+      "caption": "Fringe, shadow, and composure",
       "src": "/images/uploads/img_9284.jpg.jpeg"
     },
     {
@@ -292,7 +292,7 @@
       "ratio": "4/5",
       "imagePosition": "Center",
       "featured": true,
-      "title": "New York ",
+      "title": "New York",
       "caption": "NYC dream",
       "src": "/images/uploads/new-york-city.jpeg"
     },
@@ -365,7 +365,7 @@
     {
       "imagePosition": "Center",
       "src": "/images/uploads/dsc05175.jpg",
-      "alt": "Portland Head Light, Rodhe Island"
+      "alt": "Portland Head Light, Rhode Island"
     },
     {
       "imagePosition": "Center",
@@ -397,7 +397,7 @@
       "photo": "/images/uploads/pooja.jpeg",
       "imagePosition": "Center",
       "bio": "Hello folks! I am a photographer who finds little stories in everyday moments. Always curious of exploring new ideas to capture images that feel alive.",
-      "instagram": "https://www.instagram.com/pooja.and.hachi?stkn=MXVuc2pwbXhmZHVxNA==",
+      "instagram": "https://www.instagram.com/pooja.and.hachi",
       "portfolio": ""
     },
     {
@@ -406,7 +406,7 @@
       "photo": "/images/uploads/whatsapp-image-2026-09-16-at-9.25.07-pm.jpeg",
       "imagePosition": "Center",
       "bio": "I am a photographer and creative collaborator who brings fresh ideas to every shoot. I don't just capture moments, I help shape the vision behind them to bring your stories to life.",
-      "instagram": "https://www.instagram.com/m._.chikita?stkn=YTN0ejZoNzBmMWln",
+      "instagram": "https://www.instagram.com/m._.chikita",
       "portfolio": ""
     },
     {
@@ -415,7 +415,7 @@
       "photo": "/images/uploads/whatsapp-image-2026-09-16-at-1.52.56-pm.jpeg",
       "imagePosition": "Center",
       "bio": "Specializing in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
-      "instagram": "https://www.instagram.com/documentarian_?stkn=amZmYXI5dWprYjI0",
+      "instagram": "https://www.instagram.com/documentarian_",
       "portfolio": ""
     },
     {
