@@ -107,7 +107,7 @@ collections:
             summary: "{{fields.title}} [{{fields.category}}]"
             fields:
               - { label: "Title", name: "title", widget: "string" }
-              - { label: "Client", name: "client", widget: "string", required: false, default: "Studio" }
+              - { label: "Shoot / Client Name", name: "client", widget: "string", required: false, default: "Studio", hint: "Use this to tell apart two shoots of the same Event Type, e.g. two different Birthday parties (\"Chandu's Birthday\" vs \"Swetha's Birthday\")." }
               - label: "Category"
                 name: "category"
                 widget: "select"

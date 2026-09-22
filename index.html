@@ -3492,9 +3492,9 @@ function bindGlobalEvents() {
     } else if (e.target.closest(".nav-collective-link, .nav-collective-link-mob")) {
       e.preventDefault(); openCollective();
     } else if (e.target.closest(".nav-niches-link, .mobile-shoot-box")) {
-      e.preventDefault(); openNiches();
+      e.preventDefault(); window.location.href = "/capture.html";
     } else if (e.target.closest(".foot-events-link")) {
-      e.preventDefault(); openNichesToCategory("Events");
+      e.preventDefault(); window.location.href = "/capture.html?category=Events";
     } else if (e.target.closest("#scroll-to-members")) {
       e.preventDefault();
       var sec = $("#collective-members-sec");
@@ -3524,8 +3524,9 @@ function bindGlobalEvents() {
     btn.addEventListener("click", function(e) {
       e.preventDefault();
       var eventName = btn.getAttribute("data-event");
-      if (eventName) openNichesToCategory("Events");
-      /* Note: full event-type filtering will be implemented in Phase 2 redesign */
+      var url = "/capture.html?category=Events";
+      if (eventName) url += "&event=" + encodeURIComponent(eventName);
+      window.location.href = url;
     });
   });
 
