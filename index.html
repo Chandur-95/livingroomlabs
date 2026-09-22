@@ -129,11 +129,7 @@
   (function() {
     try {
       var saved = localStorage.getItem("lrl_theme");
-      if (saved === "dark" || saved === "light") {
-        document.documentElement.setAttribute("data-theme", saved);
-      } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-        document.documentElement.setAttribute("data-theme", "dark");
-      }
+      document.documentElement.setAttribute("data-theme", saved === "dark" ? "dark" : "light");
     } catch(e) {}
   })();
 </script>
@@ -837,7 +833,7 @@ html[data-theme="dark"] .home-work-grid .plate {
 }
 .foot-logo-btn img {
   width: 100%;
-  max-width: 155px;
+  max-width: 180px;
   height: auto;
   object-fit: contain;
   display: block;
@@ -1695,20 +1691,21 @@ html[data-theme="dark"] .lb-frame {
 
 @media (max-width:640px){
   :root{
-    --nav-h:64px;
+    --nav-h:76px;
     --pad:12px;
   }
-  .nav{padding-inline:12px; gap:8px; align-items:flex-end;}
+  .nav{padding-inline:12px; gap:8px; align-items:center;}
 
-  .nav-right{align-items:flex-end}
   .nav-collective-link-mob{padding:0 !important}
 
-  .brand{flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:3px;padding-left:8px}
-  .brand .mark{height:52px}
-  .brand .mark img{height:52px}
-  .brand .wordmark{font-size:.62rem;letter-spacing:.08em;display:block !important;line-height:1}
+  .brand{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;padding-left:8px}
+  .brand .mark{height:64px}
+  .brand .mark img{height:64px}
+  .brand .wordmark{display:none !important}
   
-  .nav-right{gap:14px}
+  /* The Collective sits at the TOP of the bar, right beside the hanging lamp rope */
+  .nav-right{gap:12px;flex-direction:row;align-items:flex-start;justify-content:flex-end;align-self:stretch}
+  .nav-right .nav-links{padding-top:14px}
   
   .nav-links{
     display:flex;
@@ -1896,8 +1893,8 @@ html[data-theme="dark"] .lb-frame {
   .lb-close,.lb-nav{min-width:44px;min-height:44px}
 }
 
-/* ===== Footer: keep the logo vertically centred beside the link columns on every screen size ===== */
-.foot .foot-col-logo{align-self:center !important}
+/* ===== Footer: top-align the logo with the Index/Elsewhere/Events/Collective columns ===== */
+.foot .foot-col-logo{align-self:start !important}
 
 /* Very narrow phones (320px): a long footer label could spill a few px sideways and make the whole page wiggle. */
 footer.wrap{overflow-x:clip}
@@ -2177,13 +2174,13 @@ footer.wrap{overflow-x:clip}
         <label class="enquiry-label" for="enq-niche">Shoot Category</label>
         <select class="enquiry-select" id="enq-niche" name="category">
           <option value="General Enquiry">General Enquiry</option>
-          <option value="Performing Arts">Performing Arts</option>
           <option value="Food">Food</option>
           <option value="Pets">Pets</option>
-          <option value="Architecture">Architecture</option>
+          <option value="Real Estate">Real Estate</option>
           <option value="Products">Products</option>
           <option value="Events">Events</option>
           <option value="Portraits">Portraits</option>
+          <option value="Travel">Travel</option>
         </select>
       </div>
 
@@ -2318,7 +2315,7 @@ var state = {
    ============================================================ */
 var autoScrollRaf = null;
 var lastScrollTime = 0;
-var SCROLL_SPEED = 60;              /* CSS px per second - snapped to whole device pixels below */
+function getScrollSpeed(){ return window.innerWidth <= 640 ? 92 : 60; }  /* CSS px per second - faster on mobile, snapped to whole device pixels below */
 var frameEst = 1000 / 60;           /* ms between screen refreshes, measured live */
 var frameLog = [];
 var frameTick = 0;
@@ -2341,7 +2338,7 @@ function noteFrame(dt){
 /* Browsers only scroll in whole CSS pixels, so we move exactly 1px on a fixed rhythm: every frame at 60Hz,
    every 2nd frame at 120Hz, and so on. Identical steps at identical intervals = smooth on every screen. */
 function refreshScrollPlan(){
-  var perFrame = SCROLL_SPEED * frameEst / 1000;            /* px per screen refresh at the target speed */
+  var perFrame = getScrollSpeed() * frameEst / 1000;            /* px per screen refresh at the target speed */
   var plan = perFrame >= 1.5
     ? { px: Math.round(perFrame), every: 1, perFrame: perFrame }
     : { px: 1, every: Math.max(1, Math.round(1 / perFrame)), perFrame: perFrame };

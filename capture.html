@@ -7,15 +7,15 @@
 <meta name="description" content="Browse Living Room Labs by category: food, pets, real estate, products, events, portraits and travel photography from Hyderabad.">
 <link rel="icon" type="image/png" href="/logo.png">
 <link rel="canonical" href="https://livingroomlabs.in/capture.html">
-<!-- Sync theme from home page localStorage -->
+<!-- Sync theme from home page localStorage - defaults to light unless the user explicitly picked dark before -->
 <script>
   (function(){
     try {
       var saved = localStorage.getItem("lrl_theme");
-      if(saved === "dark" || saved === "light") {
-        document.documentElement.setAttribute("data-theme", saved);
-      } else if(window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      if(saved === "dark") {
         document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.setAttribute("data-theme", "light");
       }
     } catch(e) {}
   })();
@@ -37,7 +37,7 @@
 :root{
   --paper:#FFFFFF; --ink:#000000; --dim:rgba(0,0,0,.55); --line:rgba(0,0,0,.12);
   --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px);
-  --header-h:118px; --foot-h:168px;
+  --header-h:118px; --foot-h:106px;
 }
 html[data-theme="dark"]{ --paper:#080808; --ink:#FFFFFF; --dim:rgba(255,255,255,.6); --line:rgba(255,255,255,.14); }
 *{box-sizing:border-box}
@@ -53,7 +53,7 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 }
 .cap-row1{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
 .cap-brand{display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;padding:0}
-.cap-brand img{width:46px;height:46px;object-fit:contain;filter:brightness(0) invert(1)}
+.cap-brand img{width:64px;height:64px;object-fit:contain;filter:brightness(0) invert(1)}
 .cap-brand-text{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
 .cap-brand-text b{font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;font-weight:600}
 .cap-brand-text span{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
@@ -65,11 +65,34 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
   text-transform:uppercase;cursor:pointer;text-decoration:none;padding:0;white-space:nowrap;
 }
 .cap-links a:hover,.cap-links button:hover{opacity:1;text-decoration:underline}
-.cap-enquire{
+/* ".cap-links .cap-enquire" (not just ".cap-enquire") - the generic ".cap-links button{background:none}"
+   rule above is more specific and was silently removing this pill, leaving black text on the black header */
+.cap-links .cap-enquire{
   background:#fff;color:#000 !important;border-radius:999px;padding:7px 16px !important;
   opacity:1 !important;text-decoration:none !important;font-weight:600;
 }
-.cap-enquire:hover{background:#e8e8e8}
+.cap-links .cap-enquire:hover{background:#e8e8e8}
+
+/* While a category is open the page behind the header is white (light mode) or near-black (dark
+   mode), so the see-through dark gradient no longer works - the header gets a solid backdrop
+   matching the theme, and in light mode every header element switches to dark ink. */
+html.cat-open .cap-header{
+  background:rgba(8,8,8,.96);border-bottom:1px solid rgba(255,255,255,.08);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+html[data-theme="light"].cat-open .cap-header{background:rgba(255,255,255,.96);border-bottom-color:rgba(0,0,0,.08)}
+html[data-theme="light"].cat-open .cap-brand img{filter:none}
+html[data-theme="light"].cat-open .cap-brand-text b{color:#000}
+html[data-theme="light"].cat-open .cap-brand-text span{color:rgba(0,0,0,.55)}
+html[data-theme="light"].cat-open .cap-links a,
+html[data-theme="light"].cat-open .cap-links button{color:#000}
+html[data-theme="light"].cat-open #capLampToggle{border-color:rgba(0,0,0,.28) !important}
+html[data-theme="light"].cat-open .cap-links .cap-enquire{background:#000;color:#fff !important}
+html[data-theme="light"].cat-open .cap-links .cap-enquire:hover{background:#333}
+html[data-theme="light"].cat-open .cap-cat-btn{border-color:rgba(0,0,0,.22);color:#000}
+html[data-theme="light"].cat-open .cap-cat-btn:hover,
+html[data-theme="light"].cat-open .cap-cat-btn:focus-visible{border-color:#000}
+html[data-theme="light"].cat-open .cap-cat-btn.active{background:#000;color:#fff;border-color:#000}
 
 .cap-cats{display:flex;gap:6px;flex-wrap:wrap}
 .cap-cat-btn{
@@ -83,7 +106,7 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 @media (max-width:860px){
   .cap-header{padding:calc(10px + var(--safe-top)) 14px 10px}
   .cap-row1{margin-bottom:8px}
-  .cap-brand img{width:38px;height:38px}
+  .cap-brand img{width:52px;height:52px}
   .cap-brand-text{display:none}
   .cap-mobile-hide{display:none !important}
   .cap-cats{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;-webkit-overflow-scrolling:touch;justify-content:flex-start}
@@ -94,7 +117,7 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 #discover{position:fixed;inset:0;background:#050505;display:flex;flex-direction:column}
 .disc-stage{
   flex:1;position:relative;overflow:hidden;
-  padding-top:var(--header-h);
+  padding-top:var(--header-h);padding-bottom:var(--foot-h);
 }
 .disc-track{
   position:relative;width:100%;height:100%;display:flex;align-items:center;gap:18px;
@@ -104,9 +127,11 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 .disc-track::-webkit-scrollbar{display:none}
 .disc-track.grabbing{cursor:grabbing}
 .disc-card{
-  position:relative;flex:0 0 auto;height:min(64vh,640px);border-radius:6px;overflow:hidden;
+  position:relative;flex:0 0 auto;border-radius:6px;overflow:hidden;
+  height:min(64vh,640px);
+  height:min(64vh,640px,calc(100vh - var(--header-h) - var(--foot-h) - 40px));
   cursor:pointer;background:#111;box-shadow:0 24px 60px rgba(0,0,0,.55);
-  transform:scale(.7);opacity:.4;
+  transform:scale(.7);
   transform-origin:center center;will-change:transform,opacity;
 }
 .disc-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
@@ -131,10 +156,10 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 .disc-nav-btn:hover{background:rgba(0,0,0,.6);opacity:1 !important}
 .disc-prev{left:14px}
 .disc-next{right:14px}
-@media (max-width:860px){ .disc-nav-btn{opacity:.6} .disc-card{height:52vh} }
+@media (max-width:860px){ .disc-nav-btn{opacity:.6} .disc-card{height:60vh;height:min(60vh,calc(100vh - var(--header-h) - var(--foot-h) - 32px))} }
 
 .disc-pause{
-  position:absolute;right:18px;bottom:calc(70px + var(--safe-bottom));z-index:200;
+  position:absolute;right:18px;bottom:calc(var(--foot-h) + 70px);z-index:200;
   background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.3);color:#fff;
   width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:.85rem;
 }
@@ -175,12 +200,14 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 
 /* ================= category grid view ================= */
 #catview{position:fixed;inset:0;background:var(--paper);color:var(--ink);overflow-y:auto;display:none;
-  padding-top:calc(var(--header-h) + 18px);-webkit-overflow-scrolling:touch}
+  padding-top:calc(var(--header-h) + 12px);-webkit-overflow-scrolling:touch}
 html[data-theme="dark"] #catview{background:#080808;color:#fff}
 #catview.on{display:block}
-.cat-head{padding:calc(120px + var(--safe-top)) 24px 18px;max-width:1400px;margin:0 auto}
+/* #catview already reserves the header height with padding-top, so the heading only needs a
+   small gap here (it previously added ANOTHER 110-120px, leaving a big empty band above the title) */
+.cat-head{padding:6px 24px 14px;max-width:1400px;margin:0 auto}
 @media (max-width:640px){
-  .cat-head{padding:calc(110px + var(--safe-top)) 14px 12px;}
+  .cat-head{padding:4px 14px 10px;}
 }
 .cat-head h1{font-size:clamp(1.6rem,4vw,2.4rem);margin:0 0 6px;font-weight:600}
 .cat-head p{margin:0;opacity:.6;font-size:.9rem;max-width:56ch}
@@ -224,40 +251,40 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
 .cat-empty{opacity:.55;padding:40px 24px;text-align:center}
 .cap-foot{
   position:fixed;left:0;right:0;bottom:0;z-index:25;
-  display:flex;align-items:center;gap:28px;
-  padding:22px 40px calc(22px + var(--safe-bottom));
+  display:flex;align-items:center;gap:18px;
+  padding:14px 32px calc(14px + var(--safe-bottom));
   background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
-  border-top:1px solid var(--line);
-  transition:background .35s ease, border-color .35s ease;
+  border-top:1px solid var(--line);color:var(--ink);
+  transition:background .35s ease, border-color .35s ease, color .35s ease;
 }
 html[data-theme="dark"] .cap-foot{ background:rgba(8,8,8,.85); }
-.cap-foot-logo{width:120px;height:auto;object-fit:contain;opacity:.9;flex:none}
+.cap-foot-logo{width:76px;height:auto;object-fit:contain;opacity:.9;flex:none}
 .cap-foot-text{flex:1;min-width:0;text-align:left}
-.cap-foot-text b{display:block;font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;opacity:.9;font-weight:600}
-.cap-foot-text p{margin:4px 0 0;font-size:.92rem;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cap-foot-text b{display:block;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;opacity:.9;font-weight:600}
+.cap-foot-text p{margin:3px 0 0;font-size:.82rem;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .btn-cap-foot-enquire{
   border:1px solid var(--ink);background:none;color:var(--ink);border-radius:999px;
-  padding:12px 28px;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;flex:none;
+  padding:9px 22px;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;flex:none;
   white-space:nowrap;
 }
 .btn-cap-foot-enquire:hover{background:var(--ink);color:var(--paper)}
 html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8}
 @media (max-width:640px){
-  :root{ --foot-h:74px; }
-  .cap-foot{ padding:14px 16px calc(14px + var(--safe-bottom)); gap:12px; }
-  .cap-foot-logo{width:34px;height:34px}
-  .cap-foot-text b{font-size:.68rem;letter-spacing:.1em}
-  .cap-foot-text p{font-size:.74rem}
+  :root{ --foot-h:88px; }
+  .cap-foot{ padding:16px 16px calc(16px + var(--safe-bottom)); gap:12px; }
+  .cap-foot-logo{width:40px;height:40px}
+  .cap-foot-text b{font-size:.7rem;letter-spacing:.1em}
+  .cap-foot-text p{font-size:.76rem;white-space:normal;overflow:visible;line-height:1.35}
   .btn-cap-foot-enquire{padding:9px 16px;font-size:.68rem}
 }
 .cat-back{
-  position:fixed;left:14px;bottom:calc(20px + var(--safe-bottom) + var(--foot-h));z-index:20;background:var(--ink);color:var(--paper);
+  position:fixed;left:14px;bottom:calc(14px + var(--foot-h));z-index:20;background:var(--ink);color:var(--paper);
   border:none;border-radius:999px;padding:9px 16px;font-size:.68rem;letter-spacing:.06em;
   text-transform:uppercase;cursor:pointer;transition:background .2s ease;
 }
 .cat-back:active{background:var(--ink);opacity:.85}
 @media (min-width:768px){
-  .cat-back{left:20px;bottom:calc(24px + var(--foot-h));padding:10px 18px;font-size:.74rem;letter-spacing:.08em;}
+  .cat-back{left:20px;bottom:calc(18px + var(--foot-h));padding:10px 18px;font-size:.74rem;letter-spacing:.08em;}
 }
 
 /* ================= lightbox ================= */
@@ -273,6 +300,43 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 .cap-lb-prev{left:14px;top:50%;transform:translateY(-50%)}
 .cap-lb-next{right:14px;top:50%;transform:translateY(-50%)}
 .cap-lb-cap{position:absolute;left:0;right:0;bottom:calc(18px + var(--safe-bottom));text-align:center;color:#fff;font-size:.85rem;opacity:.85}
+
+/* ================= enquiry form - opens right here instead of sending you to the home page ================= */
+#capEnq{
+  position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.6);padding:calc(16px + var(--safe-top)) 16px calc(16px + var(--safe-bottom));
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
+}
+#capEnq.on{display:flex}
+.enq-card{
+  width:100%;max-width:520px;margin:auto;background:var(--paper);color:var(--ink);
+  border:1px solid var(--line);border-radius:10px;padding:26px 26px 22px;
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
+}
+.enq-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
+.enq-head h2{margin:0;font-size:1.25rem;font-weight:600}
+.enq-head p{margin:3px 0 0;font-size:.72rem;opacity:.6}
+.enq-close{background:none;border:none;color:var(--ink);opacity:.65;cursor:pointer;font-size:.74rem;padding:4px 0;white-space:nowrap}
+.enq-close:hover{opacity:1}
+.enq-field{margin-bottom:14px}
+.enq-field label{display:block;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin-bottom:6px}
+.enq-field input,.enq-field select,.enq-field textarea{
+  width:100%;background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:6px;
+  padding:10px 12px;font:inherit;font-size:.92rem;
+}
+.enq-field select option{color:#000}
+.enq-field textarea{min-height:110px;resize:vertical}
+.enq-field input:focus,.enq-field select:focus,.enq-field textarea:focus{outline:none;border-color:var(--ink)}
+.enq-count{font-size:.64rem;opacity:.5;text-align:right;margin-top:4px}
+.enq-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.enq-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
+.enq-status{font-size:.68rem;letter-spacing:.08em;opacity:.7}
+.enq-send{
+  background:var(--ink);color:var(--paper);border:1px solid var(--ink);border-radius:999px;
+  padding:11px 24px;font:600 .76rem/1 'Inter',system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;
+}
+.enq-send:disabled{opacity:.45;cursor:not-allowed}
+@media (max-width:640px){ .enq-card{padding:22px 18px 18px} }
 
 .skip-link{position:absolute;left:12px;top:-64px;z-index:100;background:#fff;color:#000;padding:10px 16px;
   font-weight:600;font-size:.85rem;text-decoration:none;transition:top .15s ease}
@@ -294,7 +358,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     </button>
     <div class="cap-row1-right">
       <div class="cap-links">
-        <button type="button" id="capCollective">The Collective ↗</button>
+        <button type="button" id="capCollective" class="cap-mobile-hide">The Collective ↗</button>
         <a href="#" id="capElsewhere" class="cap-mobile-hide" target="_blank" rel="noopener">Elsewhere ↗</a>
         <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the lamp on">☾ Lamp</button>
         <button type="button" id="capEnquire" class="cap-enquire">Enquire ↗</button>
@@ -351,15 +415,60 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   <div class="cap-lb-cap mono" id="lbCap"></div>
 </div>
 
+<div id="capEnq" role="dialog" aria-modal="true" aria-labelledby="enqTitle">
+  <div class="enq-card">
+    <div class="enq-head">
+      <div>
+        <h2 id="enqTitle">Enquiry</h2>
+        <p class="mono">Every frame begins with a conversation.</p>
+      </div>
+      <button type="button" class="enq-close mono" id="enqClose" aria-label="Close enquiry">[ ESC / CLOSE ]</button>
+    </div>
+    <form id="enqForm" novalidate>
+      <div class="enq-field">
+        <label for="enqName">Your Name</label>
+        <input type="text" id="enqName" name="name" required maxlength="100" placeholder="Jane Doe" autocomplete="name">
+      </div>
+      <div class="enq-field">
+        <label for="enqEmail">Your Email</label>
+        <input type="email" id="enqEmail" name="email" required maxlength="254" placeholder="name@domain.com" autocomplete="email">
+      </div>
+      <div class="enq-field">
+        <label for="enqCat">Shoot Category</label>
+        <select id="enqCat" name="category"><option value="General Enquiry">General Enquiry</option></select>
+      </div>
+      <div class="enq-field" id="enqEventWrap" style="display:none">
+        <label for="enqEvent">Event Type</label>
+        <input type="text" id="enqEvent" name="eventType" maxlength="80" placeholder="e.g. Birthday, Wedding, Performing Arts">
+      </div>
+      <div class="enq-field">
+        <label for="enqMsg">Shoot Details &amp; Timeline</label>
+        <textarea id="enqMsg" name="message" required maxlength="500" placeholder="Tell us what you're shooting, roughly when, and the location."></textarea>
+        <div class="enq-count mono"><span id="enqCount">0</span> / 500</div>
+      </div>
+      <div class="enq-hp" aria-hidden="true">
+        <label for="enqWebsite">Leave this field empty</label>
+        <input type="text" id="enqWebsite" name="_gotcha" tabindex="-1" autocomplete="off">
+      </div>
+      <div class="enq-foot">
+        <span class="enq-status mono" id="enqStatus" role="status" aria-live="polite">READY</span>
+        <button type="submit" class="enq-send" id="enqSend">Send Enquiry &rarr;</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 (function(){
   "use strict";
   var DATA = null, PHOTOS = [], NICHES = [];
   var discoverOrder = [], discoverPaused = false;
-  var SCROLL_SPEED = 60;               /* CSS px/second - same value the homepage uses, which maps to a clean 1px-per-frame step at 60Hz with zero skipped frames */
+  /* CSS px/second - same values the homepage uses: faster on phones, where 60px/s felt sluggish */
+  function scrollSpeed(){ return window.innerWidth <= 640 ? 92 : 60; }
   var frameEst = 1000/60, scrollPlan = null, autoRaf = null;
   var track, trackLoopW = 0, trackPos = 0, isTouching = false, extAt = 0, manualPauseUntil = 0;
   var currentCat = null, currentEvent = null, lbList = [], lbIdx = 0;
+  var openOverlay = null; /* "lb" (photo viewer) | "enq" (enquiry form) | null */
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function $(s,r){ return (r||document).querySelector(s); }
@@ -376,22 +485,22 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     return m ? "/images/thumbs/" + m[1] + ".webp" : src;
   }
 
-  /* theme: mirror whatever the homepage lamp is set to - same logic as the homepage's
-     own boot script, including the system dark-mode fallback, so a first-time visitor
-     sees the identical theme on both pages */
+  /* theme: mirror whatever the homepage lamp is set to. Defaults to light (lamp off) unless
+     the user explicitly chose dark before - doesn't follow the device's OS dark-mode setting. */
   try {
     var savedTheme = localStorage.getItem("lrl_theme");
-    if (savedTheme === "dark" || savedTheme === "light") {
-      document.documentElement.setAttribute("data-theme", savedTheme);
-    } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
-      document.documentElement.setAttribute("data-theme", "dark");
-    }
+    document.documentElement.setAttribute("data-theme", savedTheme === "dark" ? "dark" : "light");
   } catch(e){}
 
+  /* both bars are measured live (not guessed in CSS), so the photos, captions and buttons always
+     clear them exactly - including the phone's home-indicator safe area inside the footer */
   function syncHeaderHeight(){
     var h = document.getElementById("capHeader").offsetHeight;
     document.documentElement.style.setProperty("--header-h", h + "px");
+    var f = document.getElementById("capFoot");
+    if (f && f.offsetHeight) document.documentElement.style.setProperty("--foot-h", f.offsetHeight + "px");
   }
+  syncHeaderHeight();
   window.addEventListener("resize", syncHeaderHeight);
   window.addEventListener("orientationchange", function(){ setTimeout(syncHeaderHeight, 250); });
 
@@ -534,16 +643,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 
     $("#capTagline").textContent = DATA.tagline || "";
     $("#capFootTagline").textContent = "Every frame begins with a conversation";
-    $("#capBrand").addEventListener("click", function(){ window.location.href = "/"; });
     $("#capCollective").addEventListener("click", function(){ window.location.href = "/#collective"; });
-    $("#capEnquire").addEventListener("click", function(){
-      var cat = currentCat || "General Enquiry";
-      window.location.href = "/?enquire=" + encodeURIComponent(cat) + "#top";
-    });
-    $("#capFootEnquire").addEventListener("click", function(){
-      var cat = currentCat || "General Enquiry";
-      window.location.href = "/?enquire=" + encodeURIComponent(cat) + "#top";
-    });
 
     var socials = DATA.socials || [];
     var ig = socials.find(function(s){ return /instagram/i.test(s.name||""); }) || socials[0];
@@ -651,7 +751,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     var cardCenter = card.offsetLeft + card.offsetWidth/2;
     if (Math.abs(cardCenter - center) < track.clientWidth * 0.22) {
       lbList = discoverOrder; lbIdx = discoverOrder.indexOf(photo);
-      renderLb(); $("#capLb").classList.add("on"); $("#lbClose").focus();
+      renderLb(); showOverlay("lb"); $("#lbClose").focus();
     } else {
       manualPauseUntil = performance.now() + 4000;
       track.scrollTo({ left: cardCenter - track.clientWidth/2, behavior: "smooth" });
@@ -677,6 +777,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   /* dock magnification: cheap (no forced layout reads) - uses cached offsetLeft/offsetWidth
      against the live scrollLeft, same "read once, animate via transform" idea as the rest of the site */
   function applyDockScale(){
+    if (!track) return;
     var centerX = track.scrollLeft + track.clientWidth/2;
     var half = track.clientWidth/2;
     var cards = $all(".disc-card", track);
@@ -686,9 +787,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       var dist = Math.abs(cx - centerX);
       var t = Math.min(1, dist / half);
       var scale = 1 - t*0.32;
-      var opacity = 1 - t*0.62;
       card.style.transform = "scale(" + scale.toFixed(3) + ")";
-      card.style.opacity = opacity.toFixed(3);
       if (dist < winnerDist) { winnerDist = dist; winner = card; }
     });
     /* exactly one card is ever "the center" one - the single nearest, not everything within
@@ -713,7 +812,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
      already-tested auto-scroll engine, so it inherits the same smoothness on every screen */
   var lastFrameT = 0, capFrameLog = [], captionThrottle = 0;
   function refreshScrollPlan(){
-    var perFrame = SCROLL_SPEED * frameEst / 1000;
+    var perFrame = scrollSpeed() * frameEst / 1000;
     var plan = perFrame >= 1.5
       ? { px: Math.round(perFrame), every: 1, perFrame: perFrame }
       : { px: 1, every: Math.max(1, Math.round(1/perFrame)), perFrame: perFrame };
@@ -737,7 +836,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       lastFrameT = now;
       refreshScrollPlan();
       frameTick++;
-      if (discoverPaused || isTouching || currentCat) return;
+      if (discoverPaused || isTouching || currentCat || openOverlay) return;
       if (window.__isDark && window.__isDark()) return; /* lamp on -> the strip holds still, matching a calm, static room */
       if (manualPauseUntil && now < manualPauseUntil) return;
       if (extAt && now - extAt < 250) return;
@@ -767,9 +866,42 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     $("#discPause").setAttribute("aria-label", discoverPaused ? "Resume slideshow" : "Pause slideshow");
   }
 
+  /* ---------------- navigation + history ----------------
+     Every screen change goes through these few functions so the phone/browser Back button
+     always does the expected thing:
+       photo viewer or enquiry form open  -> Back closes it (you stay where you were)
+       a category is open                 -> Back returns to Discover
+       on Discover                        -> Back leaves the page
+     Only leaving Discover adds a history step - switching between categories or event chips
+     just updates the current step, so Back never has to walk through every chip you tapped. */
+  function histState(){
+    var st = window.history.state;
+    return (st && st.lrl) ? st : null;
+  }
+  function updateUrl(cat, ev, push, fromDiscover){
+    var url = new URL(window.location.href);
+    if (cat) { url.searchParams.set("category", cat); } else { url.searchParams.delete("category"); }
+    if (ev) { url.searchParams.set("event", ev); } else { url.searchParams.delete("event"); }
+    var st = { lrl: 1, cat: cat || null, ev: ev || null, fromDiscover: !!fromDiscover, overlay: null };
+    if (push) { window.history.pushState(st, "", url); }
+    else { window.history.replaceState(st, "", url); }
+  }
+
+  /* normalise the entry we arrived on (also clears a stale "viewer open" flag left by a page reload) */
+  (function(){
+    var params = new URLSearchParams(window.location.search);
+    var st = histState();
+    var cat = params.get("category");
+    updateUrl(cat, params.get("event"), false, !!(cat && st && st.fromDiscover));
+  })();
+
   /* ---------------- category grid ---------------- */
-  function showCategory(name, eventFilter){
+  /* mode: undefined = normal click (adds a history step only when leaving Discover),
+           "replace" = update the current step, "none" = don't touch history (Back/Forward itself) */
+  function showCategory(name, eventFilter, mode){
+    var wasOnDiscover = !currentCat;
     currentCat = name; currentEvent = eventFilter || null;
+    document.documentElement.classList.add("cat-open");
     if (window.__lampRecheck) window.__lampRecheck();
     $("#discover").style.display = "none";
     $("#catview").classList.add("on");
@@ -788,12 +920,14 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     catPhotos.forEach(function(p){ (p.eventTypes||[]).forEach(function(et){ if (eventTypes.indexOf(et) === -1) eventTypes.push(et); }); });
     if (eventTypes.length) {
       var allChip = document.createElement("button");
+      allChip.type = "button";
       allChip.className = "cat-chip mono" + (!currentEvent ? " active" : "");
       allChip.textContent = "All " + name;
       allChip.addEventListener("click", function(){ showCategory(name, null); });
       chipsHost.appendChild(allChip);
       eventTypes.forEach(function(et){
         var chip = document.createElement("button");
+        chip.type = "button";
         chip.className = "cat-chip mono" + (currentEvent === et ? " active" : "");
         chip.textContent = et;
         chip.addEventListener("click", function(){ showCategory(name, et); });
@@ -803,7 +937,12 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 
     var visible = currentEvent ? catPhotos.filter(function(p){ return (p.eventTypes||[]).indexOf(currentEvent) > -1; }) : catPhotos;
     renderGrid(visible);
-    updateUrl(name, currentEvent);
+
+    if (mode !== "none") {
+      var push = (mode !== "replace") && wasOnDiscover;
+      var prev = histState();
+      updateUrl(name, currentEvent, push, push || !!(prev && prev.fromDiscover));
+    }
     $("#catview").scrollTop = 0;
     syncHeaderHeight();
   }
@@ -821,22 +960,75 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       card.className = "cat-card";
       card.innerHTML = '<img loading="lazy" src="'+esc(p.src)+'" alt="'+esc(p.alt||p.title||"")+'" style="object-position:'+esc((p.imagePosition||"center").toLowerCase())+'">'+
         '<div class="cc-cap">'+esc(p.title||"")+(p.client?' <span style="opacity:.7">— '+esc(p.client)+'</span>':'')+'</div>';
-      card.addEventListener("click", function(){ lbList = list; lbIdx = i; renderLb(); $("#capLb").classList.add("on"); $("#lbClose").focus(); });
+      card.addEventListener("click", function(){ lbList = list; lbIdx = i; renderLb(); showOverlay("lb"); $("#lbClose").focus(); });
       grid.appendChild(card);
     });
   }
 
-  function backToDiscover(){
+  function backToDiscover(mode){
     currentCat = null; currentEvent = null;
+    document.documentElement.classList.remove("cat-open");
     $("#catview").classList.remove("on");
     $("#catBack").style.display = "none";
-    $("#discover").style.display = "block";
+    $("#discover").style.display = "";   /* back to the stylesheet's flex layout (was forced to "block") */
     $all(".cap-cat-btn").forEach(function(b){ b.classList.remove("active"); });
-    updateUrl(null, null);
+    if (mode !== "none") updateUrl(null, null, false, false);
+    syncHeaderHeight();
     applyDockScale();
     if (window.__lampRecheck) window.__lampRecheck();
   }
-  $("#catBack").addEventListener("click", backToDiscover);
+
+  /* "← Discover" / Escape: if we got here from Discover, step Back (so the history stays tidy);
+     if you arrived straight on a category link, just switch to Discover in place */
+  function goDiscover(){
+    var st = histState();
+    if (st && st.fromDiscover && st.cat) window.history.back();
+    else backToDiscover("replace");
+  }
+  $("#catBack").addEventListener("click", goDiscover);
+
+  /* ---------------- overlays (photo viewer + enquiry form) ---------------- */
+  function overlayEl(name){ return name === "lb" ? $("#capLb") : $("#capEnq"); }
+  function showOverlay(name){
+    if (openOverlay && openOverlay !== name) hideOverlayUI(openOverlay);
+    var el = overlayEl(name);
+    var wasOpen = el.classList.contains("on");
+    el.classList.add("on");
+    openOverlay = name;
+    if (!wasOpen) {
+      var st = histState() || { cat: currentCat, ev: currentEvent, fromDiscover: false };
+      window.history.pushState({ lrl: 1, cat: st.cat || null, ev: st.ev || null, fromDiscover: !!st.fromDiscover, overlay: name }, "", window.location.href);
+    }
+  }
+  function hideOverlayUI(name){
+    overlayEl(name).classList.remove("on");
+    if (openOverlay === name) openOverlay = null;
+  }
+  function closeOverlay(name){
+    var st = histState();
+    if (st && st.overlay === name && openOverlay === name) window.history.back(); /* popstate below hides it */
+    else hideOverlayUI(name);
+  }
+
+  window.addEventListener("popstate", function(){
+    var st = histState();
+    /* Back while the viewer / enquiry is open: just close it - the page underneath is unchanged */
+    if (openOverlay && !(st && st.overlay === openOverlay)) {
+      hideOverlayUI(openOverlay);
+      return;
+    }
+    /* Forward onto an old "overlay open" step: nothing to show there, step straight back off it */
+    if (st && st.overlay && !openOverlay) { window.history.back(); return; }
+
+    var params = new URLSearchParams(window.location.search);
+    var cat = params.get("category");
+    var ev = params.get("event") || null;
+    if (cat) {
+      if (cat !== currentCat || ev !== currentEvent) showCategory(cat, ev, "none");
+    } else if (currentCat) {
+      backToDiscover("none");
+    }
+  });
 
   /* ---------------- lightbox ---------------- */
   function renderLb(){
@@ -847,38 +1039,148 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     $("#lbImgDim").src = p.src;
     $("#lbCap").textContent = [p.title, p.caption].filter(Boolean).join(" — ");
   }
-  function closeLb(){ $("#capLb").classList.remove("on"); }
+  function closeLb(){ closeOverlay("lb"); }
   $("#lbClose").addEventListener("click", closeLb);
-  $("#lbPrev").addEventListener("click", function(){ lbIdx = (lbIdx - 1 + lbList.length) % lbList.length; renderLb(); });
-  $("#lbNext").addEventListener("click", function(){ lbIdx = (lbIdx + 1) % lbList.length; renderLb(); });
+  $("#lbPrev").addEventListener("click", function(){ if (!lbList.length) return; lbIdx = (lbIdx - 1 + lbList.length) % lbList.length; renderLb(); });
+  $("#lbNext").addEventListener("click", function(){ if (!lbList.length) return; lbIdx = (lbIdx + 1) % lbList.length; renderLb(); });
   $("#capLb").addEventListener("click", function(e){ if (e.target.id === "capLb") closeLb(); });
 
+  /* ---------------- enquiry form (opens right here - no trip to the home page) ---------------- */
+  var enqOpenedAt = 0, enqWarned = false, enqSentAt = 0, enqBusy = false, enqDownOnBackdrop = false;
+  var DEFAULT_CATS = ["Food", "Pets", "Real Estate", "Products", "Events", "Portraits", "Travel"];
+
+  function fillEnqCategories(){
+    var sel = $("#enqCat");
+    var keep = sel.value;
+    var cats = ["General Enquiry"];
+    var source = NICHES.length ? NICHES : DEFAULT_CATS;
+    source.forEach(function(n){
+      var nm = (n && n.name) || n;
+      if (nm && cats.indexOf(nm) === -1) cats.push(nm);
+    });
+    sel.innerHTML = cats.map(function(c){ return '<option value="'+esc(c)+'">'+esc(c)+'</option>'; }).join("");
+    if (cats.indexOf(keep) > -1) sel.value = keep;
+  }
+  function syncEnqEvent(){
+    $("#enqEventWrap").style.display = $("#enqCat").value === "Events" ? "" : "none";
+  }
+  function openEnquiry(){
+    fillEnqCategories();
+    var sel = $("#enqCat");
+    var want = currentCat || "General Enquiry";
+    var has = Array.prototype.some.call(sel.options, function(o){ return o.value === want; });
+    if (!has) {
+      var opt = document.createElement("option");
+      opt.value = want; opt.textContent = want;
+      sel.appendChild(opt);
+    }
+    sel.value = want;
+    if (currentEvent) $("#enqEvent").value = currentEvent;
+    syncEnqEvent();
+    enqOpenedAt = Date.now(); enqWarned = false;
+    if (!enqBusy) $("#enqStatus").textContent = "READY";
+    showOverlay("enq");
+    setTimeout(function(){ $("#enqName").focus(); }, 80);
+  }
+
+  $("#capEnquire").addEventListener("click", openEnquiry);
+  $("#capFootEnquire").addEventListener("click", openEnquiry);
+  $("#capBrand").addEventListener("click", function(){ window.location.href = "/"; });
+  $("#enqClose").addEventListener("click", function(){ closeOverlay("enq"); });
+  $("#enqCat").addEventListener("change", syncEnqEvent);
+  $("#enqMsg").addEventListener("input", function(){ $("#enqCount").textContent = String(this.value.length); });
+  /* only a click that STARTS and ends on the dark backdrop closes it - dragging to select text
+     inside a field and releasing outside the card won't throw away what you typed */
+  $("#capEnq").addEventListener("mousedown", function(e){ enqDownOnBackdrop = (e.target.id === "capEnq"); });
+  $("#capEnq").addEventListener("click", function(e){
+    if (e.target.id === "capEnq" && enqDownOnBackdrop) closeOverlay("enq");
+    enqDownOnBackdrop = false;
+  });
+
+  $("#enqForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    if (enqBusy) return;
+    var form = this, status = $("#enqStatus"), send = $("#enqSend");
+    if (form.reportValidity && !form.reportValidity()) return; /* browser's own "please fill this in" hints */
+
+    /* same quiet spam checks as the home page form */
+    if ($("#enqWebsite").value) { status.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H"; return; }
+    var now = Date.now();
+    if (now - enqOpenedAt < 4000 && !enqWarned) {
+      enqWarned = true;
+      status.textContent = "PLEASE DOUBLE-CHECK, THEN PRESS SEND AGAIN";
+      return;
+    }
+    if (enqSentAt && now - enqSentAt < 30000) { status.textContent = "ALREADY SENT // PLEASE WAIT A MOMENT"; return; }
+
+    var cat = $("#enqCat").value;
+    var ev = cat === "Events" ? $("#enqEvent").value.trim() : "";
+    var payload = {
+      name: $("#enqName").value.trim(),
+      email: $("#enqEmail").value.trim(),
+      category: cat,
+      message: $("#enqMsg").value.trim(),
+      _gotcha: ""
+    };
+    if (ev) payload.eventType = ev;
+
+    enqBusy = true; send.disabled = true;
+    status.textContent = "TRANSMITTING...";
+    var formId = (DATA && DATA.formspreeId) || "xjykvnoz";
+
+    fetch("https://formspree.io/f/" + formId, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function(res){
+      if (!res.ok) throw new Error("Submission failed (" + res.status + ")");
+      enqSentAt = Date.now();
+      status.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
+      setTimeout(function(){
+        form.reset();
+        $("#enqCount").textContent = "0";
+        syncEnqEvent();
+        enqBusy = false; send.disabled = false;
+        status.textContent = "READY";
+        closeOverlay("enq");
+      }, 1800);
+    }).catch(function(){
+      /* keep the form open with everything typed, and hand off to the mail app as a backup */
+      status.textContent = "OPENING YOUR MAIL APP...";
+      enqBusy = false; send.disabled = false;
+      var to = (DATA && DATA.email) || "hello@livingroomlabs.in";
+      window.location.href = "mailto:" + to +
+        "?subject=" + encodeURIComponent("Enquiry: " + payload.category + (ev ? " (" + ev + ")" : "") + " — " + payload.name) +
+        "&body=" + encodeURIComponent("Name: " + payload.name + "\nEmail: " + payload.email + "\nCategory: " + payload.category +
+          (ev ? "\nEvent type: " + ev : "") + "\n\nMessage:\n" + payload.message);
+    });
+  });
+
+  /* ---------------- keyboard ---------------- */
   document.addEventListener("keydown", function(e){
-    if ($("#capLb").classList.contains("on")) {
+    if (openOverlay === "enq") {
+      if (e.key === "Escape") closeOverlay("enq");
+      return; /* arrows etc. belong to the form fields while it's open */
+    }
+    if (openOverlay === "lb") {
       if (e.key === "Escape") closeLb();
       else if (e.key === "ArrowLeft") $("#lbPrev").click();
       else if (e.key === "ArrowRight") $("#lbNext").click();
       return;
     }
-    if (e.key === "Escape" && currentCat) { backToDiscover(); return; }
-    if (!currentCat) {
+    if (e.key === "Escape" && currentCat) { goDiscover(); return; }
+    if (!currentCat && track) {
       if (e.key === "ArrowLeft") nudge(-1);
       else if (e.key === "ArrowRight") nudge(1);
     }
   });
 
-  /* ---------------- url params (for footer Events links) ---------------- */
+  /* ---------------- url params (footer Events links, shared links, reloads) ---------------- */
   function applyParams(){
     var params = new URLSearchParams(window.location.search);
     var cat = params.get("category");
     var ev = params.get("event");
-    if (cat) showCategory(cat, ev || null);
-  }
-  function updateUrl(cat, ev){
-    var url = new URL(window.location.href);
-    if (cat) { url.searchParams.set("category", cat); } else { url.searchParams.delete("category"); }
-    if (ev) { url.searchParams.set("event", ev); } else { url.searchParams.delete("event"); }
-    window.history.replaceState({}, "", url);
+    if (cat) showCategory(cat, ev || null, "none");
   }
 })();
 </script>
