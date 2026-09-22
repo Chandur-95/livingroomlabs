@@ -1491,6 +1491,30 @@ html[data-theme="dark"] .lb-frame {
   100%{transform:scale(1);opacity:1}
 }
 
+/* ============ Lamplight (desktop only, dark mode): your cursor is a lamp -
+   a dim base copy of the photo, with the bright copy masked to a circle that
+   follows the cursor, plus a soft warm glow. Mirrors the effect on
+   capture.html. Mobile keeps the lamplight effect on capture.html only. ============ */
+#lb-img-dim{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  filter:brightness(.16) saturate(.55);opacity:0;transition:opacity .5s ease;pointer-events:none;
+  animation:none !important;
+}
+#lb-lamp-layer{
+  position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;
+  transition:opacity .5s ease;
+  background:radial-gradient(circle calc(var(--lr,240px) * 1.2) at var(--lx,50%) var(--ly,50%), rgba(255,184,77,.22), rgba(255,184,77,0) 72%);
+}
+@media (min-width:861px){
+  .lb-frame.lamp-on #lb-img-dim{opacity:1}
+  .lb-frame.lamp-on #lb-img{
+    -webkit-mask-image:radial-gradient(circle var(--lr,240px) at var(--lx,50%) var(--ly,50%), #000 0%, rgba(0,0,0,.9) 55%, rgba(0,0,0,0) 100%);
+    mask-image:radial-gradient(circle var(--lr,240px) at var(--lx,50%) var(--ly,50%), #000 0%, rgba(0,0,0,.9) 55%, rgba(0,0,0,0) 100%);
+  }
+  .lb-frame.lamp-on #lb-lamp-layer{opacity:1}
+}
+@media (prefers-reduced-motion:reduce){ #lb-img-dim,#lb-lamp-layer{transition:opacity .2s ease} }
+
 .lb-cap{
   display:grid;grid-template-columns:1fr auto;gap:6px 20px;align-items:baseline;
   border-top:1px solid var(--rule);padding-top:12px;
@@ -1679,9 +1703,9 @@ html[data-theme="dark"] .lb-frame {
   .nav-right{align-items:flex-end}
   .nav-collective-link-mob{padding:0 !important}
 
-  .brand{flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:3px}
-  .brand .mark{height:44px}
-  .brand .mark img{height:44px}
+  .brand{flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:3px;padding-left:8px}
+  .brand .mark{height:52px}
+  .brand .mark img{height:52px}
   .brand .wordmark{font-size:.62rem;letter-spacing:.08em;display:block !important;line-height:1}
   
   .nav-right{gap:14px}
@@ -1804,8 +1828,8 @@ html[data-theme="dark"] .lb-frame {
     width: 100% !important;
   }
 
-  .foot-col-index { min-width: 70px; margin: 0 !important; }
-  .foot-col-elsewhere { min-width: 70px; margin: 0 !important; }
+  .foot-col-index { min-width: 70px; margin: 0 !important; padding-left: 12px; }
+  .foot-col-elsewhere { min-width: 70px; margin: 0 !important; padding-left: 12px; }
   .foot-col-events { display: none !important; }
   .foot-col-team { display: none !important; }
 
@@ -1893,7 +1917,7 @@ footer.wrap{overflow-x:clip}
   </button>
   <div class="nav-right">
     <div class="nav-links label">
-      <button type="button" class="nav-niches-link nav-desktop-only">What we Capture</button>
+      <button type="button" class="nav-niches-link nav-desktop-only">What We Capture</button>
       <button type="button" class="nav-collective-link nav-desktop-only">The Collective</button>
       <button type="button" class="nav-collective-link-mob nav-mobile-only" style="display:none;">The Collective</button>
     </div>
@@ -2110,7 +2134,9 @@ footer.wrap{overflow-x:clip}
     </button>
     <figure class="lb-figure">
       <span class="lb-frame">
+        <img id="lb-img-dim" src="" alt="" aria-hidden="true">
         <img id="lb-img" alt="">
+        <div id="lb-lamp-layer" aria-hidden="true"></div>
         <span class="guard" aria-hidden="true"></span>
       </span>
     </figure>
@@ -3349,6 +3375,18 @@ function paintLB(){
   if(imgEl.dataset.orig !== origSrc){
     imgEl.dataset.orig = origSrc; imgEl.dataset.tried = "";
     imgEl.src = fullFor(p.src);
+
+    var dimEl = $("#lb-img-dim");
+    if(dimEl){
+      if(!dimEl._errBound){
+        dimEl._errBound = true;
+        dimEl.addEventListener("error", function(){
+          if(this.dataset.tried !== "1" && this.dataset.orig){ this.dataset.tried = "1"; this.src = this.dataset.orig; }
+        });
+      }
+      dimEl.dataset.orig = origSrc; dimEl.dataset.tried = "";
+      dimEl.src = fullFor(p.src);
+    }
   }
   
   imgEl.alt = altFor(p);
@@ -3357,6 +3395,79 @@ function paintLB(){
   $("#lb-desc").textContent = p.caption || "";
   $("#lb-i").textContent = String(state.index + 1).padStart(2,"0");
   $("#lb-n").textContent = String(state.visible.length).padStart(2,"0");
+}
+
+/* ---------------- Lamplight: warm glow that follows the cursor, dark mode + desktop only.
+   Mirrors capture.html's effect exactly (dim base copy, bright copy masked to a circle
+   around the cursor, warm glow). Mobile never gets this here - it stays on capture.html. ---------------- */
+function initHomeLamp(){
+  var frame = document.querySelector(".lb-frame");
+  if(!lb || !frame) return;
+
+  var active = false, lastMoveAt = 0;
+  var curX = 0, curY = 0, targetX = 0, targetY = 0, haveStageSize = false;
+  var idlePhase = Math.random() * 1000;
+
+  function isDark(){ return document.documentElement.getAttribute("data-theme") === "dark"; }
+  function isDesktop(){ return !window.matchMedia || window.matchMedia("(min-width:861px)").matches; }
+
+  function updateLampVisibility(){
+    var show = isDark() && lightboxIsOpen() && isDesktop();
+    frame.classList.toggle("lamp-on", show);
+    if (show && !active) centerTarget();
+  }
+
+  function centerTarget(){
+    var r = frame.getBoundingClientRect();
+    targetX = r.width / 2; targetY = r.height / 2;
+    curX = targetX; curY = targetY;
+    haveStageSize = r.width > 0;
+  }
+
+  function setTarget(clientX, clientY){
+    var r = frame.getBoundingClientRect();
+    targetX = Math.max(0, Math.min(r.width, clientX - r.left));
+    targetY = Math.max(0, Math.min(r.height, clientY - r.top));
+    haveStageSize = r.width > 0;
+    lastMoveAt = performance.now();
+    active = true;
+  }
+
+  /* tracked on the whole modal, not just the frame, so moving anywhere over the dark
+     surrounding area still aims the lamp - it just clamps to the photo's edges */
+  lb.addEventListener("mousemove", function(e){ setTarget(e.clientX, e.clientY); }, {passive:true});
+  lb.addEventListener("mouseleave", function(){ active = false; });
+
+  function loop(t){
+    requestAnimationFrame(loop);
+    if (!frame.classList.contains("lamp-on")) return;
+    if (!haveStageSize) centerTarget();
+    var now = performance.now();
+    var recentlyActive = active || (now - lastMoveAt < 900);
+    var r = frame.getBoundingClientRect();
+    if (!recentlyActive) {
+      if (prefersReducedMotion()) { targetX = r.width/2; targetY = r.height/2; }
+      else {
+        targetX = r.width/2 + Math.sin((t + idlePhase) / 3800) * (r.width * 0.18);
+        targetY = r.height/2 + Math.cos((t + idlePhase) / 4600) * (r.height * 0.16);
+      }
+    }
+    var ease = prefersReducedMotion() ? 1 : 0.08;
+    curX += (targetX - curX) * ease;
+    curY += (targetY - curY) * ease;
+    frame.style.setProperty("--lx", curX.toFixed(1) + "px");
+    frame.style.setProperty("--ly", curY.toFixed(1) + "px");
+  }
+  requestAnimationFrame(loop);
+
+  updateLampVisibility();
+  if (window.MutationObserver) {
+    var mo = new MutationObserver(updateLampVisibility);
+    mo.observe(lb, { attributes: true, attributeFilter: ["class"] });
+    var htmlMo = new MutationObserver(updateLampVisibility);
+    htmlMo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  }
+  window.addEventListener("resize", updateLampVisibility);
 }
 
 var pull = $("#theme");
@@ -3697,7 +3808,7 @@ function renderContent(){
   if(idxList){
     idxList.innerHTML =
       '<li><a href="#work">Work</a></li>' +
-      '<li><button type="button" class="nav-niches-link" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">What we Capture</button></li>' +
+      '<li><button type="button" class="nav-niches-link" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">What We Capture</button></li>' +
       '<li><button type="button" id="btn-foot-enquire" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">Enquire</button></li>';
   }
 
@@ -3849,6 +3960,7 @@ function showLoadProblem(){
 function initApp(){
   bindGlobalEvents();
   initCarouselControls();
+  initHomeLamp();
   loadContent()
     .then(function(data){
       if(!data || typeof data !== "object") throw new Error("Unexpected content format");
