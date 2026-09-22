@@ -1,0 +1,199 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Bulk Photo Upload — Living Room Labs</title>
+<link rel="icon" type="image/png" href="/logo.png">
+<style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/inter-latin-ext-normal.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/inter-latin-normal.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/inter-latin-ext-normal.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Inter';font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/inter-latin-normal.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url(/fonts/inter-latin-ext-normal.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Inter';font-style:normal;font-weight:600;font-display:swap;src:url(/fonts/inter-latin-normal.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'Inter';font-style:normal;font-weight:700;font-display:swap;src:url(/fonts/inter-latin-ext-normal.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'Inter';font-style:normal;font-weight:700;font-display:swap;src:url(/fonts/inter-latin-normal.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/jetbrains-mono-latin-ext-normal.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/jetbrains-mono-latin-normal.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/jetbrains-mono-latin-ext-normal.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:500;font-display:swap;src:url(/fonts/jetbrains-mono-latin-normal.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+
+:root{ --ink:#0a0a0a; --paper:#fafafa; --line:#e2e2e2; --accent:#0a0a0a; }
+*{box-sizing:border-box}
+html,body{margin:0;background:var(--paper);color:var(--ink);font-family:'Inter',system-ui,sans-serif}
+.mono{font-family:'JetBrains Mono',monospace}
+a{color:inherit}
+
+.topbar{
+  position:sticky;top:0;z-index:50;background:#fff;border-bottom:1px solid var(--line);
+  display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:14px 24px;flex-wrap:wrap;
+}
+.topbar-left{display:flex;align-items:center;gap:12px}
+.topbar-left img{width:34px;height:34px}
+.topbar-left b{font-size:.85rem;letter-spacing:.1em;text-transform:uppercase}
+.topbar-left span{display:block;font-size:.7rem;opacity:.55;letter-spacing:.06em}
+.topbar-right{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+
+.btn{
+  border:1px solid var(--ink);background:#fff;color:var(--ink);border-radius:999px;
+  padding:9px 18px;font-size:.78rem;letter-spacing:.05em;text-transform:uppercase;
+  cursor:pointer;font-family:inherit;
+}
+.btn.primary{background:var(--ink);color:#fff}
+.btn.primary:disabled{opacity:.35;cursor:not-allowed}
+.btn.danger{border-color:#b02a2a;color:#b02a2a}
+.btn.small{padding:5px 12px;font-size:.68rem}
+
+.pill{
+  display:inline-flex;align-items:center;gap:6px;font-size:.72rem;letter-spacing:.06em;
+  text-transform:uppercase;padding:6px 12px;border-radius:999px;background:#f1f1f1;
+}
+.pill.ok{background:#e5f5ea;color:#1c6b3a}
+
+.wrap{max-width:1400px;margin:0 auto;padding:28px 24px 100px}
+.gate{
+  max-width:520px;margin:80px auto;text-align:center;padding:40px 32px;
+  border:1px solid var(--line);border-radius:8px;background:#fff;
+}
+.gate h1{font-size:1.3rem;margin:0 0 10px}
+.gate p{opacity:.65;font-size:.9rem;line-height:1.6;margin:0 0 22px}
+
+.picker{
+  border:2px dashed var(--line);border-radius:10px;padding:40px 24px;text-align:center;
+  margin-bottom:24px;background:#fff;
+}
+.picker.drag{border-color:var(--ink);background:#f7f7f7}
+.picker p{margin:0 0 14px;opacity:.6;font-size:.85rem}
+.picker input[type=file]{display:none}
+
+.toolbar{
+  display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;
+  margin-bottom:18px;padding:14px 18px;background:#fff;border:1px solid var(--line);border-radius:8px;
+}
+.toolbar-group{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.toolbar select,.toolbar input[type=text]{
+  border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:.82rem;font-family:inherit;
+}
+.count{font-size:.82rem;opacity:.6}
+
+.grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:18px;
+}
+.card{
+  border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff;
+  display:flex;flex-direction:column;position:relative;
+}
+.card.uploaded{opacity:.55}
+.card.error{border-color:#b02a2a}
+.card-img{width:100%;aspect-ratio:4/3;object-fit:cover;background:#eee;display:block}
+.card-body{padding:12px 14px 14px;display:flex;flex-direction:column;gap:8px}
+.card-body label{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;opacity:.55;display:block;margin-bottom:2px}
+.card-body input[type=text],.card-body textarea,.card-body select{
+  width:100%;border:1px solid var(--line);border-radius:5px;padding:6px 8px;font-size:.82rem;
+  font-family:inherit;resize:vertical;
+}
+.card-body textarea{min-height:44px}
+.card-row{display:flex;gap:8px}
+.card-row > *{flex:1;min-width:0}
+.card-toggles{display:flex;gap:14px;font-size:.74rem;align-items:center;flex-wrap:wrap}
+.card-toggles label{display:flex;align-items:center;gap:5px;text-transform:none;letter-spacing:0;opacity:1;font-size:.74rem;margin:0}
+.card-remove{
+  position:absolute;top:8px;right:8px;z-index:2;width:26px;height:26px;border-radius:50%;
+  background:rgba(0,0,0,.55);color:#fff;border:none;cursor:pointer;font-size:.85rem;
+}
+.card-ratio-tag{
+  position:absolute;top:8px;left:8px;z-index:2;background:rgba(0,0,0,.55);color:#fff;
+  font-size:.62rem;padding:3px 8px;border-radius:999px;letter-spacing:.04em;
+}
+.card-status{
+  position:absolute;inset:0;display:flex;align-items:center;justify-content:center;
+  background:rgba(255,255,255,.9);font-size:.78rem;text-align:center;padding:16px;
+  display:none;z-index:3;
+}
+.card.uploaded .card-status.done, .card.error .card-status.err{display:flex}
+.event-field{display:none}
+.card.is-events .event-field{display:block}
+
+.progress-bar{
+  position:fixed;left:0;right:0;bottom:0;z-index:60;background:#fff;border-top:1px solid var(--line);
+  padding:14px 24px;display:none;align-items:center;gap:16px;
+}
+.progress-bar.on{display:flex}
+.progress-track{flex:1;height:6px;background:#eee;border-radius:99px;overflow:hidden}
+.progress-fill{height:100%;background:var(--ink);width:0%;transition:width .2s ease}
+.progress-label{font-size:.78rem;white-space:nowrap;font-family:'JetBrains Mono',monospace}
+
+.result-banner{
+  padding:14px 18px;border-radius:8px;margin-bottom:18px;font-size:.85rem;display:none;
+}
+.result-banner.ok{background:#e5f5ea;color:#1c6b3a;display:block}
+.result-banner.err{background:#fbe7e7;color:#a02020;display:block}
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="topbar-left">
+    <img src="/logo.png" alt="">
+    <div>
+      <b>Bulk Photo Upload</b>
+      <span>Living Room Labs</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span id="authStatus" class="pill">Not logged in</span>
+    <button class="btn" id="btnLogin" type="button">Log in with GitHub</button>
+    <a class="btn" href="/capture.html">View What We Capture</a>
+  </div>
+</div>
+
+<div class="wrap">
+  <div id="gate" class="gate">
+    <h1>Log in to upload photos</h1>
+    <p>This uses the same GitHub login as your admin editor. Nothing is uploaded until you press
+      "Commit all photos" at the end — selecting files just previews them locally.</p>
+    <button class="btn primary" id="btnLoginGate" type="button">Log in with GitHub</button>
+  </div>
+
+  <div id="app" style="display:none">
+    <div id="resultBanner" class="result-banner"></div>
+
+    <div class="picker" id="picker">
+      <p>Drag &amp; drop up to 80 photos here, or</p>
+      <button class="btn primary" type="button" id="btnChoose">Choose photos</button>
+      <input type="file" id="fileInput" accept="image/*" multiple>
+    </div>
+
+    <div class="toolbar" id="toolbar" style="display:none">
+      <div class="toolbar-group">
+        <span class="count" id="countLabel">0 photos</span>
+      </div>
+      <div class="toolbar-group">
+        <span class="mono" style="font-size:.72rem;opacity:.6">Apply to all:</span>
+        <select id="bulkCategory">
+          <option value="">Category…</option>
+        </select>
+        <input type="text" id="bulkClient" placeholder="Shoot / client name">
+        <button class="btn small" id="btnApplyBulk" type="button">Apply</button>
+      </div>
+      <div class="toolbar-group">
+        <button class="btn danger small" id="btnClearAll" type="button">Clear all</button>
+        <button class="btn primary" id="btnUploadAll" type="button" disabled>Commit all photos</button>
+      </div>
+    </div>
+
+    <div class="grid" id="grid"></div>
+  </div>
+</div>
+
+<div class="progress-bar" id="progressBar">
+  <div class="progress-track"><div class="progress-fill" id="progressFill"></div></div>
+  <div class="progress-label" id="progressLabel">Preparing…</div>
+</div>
+
+<script src="bulk-upload.js"></script>
+</body>
+</html>
