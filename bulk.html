@@ -146,7 +146,7 @@ a{color:inherit}
   <div class="topbar-right">
     <span id="authStatus" class="pill">Not logged in</span>
     <button class="btn" id="btnLogin" type="button">Log in with GitHub</button>
-    <button class="btn" id="btnViewCapture" type="button">View What We Capture</button>
+    <a class="btn" href="/capture.html">View What We Capture</a>
   </div>
 </div>
 
@@ -177,6 +177,7 @@ a{color:inherit}
           <option value="">Category…</option>
         </select>
         <input type="text" id="bulkClient" placeholder="Shoot / client name">
+        <input type="text" id="bulkEventType" placeholder="Event type (if Events)" style="display:none">
         <button class="btn small" id="btnApplyBulk" type="button">Apply</button>
       </div>
       <div class="toolbar-group">

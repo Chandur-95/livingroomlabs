@@ -132,28 +132,33 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 }
 #capLampToggle[aria-pressed="true"]{background:rgba(255,196,75,.16);border-color:rgba(255,196,75,.55) !important;color:#ffe9c2 !important}
 
-/* ================= Lamplight: a warm glow that follows the cursor / your finger,
-   only in dark mode, only inside the full-screen photo viewer - matching the original
-   concept board (a still, full photo with a cursor lamp), not the moving strip.
-   Purely additive light on top of the photo - never dims or hides it, and never
-   blocks clicks, swipes or the prev/next/close buttons. */
+/* ================= Lamplight: your cursor/finger is a lamp - the photo stays dim
+   everywhere except a circle that follows you, matching the original concept board
+   exactly (a dim base copy of the photo, with a second bright copy masked to a
+   circle that reveals it, plus a soft warm glow). Only active in dark mode, only
+   inside the full-screen photo viewer. Never blocks clicks, swipes, or the
+   prev/next/close buttons - every layer here is pointer-events:none. */
+#lbStage{position:relative;display:inline-block;max-width:92vw;max-height:86vh}
+#lbStage img{display:block;max-width:92vw;max-height:86vh;object-fit:contain}
+#lbImgDim{
+  position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
+  filter:brightness(.16) saturate(.55);opacity:0;transition:opacity .5s ease;pointer-events:none;
+}
+#lbStage.lamp-on #lbImgDim{opacity:1}
+#lbStage.lamp-on #lbImg{
+  -webkit-mask-image:radial-gradient(circle var(--lr,240px) at var(--lx,50%) var(--ly,50%), #000 0%, rgba(0,0,0,.9) 55%, rgba(0,0,0,0) 100%);
+  mask-image:radial-gradient(circle var(--lr,240px) at var(--lx,50%) var(--ly,50%), #000 0%, rgba(0,0,0,.9) 55%, rgba(0,0,0,0) 100%);
+}
 #lampLayer{
-  position:absolute;inset:0;z-index:35;pointer-events:none;opacity:0;
+  position:absolute;inset:0;z-index:5;pointer-events:none;opacity:0;
   transition:opacity .5s ease;
-  background:
-    radial-gradient(520px circle at var(--lx,50%) var(--ly,50%), rgba(255,196,110,.22), transparent 60%),
-    radial-gradient(950px circle at var(--lx,50%) var(--ly,50%), rgba(0,0,0,0) 40%, rgba(0,0,0,.5) 100%);
-  mix-blend-mode:screen;
+  background:radial-gradient(circle calc(var(--lr,240px) * 1.2) at var(--lx,50%) var(--ly,50%), rgba(255,184,77,.22), rgba(255,184,77,0) 72%);
 }
-html[data-theme="dark"] #lampLayer.on{opacity:1}
+#lbStage.lamp-on #lampLayer{opacity:1}
 @media (max-width:860px){
-  #lampLayer{
-    background:
-      radial-gradient(320px circle at var(--lx,50%) var(--ly,42%), rgba(255,196,110,.24), transparent 62%),
-      radial-gradient(600px circle at var(--lx,50%) var(--ly,42%), rgba(0,0,0,0) 42%, rgba(0,0,0,.48) 100%);
-  }
+  #lbStage{ --lr:150px; }
 }
-@media (prefers-reduced-motion:reduce){ #lampLayer{transition:opacity .2s ease} }
+@media (prefers-reduced-motion:reduce){ #lbImgDim,#lampLayer{transition:opacity .2s ease} }
 
 /* ================= category grid view ================= */
 #catview{position:fixed;inset:0;background:var(--paper);color:var(--ink);overflow-y:auto;display:none;
@@ -204,6 +209,18 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
   }
 }
 .cat-empty{opacity:.55;padding:40px 24px;text-align:center}
+.cap-foot{
+  max-width:1400px;margin:24px auto 0;padding:48px 24px 90px;text-align:center;
+  border-top:1px solid var(--line);display:flex;flex-direction:column;align-items:center;gap:14px;
+}
+.cap-foot-logo{width:38px;height:38px;object-fit:contain;opacity:.85}
+.cap-foot p{margin:0;font-size:.82rem;opacity:.6;max-width:44ch}
+.btn-cap-foot-enquire{
+  border:1px solid var(--ink);background:none;color:var(--ink);border-radius:999px;
+  padding:9px 22px;font-size:.76rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;
+}
+.btn-cap-foot-enquire:hover{background:var(--ink);color:var(--paper)}
+html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.75}
 .cat-back{
   position:fixed;left:14px;bottom:calc(20px + var(--safe-bottom));z-index:20;background:var(--ink);color:var(--paper);
   border:none;border-radius:999px;padding:9px 16px;font-size:.68rem;letter-spacing:.06em;
@@ -281,16 +298,24 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     <div class="cat-chips" id="catChips"></div>
   </div>
   <div class="cat-grid" id="catGrid"></div>
+  <footer class="cap-foot">
+    <img src="/logo.png" alt="Living Room Labs" class="cap-foot-logo">
+    <p class="mono" id="capFootTagline"></p>
+    <button type="button" class="btn-cap-foot-enquire mono" id="capFootEnquire">Enquire ↗</button>
+  </footer>
 </section>
 <button class="cat-back mono" id="catBack" style="display:none">← Discover</button>
 
 <div id="capLb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <button class="cap-lb-close" id="lbClose" aria-label="Close">✕</button>
   <button class="cap-lb-nav cap-lb-prev" id="lbPrev" aria-label="Previous photo">‹</button>
-  <img id="lbImg" src="" alt="">
+  <div id="lbStage">
+    <img id="lbImgDim" src="" alt="" aria-hidden="true">
+    <img id="lbImg" src="" alt="">
+    <div id="lampLayer" aria-hidden="true"></div>
+  </div>
   <button class="cap-lb-nav cap-lb-next" id="lbNext" aria-label="Next photo">›</button>
   <div class="cap-lb-cap mono" id="lbCap"></div>
-  <div id="lampLayer" aria-hidden="true"></div>
 </div>
 
 <script>
@@ -318,10 +343,16 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     return m ? "/images/thumbs/" + m[1] + ".webp" : src;
   }
 
-  /* theme: mirror whatever the homepage lamp is set to */
+  /* theme: mirror whatever the homepage lamp is set to - same logic as the homepage's
+     own boot script, including the system dark-mode fallback, so a first-time visitor
+     sees the identical theme on both pages */
   try {
     var savedTheme = localStorage.getItem("lrl_theme");
-    if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
+    if (savedTheme === "dark" || savedTheme === "light") {
+      document.documentElement.setAttribute("data-theme", savedTheme);
+    } else if (window.matchMedia && window.matchMedia("(prefers-color-scheme: dark)").matches) {
+      document.documentElement.setAttribute("data-theme", "dark");
+    }
   } catch(e){}
 
   function syncHeaderHeight(){
@@ -351,32 +382,47 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
 
   /* ---------------- Lamplight: warm glow that follows cursor/finger, dark mode + full photo view only ---------------- */
   function initLamp(){
-    var layer = $("#lampLayer");
+    var stage = $("#lbStage");
     var lb = $("#capLb");
     var toggle = $("#capLampToggle");
-    if (!layer || !lb || !toggle) return;
+    if (!stage || !lb || !toggle) return;
 
     var active = false, lastMoveAt = 0;
-    var curX = 50, curY = 50, targetX = 50, targetY = 50;
+    /* positions are tracked in PIXELS relative to the photo itself (lbStage), not
+       percentages of the whole dark modal - the mask/glow need to align exactly
+       with the visible image, which is smaller than the full-screen backdrop. */
+    var curX = 0, curY = 0, targetX = 0, targetY = 0, haveStageSize = false;
     var idlePhase = Math.random() * 1000;
 
     function isDark(){ return document.documentElement.getAttribute("data-theme") === "dark"; }
     function lbOpen(){ return lb.classList.contains("on"); }
 
     function updateLampVisibility(){
-      /* the glow itself only ever shows over a full, still photo - not the moving strip,
+      /* the spotlight only ever shows over a full, still photo - not the moving strip,
          not the grid. Turning the lamp on also parks the carousel (see startAutoScroll). */
-      layer.classList.toggle("on", isDark() && lbOpen());
+      var show = isDark() && lbOpen();
+      stage.classList.toggle("lamp-on", show);
+      if (show && !active) centerTarget();
+    }
+
+    function centerTarget(){
+      var r = stage.getBoundingClientRect();
+      targetX = r.width / 2; targetY = r.height / 2;
+      curX = targetX; curY = targetY;
+      haveStageSize = r.width > 0;
     }
 
     function setTarget(clientX, clientY){
-      var r = lb.getBoundingClientRect();
-      targetX = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
-      targetY = Math.max(0, Math.min(100, ((clientY - r.top) / r.height) * 100));
+      var r = stage.getBoundingClientRect();
+      targetX = Math.max(0, Math.min(r.width, clientX - r.left));
+      targetY = Math.max(0, Math.min(r.height, clientY - r.top));
+      haveStageSize = r.width > 0;
       lastMoveAt = performance.now();
       active = true;
     }
 
+    /* tracked on the whole modal (lb), not just the small photo, so moving anywhere over
+       the dark surrounding area still aims the lamp - it just clamps to the photo's edges */
     lb.addEventListener("mousemove", function(e){ setTarget(e.clientX, e.clientY); }, {passive:true});
     lb.addEventListener("mouseleave", function(){ active = false; });
     lb.addEventListener("touchstart", function(e){
@@ -393,23 +439,25 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
 
     function loop(t){
       requestAnimationFrame(loop);
-      if (!layer.classList.contains("on")) return;
+      if (!stage.classList.contains("lamp-on")) return;
+      if (!haveStageSize) centerTarget();
       var now = performance.now();
       var recentlyActive = active || (now - lastMoveAt < 900);
+      var r = stage.getBoundingClientRect();
       if (!recentlyActive) {
-        if (reduceMotion) { targetX = 50; targetY = 50; }
+        if (reduceMotion) { targetX = r.width/2; targetY = r.height/2; }
         else {
           /* idle: gentle organic drift, so the effect still reads on mobile / mouse-less visits
              instead of sitting dead-centre and static the whole time */
-          targetX = 50 + Math.sin((t + idlePhase) / 3800) * 20;
-          targetY = 50 + Math.cos((t + idlePhase) / 4600) * 16;
+          targetX = r.width/2 + Math.sin((t + idlePhase) / 3800) * (r.width * 0.18);
+          targetY = r.height/2 + Math.cos((t + idlePhase) / 4600) * (r.height * 0.16);
         }
       }
       var ease = reduceMotion ? 1 : 0.08;
       curX += (targetX - curX) * ease;
       curY += (targetY - curY) * ease;
-      lb.style.setProperty("--lx", curX.toFixed(2) + "%");
-      lb.style.setProperty("--ly", curY.toFixed(2) + "%");
+      stage.style.setProperty("--lx", curX.toFixed(1) + "px");
+      stage.style.setProperty("--ly", curY.toFixed(1) + "px");
     }
     requestAnimationFrame(loop);
 
@@ -452,9 +500,14 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     });
 
     $("#capTagline").textContent = DATA.tagline || "";
+    $("#capFootTagline").textContent = DATA.tagline || "";
     $("#capBrand").addEventListener("click", function(){ window.location.href = "/"; });
     $("#capCollective").addEventListener("click", function(){ window.location.href = "/#collective"; });
     $("#capEnquire").addEventListener("click", function(){
+      var cat = currentCat || "General Enquiry";
+      window.location.href = "/?enquire=" + encodeURIComponent(cat) + "#top";
+    });
+    $("#capFootEnquire").addEventListener("click", function(){
       var cat = currentCat || "General Enquiry";
       window.location.href = "/?enquire=" + encodeURIComponent(cat) + "#top";
     });
@@ -760,6 +813,7 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     if (!p) return;
     $("#lbImg").src = p.src;
     $("#lbImg").alt = p.alt || p.title || "";
+    $("#lbImgDim").src = p.src;
     $("#lbCap").textContent = [p.title, p.caption].filter(Boolean).join(" — ");
   }
   function closeLb(){ $("#capLb").classList.remove("on"); }

@@ -1674,12 +1674,15 @@ html[data-theme="dark"] .lb-frame {
     --nav-h:64px;
     --pad:12px;
   }
-  .nav{padding-inline:12px; gap:8px;}
-  
-  .brand{flex-direction:row;justify-content:flex-start}
-  .brand .mark{height:52px}
-  .brand .mark img{height:52px}
-  .brand .wordmark{display:none}
+  .nav{padding-inline:12px; gap:8px; align-items:flex-end;}
+
+  .nav-right{align-items:flex-end}
+  .nav-collective-link-mob{padding:0 !important}
+
+  .brand{flex-direction:column;align-items:flex-start;justify-content:flex-end;gap:3px}
+  .brand .mark{height:44px}
+  .brand .mark img{height:44px}
+  .brand .wordmark{font-size:.62rem;letter-spacing:.08em;display:block !important;line-height:1}
   
   .nav-right{gap:14px}
   

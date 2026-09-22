@@ -41,11 +41,6 @@
   $("#btnLogin").addEventListener("click", login);
   $("#btnLoginGate").addEventListener("click", login);
 
-  /* Navigate to capture page using direct window location to bypass any client-side routing */
-  $("#btnViewCapture").addEventListener("click", function(){
-    window.location.href = window.location.origin + "/capture.html";
-  });
-
   /* ---------------- load niches + existing photo filenames (for the category dropdown + name collisions) ---------------- */
   fetch("/content.json").then(function(r){ return r.json(); }).then(function(d){
     NICHES = (d.niches || []).map(function(n){ return n.name || n; });
@@ -132,7 +127,7 @@
   function renderGrid(){
     var grid = $("#grid");
     grid.innerHTML = "";
-    photos.forEach(function(p){
+    photos.forEach(function(p, idx){
       var card = document.createElement("div");
       card.className = "card" + (p.category === "Events" ? " is-events" : "");
       card.dataset.id = p.id;
@@ -148,11 +143,12 @@
           '</div>' +
           '<div class="event-field"><label>Event Type (comma-separated, e.g. Birthday, Housewarming)</label><input type="text" data-f="eventTypes" value="'+esc(p.eventTypes.join(", "))+'"></div>' +
           '<div><label>Caption</label><textarea data-f="caption">'+esc(p.caption)+'</textarea></div>' +
-          '<div><label>Alt text (for Google &amp; screen readers)</label><input type="text" data-f="alt" value="'+esc(p.alt)+'"></div>' +
+          '<div><label>Alt text (for Google &amp; screen readers) - leave blank to reuse the title</label><input type="text" data-f="alt" value="'+esc(p.alt)+'"></div>' +
           '<div class="card-toggles">' +
             '<label><input type="checkbox" data-f="showInAll" '+(p.showInAll?'checked':'')+'> Show in All</label>' +
             '<label><input type="checkbox" data-f="featured" '+(p.featured?'checked':'')+'> Featured</label>' +
           '</div>' +
+          (idx > 0 ? '<button type="button" class="btn small" data-copy-prev="'+p.id+'" style="align-self:flex-start">↑ Copy category/client/event from previous</button>' : '') +
         '</div>' +
         '<div class="card-status done mono">✓ Uploaded</div>' +
         '<div class="card-status err mono" data-err="'+p.id+'"></div>';
@@ -196,15 +192,36 @@
         });
       });
     });
+    $all("[data-copy-prev]").forEach(function(btn){
+      btn.addEventListener("click", function(){
+        var id = btn.getAttribute("data-copy-prev");
+        var idx = photos.findIndex(function(x){ return x.id === id; });
+        if (idx <= 0) return;
+        var prev = photos[idx - 1];
+        var p = photos[idx];
+        p.category = prev.category;
+        p.client = prev.client;
+        p.eventTypes = prev.eventTypes.slice();
+        p.showInAll = prev.showInAll;
+        p.featured = prev.featured;
+        renderGrid();
+      });
+    });
   }
+
+  $("#bulkCategory").addEventListener("change", function(){
+    $("#bulkEventType").style.display = this.value === "Events" ? "inline-block" : "none";
+  });
 
   $("#btnApplyBulk").addEventListener("click", function(){
     var cat = $("#bulkCategory").value;
     var client = $("#bulkClient").value;
-    if (!cat && !client) return;
+    var eventTypeStr = $("#bulkEventType").value;
+    if (!cat && !client && !eventTypeStr) return;
     photos.forEach(function(p){
       if (cat) p.category = cat;
       if (client) p.client = client;
+      if (eventTypeStr) p.eventTypes = eventTypeStr.split(",").map(function(s){ return s.trim(); }).filter(Boolean);
     });
     renderGrid();
   });
@@ -313,7 +330,7 @@
                 eventTypes: p.category === "Events" ? p.eventTypes : [],
                 showInAll: !!p.showInAll,
                 caption: p.caption || "",
-                alt: p.alt || "",
+                alt: p.alt || p.title || "",
                 ratio: p.ratio || "4/5",
                 src: "/images/uploads/" + p.filename,
                 imagePosition: "Center",
