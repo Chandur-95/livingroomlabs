@@ -54,13 +54,6 @@ a{color:inherit}
 .pill.ok{background:#e5f5ea;color:#1c6b3a}
 
 .wrap{max-width:1400px;margin:0 auto;padding:28px 24px 100px}
-.gate{
-  max-width:520px;margin:80px auto;text-align:center;padding:40px 32px;
-  border:1px solid var(--line);border-radius:8px;background:#fff;
-}
-.gate h1{font-size:1.3rem;margin:0 0 10px}
-.gate p{opacity:.65;font-size:.9rem;line-height:1.6;margin:0 0 22px}
-
 .picker{
   border:2px dashed var(--line);border-radius:10px;padding:40px 24px;text-align:center;
   margin-bottom:24px;background:#fff;
@@ -131,6 +124,40 @@ a{color:inherit}
 }
 .result-banner.ok{background:#e5f5ea;color:#1c6b3a;display:block}
 .result-banner.err{background:#fbe7e7;color:#a02020;display:block}
+
+.tabs{display:flex;gap:6px;margin-bottom:20px;border-bottom:1px solid var(--line)}
+.tab-btn{
+  border:none;background:none;padding:10px 4px;margin-right:20px;font-family:inherit;
+  font-size:.8rem;letter-spacing:.05em;text-transform:uppercase;color:var(--ink);opacity:.5;
+  cursor:pointer;border-bottom:2px solid transparent;margin-bottom:-1px;
+}
+.tab-btn.active{opacity:1;border-bottom-color:var(--ink);font-weight:600}
+.tab-panel{display:none}
+.tab-panel.active{display:block}
+
+.gate-note{
+  max-width:560px;margin:80px auto;text-align:center;padding:40px 32px;
+  border:1px solid var(--line);border-radius:8px;background:#fff;
+}
+.gate-note h1{font-size:1.3rem;margin:0 0 10px}
+.gate-note p{opacity:.65;font-size:.9rem;line-height:1.6;margin:0 0 22px}
+
+.existing-toolbar{
+  display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-bottom:18px;
+  padding:14px 18px;background:#fff;border:1px solid var(--line);border-radius:8px;
+}
+.existing-toolbar select,.existing-toolbar input[type=text]{
+  border:1px solid var(--line);border-radius:6px;padding:7px 10px;font-size:.82rem;font-family:inherit;
+}
+.existing-grid{
+  display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;
+}
+.existing-card{border:1px solid var(--line);border-radius:8px;overflow:hidden;background:#fff}
+.existing-card img{width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:#eee}
+.existing-card .ec-body{padding:8px 10px 10px}
+.existing-card .ec-title{font-size:.78rem;font-weight:600;margin:0 0 2px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.existing-card .ec-meta{font-size:.68rem;opacity:.55;font-family:'JetBrains Mono',monospace}
+.existing-empty{opacity:.5;padding:60px 24px;text-align:center;font-size:.9rem}
 </style>
 </head>
 <body>
@@ -144,49 +171,78 @@ a{color:inherit}
     </div>
   </div>
   <div class="topbar-right">
-    <span id="authStatus" class="pill">Not logged in</span>
-    <button class="btn" id="btnLogin" type="button">Log in with GitHub</button>
+    <span id="authStatus" class="pill">Checking admin login…</span>
+    <button class="btn small" id="btnRecheck" type="button" style="display:none">Recheck login</button>
     <a class="btn" href="/capture.html">View What We Capture</a>
   </div>
 </div>
 
 <div class="wrap">
-  <div id="gate" class="gate">
-    <h1>Log in to upload photos</h1>
-    <p>This uses the same GitHub login as your admin editor. Nothing is uploaded until you press
-      "Commit all photos" at the end — selecting files just previews them locally.</p>
-    <button class="btn primary" id="btnLoginGate" type="button">Log in with GitHub</button>
+  <div id="gate" class="gate-note" style="display:none">
+    <h1>Log in through the Admin editor first</h1>
+    <p>This uploader uses the same GitHub login as your Admin editor - there's no separate login here.
+      Open the Admin editor, log in there, then come back to this tab and press "Recheck login".</p>
+    <a class="btn primary" href="/admin/" target="_blank" rel="noopener">Open Admin Editor</a>
+    <p style="margin:18px 0 0;font-size:.76rem;opacity:.5">
+      Already logged in and still seeing this? <button type="button" id="btnLoginFallback" style="border:none;background:none;color:inherit;text-decoration:underline;cursor:pointer;font:inherit;padding:0">Log in with GitHub directly</button>
+    </p>
   </div>
 
   <div id="app" style="display:none">
-    <div id="resultBanner" class="result-banner"></div>
-
-    <div class="picker" id="picker">
-      <p>Drag &amp; drop up to 80 photos here, or</p>
-      <button class="btn primary" type="button" id="btnChoose">Choose photos</button>
-      <input type="file" id="fileInput" accept="image/*" multiple>
+    <div class="tabs">
+      <button type="button" class="tab-btn active" data-tab="upload">New Upload</button>
+      <button type="button" class="tab-btn" data-tab="existing">Already Uploaded</button>
     </div>
 
-    <div class="toolbar" id="toolbar" style="display:none">
-      <div class="toolbar-group">
-        <span class="count" id="countLabel">0 photos</span>
+    <div id="tab-upload" class="tab-panel active">
+      <div id="resultBanner" class="result-banner"></div>
+
+      <div class="picker" id="picker">
+        <p>Drag &amp; drop up to 80 photos here, or</p>
+        <button class="btn primary" type="button" id="btnChoose">Choose photos</button>
+        <input type="file" id="fileInput" accept="image/*" multiple>
       </div>
-      <div class="toolbar-group">
-        <span class="mono" style="font-size:.72rem;opacity:.6">Apply to all:</span>
-        <select id="bulkCategory">
-          <option value="">Category…</option>
+
+      <div class="toolbar" id="toolbar" style="display:none">
+        <div class="toolbar-group">
+          <span class="count" id="countLabel">0 photos</span>
+        </div>
+        <div class="toolbar-group">
+          <span class="mono" style="font-size:.72rem;opacity:.6">Apply to all:</span>
+          <select id="bulkCategory">
+            <option value="">Category…</option>
+          </select>
+          <input type="text" id="bulkClient" placeholder="Shoot / client name">
+          <input type="text" id="bulkEventType" placeholder="Event type (if Events)" style="display:none">
+          <select id="bulkPosition">
+            <option value="">Image position…</option>
+            <option value="Center">Center</option>
+            <option value="Top">Top</option>
+            <option value="Bottom">Bottom</option>
+            <option value="Left">Left</option>
+            <option value="Right">Right</option>
+          </select>
+          <button class="btn small" id="btnApplyBulk" type="button">Apply</button>
+        </div>
+        <div class="toolbar-group">
+          <button class="btn danger small" id="btnClearAll" type="button">Clear all</button>
+          <button class="btn primary" id="btnUploadAll" type="button" disabled>Commit all photos</button>
+        </div>
+      </div>
+
+      <div class="grid" id="grid"></div>
+    </div>
+
+    <div id="tab-existing" class="tab-panel">
+      <div class="existing-toolbar">
+        <span class="count" id="existingCountLabel">0 photos live</span>
+        <select id="existingCategoryFilter">
+          <option value="">All categories</option>
         </select>
-        <input type="text" id="bulkClient" placeholder="Shoot / client name">
-        <input type="text" id="bulkEventType" placeholder="Event type (if Events)" style="display:none">
-        <button class="btn small" id="btnApplyBulk" type="button">Apply</button>
+        <input type="text" id="existingSearch" placeholder="Search title or client…">
       </div>
-      <div class="toolbar-group">
-        <button class="btn danger small" id="btnClearAll" type="button">Clear all</button>
-        <button class="btn primary" id="btnUploadAll" type="button" disabled>Commit all photos</button>
-      </div>
+      <div class="existing-grid" id="existingGrid"></div>
     </div>
-
-    <div class="grid" id="grid"></div>
   </div>
 </div>
 

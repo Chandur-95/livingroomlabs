@@ -5,14 +5,40 @@
   var token = null;
   var NICHES = [];
   var existingSrcNames = {}; // for collision-safe filenames
-  var photos = []; // { id, file, title, category, eventTypes, client, caption, alt, showInAll, featured, ratio, previewUrl, filename, status }
+  var existingPhotos = []; // full photo list from content.json, for the "Already Uploaded" tab
+  var photos = []; // { id, file, title, category, eventTypes, client, caption, alt, showInAll, featured, ratio, imagePosition, previewUrl, filename, status }
   var seq = 0;
 
   function $(s,r){ return (r||document).querySelector(s); }
   function $all(s,r){ return Array.prototype.slice.call((r||document).querySelectorAll(s)); }
   function esc(s){ return String(s==null?"":s).replace(/[&<>"']/g, function(c){ return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]; }); }
 
-  /* ---------------- GitHub OAuth (reuses the same login your admin editor uses) ---------------- */
+  /* ---------------- Login: reuses the Admin editor's own session - no separate login screen.
+     Decap CMS (your Admin editor) stores its GitHub session in localStorage under "netlify-cms-user"
+     (Decap kept the old Netlify CMS key name for backwards compatibility). We read that same key,
+     so logging into /admin/ once is enough for this page too. If that key isn't there yet (e.g. you
+     opened this page before ever logging into Admin), a manual GitHub login is still available as a
+     fallback - it's the same GitHub OAuth app either way, just not sharing a saved session. ---------------- */
+  function readAdminSession(){
+    try {
+      var raw = localStorage.getItem("netlify-cms-user") || localStorage.getItem("decap-cms-user");
+      if (!raw) return null;
+      var parsed = JSON.parse(raw);
+      return parsed.token || parsed.access_token || (parsed.backend && parsed.backend.token) || null;
+    } catch (e) { return null; }
+  }
+
+  function tryAutoLogin(){
+    var found = readAdminSession();
+    if (found) { token = found; onLoggedIn(); return true; }
+    $("#authStatus").textContent = "Not logged in";
+    $("#authStatus").classList.remove("ok");
+    $("#btnRecheck").style.display = "inline-block";
+    $("#gate").style.display = "block";
+    $("#app").style.display = "none";
+    return false;
+  }
+
   function login(){
     var w = window.open("/api/auth", "lrl_login", "width=520,height=640");
     function onMsg(e){
@@ -31,30 +57,78 @@
   function onLoggedIn(){
     $("#authStatus").textContent = "Logged in";
     $("#authStatus").classList.add("ok");
-    $("#btnLogin").textContent = "Logged in ✓";
-    $("#btnLogin").disabled = true;
+    $("#btnRecheck").style.display = "none";
     $("#gate").style.display = "none";
     $("#app").style.display = "block";
     updateUploadButton();
+    renderExistingGrid();
   }
 
-  $("#btnLogin").addEventListener("click", login);
-  $("#btnLoginGate").addEventListener("click", login);
+  $("#btnRecheck").addEventListener("click", tryAutoLogin);
+  $("#btnLoginFallback").addEventListener("click", login);
+  tryAutoLogin();
+
+  /* ---------------- tabs ---------------- */
+  $all(".tab-btn").forEach(function(btn){
+    btn.addEventListener("click", function(){
+      var tab = btn.getAttribute("data-tab");
+      $all(".tab-btn").forEach(function(b){ b.classList.toggle("active", b === btn); });
+      $all(".tab-panel").forEach(function(p){ p.classList.toggle("active", p.id === "tab-" + tab); });
+      if (tab === "existing") renderExistingGrid();
+    });
+  });
 
   /* ---------------- load niches + existing photo filenames (for the category dropdown + name collisions) ---------------- */
   fetch("/content.json").then(function(r){ return r.json(); }).then(function(d){
     NICHES = (d.niches || []).map(function(n){ return n.name || n; });
     var bulkCat = $("#bulkCategory");
+    var existingFilter = $("#existingCategoryFilter");
     NICHES.forEach(function(n){
       var opt = document.createElement("option");
       opt.value = n; opt.textContent = n;
       bulkCat.appendChild(opt);
+      var opt2 = document.createElement("option");
+      opt2.value = n; opt2.textContent = n;
+      existingFilter.appendChild(opt2);
     });
     (d.photos || []).forEach(function(p){
       var m = /^\/images\/uploads\/([^\/?#]+)$/.exec(p.src || "");
       if (m) existingSrcNames[m[1].toLowerCase()] = true;
     });
+    existingPhotos = (d.photos || []).slice().reverse(); // newest-added first
+    renderExistingGrid();
   }).catch(function(err){ console.error("Could not load content.json", err); });
+
+  function renderExistingGrid(){
+    var grid = $("#existingGrid");
+    if (!grid) return;
+    var catFilter = $("#existingCategoryFilter").value;
+    var search = $("#existingSearch").value.trim().toLowerCase();
+    var list = existingPhotos.filter(function(p){
+      if (catFilter && p.category !== catFilter) return false;
+      if (search) {
+        var hay = ((p.title||"") + " " + (p.client||"")).toLowerCase();
+        if (hay.indexOf(search) === -1) return false;
+      }
+      return true;
+    });
+    $("#existingCountLabel").textContent = list.length + " of " + existingPhotos.length + " photos live";
+    if (!list.length) {
+      grid.innerHTML = '<div class="existing-empty">No photos match.</div>';
+      return;
+    }
+    grid.innerHTML = list.map(function(p){
+      return '<div class="existing-card">' +
+        '<img src="'+esc(p.src||"")+'" alt="" loading="lazy">' +
+        '<div class="ec-body">' +
+          '<div class="ec-title">'+esc(p.title||"Untitled")+'</div>' +
+          '<div class="ec-meta">'+esc(p.category||"")+(p.eventTypes&&p.eventTypes.length?" · "+esc(p.eventTypes.join(", ")):"")+'</div>' +
+        '</div>' +
+      '</div>';
+    }).join("");
+  }
+  $("#existingCategoryFilter").addEventListener("change", renderExistingGrid);
+  $("#existingSearch").addEventListener("input", renderExistingGrid);
 
   /* ---------------- file selection ---------------- */
   var picker = $("#picker"), fileInput = $("#fileInput");
@@ -99,7 +173,7 @@
         filename: uniqueFilename(file.name),
         title: titleGuess, category: NICHES[0] || "Food", eventTypes: [],
         client: "", caption: "", alt: "", showInAll: true, featured: true,
-        ratio: "4/5", status: "pending"
+        ratio: "4/5", imagePosition: "Center", status: "pending"
       };
       photos.push(entry);
       /* measure the REAL image dimensions - this is what fixed the cropping bug on
@@ -109,6 +183,8 @@
         entry.ratio = simplifyRatio(probe.naturalWidth, probe.naturalHeight);
         var tag = document.querySelector('[data-ratio-tag="'+id+'"]');
         if (tag) tag.textContent = entry.ratio;
+        var sel = document.querySelector('.card[data-id="'+id+'"] [data-f="ratio"]');
+        if (sel) sel.value = entry.ratio; /* no-ops silently if the exact fraction isn't one of the preset options - same as the Admin editor's own ratio field */
       };
       probe.src = previewUrl;
     });
@@ -144,6 +220,10 @@
           '<div class="event-field"><label>Event Type (comma-separated, e.g. Birthday, Housewarming)</label><input type="text" data-f="eventTypes" value="'+esc(p.eventTypes.join(", "))+'"></div>' +
           '<div><label>Caption</label><textarea data-f="caption">'+esc(p.caption)+'</textarea></div>' +
           '<div><label>Alt text (for Google &amp; screen readers) - leave blank to reuse the title</label><input type="text" data-f="alt" value="'+esc(p.alt)+'"></div>' +
+          '<div class="card-row">' +
+            '<div><label>Image Position</label><select data-f="imagePosition">'+['Center','Top','Bottom','Left','Right'].map(function(pos){ return '<option'+(pos===p.imagePosition?' selected':'')+'>'+pos+'</option>'; }).join('')+'</select></div>' +
+            '<div><label>Aspect Ratio</label><select data-f="ratio">'+['1/1','4/5','5/4','3/4','4/3','16/9','16/10'].map(function(r){ return '<option'+(r===p.ratio?' selected':'')+'>'+r+'</option>'; }).join('')+'</select></div>' +
+          '</div>' +
           '<div class="card-toggles">' +
             '<label><input type="checkbox" data-f="showInAll" '+(p.showInAll?'checked':'')+'> Show in All</label>' +
             '<label><input type="checkbox" data-f="featured" '+(p.featured?'checked':'')+'> Featured</label>' +
@@ -204,6 +284,7 @@
         p.eventTypes = prev.eventTypes.slice();
         p.showInAll = prev.showInAll;
         p.featured = prev.featured;
+        p.imagePosition = prev.imagePosition;
         renderGrid();
       });
     });
@@ -217,11 +298,13 @@
     var cat = $("#bulkCategory").value;
     var client = $("#bulkClient").value;
     var eventTypeStr = $("#bulkEventType").value;
-    if (!cat && !client && !eventTypeStr) return;
+    var position = $("#bulkPosition").value;
+    if (!cat && !client && !eventTypeStr && !position) return;
     photos.forEach(function(p){
       if (cat) p.category = cat;
       if (client) p.client = client;
       if (eventTypeStr) p.eventTypes = eventTypeStr.split(",").map(function(s){ return s.trim(); }).filter(Boolean);
+      if (position) p.imagePosition = position;
     });
     renderGrid();
   });
@@ -333,7 +416,7 @@
                 alt: p.alt || p.title || "",
                 ratio: p.ratio || "4/5",
                 src: "/images/uploads/" + p.filename,
-                imagePosition: "Center",
+                imagePosition: p.imagePosition || "Center",
                 featured: !!p.featured
               });
               p.status = "queued";
