@@ -37,7 +37,7 @@
 :root{
   --paper:#FFFFFF; --ink:#000000; --dim:rgba(0,0,0,.55); --line:rgba(0,0,0,.12);
   --safe-top:env(safe-area-inset-top,0px); --safe-bottom:env(safe-area-inset-bottom,0px);
-  --header-h:118px; --foot-h:68px;
+  --header-h:118px; --foot-h:168px;
 }
 html[data-theme="dark"]{ --paper:#080808; --ink:#FFFFFF; --dim:rgba(255,255,255,.6); --line:rgba(255,255,255,.14); }
 *{box-sizing:border-box}
@@ -106,7 +106,7 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 .disc-card{
   position:relative;flex:0 0 auto;height:min(64vh,640px);border-radius:6px;overflow:hidden;
   cursor:pointer;background:#111;box-shadow:0 24px 60px rgba(0,0,0,.55);
-  transform:scale(.7);opacity:.4;filter:brightness(.6);
+  transform:scale(.7);opacity:.4;
   transform-origin:center center;will-change:transform,opacity;
 }
 .disc-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
@@ -224,31 +224,31 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
 .cat-empty{opacity:.55;padding:40px 24px;text-align:center}
 .cap-foot{
   position:fixed;left:0;right:0;bottom:0;z-index:25;
-  display:flex;align-items:center;gap:14px;
-  padding:12px 20px calc(12px + var(--safe-bottom));
+  display:flex;align-items:center;gap:28px;
+  padding:22px 40px calc(22px + var(--safe-bottom));
   background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border-top:1px solid var(--line);
   transition:background .35s ease, border-color .35s ease;
 }
 html[data-theme="dark"] .cap-foot{ background:rgba(8,8,8,.85); }
-.cap-foot-logo{width:32px;height:32px;object-fit:contain;opacity:.9;flex:none}
+.cap-foot-logo{width:120px;height:auto;object-fit:contain;opacity:.9;flex:none}
 .cap-foot-text{flex:1;min-width:0;text-align:left}
-.cap-foot-text b{display:block;font-size:.7rem;letter-spacing:.14em;text-transform:uppercase;opacity:.9;font-weight:600}
-.cap-foot-text p{margin:2px 0 0;font-size:.76rem;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cap-foot-text b{display:block;font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;opacity:.9;font-weight:600}
+.cap-foot-text p{margin:4px 0 0;font-size:.92rem;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .btn-cap-foot-enquire{
   border:1px solid var(--ink);background:none;color:var(--ink);border-radius:999px;
-  padding:8px 18px;font-size:.72rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;flex:none;
+  padding:12px 28px;font-size:.8rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;flex:none;
   white-space:nowrap;
 }
 .btn-cap-foot-enquire:hover{background:var(--ink);color:var(--paper)}
 html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8}
 @media (max-width:640px){
-  :root{ --foot-h:56px; }
-  .cap-foot{ padding:10px 14px calc(10px + var(--safe-bottom)); gap:10px; }
-  .cap-foot-logo{width:26px;height:26px}
-  .cap-foot-text b{font-size:.6rem;letter-spacing:.1em}
-  .cap-foot-text p{font-size:.66rem}
-  .btn-cap-foot-enquire{padding:7px 14px;font-size:.64rem}
+  :root{ --foot-h:74px; }
+  .cap-foot{ padding:14px 16px calc(14px + var(--safe-bottom)); gap:12px; }
+  .cap-foot-logo{width:34px;height:34px}
+  .cap-foot-text b{font-size:.68rem;letter-spacing:.1em}
+  .cap-foot-text p{font-size:.74rem}
+  .btn-cap-foot-enquire{padding:9px 16px;font-size:.68rem}
 }
 .cat-back{
   position:fixed;left:14px;bottom:calc(20px + var(--safe-bottom) + var(--foot-h));z-index:20;background:var(--ink);color:var(--paper);
@@ -687,10 +687,8 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       var t = Math.min(1, dist / half);
       var scale = 1 - t*0.32;
       var opacity = 1 - t*0.62;
-      var bright = 1 - t*0.42;
       card.style.transform = "scale(" + scale.toFixed(3) + ")";
       card.style.opacity = opacity.toFixed(3);
-      card.style.filter = "brightness(" + bright.toFixed(3) + ")";
       if (dist < winnerDist) { winnerDist = dist; winner = card; }
     });
     /* exactly one card is ever "the center" one - the single nearest, not everything within
