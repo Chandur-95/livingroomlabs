@@ -1,0 +1,52 @@
+# Makes small, fast copies of every photo you upload (thumbnails, viewer copies, banner sizes).
+# Runs by itself whenever a photo or content.json is saved to the main branch. You never need to touch it.
+name: Optimize photos
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'images/uploads/**'
+      - 'content.json'
+  workflow_dispatch:      # lets you press "Run workflow" by hand to test it
+
+permissions:
+  contents: write         # needed so it can save the small copies back to your site
+
+concurrency:
+  group: optimize-photos
+  cancel-in-progress: false
+
+jobs:
+  optimize:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+
+      - name: Install tools
+        run: pip install pillow scikit-image
+
+      - name: Make small copies of new or changed photos
+        run: |
+          BEFORE="${{ github.event.before }}"
+          CHANGED=""
+          if [ -n "$BEFORE" ] && [ "$BEFORE" != "0000000000000000000000000000000000000000" ]; then
+            CHANGED=$(git diff --name-only "$BEFORE" "${{ github.sha }}" -- images/uploads | tr '\n' ' ')
+          fi
+          python tools/optimize_images.py --root . --changed $CHANGED
+
+      - name: Save the new copies to the site
+        run: |
+          git config user.name "photo-optimizer"
+          git config user.email "photo-optimizer@users.noreply.github.com"
+          git add -A images
+          if git diff --cached --quiet; then echo "Nothing new to save"; exit 0; fi
+          git commit -m "Add small copies of new photos"
+          git pull --rebase origin main
+          git push
