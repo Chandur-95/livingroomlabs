@@ -41,6 +41,11 @@
   $("#btnLogin").addEventListener("click", login);
   $("#btnLoginGate").addEventListener("click", login);
 
+  /* Navigate to capture page using direct window location to bypass any client-side routing */
+  $("#btnViewCapture").addEventListener("click", function(){
+    window.location.href = window.location.origin + "/capture.html";
+  });
+
   /* ---------------- load niches + existing photo filenames (for the category dropdown + name collisions) ---------------- */
   fetch("/content.json").then(function(r){ return r.json(); }).then(function(d){
     NICHES = (d.niches || []).map(function(n){ return n.name || n; });
