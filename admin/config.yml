@@ -111,9 +111,17 @@ collections:
               - label: "Category"
                 name: "category"
                 widget: "select"
-                options: ["Performing Arts", "Food", "Pets", "Real Estate", "Products", "Events", "Portraits", "Travel"]
+                options: ["Food", "Pets", "Real Estate", "Products", "Events", "Portraits", "Travel"]
                 default: "Food"
-                hint: "Pick from the list. Need a new category? Add it under What We Capture, then ask to have it added here too."
+                hint: "Pick from the list. Performing Arts now lives inside Events - use the Event Type field below for that."
+              - label: "Event Type (only for Events photos)"
+                name: "eventTypes"
+                widget: "list"
+                required: false
+                default: []
+                hint: "Type any event type: Miss Universe, Performing Arts, Baby Shower, Housewarming, Couple Shoot, or a brand new one. You can add as many as you like - each becomes its own button on the site. Leave empty for a category other than Events."
+              
+              - { label: "Show in homepage All strip", name: "showInAll", widget: "boolean", default: true, required: false, hint: "Turn off to keep a photo out of the homepage highlight reel - it still appears inside What We Capture." }
               - { label: "Caption (Optional)", name: "caption", widget: "text", required: false }
               - { label: "Alt Text (describe what is in the photo)", name: "alt", widget: "string", required: false, hint: "Helps Google Images and screen readers. Example: Steaming momos on a black plate, restaurant table" }
               - label: "Aspect Ratio"

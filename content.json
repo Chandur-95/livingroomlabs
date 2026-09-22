@@ -8,7 +8,11 @@
       "title": "Radiant Presence",
       "category": "Events",
       "caption": "Silver scales and quiet poise",
-      "src": "/images/uploads/img_9282.jpg.jpeg"
+      "src": "/images/uploads/img_9282.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Miss Universe"
+      ]
     },
     {
       "client": "Miss Universe 2026",
@@ -18,7 +22,11 @@
       "category": "Events",
       "title": "The Triumvirate",
       "caption": "Three chapters of the final walk",
-      "src": "/images/uploads/img_9289.jpg.jpeg"
+      "src": "/images/uploads/img_9289.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Miss Universe"
+      ]
     },
     {
       "client": "Miss Universe 2026",
@@ -28,7 +36,11 @@
       "caption": "Scarlet beadwork and measured grace",
       "title": "Crimson Sovereign",
       "category": "Events",
-      "src": "/images/uploads/img_9301.jpg.jpeg"
+      "src": "/images/uploads/img_9301.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Miss Universe"
+      ]
     },
     {
       "featured": true,
@@ -38,7 +50,8 @@
       "client": "Personal",
       "category": "Portraits",
       "src": "/images/uploads/cr-tecni3ku3qw-unsplash.jpg",
-      "caption": "Honoured to capture the brand new Family!"
+      "caption": "Honoured to capture the brand new Family!",
+      "showInAll": true
     },
     {
       "featured": true,
@@ -48,7 +61,8 @@
       "client": "Private",
       "category": "Portraits",
       "caption": "A moment frozen in time, But love is timeless",
-      "src": "/images/uploads/img_8181.jpg"
+      "src": "/images/uploads/img_8181.jpg",
+      "showInAll": true
     },
     {
       "src": "/images/uploads/bruuuu.png",
@@ -59,7 +73,8 @@
       "featured": true,
       "w": 6,
       "title": "Bruuu",
-      "category": "Pets"
+      "category": "Pets",
+      "showInAll": true
     },
     {
       "src": "/images/uploads/catch.png",
@@ -70,7 +85,8 @@
       "featured": true,
       "w": 6,
       "title": "Catch",
-      "category": "Pets"
+      "category": "Pets",
+      "showInAll": true
     },
     {
       "featured": false,
@@ -79,7 +95,8 @@
       "src": "/images/uploads/mink.png",
       "title": "Mink",
       "client": "Private",
-      "category": "Pets"
+      "category": "Pets",
+      "showInAll": true
     },
     {
       "featured": false,
@@ -88,7 +105,8 @@
       "src": "/images/uploads/day-3.jpg",
       "title": "Watch",
       "category": "Products",
-      "client": "Private"
+      "client": "Private",
+      "showInAll": true
     },
     {
       "featured": true,
@@ -97,7 +115,8 @@
       "title": "Watch",
       "category": "Products",
       "src": "/images/uploads/durgam-1.jpg",
-      "client": "Private"
+      "client": "Private",
+      "showInAll": true
     },
     {
       "featured": true,
@@ -106,7 +125,8 @@
       "title": "Watch 3",
       "category": "Products",
       "src": "/images/uploads/untitled-5.jpg",
-      "client": "Private"
+      "client": "Private",
+      "showInAll": true
     },
     {
       "featured": true,
@@ -116,7 +136,8 @@
       "client": "Restaurant",
       "category": "Food",
       "src": "/images/uploads/cr-xb1h54wwhiq-unsplash.jpg",
-      "w": 5
+      "w": 5,
+      "showInAll": true
     },
     {
       "featured": false,
@@ -125,7 +146,8 @@
       "title": "Fried chicken",
       "client": "Restaurant",
       "category": "Food",
-      "src": "/images/uploads/dsc07195.jpg"
+      "src": "/images/uploads/dsc07195.jpg",
+      "showInAll": true
     },
     {
       "featured": false,
@@ -134,7 +156,8 @@
       "src": "/images/uploads/dsc07197.jpg",
       "category": "Food",
       "title": "Dragon Paneer",
-      "client": "Restaurant"
+      "client": "Restaurant",
+      "showInAll": true
     },
     {
       "featured": false,
@@ -144,7 +167,8 @@
       "client": "Personal",
       "category": "Portraits",
       "src": "/images/uploads/cr-6xn5vs2u0os-unsplash.jpg",
-      "caption": "Love lives here."
+      "caption": "Love lives here.",
+      "showInAll": true
     },
     {
       "client": "Private",
@@ -152,9 +176,13 @@
       "imagePosition": "Center",
       "featured": true,
       "title": "Breath of Light",
-      "category": "Performing Arts",
+      "category": "Events",
       "caption": "Geometry of grace under multi-color beams.",
-      "src": "/images/uploads/img_3063.jpg.jpeg"
+      "src": "/images/uploads/img_3063.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Performing Arts"
+      ]
     },
     {
       "client": "Private",
@@ -164,7 +192,11 @@
       "title": "Kanaka: Gold & Posture",
       "caption": "Suspended in golden geometry.",
       "src": "/images/uploads/img_3071.jpg.jpeg",
-      "category": "Performing Arts"
+      "category": "Events",
+      "showInAll": true,
+      "eventTypes": [
+        "Performing Arts"
+      ]
     },
     {
       "client": "Private",
@@ -173,8 +205,12 @@
       "featured": true,
       "title": "Bhakti: Inner Resonance",
       "caption": "Devotion amidst sweeping light cones.",
-      "category": "Performing Arts",
-      "src": "/images/uploads/img_3073.jpg.jpeg"
+      "category": "Events",
+      "src": "/images/uploads/img_3073.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Performing Arts"
+      ]
     },
     {
       "client": "Private",
@@ -183,8 +219,12 @@
       "featured": false,
       "title": "Mudrasya: Language of Hands",
       "caption": "Traditional lines meeting dramatic shadow.",
-      "category": "Performing Arts",
-      "src": "/images/uploads/img_3434.jpg.jpeg"
+      "category": "Events",
+      "src": "/images/uploads/img_3434.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Performing Arts"
+      ]
     },
     {
       "client": "Private",
@@ -193,8 +233,12 @@
       "featured": true,
       "title": "Sculpted Leap",
       "caption": "Mid-flight, dance in motion.",
-      "category": "Performing Arts",
-      "src": "/images/uploads/img_3439.jpg.jpeg"
+      "category": "Events",
+      "src": "/images/uploads/img_3439.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Performing Arts"
+      ]
     },
     {
       "client": "Private",
@@ -203,8 +247,12 @@
       "featured": true,
       "title": "The Storyteller",
       "caption": "Expression as narrative: eyes, hands, gold.",
-      "category": "Performing Arts",
-      "src": "/images/uploads/img_3440.jpg.jpeg"
+      "category": "Events",
+      "src": "/images/uploads/img_3440.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Performing Arts"
+      ]
     },
     {
       "client": "Private",
@@ -213,8 +261,12 @@
       "featured": false,
       "title": "Purvaaranga: The Preparation",
       "caption": "Monochrome stillness before the rhythm.",
-      "category": "Performing Arts",
-      "src": "/images/uploads/img_3964.jpg.jpeg"
+      "category": "Events",
+      "src": "/images/uploads/img_3964.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Performing Arts"
+      ]
     },
     {
       "client": "Private",
@@ -223,8 +275,12 @@
       "featured": false,
       "title": "Viraama: Pause in Silver",
       "caption": "Candid warmth between acts.",
-      "category": "Performing Arts",
-      "src": "/images/uploads/img_6917.jpg.jpeg"
+      "category": "Events",
+      "src": "/images/uploads/img_6917.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Performing Arts"
+      ]
     },
     {
       "client": "Miss Universe 2026",
@@ -234,7 +290,11 @@
       "caption": "Royal blue and the touch of light",
       "src": "/images/uploads/img_9283.jpg.jpeg",
       "category": "Events",
-      "title": "Royal"
+      "title": "Royal",
+      "showInAll": true,
+      "eventTypes": [
+        "Miss Universe"
+      ]
     },
     {
       "client": "Miss Universe 2026",
@@ -244,7 +304,11 @@
       "title": "Shadow Line",
       "category": "Events",
       "caption": "Fringe, shadow, and composure",
-      "src": "/images/uploads/img_9284.jpg.jpeg"
+      "src": "/images/uploads/img_9284.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Miss Universe"
+      ]
     },
     {
       "client": "Miss Universe 2026",
@@ -254,7 +318,11 @@
       "title": "Warmth of Gold",
       "category": "Events",
       "caption": "Warm sequins under the grand array",
-      "src": "/images/uploads/img_9285.jpg.jpeg"
+      "src": "/images/uploads/img_9285.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Miss Universe"
+      ]
     },
     {
       "client": "Miss Universe 2026",
@@ -264,7 +332,11 @@
       "title": "Gilded Grace",
       "caption": "Cascading gold holding the line",
       "category": "Events",
-      "src": "/images/uploads/img_9288.jpg.jpeg"
+      "src": "/images/uploads/img_9288.jpg.jpeg",
+      "showInAll": true,
+      "eventTypes": [
+        "Miss Universe"
+      ]
     },
     {
       "client": "Personal",
@@ -274,7 +346,8 @@
       "src": "/images/uploads/pup-hachi.jpeg",
       "title": "Hachi",
       "category": "Pets",
-      "caption": "Pup Hachi"
+      "caption": "Pup Hachi",
+      "showInAll": true
     },
     {
       "client": "Personal",
@@ -284,7 +357,8 @@
       "title": "Blue",
       "category": "Pets",
       "caption": "Blue",
-      "src": "/images/uploads/blue.jpeg"
+      "src": "/images/uploads/blue.jpeg",
+      "showInAll": true
     },
     {
       "client": "Studio",
@@ -294,7 +368,8 @@
       "featured": true,
       "title": "New York",
       "caption": "NYC dream",
-      "src": "/images/uploads/new-york-city.jpeg"
+      "src": "/images/uploads/new-york-city.jpeg",
+      "showInAll": true
     },
     {
       "client": "Studio",
@@ -304,7 +379,8 @@
       "featured": true,
       "src": "/images/uploads/people.jpeg",
       "title": "Shadows and Light",
-      "caption": "The frame that found me - Pooja"
+      "caption": "The frame that found me - Pooja",
+      "showInAll": true
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
@@ -319,10 +395,6 @@
   "name": "Living Room Labs",
   "teamHeroImg": "/images/uploads/img_3095.jpg.jpeg",
   "niches": [
-    {
-      "name": "Performing Arts",
-      "line": "capturing rhythm expressions, traditional forms, and uncompromising energy on stage."
-    },
     {
       "name": "Food",
       "line": "Commercial kitchen or street counter, captured before the first bite."
