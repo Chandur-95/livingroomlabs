@@ -77,24 +77,27 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
   .cap-cats::-webkit-scrollbar{display:none}
 }
 
-/* ================= discover / dock carousel ================= */
+/* ================= discover: continuous flowing carousel ================= */
 #discover{position:fixed;inset:0;background:#050505;display:flex;flex-direction:column}
 .disc-stage{
-  flex:1;position:relative;display:flex;align-items:center;justify-content:center;overflow:hidden;
+  flex:1;position:relative;overflow:hidden;
   padding-top:var(--header-h);
 }
-.disc-track{position:relative;width:100%;height:100%;display:flex;align-items:center;justify-content:center}
+.disc-track{
+  position:relative;width:100%;height:100%;display:flex;align-items:center;gap:18px;
+  overflow-x:auto;overflow-y:hidden;scrollbar-width:none;-ms-overflow-style:none;
+  -webkit-overflow-scrolling:touch;cursor:grab;padding:0 4px;
+}
+.disc-track::-webkit-scrollbar{display:none}
+.disc-track.grabbing{cursor:grabbing}
 .disc-card{
-  position:absolute;left:50%;top:50%;
-  width:min(58vw,760px);height:min(72vh,760px);
-  border-radius:6px;overflow:hidden;cursor:pointer;background:#111;
-  box-shadow:0 30px 70px rgba(0,0,0,.6);
-  transition:transform .55s cubic-bezier(.22,.68,.36,1),opacity .55s ease,filter .55s ease;
-  will-change:transform,opacity;
+  position:relative;flex:0 0 auto;height:min(64vh,640px);border-radius:6px;overflow:hidden;
+  cursor:pointer;background:#111;box-shadow:0 24px 60px rgba(0,0,0,.55);
+  transform:scale(.7);opacity:.4;filter:brightness(.6);
+  transform-origin:center center;will-change:transform,opacity;
 }
 .disc-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .disc-card.is-center{cursor:zoom-in}
-.disc-card.is-side{filter:brightness(.55)}
 
 .disc-caption{
   position:absolute;left:0;right:0;bottom:0;z-index:2;padding:18px 24px calc(16px + var(--safe-bottom));
@@ -115,13 +118,40 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 .disc-nav-btn:hover{background:rgba(0,0,0,.6);opacity:1 !important}
 .disc-prev{left:14px}
 .disc-next{right:14px}
-@media (max-width:860px){ .disc-nav-btn{opacity:.6} .disc-card{width:64vw;height:60vh} }
+@media (max-width:860px){ .disc-nav-btn{opacity:.6} .disc-card{height:52vh} }
 
 .disc-pause{
   position:absolute;right:18px;bottom:calc(70px + var(--safe-bottom));z-index:200;
   background:rgba(0,0,0,.4);border:1px solid rgba(255,255,255,.3);color:#fff;
   width:36px;height:36px;border-radius:50%;cursor:pointer;font-size:.85rem;
 }
+
+#capLampToggle{
+  border:1px solid rgba(255,255,255,.3) !important;border-radius:999px;padding:6px 14px !important;
+  opacity:.9 !important;text-decoration:none !important;font-size:.7rem !important;
+}
+#capLampToggle[aria-pressed="true"]{background:rgba(255,196,75,.16);border-color:rgba(255,196,75,.55) !important;color:#ffe9c2 !important}
+
+/* ================= Lamplight: a warm glow that follows the cursor / your finger,
+   only in dark mode, only over the Discover carousel. Purely additive light on top
+   of the photos - never dims or hides anything, and never blocks clicks or scrolling. */
+#lampLayer{
+  position:absolute;inset:0;z-index:35;pointer-events:none;opacity:0;
+  transition:opacity .5s ease;
+  background:
+    radial-gradient(480px circle at var(--lx,50%) var(--ly,50%), rgba(255,196,110,.20), transparent 60%),
+    radial-gradient(900px circle at var(--lx,50%) var(--ly,50%), rgba(0,0,0,0) 40%, rgba(0,0,0,.42) 100%);
+  mix-blend-mode:screen;
+}
+html[data-theme="dark"] #lampLayer.on{opacity:1}
+@media (max-width:860px){
+  #lampLayer{
+    background:
+      radial-gradient(300px circle at var(--lx,50%) var(--ly,42%), rgba(255,196,110,.22), transparent 62%),
+      radial-gradient(560px circle at var(--lx,50%) var(--ly,42%), rgba(0,0,0,0) 42%, rgba(0,0,0,.4) 100%);
+  }
+}
+@media (prefers-reduced-motion:reduce){ #lampLayer{transition:opacity .2s ease} }
 
 /* ================= category grid view ================= */
 #catview{position:fixed;inset:0;background:var(--paper);color:var(--ink);overflow-y:auto;display:none;
@@ -193,6 +223,7 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
       <div class="cap-links">
         <button type="button" id="capCollective">The Collective ↗</button>
         <a href="#" id="capElsewhere" class="cap-mobile-hide" target="_blank" rel="noopener">Elsewhere ↗</a>
+        <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the lamp on">☾ Lamp</button>
         <button type="button" id="capEnquire" class="cap-enquire">Enquire ↗</button>
       </div>
     </div>
@@ -206,6 +237,7 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     <button class="disc-nav-btn disc-prev" id="discPrev" aria-label="Previous photo">‹</button>
     <button class="disc-nav-btn disc-next" id="discNext" aria-label="Next photo">›</button>
     <button class="disc-pause mono" id="discPause" aria-label="Pause slideshow">❚❚</button>
+    <div id="lampLayer" aria-hidden="true"></div>
   </div>
   <div class="disc-caption">
     <div>
@@ -238,8 +270,10 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
 (function(){
   "use strict";
   var DATA = null, PHOTOS = [], NICHES = [];
-  var discoverOrder = [], discoverIdx = 0, discoverTimer = null, discoverPaused = false;
-  var DISCOVER_MS = 4800;
+  var discoverOrder = [], discoverPaused = false;
+  var SCROLL_SPEED = 60;               /* CSS px/second - same value the homepage uses, which maps to a clean 1px-per-frame step at 60Hz with zero skipped frames */
+  var frameEst = 1000/60, scrollPlan = null, autoRaf = null;
+  var track, trackLoopW = 0, trackPos = 0, isTouching = false, extAt = 0, manualPauseUntil = 0;
   var currentCat = null, currentEvent = null, lbList = [], lbIdx = 0;
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
@@ -251,6 +285,11 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; }
     return a;
   }
+  /* Thumbnail generated by the site's own image pipeline: /images/uploads/<name> -> /images/thumbs/<name>.webp */
+  function thumbFor(src){
+    var m = /^\/images\/uploads\/([^\/?#]+)$/.exec(src || "");
+    return m ? "/images/thumbs/" + m[1] + ".webp" : src;
+  }
 
   /* theme: mirror whatever the homepage lamp is set to */
   try {
@@ -258,8 +297,6 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     if (savedTheme) document.documentElement.setAttribute("data-theme", savedTheme);
   } catch(e){}
 
-  /* keep the header-measured CSS var in sync so nothing below it ever overlaps,
-     no matter how many rows the header wraps into at a given width */
   function syncHeaderHeight(){
     var h = document.getElementById("capHeader").offsetHeight;
     document.documentElement.style.setProperty("--header-h", h + "px");
@@ -280,8 +317,98 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
   function boot(){
     buildHeader();
     buildDiscover();
+    initLamp();
     syncHeaderHeight();
     applyParams();
+  }
+
+  /* ---------------- Lamplight: warm glow that follows cursor/finger, dark mode + Discover only ---------------- */
+  function initLamp(){
+    var layer = $("#lampLayer");
+    var stage = $("#discStage");
+    var toggle = $("#capLampToggle");
+    if (!layer || !stage || !toggle) return;
+
+    var active = false, lastMoveAt = 0;
+    var curX = 50, curY = 42, targetX = 50, targetY = 42;
+    var idlePhase = Math.random() * 1000;
+
+    function isDark(){ return document.documentElement.getAttribute("data-theme") === "dark"; }
+
+    function updateLampVisibility(){
+      var lbOpen = $("#capLb").classList.contains("on");
+      var show = isDark() && !currentCat && !lbOpen;
+      layer.classList.toggle("on", show);
+    }
+
+    function setTarget(clientX, clientY){
+      var r = stage.getBoundingClientRect();
+      targetX = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
+      targetY = Math.max(0, Math.min(100, ((clientY - r.top) / r.height) * 100));
+      lastMoveAt = performance.now();
+      active = true;
+    }
+
+    stage.addEventListener("mousemove", function(e){ setTarget(e.clientX, e.clientY); }, {passive:true});
+    stage.addEventListener("mouseleave", function(){ active = false; });
+    stage.addEventListener("touchstart", function(e){
+      if (e.touches && e.touches[0]) setTarget(e.touches[0].clientX, e.touches[0].clientY);
+    }, {passive:true});
+    stage.addEventListener("touchmove", function(e){
+      if (e.touches && e.touches[0]) setTarget(e.touches[0].clientX, e.touches[0].clientY);
+    }, {passive:true});
+    stage.addEventListener("touchend", function(){
+      /* leave the glow where the finger was for a moment, then let it drift back to idle -
+         there's no hover on mobile, so a hard cut back to centre would look abrupt */
+      setTimeout(function(){ active = false; }, 1200);
+    }, {passive:true});
+
+    function loop(t){
+      requestAnimationFrame(loop);
+      if (!layer.classList.contains("on")) return;
+      var now = performance.now();
+      var recentlyActive = active || (now - lastMoveAt < 900);
+      if (!recentlyActive) {
+        if (reduceMotion) { targetX = 50; targetY = 42; }
+        else {
+          /* idle: gentle organic drift, so the effect still reads on mobile / mouse-less visits
+             instead of sitting dead-centre and static the whole time */
+          targetX = 50 + Math.sin((t + idlePhase) / 3800) * 22;
+          targetY = 42 + Math.cos((t + idlePhase) / 4600) * 14;
+        }
+      }
+      var ease = reduceMotion ? 1 : 0.08;
+      curX += (targetX - curX) * ease;
+      curY += (targetY - curY) * ease;
+      stage.style.setProperty("--lx", curX.toFixed(2) + "%");
+      stage.style.setProperty("--ly", curY.toFixed(2) + "%");
+    }
+    requestAnimationFrame(loop);
+
+    toggle.addEventListener("click", function(){
+      var nowDark = !isDark();
+      document.documentElement.setAttribute("data-theme", nowDark ? "dark" : "light");
+      toggle.setAttribute("aria-pressed", String(nowDark));
+      toggle.setAttribute("aria-label", nowDark ? "Turn the lamp off" : "Turn the lamp on");
+      toggle.textContent = nowDark ? "☀ Lamp" : "☾ Lamp";
+      try { localStorage.setItem("lrl_theme", nowDark ? "dark" : "light"); } catch(e){}
+      updateLampVisibility();
+    });
+
+    if (isDark()) {
+      toggle.setAttribute("aria-pressed", "true");
+      toggle.setAttribute("aria-label", "Turn the lamp off");
+      toggle.textContent = "☀ Lamp";
+    }
+    updateLampVisibility();
+
+    var lbEl = $("#capLb");
+    if (window.MutationObserver) {
+      var mo = new MutationObserver(updateLampVisibility);
+      mo.observe(lbEl, { attributes: true, attributeFilter: ["class"] });
+    }
+    /* also re-check whenever category view is entered/left */
+    window.__lampRecheck = updateLampVisibility;
   }
 
   function buildHeader(){
@@ -313,137 +440,209 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     syncHeaderHeight();
   }
 
-  /* ---------------- discover: dock-style carousel ---------------- */
+  /* ---------------- discover: continuous flowing carousel with dock magnification ---------------- */
   function buildDiscover(){
-    var track = $("#discTrack");
+    track = $("#discTrack");
     var pool = PHOTOS.filter(function(p){ return p.showInAll !== false; });
     if (!pool.length) pool = PHOTOS;
     discoverOrder = shuffle(pool);
-    discoverIdx = 0;
 
-    discoverOrder.forEach(function(p, i){
-      var card = document.createElement("div");
-      card.className = "disc-card";
-      card.dataset.idx = i;
-      var img = document.createElement("img");
-      img.loading = i < 3 ? "eager" : "lazy";
-      img.src = p.src; img.alt = p.alt || p.title || "";
-      card.appendChild(img);
-      card.addEventListener("click", function(){
-        var offset = parseInt(card.dataset.idx, 10) - discoverIdx;
-        if (offset === 0) openDiscoverLightbox();
-        else jumpDiscover(offset);
+    /* build once, then an identical clone appended after it, so the loop point is invisible
+       (the exact technique the homepage strips use). Cards start at a sensible placeholder
+       width and are corrected to the photo's REAL pixel aspect ratio once its thumbnail loads -
+       the CMS's "ratio" field turned out not to reliably match the actual image, which is what
+       was causing photos to be cropped. */
+    var loadedCount = 0, totalCount = discoverOrder.length * 2;
+    function settle(){
+      var firstCopy = $all('.disc-card[data-copy="0"]', track);
+      trackLoopW = firstCopy.length ? (firstCopy[firstCopy.length-1].offsetLeft + firstCopy[firstCopy.length-1].offsetWidth) - firstCopy[0].offsetLeft + 18 : 0;
+      if (!trackPos) trackPos = track.scrollLeft = Math.round(trackLoopW/2);
+      applyDockScale();
+    }
+    [discoverOrder, discoverOrder].forEach(function(list, copyNum){
+      list.forEach(function(p){
+        var card = document.createElement("div");
+        card.className = "disc-card";
+        card.dataset.copy = copyNum;
+        card.style.width = "512px"; /* placeholder until the real dimensions are known */
+        var img = document.createElement("img");
+        img.loading = "eager";
+        img.alt = p.alt || p.title || "";
+        img.addEventListener("load", function(){
+          if (img.naturalWidth && img.naturalHeight) {
+            var h = card.offsetHeight;
+            card.style.width = Math.round(h * (img.naturalWidth / img.naturalHeight)) + "px";
+          }
+          loadedCount++;
+          if (loadedCount === totalCount || loadedCount === 6) settle();
+        });
+        img.addEventListener("error", function(){
+          if (img.src !== p.src) { img.src = p.src; return; } /* thumbnail missing: fall back to the full photo */
+          loadedCount++;
+        });
+        img.src = thumbFor(p.src);
+        card.appendChild(img);
+        card.addEventListener("click", function(){ onCardClick(card, p); });
+        track.appendChild(card);
       });
-      track.appendChild(card);
     });
 
+    /* start the loop even before every thumbnail has loaded, using the best measurement so far */
+    requestAnimationFrame(function(){ requestAnimationFrame(function(){
+      settle();
+      if (!reduceMotion) startAutoScroll();
+    }); });
+    /* re-settle once more shortly after, once most thumbnails (small WebP files) have arrived */
+    setTimeout(settle, 900);
+
     $("#discPause").addEventListener("click", toggleDiscoverPause);
-    $("#discPrev").addEventListener("click", function(){ pauseThenResume(); jumpDiscover(-1); });
-    $("#discNext").addEventListener("click", function(){ pauseThenResume(); jumpDiscover(1); });
+    $("#discPrev").addEventListener("click", function(){ nudge(-1); });
+    $("#discNext").addEventListener("click", function(){ nudge(1); });
 
-    layoutDiscover();
-    startDiscoverTimer();
-
-    /* swipe support */
-    var stage = $("#discStage");
-    var startX = null, startY = null, dragging = false;
-    stage.addEventListener("touchstart", function(e){
-      startX = e.touches[0].clientX; startY = e.touches[0].clientY; dragging = true;
-    }, {passive:true});
-    stage.addEventListener("touchend", function(e){
-      if (!dragging) return;
-      dragging = false;
-      var dx = e.changedTouches[0].clientX - startX;
-      var dy = e.changedTouches[0].clientY - startY;
-      if (Math.abs(dx) > 40 && Math.abs(dx) > Math.abs(dy)) {
-        pauseThenResume();
-        jumpDiscover(dx < 0 ? 1 : -1);
-      }
-    }, {passive:true});
-
-    /* horizontal wheel / trackpad */
-    var wheelLock = false;
-    stage.addEventListener("wheel", function(e){
-      if (currentCat) return;
-      var dx = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : 0;
-      if (Math.abs(dx) < 12 || wheelLock) return;
-      wheelLock = true;
-      pauseThenResume();
-      jumpDiscover(dx > 0 ? 1 : -1);
-      setTimeout(function(){ wheelLock = false; }, 450);
+    track.addEventListener("touchstart", function(){ isTouching = true; }, {passive:true});
+    track.addEventListener("touchend", function(){ isTouching = false; extAt = performance.now(); }, {passive:true});
+    track.addEventListener("mousedown", function(){ track.classList.add("grabbing"); });
+    window.addEventListener("mouseup", function(){ track.classList.remove("grabbing"); });
+    track.addEventListener("scroll", function(){
+      applyDockScale();
+      updateCaptionFromCenter();
+      if (Math.abs(track.scrollLeft - trackPos) > 1.5) { extAt = performance.now(); }
     }, {passive:true});
   }
 
-  function layoutDiscover(){
-    var cards = $all(".disc-card", $("#discTrack"));
-    var n = cards.length;
-    if (!n) return;
-    cards.forEach(function(card, i){
-      var offset = i - discoverIdx;
-      /* wrap to the shortest direction around the loop */
-      if (offset > n/2) offset -= n;
-      if (offset < -n/2) offset += n;
-
-      var GAP = 46; /* percent of card width each step moves */
-      var absOff = Math.abs(offset);
-      var scale = absOff === 0 ? 1 : absOff === 1 ? 0.72 : 0.52;
-      var opacity = absOff === 0 ? 1 : absOff === 1 ? 0.85 : (absOff === 2 ? 0.4 : 0);
-      var z = 100 - absOff;
-      var x = offset * GAP;
-
-      card.style.transform = "translate(-50%,-50%) translateX(" + x + "%) scale(" + scale + ")";
-      card.style.opacity = opacity;
-      card.style.zIndex = z;
-      card.style.pointerEvents = absOff <= 2 ? "auto" : "none";
-      card.classList.toggle("is-center", offset === 0);
-      card.classList.toggle("is-side", offset !== 0);
+  function nearestCardTo(x){
+    var cards = $all(".disc-card", track);
+    var best = null, bestD = Infinity;
+    cards.forEach(function(c){
+      var cx = c.offsetLeft + c.offsetWidth/2;
+      var d = Math.abs(cx - x);
+      if (d < bestD) { bestD = d; best = c; }
     });
+    return best;
+  }
 
-    var current = discoverOrder[discoverIdx];
-    if (current) {
-      $("#discTitle").textContent = current.title || "Untitled";
-      $("#discMeta").textContent = [current.category, (current.eventTypes||[]).join(", ")].filter(Boolean).join(" · ");
+  function onCardClick(card, photo){
+    var center = track.scrollLeft + track.clientWidth/2;
+    var cardCenter = card.offsetLeft + card.offsetWidth/2;
+    if (Math.abs(cardCenter - center) < card.offsetWidth * 0.28) {
+      lbList = discoverOrder; lbIdx = discoverOrder.indexOf(photo);
+      renderLb(); $("#capLb").classList.add("on"); $("#lbClose").focus();
+    } else {
+      manualPauseUntil = performance.now() + 4000;
+      track.scrollTo({ left: cardCenter - track.clientWidth/2, behavior: "smooth" });
     }
   }
 
-  function jumpDiscover(step){
-    var n = discoverOrder.length;
-    if (!n) return;
-    discoverIdx = (discoverIdx + step + n) % n;
-    layoutDiscover();
+  function nudge(dir){
+    manualPauseUntil = performance.now() + 4000;
+    var center = track.scrollLeft + track.clientWidth/2;
+    var cards = $all(".disc-card", track).sort(function(a,b){ return (a.offsetLeft) - (b.offsetLeft); });
+    var currentIdx = 0, bestD = Infinity;
+    cards.forEach(function(c, i){
+      var d = Math.abs((c.offsetLeft + c.offsetWidth/2) - center);
+      if (d < bestD) { bestD = d; currentIdx = i; }
+    });
+    var targetIdx = currentIdx + dir;
+    if (targetIdx < 0) targetIdx = 0;
+    if (targetIdx >= cards.length) targetIdx = cards.length - 1;
+    var target = cards[targetIdx];
+    track.scrollTo({ left: (target.offsetLeft + target.offsetWidth/2) - track.clientWidth/2, behavior: "smooth" });
   }
 
-  function startDiscoverTimer(){
-    clearTimeout(discoverTimer);
-    if (discoverPaused || reduceMotion) return;
-    discoverTimer = setTimeout(function(){ jumpDiscover(1); startDiscoverTimer(); }, DISCOVER_MS);
+  /* dock magnification: cheap (no forced layout reads) - uses cached offsetLeft/offsetWidth
+     against the live scrollLeft, same "read once, animate via transform" idea as the rest of the site */
+  function applyDockScale(){
+    var centerX = track.scrollLeft + track.clientWidth/2;
+    var half = track.clientWidth/2;
+    $all(".disc-card", track).forEach(function(card){
+      var cx = card.offsetLeft + card.offsetWidth/2;
+      var dist = Math.abs(cx - centerX);
+      var t = Math.min(1, dist / (half * 0.9));
+      var scale = 1 - t*0.32;
+      var opacity = 1 - t*0.62;
+      var bright = 1 - t*0.42;
+      card.style.transform = "scale(" + scale.toFixed(3) + ")";
+      card.style.opacity = opacity.toFixed(3);
+      card.style.filter = "brightness(" + bright.toFixed(3) + ")";
+      var isCenter = t < 0.12;
+      card.classList.toggle("is-center", isCenter);
+    });
+  }
+
+  function updateCaptionFromCenter(){
+    var centerX = track.scrollLeft + track.clientWidth/2;
+    var best = nearestCardTo(centerX);
+    if (!best) return;
+    var cards = $all(".disc-card", track);
+    var idx = cards.indexOf(best) % discoverOrder.length;
+    var p = discoverOrder[idx];
+    if (p) {
+      $("#discTitle").textContent = p.title || "Untitled";
+      $("#discMeta").textContent = [p.category, (p.eventTypes||[]).join(", ")].filter(Boolean).join(" · ");
+    }
+  }
+
+  /* continuous, whole-pixel-per-frame motion - identical technique to the homepage's
+     already-tested auto-scroll engine, so it inherits the same smoothness on every screen */
+  var lastFrameT = 0, capFrameLog = [], captionThrottle = 0;
+  function refreshScrollPlan(){
+    var perFrame = SCROLL_SPEED * frameEst / 1000;
+    var plan = perFrame >= 1.5
+      ? { px: Math.round(perFrame), every: 1, perFrame: perFrame }
+      : { px: 1, every: Math.max(1, Math.round(1/perFrame)), perFrame: perFrame };
+    if (!scrollPlan || Math.abs(plan.perFrame - scrollPlan.perFrame)/scrollPlan.perFrame > 0.12) scrollPlan = plan;
+  }
+  function startAutoScroll(){
+    var frameTick = 0;
+    function loop(now){
+      autoRaf = requestAnimationFrame(loop);
+      if (lastFrameT) {
+        var dt = now - lastFrameT;
+        if (dt > 2 && dt < 60) {
+          capFrameLog.push(dt);
+          if (capFrameLog.length > 30) capFrameLog.shift();
+          if (capFrameLog.length >= 8) {
+            var s = capFrameLog.slice().sort(function(a,b){return a-b;});
+            frameEst = s[s.length>>1];
+          }
+        }
+      }
+      lastFrameT = now;
+      refreshScrollPlan();
+      frameTick++;
+      if (discoverPaused || isTouching || currentCat) return;
+      if (manualPauseUntil && now < manualPauseUntil) return;
+      if (extAt && now - extAt < 250) return;
+      if (frameTick % scrollPlan.every !== 0) return;
+
+      var actual = track.scrollLeft;
+      if (Math.abs(actual - trackPos) > 1.5) { trackPos = Math.round(actual); extAt = now; return; }
+      trackPos += scrollPlan.px;
+      if (trackLoopW > 0 && trackPos >= trackLoopW * 1.5) trackPos -= trackLoopW;
+      track.scrollLeft = trackPos;
+      applyDockScale();
+
+      captionThrottle++;
+      if (captionThrottle > 12) { captionThrottle = 0; updateCaptionFromCenter(); }
+      /* note: the scroll listener above also updates the caption immediately for manual nav (arrows/clicks) */
+    }
+    autoRaf = requestAnimationFrame(loop);
   }
 
   function pauseThenResume(){
-    clearTimeout(discoverTimer);
-    if (!discoverPaused) startDiscoverTimer();
+    extAt = performance.now();
   }
 
   function toggleDiscoverPause(){
     discoverPaused = !discoverPaused;
     $("#discPause").textContent = discoverPaused ? "▶" : "❚❚";
     $("#discPause").setAttribute("aria-label", discoverPaused ? "Resume slideshow" : "Pause slideshow");
-    if (discoverPaused) clearTimeout(discoverTimer);
-    else startDiscoverTimer();
-  }
-
-  function openDiscoverLightbox(){
-    lbList = discoverOrder;
-    lbIdx = discoverIdx;
-    renderLb();
-    $("#capLb").classList.add("on");
-    $("#lbClose").focus();
   }
 
   /* ---------------- category grid ---------------- */
   function showCategory(name, eventFilter){
     currentCat = name; currentEvent = eventFilter || null;
-    clearTimeout(discoverTimer);
+    if (window.__lampRecheck) window.__lampRecheck();
     $("#discover").style.display = "none";
     $("#catview").classList.add("on");
     $("#catBack").style.display = "block";
@@ -506,7 +705,8 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     $("#discover").style.display = "block";
     $all(".cap-cat-btn").forEach(function(b){ b.classList.remove("active"); });
     updateUrl(null, null);
-    startDiscoverTimer();
+    applyDockScale();
+    if (window.__lampRecheck) window.__lampRecheck();
   }
   $("#catBack").addEventListener("click", backToDiscover);
 
@@ -533,8 +733,8 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     }
     if (e.key === "Escape" && currentCat) { backToDiscover(); return; }
     if (!currentCat) {
-      if (e.key === "ArrowLeft") { pauseThenResume(); jumpDiscover(-1); }
-      else if (e.key === "ArrowRight") { pauseThenResume(); jumpDiscover(1); }
+      if (e.key === "ArrowLeft") nudge(-1);
+      else if (e.key === "ArrowRight") nudge(1);
     }
   });
 
