@@ -133,22 +133,24 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 #capLampToggle[aria-pressed="true"]{background:rgba(255,196,75,.16);border-color:rgba(255,196,75,.55) !important;color:#ffe9c2 !important}
 
 /* ================= Lamplight: a warm glow that follows the cursor / your finger,
-   only in dark mode, only over the Discover carousel. Purely additive light on top
-   of the photos - never dims or hides anything, and never blocks clicks or scrolling. */
+   only in dark mode, only inside the full-screen photo viewer - matching the original
+   concept board (a still, full photo with a cursor lamp), not the moving strip.
+   Purely additive light on top of the photo - never dims or hides it, and never
+   blocks clicks, swipes or the prev/next/close buttons. */
 #lampLayer{
   position:absolute;inset:0;z-index:35;pointer-events:none;opacity:0;
   transition:opacity .5s ease;
   background:
-    radial-gradient(480px circle at var(--lx,50%) var(--ly,50%), rgba(255,196,110,.20), transparent 60%),
-    radial-gradient(900px circle at var(--lx,50%) var(--ly,50%), rgba(0,0,0,0) 40%, rgba(0,0,0,.42) 100%);
+    radial-gradient(520px circle at var(--lx,50%) var(--ly,50%), rgba(255,196,110,.22), transparent 60%),
+    radial-gradient(950px circle at var(--lx,50%) var(--ly,50%), rgba(0,0,0,0) 40%, rgba(0,0,0,.5) 100%);
   mix-blend-mode:screen;
 }
 html[data-theme="dark"] #lampLayer.on{opacity:1}
 @media (max-width:860px){
   #lampLayer{
     background:
-      radial-gradient(300px circle at var(--lx,50%) var(--ly,42%), rgba(255,196,110,.22), transparent 62%),
-      radial-gradient(560px circle at var(--lx,50%) var(--ly,42%), rgba(0,0,0,0) 42%, rgba(0,0,0,.4) 100%);
+      radial-gradient(320px circle at var(--lx,50%) var(--ly,42%), rgba(255,196,110,.24), transparent 62%),
+      radial-gradient(600px circle at var(--lx,50%) var(--ly,42%), rgba(0,0,0,0) 42%, rgba(0,0,0,.48) 100%);
   }
 }
 @media (prefers-reduced-motion:reduce){ #lampLayer{transition:opacity .2s ease} }
@@ -237,7 +239,6 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     <button class="disc-nav-btn disc-prev" id="discPrev" aria-label="Previous photo">‹</button>
     <button class="disc-nav-btn disc-next" id="discNext" aria-label="Next photo">›</button>
     <button class="disc-pause mono" id="discPause" aria-label="Pause slideshow">❚❚</button>
-    <div id="lampLayer" aria-hidden="true"></div>
   </div>
   <div class="disc-caption">
     <div>
@@ -264,6 +265,7 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
   <img id="lbImg" src="" alt="">
   <button class="cap-lb-nav cap-lb-next" id="lbNext" aria-label="Next photo">›</button>
   <div class="cap-lb-cap mono" id="lbCap"></div>
+  <div id="lampLayer" aria-hidden="true"></div>
 </div>
 
 <script>
@@ -322,42 +324,43 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     applyParams();
   }
 
-  /* ---------------- Lamplight: warm glow that follows cursor/finger, dark mode + Discover only ---------------- */
+  /* ---------------- Lamplight: warm glow that follows cursor/finger, dark mode + full photo view only ---------------- */
   function initLamp(){
     var layer = $("#lampLayer");
-    var stage = $("#discStage");
+    var lb = $("#capLb");
     var toggle = $("#capLampToggle");
-    if (!layer || !stage || !toggle) return;
+    if (!layer || !lb || !toggle) return;
 
     var active = false, lastMoveAt = 0;
-    var curX = 50, curY = 42, targetX = 50, targetY = 42;
+    var curX = 50, curY = 50, targetX = 50, targetY = 50;
     var idlePhase = Math.random() * 1000;
 
     function isDark(){ return document.documentElement.getAttribute("data-theme") === "dark"; }
+    function lbOpen(){ return lb.classList.contains("on"); }
 
     function updateLampVisibility(){
-      var lbOpen = $("#capLb").classList.contains("on");
-      var show = isDark() && !currentCat && !lbOpen;
-      layer.classList.toggle("on", show);
+      /* the glow itself only ever shows over a full, still photo - not the moving strip,
+         not the grid. Turning the lamp on also parks the carousel (see startAutoScroll). */
+      layer.classList.toggle("on", isDark() && lbOpen());
     }
 
     function setTarget(clientX, clientY){
-      var r = stage.getBoundingClientRect();
+      var r = lb.getBoundingClientRect();
       targetX = Math.max(0, Math.min(100, ((clientX - r.left) / r.width) * 100));
       targetY = Math.max(0, Math.min(100, ((clientY - r.top) / r.height) * 100));
       lastMoveAt = performance.now();
       active = true;
     }
 
-    stage.addEventListener("mousemove", function(e){ setTarget(e.clientX, e.clientY); }, {passive:true});
-    stage.addEventListener("mouseleave", function(){ active = false; });
-    stage.addEventListener("touchstart", function(e){
+    lb.addEventListener("mousemove", function(e){ setTarget(e.clientX, e.clientY); }, {passive:true});
+    lb.addEventListener("mouseleave", function(){ active = false; });
+    lb.addEventListener("touchstart", function(e){
       if (e.touches && e.touches[0]) setTarget(e.touches[0].clientX, e.touches[0].clientY);
     }, {passive:true});
-    stage.addEventListener("touchmove", function(e){
+    lb.addEventListener("touchmove", function(e){
       if (e.touches && e.touches[0]) setTarget(e.touches[0].clientX, e.touches[0].clientY);
     }, {passive:true});
-    stage.addEventListener("touchend", function(){
+    lb.addEventListener("touchend", function(){
       /* leave the glow where the finger was for a moment, then let it drift back to idle -
          there's no hover on mobile, so a hard cut back to centre would look abrupt */
       setTimeout(function(){ active = false; }, 1200);
@@ -369,19 +372,19 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
       var now = performance.now();
       var recentlyActive = active || (now - lastMoveAt < 900);
       if (!recentlyActive) {
-        if (reduceMotion) { targetX = 50; targetY = 42; }
+        if (reduceMotion) { targetX = 50; targetY = 50; }
         else {
           /* idle: gentle organic drift, so the effect still reads on mobile / mouse-less visits
              instead of sitting dead-centre and static the whole time */
-          targetX = 50 + Math.sin((t + idlePhase) / 3800) * 22;
-          targetY = 42 + Math.cos((t + idlePhase) / 4600) * 14;
+          targetX = 50 + Math.sin((t + idlePhase) / 3800) * 20;
+          targetY = 50 + Math.cos((t + idlePhase) / 4600) * 16;
         }
       }
       var ease = reduceMotion ? 1 : 0.08;
       curX += (targetX - curX) * ease;
       curY += (targetY - curY) * ease;
-      stage.style.setProperty("--lx", curX.toFixed(2) + "%");
-      stage.style.setProperty("--ly", curY.toFixed(2) + "%");
+      lb.style.setProperty("--lx", curX.toFixed(2) + "%");
+      lb.style.setProperty("--ly", curY.toFixed(2) + "%");
     }
     requestAnimationFrame(loop);
 
@@ -402,13 +405,12 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     }
     updateLampVisibility();
 
-    var lbEl = $("#capLb");
     if (window.MutationObserver) {
       var mo = new MutationObserver(updateLampVisibility);
-      mo.observe(lbEl, { attributes: true, attributeFilter: ["class"] });
+      mo.observe(lb, { attributes: true, attributeFilter: ["class"] });
     }
-    /* also re-check whenever category view is entered/left */
     window.__lampRecheck = updateLampVisibility;
+    window.__isDark = isDark;
   }
 
   function buildHeader(){
@@ -452,11 +454,23 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
        width and are corrected to the photo's REAL pixel aspect ratio once its thumbnail loads -
        the CMS's "ratio" field turned out not to reliably match the actual image, which is what
        was causing photos to be cropped. */
-    var loadedCount = 0, totalCount = discoverOrder.length * 2;
+    var loadedCount = 0, totalCount = discoverOrder.length * 2, didInitialCentre = false;
     function settle(){
       var firstCopy = $all('.disc-card[data-copy="0"]', track);
       trackLoopW = firstCopy.length ? (firstCopy[firstCopy.length-1].offsetLeft + firstCopy[firstCopy.length-1].offsetWidth) - firstCopy[0].offsetLeft + 18 : 0;
       if (!trackPos) trackPos = track.scrollLeft = Math.round(trackLoopW/2);
+      if (!didInitialCentre && firstCopy.length) {
+        /* the very first settle only gets us near the middle of the loop - snap once to
+           whichever card actually landed closest, so a specific photo is genuinely
+           front-and-centre on arrival rather than an arbitrary offset between two */
+        var mid = trackPos + track.clientWidth/2;
+        var nearest = nearestCardTo(mid);
+        if (nearest) {
+          trackPos = Math.round((nearest.offsetLeft + nearest.offsetWidth/2) - track.clientWidth/2);
+          track.scrollLeft = trackPos;
+          didInitialCentre = true;
+        }
+      }
       applyDockScale();
     }
     [discoverOrder, discoverOrder].forEach(function(list, copyNum){
@@ -524,7 +538,7 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
   function onCardClick(card, photo){
     var center = track.scrollLeft + track.clientWidth/2;
     var cardCenter = card.offsetLeft + card.offsetWidth/2;
-    if (Math.abs(cardCenter - center) < card.offsetWidth * 0.28) {
+    if (Math.abs(cardCenter - center) < track.clientWidth * 0.22) {
       lbList = discoverOrder; lbIdx = discoverOrder.indexOf(photo);
       renderLb(); $("#capLb").classList.add("on"); $("#lbClose").focus();
     } else {
@@ -554,19 +568,23 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
   function applyDockScale(){
     var centerX = track.scrollLeft + track.clientWidth/2;
     var half = track.clientWidth/2;
-    $all(".disc-card", track).forEach(function(card){
+    var cards = $all(".disc-card", track);
+    var winner = null, winnerDist = Infinity;
+    cards.forEach(function(card){
       var cx = card.offsetLeft + card.offsetWidth/2;
       var dist = Math.abs(cx - centerX);
-      var t = Math.min(1, dist / (half * 0.9));
+      var t = Math.min(1, dist / half);
       var scale = 1 - t*0.32;
       var opacity = 1 - t*0.62;
       var bright = 1 - t*0.42;
       card.style.transform = "scale(" + scale.toFixed(3) + ")";
       card.style.opacity = opacity.toFixed(3);
       card.style.filter = "brightness(" + bright.toFixed(3) + ")";
-      var isCenter = t < 0.12;
-      card.classList.toggle("is-center", isCenter);
+      if (dist < winnerDist) { winnerDist = dist; winner = card; }
     });
+    /* exactly one card is ever "the center" one - the single nearest, not everything within
+       some pixel band (which could match several adjacent cards on a wide desktop screen) */
+    cards.forEach(function(card){ card.classList.toggle("is-center", card === winner); });
   }
 
   function updateCaptionFromCenter(){
@@ -611,6 +629,7 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
       refreshScrollPlan();
       frameTick++;
       if (discoverPaused || isTouching || currentCat) return;
+      if (window.__isDark && window.__isDark()) return; /* lamp on -> the strip holds still, matching a calm, static room */
       if (manualPauseUntil && now < manualPauseUntil) return;
       if (extAt && now - extAt < 250) return;
       if (frameTick % scrollPlan.every !== 0) return;
