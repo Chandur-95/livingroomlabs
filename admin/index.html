@@ -206,9 +206,7 @@
               <select id="bulkCategory" aria-label="Category for all photos">
                 <option value="">Category…</option>
               </select>
-              <span id="bulkEventWrap" style="display:none">
-                <input type="text" id="bulkEventType" list="eventTypeSuggestions" aria-label="Event type for all Events photos" placeholder="Event type (optional, Events only)">
-              </span>
+              <input type="text" id="bulkEventType" list="eventTypeSuggestions" aria-label="Event type (optional) - used on photos in the Events category" title="Optional. Used on photos in the Events category. Several? Separate with commas." placeholder="Event type (optional)">
               <input type="text" id="bulkClient" aria-label="Shoot or client name for all photos" placeholder="Shoot / client name">
               <select id="bulkPosition" aria-label="Image position for all photos">
                 <option value="">Image position…</option>
@@ -222,11 +220,6 @@
                 <option value="">Show in All…</option>
                 <option value="yes">Show in All: Yes</option>
                 <option value="no">Show in All: No</option>
-              </select>
-              <select id="bulkFeatured" aria-label="Featured for all photos">
-                <option value="">Featured…</option>
-                <option value="yes">Featured: Yes</option>
-                <option value="no">Featured: No</option>
               </select>
               <button class="btn small" id="btnApplyBulk" type="button">Apply</button>
             </div>
