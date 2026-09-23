@@ -223,7 +223,9 @@
       .then(function(tree){
         var contentEntry = null;
         state.uploadNames = [];
+        state.paths = {};
         (tree.tree || []).forEach(function(t){
+          if (t.type === "blob") state.paths[t.path] = true;
           if (t.path === "content.json") contentEntry = t;
           var m = /^images\/uploads\/([^\/]+)$/.exec(t.path);
           if (m && t.type === "blob") state.uploadNames.push(m[1]);
@@ -288,7 +290,8 @@
   $("#existingSearch").addEventListener("input", renderExistingGrid);
 
   /* ================= Editing an already-uploaded photo =================
-     Changes only the photo's details in content.json - the image file itself is never touched.
+     Changes the photo's details in content.json, and - only if you choose a new image - swaps the
+     image file too. Delete removes the photo from the site along with its files.
      Saved with the same all-or-nothing commit as uploads: it re-reads the LATEST content.json
      first (so an edit made elsewhere in the meantime is kept), changes just this one photo, and
      publishes with force:false, so a simultaneous save is never overwritten. */
@@ -316,6 +319,12 @@
       "#bulkEdit .be-foot button{min-height:42px;padding:0 20px;border-radius:999px;border:1px solid #0a0a0a;font:600 .78rem/1 inherit;cursor:pointer;background:#fff;color:#0a0a0a}",
       "#bulkEdit .be-foot .be-save{background:#0a0a0a;color:#fff}",
       "#bulkEdit .be-foot button:disabled{opacity:.4;cursor:not-allowed}",
+      "#bulkEdit .be-replace{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}",
+      "#bulkEdit .be-replace button{min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #0a0a0a;background:#fff;color:#0a0a0a;font:600 .72rem/1 inherit;cursor:pointer}",
+      "#bulkEdit .be-replace button:disabled{opacity:.4;cursor:not-allowed}",
+      "#bulkEdit .be-head .be-note{display:block;margin-top:6px;font:600 .72rem/1.35 inherit;opacity:1;color:#1f6f3a;word-break:normal}",
+      "#bulkEdit .be-foot .be-delete{margin-right:auto;border-color:#b02a2a;color:#b02a2a}",
+      "#bulkEdit .be-foot .be-delete:hover:not(:disabled){background:#b02a2a;color:#fff}",
       "#bulkEdit .be-events{display:none}",
       "#bulkEdit.is-events .be-events{display:block}",
       "@media (max-width:560px){#bulkEdit{padding:0}#bulkEdit .be-card{max-width:none;min-height:100%;max-height:none;border-radius:0}#bulkEdit .be-row{grid-template-columns:1fr}}"
@@ -331,10 +340,15 @@
     el.id = "bulkEdit";
     el.setAttribute("role", "dialog");
     el.setAttribute("aria-modal", "true");
-    el.setAttribute("aria-label", "Edit photo details");
+    el.setAttribute("aria-label", "Edit photo");
     el.innerHTML =
       '<div class="be-card">' +
-        '<div class="be-head"><img id="beImg" alt=""><div><b>Edit photo details</b><span id="beFile"></span></div></div>' +
+        '<div class="be-head"><img id="beImg" alt=""><div><b>Edit photo</b><span id="beFile"></span>' +
+          '<div class="be-replace"><button type="button" id="beReplaceBtn">Replace image…</button>' +
+          '<button type="button" id="beReplaceUndo" hidden>Keep the old image</button>' +
+          '<input type="file" id="beReplaceInput" accept="image/*" hidden></div>' +
+          '<span class="be-note" id="beReplaceNote"></span>' +
+        '</div></div>' +
         '<div class="be-body">' +
           '<div><label for="beTitle">Title</label><input type="text" id="beTitle" maxlength="120"></div>' +
           '<div class="be-row">' +
@@ -354,6 +368,7 @@
         '</div>' +
         '<div class="be-foot">' +
           '<div class="be-msg" id="beMsg" aria-live="polite"></div>' +
+          '<button type="button" class="be-delete" id="beDelete">Delete photo</button>' +
           '<button type="button" id="beCancel">Cancel</button>' +
           '<button type="button" class="be-save" id="beSave">Save changes</button>' +
         '</div>' +
@@ -362,6 +377,10 @@
     $("#beCategory", el).addEventListener("change", function(){ el.classList.toggle("is-events", this.value === "Events"); });
     $("#beCancel", el).addEventListener("click", closeEdit);
     $("#beSave", el).addEventListener("click", saveEdit);
+    $("#beDelete", el).addEventListener("click", deletePhoto);
+    $("#beReplaceBtn", el).addEventListener("click", function(){ $("#beReplaceInput", el).click(); });
+    $("#beReplaceInput", el).addEventListener("change", function(){ var f = this.files && this.files[0]; this.value = ""; pickReplacement(f); });
+    $("#beReplaceUndo", el).addEventListener("click", function(){ clearReplace(); setReplaceUI(); });
     el.addEventListener("click", function(e){ if (e.target === el) closeEdit(); });
     el.addEventListener("keydown", function(e){ if (e.key === "Escape") { e.stopPropagation(); closeEdit(); } });
     return el;
@@ -376,7 +395,8 @@
     var cats = CATEGORIES.slice(); if (p.category && cats.indexOf(p.category) === -1) cats.push(p.category);
     $("#beCategory", el).innerHTML = optionList(cats, p.category);
     $("#bePos", el).innerHTML = optionList(POSITIONS, p.imagePosition || "Center");
-    $("#beImg", el).src = p.__preview || thumbFor(p.src);
+    clearReplace();
+    setReplaceUI();
     $("#beFile", el).textContent = uploadName(p.src) || p.src;
     $("#beTitle", el).value = p.title || "";
     $("#beClient", el).value = p.client || "";
@@ -387,7 +407,7 @@
     $("#beShowAll", el).checked = p.showInAll !== false;
     el.classList.toggle("is-events", p.category === "Events");
     setEditMsg("", false);
-    $("#beSave", el).disabled = false;
+    setBusy(el, false);
     el.classList.add("on");
     setTimeout(function(){ try { $("#beTitle", el).focus({ preventScroll: true }); } catch(e){} }, 30);
   }
@@ -395,7 +415,123 @@
     if (editSaving) return;
     var el = document.getElementById("bulkEdit");
     if (el) el.classList.remove("on");
+    clearReplace();
     editSrc = null;
+  }
+  function editingPhoto(){
+    var p = null;
+    existingPhotos.forEach(function(x){ if (x.src === editSrc) p = x; });
+    return p;
+  }
+  function setBusy(el, busy){
+    ["#beSave", "#beDelete", "#beReplaceBtn", "#beReplaceUndo"].forEach(function(id){ var b = $(id, el); if (b) b.disabled = !!busy; });
+  }
+  function friendlyError(err){
+    var msg = String(err && err.message || err);
+    if (/GitHub 422/.test(msg) && /fast.?forward/i.test(msg)) msg = "Someone saved a change on the site at the same moment. Nothing was changed - just press the button again.";
+    return msg;
+  }
+
+  /* ---- replacing the image file: the new photo is only chosen here; it goes live with Save changes ---- */
+  var editReplace = null;   /* { file, url, ratio } */
+  function clearReplace(){
+    if (editReplace && editReplace.url && !editReplace.kept) URL.revokeObjectURL(editReplace.url);
+    editReplace = null;
+  }
+  function setReplaceUI(){
+    var el = editPanel(), p = editingPhoto();
+    $("#beReplaceUndo", el).hidden = !editReplace;
+    $("#beReplaceBtn", el).textContent = editReplace ? "Choose a different image…" : "Replace image…";
+    $("#beReplaceNote", el).textContent = editReplace ? "New image chosen - it replaces the old one when you press Save changes." : "";
+    $("#beImg", el).src = editReplace ? editReplace.url : (p ? (p.__preview || thumbFor(p.src)) : "");
+  }
+  function pickReplacement(file){
+    if (!file || editSaving) return;
+    var forSrc = editSrc;
+    var ready = (SUPPORTED_TYPE.test(file.type) || (!file.type && SUPPORTED_EXT.test(file.name))) ? Promise.resolve(file) : convertToJpeg(file);
+    setEditMsg("Reading the new image…", false);
+    ready.then(function(f){
+      if (editSrc !== forSrc) return;
+      if (!f) { setEditMsg("This browser couldn't open that file. Please export it as JPEG and choose it again.", true); return; }
+      var url = URL.createObjectURL(f), probe = new Image();
+      probe.onload = function(){
+        if (editSrc !== forSrc || !probe.naturalWidth) { URL.revokeObjectURL(url); return; }
+        clearReplace();
+        editReplace = { file: f, url: url, ratio: closestPresetRatio(probe.naturalWidth, probe.naturalHeight) };
+        setEditMsg("", false);
+        setReplaceUI();
+      };
+      probe.onerror = function(){ URL.revokeObjectURL(url); setEditMsg("That file doesn't look like a photo - please choose a JPEG, PNG or WebP.", true); };
+      probe.src = url;
+    });
+  }
+
+  /* ---- shared by delete + replace ---- */
+  /* the photo's own file plus the small copies the site made of it - but only if nothing else on the
+     site still uses that file (a banner slide or team photo can share it), and never the built-in
+     fallback banner. Only paths that really exist are listed, so GitHub never rejects the commit. */
+  var NEVER_DELETE = { "dsc05175.jpg": true };
+  function removalEntries(state, oldSrc){
+    var n = uploadName(oldSrc);
+    if (!n || NEVER_DELETE[n.toLowerCase()]) return [];
+    var json = JSON.stringify(state.content);
+    if (json.indexOf('"/images/uploads/' + n + '"') > -1 || json.indexOf('"images/uploads/' + n + '"') > -1) return [];
+    var paths = ["images/uploads/" + n, "images/thumbs/" + n + ".webp", "images/thumbs/" + n + ".jpg", "images/full/" + n + ".webp"];
+    [800, 1280, 1920, 2400].forEach(function(w){ paths.push("images/hero/" + n + "-" + w + ".webp"); });
+    return paths.filter(function(path){ return state.paths && state.paths[path]; })
+      .map(function(path){ return { path: path, mode: "100644", type: "blob", sha: null }; });
+  }
+  /* one all-or-nothing commit: the updated content.json plus any file changes; force:false, so a
+     save made elsewhere at the same moment is never overwritten (GitHub refuses; press again) */
+  function commitContent(base, entries, message){
+    return ghFetch("/repos/" + REPO + "/git/blobs", {
+      method: "POST",
+      body: JSON.stringify({ content: utf8ToBase64(JSON.stringify(base.content, null, 2) + "\n"), encoding: "base64" })
+    })
+      .then(function(blob){
+        var tree = (entries || []).concat([{ path: "content.json", mode: "100644", type: "blob", sha: blob.sha }]);
+        return ghFetch("/repos/" + REPO + "/git/trees", { method: "POST", body: JSON.stringify({ base_tree: base.treeSha, tree: tree }) });
+      })
+      .then(function(tree){
+        return ghFetch("/repos/" + REPO + "/git/commits", { method: "POST", body: JSON.stringify({ message: message, tree: tree.sha, parents: [base.commitSha] }) });
+      })
+      .then(function(commit){
+        return ghFetch("/repos/" + REPO + "/git/refs/heads/" + BRANCH, { method: "PATCH", body: JSON.stringify({ sha: commit.sha, force: false }) })
+          .then(function(){ return commit; });
+      });
+  }
+
+  /* ---- deleting a photo ---- */
+  function deletePhoto(){
+    if (editSaving || !editSrc) return;
+    var el = editPanel(), src = editSrc, p = editingPhoto();
+    var label = (p && p.title) || uploadName(src) || "this photo";
+    if (!confirm('Delete "' + label + '" from the website?\n\nIt disappears from every page in about a minute, and its image file is removed too. This can\'t be undone from here.')) return;
+    editSaving = true;
+    setBusy(el, true);
+    setEditMsg("Deleting… reading the latest version of the site", false);
+    readRepoState()
+      .then(function(state){
+        var before = state.content.photos.length;
+        state.content.photos = state.content.photos.filter(function(x){ return !(x && x.src === src); });
+        if (state.content.photos.length === before) throw new Error("This photo is already gone from the site. Close this and reopen the uploader to refresh the list.");
+        setEditMsg("Deleting… publishing", false);
+        return commitContent(state, removalEntries(state, src), "Delete photo: " + (uploadName(src) || src) + " via bulk uploader");
+      })
+      .then(function(){
+        existingPhotos = existingPhotos.filter(function(x){ return x.src !== src; });
+        window.__bulkCommitted = true;   /* the Content Editor reloads when you return to it */
+        editSaving = false;
+        renderExistingGrid();
+        setEditMsg("✓ Deleted. It disappears from the live site in about a minute.", false);
+        setTimeout(function(){ if (editSrc === src) closeEdit(); }, 1400);
+      })
+      .catch(function(err){
+        editSaving = false;
+        setBusy(el, false);
+        setEditMsg("Not deleted - the site is unchanged. " + friendlyError(err), true);
+        console.error(err);
+      });
   }
   function setEditMsg(text, isErr){
     var m = document.getElementById("beMsg");
@@ -420,53 +556,62 @@
       featured: $("#beFeatured", el).checked,
       showInAll: $("#beShowAll", el).checked
     };
-    var src = editSrc;
+    var src = editSrc, rep = editReplace, newSrc = null;
     editSaving = true;
-    $("#beSave", el).disabled = true;
+    setBusy(el, true);
     setEditMsg("Saving… reading the latest version of the site", false);
-    var base;
     readRepoState()
       .then(function(state){
-        base = state;
         var hit = null;
-        base.content.photos.forEach(function(x){ if (x && x.src === src) hit = x; });
+        state.content.photos.forEach(function(x){ if (x && x.src === src) hit = x; });
         if (!hit) throw new Error("This photo is no longer on the site (it may have been removed in the Content Editor). Close this and reopen the uploader to refresh the list.");
         Object.keys(changes).forEach(function(k){ hit[k] = changes[k]; });
-        setEditMsg("Saving… writing the change", false);
-        return ghFetch("/repos/" + REPO + "/git/blobs", {
-          method: "POST",
-          body: JSON.stringify({ content: utf8ToBase64(JSON.stringify(base.content, null, 2) + "\n"), encoding: "base64" })
-        });
-      })
-      .then(function(blob){
-        return ghFetch("/repos/" + REPO + "/git/trees", { method: "POST", body: JSON.stringify({ base_tree: base.treeSha, tree: [{ path: "content.json", mode: "100644", type: "blob", sha: blob.sha }] }) });
-      })
-      .then(function(tree){
-        return ghFetch("/repos/" + REPO + "/git/commits", {
-          method: "POST",
-          body: JSON.stringify({ message: "Edit photo details: " + (uploadName(src) || src) + " via bulk uploader", tree: tree.sha, parents: [base.commitSha] })
-        });
-      })
-      .then(function(commit){
-        setEditMsg("Saving… publishing", false);
-        return ghFetch("/repos/" + REPO + "/git/refs/heads/" + BRANCH, { method: "PATCH", body: JSON.stringify({ sha: commit.sha, force: false }) });
+        if (!rep) {
+          setEditMsg("Saving… writing the change", false);
+          return commitContent(state, [], "Edit photo details: " + (uploadName(src) || src) + " via bulk uploader");
+        }
+        /* new image file: uploaded under a NEW name (so nobody's browser keeps showing the old
+           picture from its cache), then the old file and its small copies are removed */
+        state.uploadNames.forEach(function(n){ knownUploadNames[n.toLowerCase()] = true; });
+        var newName = uniqueFilename(rep.file.name, "__replace");
+        setEditMsg("Saving… uploading the new image", false);
+        return fileToBase64(rep.file)
+          .then(function(b64){
+            return ghFetch("/repos/" + REPO + "/git/blobs", { method: "POST", body: JSON.stringify({ content: b64, encoding: "base64" }) });
+          })
+          .then(function(blob){
+            newSrc = "/images/uploads/" + newName;
+            hit.src = newSrc;
+            hit.ratio = rep.ratio;
+            var entries = [{ path: "images/uploads/" + newName, mode: "100644", type: "blob", sha: blob.sha }].concat(removalEntries(state, src));
+            setEditMsg("Saving… publishing", false);
+            return commitContent(state, entries, "Replace photo: " + (uploadName(src) || src) + " -> " + newName + " via bulk uploader");
+          });
       })
       .then(function(){
-        existingPhotos.forEach(function(x){ if (x.src === src) Object.keys(changes).forEach(function(k){ x[k] = changes[k]; }); });
+        existingPhotos.forEach(function(x){
+          if (x.src !== src) return;
+          Object.keys(changes).forEach(function(k){ x[k] = changes[k]; });
+          if (newSrc) {
+            x.src = newSrc; x.ratio = rep.ratio;
+            x.__preview = rep.url; rep.kept = true;   /* shown from this copy until the site finishes building */
+            x.__justAdded = true;
+            knownUploadNames[uploadName(newSrc).toLowerCase()] = true;
+          }
+        });
         changes.eventTypes.forEach(function(et){ if (knownEventTypes.indexOf(et) === -1) knownEventTypes.push(et); });
         fillEventSuggestions();
         window.__bulkCommitted = true;   /* the Content Editor reloads when you return to it */
         editSaving = false;
+        if (newSrc) { editReplace = null; editSrc = newSrc; src = newSrc; }
         renderExistingGrid();
-        setEditMsg("✓ Saved. The live site updates in about a minute.", false);
+        setEditMsg(newSrc ? "✓ Saved with the new image. The live site updates in a few minutes." : "✓ Saved. The live site updates in about a minute.", false);
         setTimeout(function(){ if (editSrc === src) closeEdit(); }, 1400);
       })
       .catch(function(err){
         editSaving = false;
-        $("#beSave", el).disabled = false;
-        var msg = String(err && err.message || err);
-        if (/GitHub 422/.test(msg) && /fast.?forward/i.test(msg)) msg = "Someone saved a change on the site at the same moment. Nothing was changed - just press Save again.";
-        setEditMsg("Not saved - the site is unchanged. " + msg, true);
+        setBusy(el, false);
+        setEditMsg("Not saved - the site is unchanged. " + friendlyError(err), true);
         console.error(err);
       });
   }
@@ -518,9 +663,50 @@
     return best;
   }
 
+  /* The website (and its photo-shrinking step) handles JPEG, PNG and WebP. Anything else the
+     browser can open - HEIC from a Mac or iPhone, TIFF, AVIF - is turned into a high-quality JPEG
+     here first, so it can never break the site. Very large ones are capped at 3600px on the long
+     side (plenty for the site, and phones can't convert bigger ones). */
+  var SUPPORTED_TYPE = /^image\/(jpeg|png|webp)$/i, SUPPORTED_EXT = /\.(jpe?g|png|webp)$/i;
+  function convertToJpeg(file){
+    return new Promise(function(resolve){
+      var url = URL.createObjectURL(file), img = new Image();
+      img.onload = function(){
+        try {
+          var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, 3600 / Math.max(w, h));
+          if (!w || !h) { URL.revokeObjectURL(url); return resolve(null); }
+          var c = document.createElement("canvas");
+          c.width = Math.round(w * k); c.height = Math.round(h * k);
+          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
+          c.toBlob(function(b){
+            URL.revokeObjectURL(url);
+            if (!b) return resolve(null);
+            var name = file.name.replace(/\.[^.]+$/, "") + ".jpg";
+            try { resolve(new File([b], name, { type: "image/jpeg", lastModified: file.lastModified })); }
+            catch (e) { b.name = name; resolve(b); }
+          }, "image/jpeg", 0.92);
+        } catch (e) { URL.revokeObjectURL(url); resolve(null); }
+      };
+      img.onerror = function(){ URL.revokeObjectURL(url); resolve(null); };
+      img.src = url;
+    });
+  }
+
   function addFiles(fileList){
     if (uploading) return;
-    var files = Array.prototype.filter.call(fileList || [], function(f){ return /^image\//.test(f.type); });
+    var all = Array.prototype.slice.call(fileList || []);
+    var files = all.filter(function(f){ return SUPPORTED_TYPE.test(f.type) || (!f.type && SUPPORTED_EXT.test(f.name)); });
+    var others = all.filter(function(f){ return files.indexOf(f) === -1 && (/^image\//.test(f.type) || /\.(heic|heif|tiff?|avif|bmp|gif)$/i.test(f.name)); });
+    if (others.length) {
+      Promise.all(others.map(convertToJpeg)).then(function(conv){
+        var good = conv.filter(Boolean);
+        var bad = others.filter(function(f, i){ return !conv[i]; }).map(function(f){ return f.name; });
+        if (bad.length) alert("This browser couldn't open " + bad.length + " photo(s): " + bad.slice(0, 5).join(", ") + (bad.length > 5 ? "…" : "") +
+          "\n\nPlease export them as JPEG and add them again. (iPhone: Settings > Camera > Formats > Most Compatible.)");
+        if (good.length) addFiles(good);
+      });
+      if (!files.length) return;
+    }
     var room = MAX_BATCH - photos.length;
     if (room <= 0) {
       alert("This batch already has " + MAX_BATCH + " photos. Commit these first, then add the rest in a new batch.");

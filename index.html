@@ -96,6 +96,10 @@
       });
       p.catch(function () {});
       window.__lrlContent = p;
+      /* each photo's own colour, shown behind it while it loads (made by the GitHub photo workflow) */
+      window.__lrlColors = fetch('/images/colors.json', { cache: 'no-cache' })
+        .then(function (r) { return r.ok ? r.json() : {}; })
+        .catch(function () { return {}; });
     } catch (e) {}
   })();
 </script>
@@ -995,16 +999,17 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
 .cover-strip.cover-strip-filled{opacity:1}
 .cover-strip img{
   height:100%;width:340px;object-fit:cover;flex:none;display:block;
-  filter:grayscale(1) brightness(.68);
+  filter:brightness(.68);
 }
 /* A colour copy of the strip, drifting in step with the black & white one, shown only inside the
    Spotlight's circle - so the light brings the photos back into colour where it falls. */
 .cover-color{
-  position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .4s ease;
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0;visibility:hidden;
+  transition:opacity .4s ease, visibility 0s linear .4s;
   -webkit-mask-image:radial-gradient(circle clamp(170px, 24vmax, 320px) at var(--clx,50%) var(--cly,50%), #000 0%, rgba(0,0,0,.85) 45%, rgba(0,0,0,0) 78%);
   mask-image:radial-gradient(circle clamp(170px, 24vmax, 320px) at var(--clx,50%) var(--cly,50%), #000 0%, rgba(0,0,0,.85) 45%, rgba(0,0,0,0) 78%);
 }
-.cover-overlay.spotlight-on .cover-color{opacity:1}
+.cover-overlay.spotlight-on .cover-color{opacity:1;visibility:visible;transition:opacity .4s ease, visibility 0s}
 .cover-color .cover-strip img{filter:brightness(.8)}
 @keyframes coverDrift{ 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
@@ -1089,7 +1094,7 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
   .cover-work-btn{min-height:40px;padding:0 28px}
 }
 @media (pointer:coarse) and (prefers-reduced-motion: no-preference){
-  .cover-strip img{filter:grayscale(1) brightness(.72)}
+  .cover-strip img{filter:brightness(.72)}
   .cover-color .cover-strip img{filter:brightness(.82)}
 }
 /* Phones/tablets: a live backdrop blur over a strip that never stops moving re-blurs every
@@ -1180,6 +1185,10 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
 .niches-close:hover {
   background:var(--ink);
   color:var(--paper);
+}
+@media (max-width:640px){
+  .overlay-close{padding:6px 11px;gap:6px;font-size:.6rem;letter-spacing:.12em}
+  .overlay-close svg{width:10px;height:10px}
 }
 
 .collective-hero{
@@ -1606,6 +1615,26 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
 }
 .collective-about-logo button:hover img{transform:scale(1.03)}
 
+.lb:focus,.overlay-page:focus{outline:none}
+
+/* ===== Page-to-page: a short cross-fade between the home page and What We Capture, with the logo
+   gliding into place instead of the page flashing white. Browsers without support simply change
+   page as before; people who turn animations off in their settings get no transition at all. ===== */
+@view-transition{navigation:auto}
+@media (prefers-reduced-motion:reduce){ @view-transition{navigation:none} }
+::view-transition-old(root),::view-transition-new(root){animation-duration:.26s}
+.nav > .brand .mark{view-transition-name:lrl-logo}
+html:not(.cover-seen) .nav > .brand .mark{view-transition-name:none}  /* cover up: nothing may float above it */
+::view-transition-group(lrl-logo){animation-duration:.34s;animation-timing-function:cubic-bezier(.16,1,.3,1)}
+
+/* ===== "View" tag that follows the mouse over photos (desktop mouse only - never on touch) ===== */
+.lrl-view-tag{position:fixed;left:0;top:0;z-index:9500;pointer-events:none;
+  padding:7px 12px 6px;border-radius:999px;background:rgba(10,10,10,.84);color:#fff;
+  font:600 .6rem/1 'JetBrains Mono',monospace;letter-spacing:.18em;text-transform:uppercase;
+  opacity:0;scale:.8;translate:-200px -200px;transition:opacity .16s ease,scale .2s cubic-bezier(.16,1,.3,1);will-change:translate}
+.lrl-view-tag.on{opacity:1;scale:1}
+html[data-theme="dark"] .lrl-view-tag{background:rgba(255,255,255,.92);color:#0a0a0a}
+@media (prefers-reduced-motion:reduce){ .lrl-view-tag{transition:none} }
 .lb{
   position:fixed;inset:0;z-index:500;
   background:rgba(255, 255, 255, 0.96);
@@ -2592,11 +2621,44 @@ function buildFilters(){
    own against the plain dark background. Skipped entirely once the cover's already been
    dismissed this session - display:none on the overlay doesn't stop eager images from
    downloading, so building it at all would waste bandwidth nobody benefits from. */
+/* Random every visit, but evenly spread: up to max photos dealt from every category in turn,
+   then ordered so neighbours (almost) never share a category - one busy category can't take over. */
+function coverShuffle(a){
+  a = a.slice();
+  for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+function coverMix(list, max){
+  function group(arr){
+    var g = { groups:{}, keys:[] };
+    coverShuffle(arr).forEach(function(p){ var c = p.category || ""; if(!g.groups[c]){ g.groups[c] = []; g.keys.push(c); } g.groups[c].push(p); });
+    return g;
+  }
+  var picked = list.slice();
+  if(picked.length > max){
+    var g = group(list); picked = [];
+    while(picked.length < max){
+      coverShuffle(g.keys).forEach(function(k){ if(picked.length < max && g.groups[k].length) picked.push(g.groups[k].pop()); });
+    }
+  }
+  var h = group(picked), out = [], prev = null;
+  while(out.length < picked.length){
+    var cand = h.keys.filter(function(k){ return h.groups[k].length && k !== prev; });
+    if(!cand.length) cand = h.keys.filter(function(k){ return h.groups[k].length; });
+    var total = 0; cand.forEach(function(k){ total += h.groups[k].length * h.groups[k].length; });
+    var r = Math.random() * total, pick = cand[cand.length - 1];
+    for(var i = 0; i < cand.length; i++){ r -= h.groups[cand[i]].length * h.groups[cand[i]].length; if(r < 0){ pick = cand[i]; break; } }
+    out.push(h.groups[pick].pop()); prev = pick;
+  }
+  return out;
+}
 function renderCoverFilmstrip(){
   if(document.documentElement.classList.contains("cover-seen")) return;
   var strip = $("#cover-strip");
   if(!strip) return;
-  var pool = (SITE.photos || []).filter(function(p){ return p.featured; }).slice(0, 12);
+  var all = (SITE.photos || []).filter(function(p){ return p && p.src && p.showInAll !== false; });
+  if(!all.length) all = (SITE.photos || []).filter(function(p){ return p && p.src; });
+  var pool = coverMix(all, 12);  /* a fresh selection, evenly from every category, in a new order each visit */
   if(!pool.length) return;
   var list = pool.concat(pool);
   var stripHtml = list.map(function(p){
@@ -3102,10 +3164,15 @@ function restoreOpener(key){
     try { el.focus({ preventScroll: true }); } catch(err) { el.focus(); }
   }
 }
+/* keyboard vs. mouse/touch: opening a pop-up by tap, click or a link shouldn't light up a focus
+   ring on its close button - only keyboard users need focus placed on a button */
+var kbdNav = false;
+document.addEventListener("keydown", function(e){ if(e.key === "Tab" || e.key === "Enter" || e.key === " ") kbdNav = true; }, true);
+["mousedown", "touchstart"].forEach(function(ev){ document.addEventListener(ev, function(){ kbdNav = false; }, { capture: true, passive: true }); });
 function focusDialog(dlg){
   if(!dlg) return;
   setTimeout(function(){
-    var target = dlg.querySelector(".overlay-close, #lb-close");
+    var target = kbdNav ? dlg.querySelector(".overlay-close, #lb-close") : null;
     if(!target){ dlg.setAttribute("tabindex", "-1"); target = dlg; }
     try { target.focus({ preventScroll: true }); } catch(err) { target.focus(); }
   }, 60);
@@ -3385,8 +3452,7 @@ function openLB(i, opener){
   lb.setAttribute("open", "");
   document.body.style.overflow = "hidden";
   paintLB();
-  var closeEl = $("#lb-close");
-  if (closeEl) closeEl.focus();
+  focusDialog(lb);
 }
 
 function closeLB(){
@@ -3395,7 +3461,7 @@ function closeLB(){
   document.body.style.overflow = (collectivePage.classList.contains("open") || nichesPage.classList.contains("open")) ? "hidden" : "";
   if(state.opener) {
     state.opener.classList.remove("touch-focus");
-    state.opener.focus();
+    if(kbdNav){ try { state.opener.focus({ preventScroll: true }); } catch(err){ state.opener.focus(); } }
   }
 }
 
@@ -3445,6 +3511,10 @@ function paintLB(){
   $("#lb-desc").textContent = p.caption || "";
   $("#lb-i").textContent = String(state.index + 1).padStart(2,"0");
   $("#lb-n").textContent = String(state.visible.length).padStart(2,"0");
+  if(state.visible.length > 1) [1, -1].forEach(function(d){
+    var q = state.visible[(state.index + d + state.visible.length) % state.visible.length];
+    if(q){ var pre = new Image(); pre.decoding = "async"; pre.src = fullFor(q.src); }
+  });
 }
 
 /* ---------------- Cover: shows once per session (see the early <head> script). Work dismisses
@@ -3472,7 +3542,7 @@ function initCover(){
     targetX = clientX; targetY = clientY;
     if(!haveTarget){ curX = targetX; curY = targetY; haveTarget = true; }
   }
-  var lastPointerAt = 0, tilt = { x:.5, y:.5, at:0, base:null, asked:false };
+  var lastPointerAt = 0, tilt = { x:.5, y:.5, at:0, bx:null, by:null, ang:null, asked:false };
   function onMove(e){
     var t = (e.touches && e.touches[0]) ? e.touches[0] : e;
     if(typeof t.clientX !== "number") return;
@@ -3482,9 +3552,18 @@ function initCover(){
   /* phone tilt (gyro) steers the spotlight whenever the finger isn't on the screen */
   function onTilt(e){
     if(e.gamma == null || e.beta == null) return;
-    if(tilt.base === null) tilt.base = e.beta;
-    tilt.x = Math.max(0, Math.min(1, .5 + e.gamma / 50));
-    tilt.y = Math.max(0, Math.min(1, .5 + (e.beta - tilt.base) / 40));
+    /* raw sensor angles -> screen left/right + up/down, in portrait or landscape */
+    var ang = (screen.orientation && typeof screen.orientation.angle === "number") ? screen.orientation.angle
+            : (typeof window.orientation === "number" ? window.orientation : 0);
+    var ax = e.gamma, ay = e.beta;
+    if(ang === 90){ ax = e.beta; ay = -e.gamma; }
+    else if(ang === -90 || ang === 270){ ax = -e.beta; ay = e.gamma; }
+    else if(ang === 180){ ax = -e.gamma; ay = -e.beta; }
+    /* however the phone is held when the light comes on is "centre", and that centre slowly follows you */
+    if(tilt.bx === null || tilt.ang !== ang){ tilt.bx = ax; tilt.by = ay; tilt.ang = ang; }
+    else { tilt.bx += (ax - tilt.bx) * 0.0015; tilt.by += (ay - tilt.by) * 0.0015; }
+    tilt.x = Math.max(0, Math.min(1, .5 + (ax - tilt.bx) / 32));
+    tilt.y = Math.max(0, Math.min(1, .5 + (ay - tilt.by) / 26));
     tilt.at = performance.now();
   }
   function startTilt(){
@@ -3723,10 +3802,16 @@ document.addEventListener("keydown", function(e){
 
 var tx = 0, ty = 0;
 if(lb) {
-  lb.addEventListener("touchstart", function(e){ tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY; }, {passive:true});
+  var tSwipe = false, tAt = 0;
+  lb.addEventListener("touchstart", function(e){
+    tSwipe = e.touches.length === 1; tAt = Date.now();
+    tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY;
+  }, {passive:true});
+  lb.addEventListener("touchmove", function(e){ if(e.touches.length > 1) tSwipe = false; }, {passive:true});
   lb.addEventListener("touchend", function(e){
+    if(!tSwipe || Date.now() - tAt > 800) return; tSwipe = false;
     var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
-    if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
+    if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy) * 1.3) stepLB(dx < 0 ? 1 : -1);
   }, {passive:true});
 }
 
@@ -4062,6 +4147,73 @@ function showLoadProblem(){
   var counter = $("[data-workcount]");
   if(counter) counter.textContent = "";
 }
+
+/* ---------------- Colour placeholders ----------------
+   Every photo frame gets that photo's own average colour behind it, so while it loads you see its
+   tone rather than an empty box. Works for anything drawn now or later (grids, category previews,
+   the cover strip...) via one light observer that only reacts to new elements being added. */
+var PHOTO_COLORS = {};
+function photoNameOf(img){
+  var u = img.getAttribute("data-full") || img.getAttribute("src") || "";
+  var m = /\/images\/uploads\/([^\/?#]+)$/.exec(u);
+  if(m) return m[1];
+  m = /\/images\/(?:thumbs|full)\/([^\/?#]+)\.(?:webp|jpg)$/.exec(u) || /\/images\/hero\/([^\/?#]+)-\d+\.webp$/.exec(u);
+  return m ? m[1] : "";
+}
+function paintPlaceholders(root){
+  if(!root || !root.querySelectorAll) return;
+  var imgs = root.tagName === "IMG" ? [root] : root.querySelectorAll("img");
+  for(var i = 0; i < imgs.length; i++){
+    var img = imgs[i];
+    if(img.dataset.ph) continue;
+    var c = PHOTO_COLORS[photoNameOf(img)];
+    if(!c) continue;
+    img.dataset.ph = "1";
+    img.style.backgroundColor = c;
+    var frame = img.parentElement;
+    if(frame && frame.classList && (frame.classList.contains("plate") || frame.classList.contains("event-type-chip-img"))) frame.style.backgroundColor = c;
+  }
+}
+(function(){
+  var pending = [], queued = false;
+  function flush(){ queued = false; var list = pending; pending = []; list.forEach(paintPlaceholders); }
+  if(window.MutationObserver){
+    new MutationObserver(function(recs){
+      for(var i = 0; i < recs.length; i++) for(var j = 0; j < recs[i].addedNodes.length; j++){
+        var n = recs[i].addedNodes[j]; if(n.nodeType === 1) pending.push(n);
+      }
+      if(pending.length && !queued){ queued = true; requestAnimationFrame(flush); }
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  }
+  (window.__lrlColors || Promise.resolve({})).then(function(c){
+    PHOTO_COLORS = (c && typeof c === "object") ? c : {};
+    paintPlaceholders(document.body);
+  });
+})();
+
+/* ---------------- "View" tag: follows a real mouse over photos you can open ---------------- */
+(function(){
+  if(!window.matchMedia || !window.matchMedia("(hover:hover) and (pointer:fine)").matches) return;
+  var SEL = "#grid .shot, .btn-preview-shot, .niche-preview-grid .shot";
+  var tag = null, x = 0, y = 0, on = false, raf = 0;
+  function place(){ raf = 0; tag.style.translate = (x + 16) + "px " + (y + 18) + "px"; }
+  function set(show){
+    if(show === on) return;
+    on = show;
+    if(show) place();            /* appear at the cursor, not fly in from its last spot */
+    tag.classList.toggle("on", show);
+  }
+  document.addEventListener("pointermove", function(e){
+    if(e.pointerType && e.pointerType !== "mouse") return;
+    if(!tag){ tag = document.createElement("div"); tag.className = "lrl-view-tag"; tag.setAttribute("aria-hidden", "true"); tag.textContent = "View"; document.body.appendChild(tag); }
+    x = e.clientX; y = e.clientY;
+    var t = e.target && e.target.closest ? e.target.closest(SEL) : null;
+    set(!!t && !(typeof lb !== "undefined" && lb && lb.classList.contains("on")));
+    if(on && !raf) raf = requestAnimationFrame(place);
+  }, { passive: true });
+  document.documentElement.addEventListener("mouseleave", function(){ if(tag) set(false); });
+  document.addEventListener("pointerdown", function(){ if(tag) set(false); }, { passive: true });
+})();
 
 function initApp(){
   /* first, and isolated: the cover must always be dismissable even if anything else fails */
