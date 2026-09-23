@@ -271,6 +271,8 @@
           '<div class="ec-title">' + (p.__justAdded ? '<span class="ec-new">NEW</span> ' : '') + esc(p.title || "Untitled") + '</div>' +
           '<div class="ec-meta">' + esc(p.category || "") + ((p.eventTypes && p.eventTypes.length) ? " · " + esc(p.eventTypes.join(", ")) : "") + '</div>' +
           (p.client ? '<div class="ec-meta">' + esc(p.client) + '</div>' : '') +
+          (p.featured ? '<div class="ec-meta">★ Featured</div>' : '') +
+          '<button type="button" class="btn small ec-edit" data-edit-src="' + esc(p.src) + '">Edit</button>' +
         '</div>' +
       '</div>';
     }).join("");
@@ -284,6 +286,195 @@
   }
   $("#existingCategoryFilter").addEventListener("change", renderExistingGrid);
   $("#existingSearch").addEventListener("input", renderExistingGrid);
+
+  /* ================= Editing an already-uploaded photo =================
+     Changes only the photo's details in content.json - the image file itself is never touched.
+     Saved with the same all-or-nothing commit as uploads: it re-reads the LATEST content.json
+     first (so an edit made elsewhere in the meantime is kept), changes just this one photo, and
+     publishes with force:false, so a simultaneous save is never overwritten. */
+  (function injectEditStyles(){
+    var css = [
+      "#bulkOverlay .ec-edit{margin-top:8px;width:100%;min-height:36px}",
+      "#bulkEdit{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}",
+      "#bulkEdit.on{display:flex}",
+      "#bulkEdit .be-card{background:#fff;color:#0a0a0a;border-radius:10px;width:100%;max-width:560px;margin:auto;display:flex;flex-direction:column;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);font-family:inherit}",
+      "#bulkEdit .be-head{display:flex;gap:14px;align-items:center;padding:16px 18px;border-bottom:1px solid #e2e2e2}",
+      "#bulkEdit .be-head img{width:64px;height:80px;object-fit:cover;border-radius:4px;background:#eee;flex:none}",
+      "#bulkEdit .be-head b{display:block;font-size:.95rem}",
+      "#bulkEdit .be-head span{font:.68rem 'JetBrains Mono',monospace;opacity:.55;word-break:break-all}",
+      "#bulkEdit .be-body{padding:14px 18px;overflow-y:auto;display:grid;gap:12px}",
+      "#bulkEdit label{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;opacity:.6;display:block;margin-bottom:3px}",
+      "#bulkEdit input[type=text],#bulkEdit textarea,#bulkEdit select{width:100%;box-sizing:border-box;border:1px solid #d6d6d6;border-radius:6px;padding:9px 10px;font-size:16px;font-family:inherit;background:#fff;color:#0a0a0a}",
+      "#bulkEdit textarea{min-height:64px;resize:vertical}",
+      "#bulkEdit .be-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}",
+      "#bulkEdit .be-toggles{display:flex;gap:18px;flex-wrap:wrap}",
+      "#bulkEdit .be-toggles label{display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;opacity:1;font-size:.9rem;margin:0;min-height:36px}",
+      "#bulkEdit .be-toggles input{width:20px;height:20px}",
+      "#bulkEdit .be-foot{display:flex;gap:10px;justify-content:flex-end;align-items:center;padding:14px 18px;border-top:1px solid #e2e2e2;flex-wrap:wrap}",
+      "#bulkEdit .be-msg{flex:1 1 100%;font-size:.8rem;min-height:1em}",
+      "#bulkEdit .be-msg.err{color:#b02a2a}",
+      "#bulkEdit .be-foot button{min-height:42px;padding:0 20px;border-radius:999px;border:1px solid #0a0a0a;font:600 .78rem/1 inherit;cursor:pointer;background:#fff;color:#0a0a0a}",
+      "#bulkEdit .be-foot .be-save{background:#0a0a0a;color:#fff}",
+      "#bulkEdit .be-foot button:disabled{opacity:.4;cursor:not-allowed}",
+      "#bulkEdit .be-events{display:none}",
+      "#bulkEdit.is-events .be-events{display:block}",
+      "@media (max-width:560px){#bulkEdit{padding:0}#bulkEdit .be-card{max-width:none;min-height:100%;max-height:none;border-radius:0}#bulkEdit .be-row{grid-template-columns:1fr}}"
+    ].join("\n");
+    var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
+  })();
+
+  var editSrc = null, editSaving = false;
+  function editPanel(){
+    var el = document.getElementById("bulkEdit");
+    if (el) return el;
+    el = document.createElement("div");
+    el.id = "bulkEdit";
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-modal", "true");
+    el.setAttribute("aria-label", "Edit photo details");
+    el.innerHTML =
+      '<div class="be-card">' +
+        '<div class="be-head"><img id="beImg" alt=""><div><b>Edit photo details</b><span id="beFile"></span></div></div>' +
+        '<div class="be-body">' +
+          '<div><label for="beTitle">Title</label><input type="text" id="beTitle" maxlength="120"></div>' +
+          '<div class="be-row">' +
+            '<div><label for="beClient">Client</label><input type="text" id="beClient" maxlength="80"></div>' +
+            '<div><label for="beCategory">Category</label><select id="beCategory"></select></div>' +
+          '</div>' +
+          '<div class="be-events"><label for="beEvents">Event types (comma separated)</label><input type="text" id="beEvents" list="eventTypeSuggestions"></div>' +
+          '<div><label for="beCaption">Caption</label><textarea id="beCaption" maxlength="300"></textarea></div>' +
+          '<div class="be-row">' +
+            '<div><label for="beAlt">Description for screen readers</label><input type="text" id="beAlt" maxlength="200"></div>' +
+            '<div><label for="bePos">Crop position</label><select id="bePos"></select></div>' +
+          '</div>' +
+          '<div class="be-toggles">' +
+            '<label><input type="checkbox" id="beFeatured"> Featured</label>' +
+            '<label><input type="checkbox" id="beShowAll"> Show in "All"</label>' +
+          '</div>' +
+        '</div>' +
+        '<div class="be-foot">' +
+          '<div class="be-msg" id="beMsg" aria-live="polite"></div>' +
+          '<button type="button" id="beCancel">Cancel</button>' +
+          '<button type="button" class="be-save" id="beSave">Save changes</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(el);
+    $("#beCategory", el).addEventListener("change", function(){ el.classList.toggle("is-events", this.value === "Events"); });
+    $("#beCancel", el).addEventListener("click", closeEdit);
+    $("#beSave", el).addEventListener("click", saveEdit);
+    el.addEventListener("click", function(e){ if (e.target === el) closeEdit(); });
+    el.addEventListener("keydown", function(e){ if (e.key === "Escape") { e.stopPropagation(); closeEdit(); } });
+    return el;
+  }
+
+  function openEdit(src){
+    var p = null;
+    existingPhotos.forEach(function(x){ if (x.src === src) p = x; });
+    if (!p) return;
+    var el = editPanel();
+    editSrc = src;
+    var cats = CATEGORIES.slice(); if (p.category && cats.indexOf(p.category) === -1) cats.push(p.category);
+    $("#beCategory", el).innerHTML = optionList(cats, p.category);
+    $("#bePos", el).innerHTML = optionList(POSITIONS, p.imagePosition || "Center");
+    $("#beImg", el).src = p.__preview || thumbFor(p.src);
+    $("#beFile", el).textContent = uploadName(p.src) || p.src;
+    $("#beTitle", el).value = p.title || "";
+    $("#beClient", el).value = p.client || "";
+    $("#beEvents", el).value = (p.eventTypes || []).join(", ");
+    $("#beCaption", el).value = p.caption || "";
+    $("#beAlt", el).value = p.alt || "";
+    $("#beFeatured", el).checked = !!p.featured;
+    $("#beShowAll", el).checked = p.showInAll !== false;
+    el.classList.toggle("is-events", p.category === "Events");
+    setEditMsg("", false);
+    $("#beSave", el).disabled = false;
+    el.classList.add("on");
+    setTimeout(function(){ try { $("#beTitle", el).focus({ preventScroll: true }); } catch(e){} }, 30);
+  }
+  function closeEdit(){
+    if (editSaving) return;
+    var el = document.getElementById("bulkEdit");
+    if (el) el.classList.remove("on");
+    editSrc = null;
+  }
+  function setEditMsg(text, isErr){
+    var m = document.getElementById("beMsg");
+    if (m) { m.textContent = text; m.className = "be-msg" + (isErr ? " err" : ""); }
+  }
+
+  function saveEdit(){
+    if (editSaving || !editSrc) return;
+    var el = document.getElementById("bulkEdit");
+    var title = $("#beTitle", el).value.trim();
+    if (!title) { setEditMsg("Please give the photo a title.", true); $("#beTitle", el).focus(); return; }
+    var category = $("#beCategory", el).value;
+    var isEvents = category === "Events";
+    var changes = {
+      title: title,
+      client: $("#beClient", el).value.trim() || "Studio",
+      category: category,
+      eventTypes: isEvents ? uniq(splitList($("#beEvents", el).value)) : [],
+      caption: $("#beCaption", el).value.trim(),
+      alt: $("#beAlt", el).value.trim() || title,
+      imagePosition: $("#bePos", el).value || "Center",
+      featured: $("#beFeatured", el).checked,
+      showInAll: $("#beShowAll", el).checked
+    };
+    var src = editSrc;
+    editSaving = true;
+    $("#beSave", el).disabled = true;
+    setEditMsg("Saving… reading the latest version of the site", false);
+    var base;
+    readRepoState()
+      .then(function(state){
+        base = state;
+        var hit = null;
+        base.content.photos.forEach(function(x){ if (x && x.src === src) hit = x; });
+        if (!hit) throw new Error("This photo is no longer on the site (it may have been removed in the Content Editor). Close this and reopen the uploader to refresh the list.");
+        Object.keys(changes).forEach(function(k){ hit[k] = changes[k]; });
+        setEditMsg("Saving… writing the change", false);
+        return ghFetch("/repos/" + REPO + "/git/blobs", {
+          method: "POST",
+          body: JSON.stringify({ content: utf8ToBase64(JSON.stringify(base.content, null, 2) + "\n"), encoding: "base64" })
+        });
+      })
+      .then(function(blob){
+        return ghFetch("/repos/" + REPO + "/git/trees", { method: "POST", body: JSON.stringify({ base_tree: base.treeSha, tree: [{ path: "content.json", mode: "100644", type: "blob", sha: blob.sha }] }) });
+      })
+      .then(function(tree){
+        return ghFetch("/repos/" + REPO + "/git/commits", {
+          method: "POST",
+          body: JSON.stringify({ message: "Edit photo details: " + (uploadName(src) || src) + " via bulk uploader", tree: tree.sha, parents: [base.commitSha] })
+        });
+      })
+      .then(function(commit){
+        setEditMsg("Saving… publishing", false);
+        return ghFetch("/repos/" + REPO + "/git/refs/heads/" + BRANCH, { method: "PATCH", body: JSON.stringify({ sha: commit.sha, force: false }) });
+      })
+      .then(function(){
+        existingPhotos.forEach(function(x){ if (x.src === src) Object.keys(changes).forEach(function(k){ x[k] = changes[k]; }); });
+        changes.eventTypes.forEach(function(et){ if (knownEventTypes.indexOf(et) === -1) knownEventTypes.push(et); });
+        fillEventSuggestions();
+        window.__bulkCommitted = true;   /* the Content Editor reloads when you return to it */
+        editSaving = false;
+        renderExistingGrid();
+        setEditMsg("✓ Saved. The live site updates in about a minute.", false);
+        setTimeout(function(){ if (editSrc === src) closeEdit(); }, 1400);
+      })
+      .catch(function(err){
+        editSaving = false;
+        $("#beSave", el).disabled = false;
+        var msg = String(err && err.message || err);
+        if (/GitHub 422/.test(msg) && /fast.?forward/i.test(msg)) msg = "Someone saved a change on the site at the same moment. Nothing was changed - just press Save again.";
+        setEditMsg("Not saved - the site is unchanged. " + msg, true);
+        console.error(err);
+      });
+  }
+
+  $("#existingGrid").addEventListener("click", function(e){
+    var b = e.target.closest ? e.target.closest("[data-edit-src]") : null;
+    if (b) openEdit(b.getAttribute("data-edit-src"));
+  });
 
   /* ================= choosing photos ================= */
   var picker = $("#picker"), fileInput = $("#fileInput");

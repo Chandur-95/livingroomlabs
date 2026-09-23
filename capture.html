@@ -3,21 +3,36 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF" id="themeColorMeta">
+<meta name="view-transition" content="same-origin">
 <title>What We Capture — Living Room Labs</title>
 <meta name="description" content="Browse Living Room Labs by category: food, pets, real estate, products, events, portraits and travel photography from Hyderabad.">
 <link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="manifest" href="/manifest.json">
 <link rel="canonical" href="https://livingroomlabs.in/capture.html">
-<!-- Sync theme from home page localStorage - defaults to light unless the user explicitly picked dark before -->
+<!-- Always starts light (lamp off), no matter what theme the home page was left in - see the
+     second note near initLamp() for why this no longer mirrors localStorage on arrival. -->
 <script>
   (function(){
     try {
-      var saved = localStorage.getItem("lrl_theme");
-      if(saved === "dark") {
-        document.documentElement.setAttribute("data-theme", "dark");
-      } else {
-        document.documentElement.setAttribute("data-theme", "light");
-      }
+      document.documentElement.setAttribute("data-theme", "light");
+      var tcm = document.getElementById("themeColorMeta");
+      if (tcm) tcm.setAttribute("content", "#FFFFFF");
     } catch(e) {}
+  })();
+</script>
+<script>
+  /* Marks each grid/carousel photo "loaded" the instant it finishes downloading, so the CSS
+     above can settle it from a soft blur into focus. Capture phase, because "load" doesn't
+     bubble - catches every photo however and whenever it's created, cache included. */
+  (function () {
+    try {
+      document.addEventListener("load", function (e) {
+        var img = e.target;
+        if (img && img.tagName === "IMG") img.classList.add("lrl-loaded");
+      }, true);
+    } catch (e) {}
   })();
 </script>
 <style>
@@ -128,7 +143,8 @@ html[data-theme="light"].cat-open .cap-cat-btn.active{background:#000;color:#fff
   transform:scale(.7);
   transform-origin:center center;will-change:transform,opacity;
 }
-.disc-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.disc-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;transition:opacity .55s ease, filter .6s ease;}
+.disc-card img:not(.lrl-loaded){opacity:0;filter:blur(14px)}
 .disc-card.is-center{cursor:zoom-in}
 
 .disc-caption{
@@ -190,7 +206,10 @@ html[data-theme="light"].cat-open .cap-cat-btn.active{background:#000;color:#fff
 @media (max-width:860px){
   #lbStage{ --lr:150px; }
 }
-@media (prefers-reduced-motion:reduce){ #lbImgDim,#lampLayer{transition:opacity .2s ease} }
+@media (prefers-reduced-motion:reduce){
+  #lbImgDim,#lampLayer{transition:opacity .2s ease}
+  .cat-card img:not(.lrl-loaded),.disc-card img:not(.lrl-loaded){opacity:1;filter:none;transform:none}
+}
 
 /* ================= category grid view ================= */
 #catview{position:fixed;inset:0;background:var(--paper);color:var(--ink);overflow-y:auto;display:none;
@@ -228,8 +247,16 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
   }
 }
 .cat-card{position:relative;border-radius:2px;overflow:hidden;cursor:pointer;background:#111;aspect-ratio:4/5}
-.cat-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
+.cat-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease, opacity .55s ease, filter .6s ease}
 .cat-card:hover img{transform:scale(1.04)}
+.cat-card img:not(.lrl-loaded){opacity:0;filter:blur(14px);transform:scale(1.03)}
+@media (pointer:coarse) and (prefers-reduced-motion: no-preference){
+  /* Touch devices: a lighter blur costs less to composite - matters most here, since the
+     Discover carousel eager-loads ~40 photos (20 featured, doubled for the seamless loop)
+     right away, and a phone's GPU shouldn't have to blur all of them at full strength at once. */
+  .cat-card img:not(.lrl-loaded){filter:blur(7px);transform:scale(1.02)}
+  .disc-card img:not(.lrl-loaded){filter:blur(6px)}
+}
 .cat-card .cc-cap{
   position:absolute;left:0;right:0;bottom:0;padding:10px 12px;
   background:linear-gradient(0deg,rgba(0,0,0,.75),rgba(0,0,0,0));color:#fff;
@@ -319,13 +346,13 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   .cap-header{padding:calc(10px + var(--safe-top)) 16px 8px}
   .cap-row1{margin-bottom:10px;min-height:40px}
   .cap-brand .lg-crop{height:38px}
-  #capLampToggle{padding:6px 12px !important;font-size:.64rem !important}
+  #capLampToggle{padding:0 12px !important;font-size:.64rem !important;min-height:36px;display:inline-flex;align-items:center;letter-spacing:.06em}
 
   .cap-cats{margin:0 -16px;padding:0 16px 2px;gap:6px}
   .cap-cats.more-right:not(.more-left){-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
   .cap-cats.more-left:not(.more-right){-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px);mask-image:linear-gradient(90deg,transparent,#000 44px)}
   .cap-cats.more-left.more-right{-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent)}
-  .cap-cat-btn{flex:none;padding:6px 13px;font-size:.64rem;letter-spacing:.1em}
+  .cap-cat-btn{flex:none;padding:10px 16px;font-size:.66rem;letter-spacing:.1em;min-height:40px;display:inline-flex;align-items:center}
 
   .disc-stage{padding-bottom:calc(var(--foot-h) + var(--cap-h))}
   .disc-track{gap:12px}
@@ -363,7 +390,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   .cat-head p{font-size:.86rem;line-height:1.45}
   .cat-chips{flex-wrap:nowrap;overflow-x:auto;margin:14px -16px 0;padding:0 16px 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
   .cat-chips::-webkit-scrollbar{display:none}
-  .cat-chip{flex:none;padding:6px 12px;font-size:.64rem}
+  .cat-chip{flex:none;padding:10px 16px;font-size:.66rem;min-height:40px;display:inline-flex;align-items:center}
   .cat-grid{gap:8px;padding:4px 16px calc(var(--foot-h) + 24px)}
   .cat-card{border-radius:3px}
   .cat-card.wide{grid-column:1 / -1;aspect-ratio:var(--r,4/5)}
@@ -376,6 +403,23 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   font-weight:600;font-size:.85rem;text-decoration:none;transition:top .15s ease}
 .skip-link:focus{top:12px}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+/* Phones: Spotlight leaves the crowded top bar. On Discover it sits under the photo slide, between
+   the photo's title and the pause button; on a category page it sits beside "← Discover". One
+   real button, moved between these spots by script as the screen changes. */
+.spot-slot{display:none}
+.cat-head-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
+@media (max-width:860px){
+  .spot-slot{display:flex;align-items:center;flex:none;pointer-events:auto;margin-left:auto}
+  .cat-head-top{margin:0 0 8px}
+  .cat-head-top .cat-back-inline{margin:0}
+  .spot-slot #capLampToggle{
+    color:#fff;opacity:.9;font-size:.62rem !important;letter-spacing:.08em;text-transform:uppercase;
+    cursor:pointer;white-space:nowrap;min-height:40px;padding:0 13px !important;
+    display:inline-flex;align-items:center;gap:6px;
+  }
+  .spot-slot #capLampToggle:not([aria-pressed="true"]){background:rgba(0,0,0,.25)}
+  html[data-theme="light"].cat-open .spot-slot #capLampToggle{color:#000;background:transparent}
+}
 </style>
 </head>
 <body>
@@ -395,7 +439,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       <div class="cap-links">
         <button type="button" id="capCollective" class="cap-mobile-hide">The Collective ↗</button>
         <a href="#" id="capElsewhere" class="cap-mobile-hide" target="_blank" rel="noopener">Elsewhere ↗</a>
-        <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the lamp on">☾ Lamp</button>
+        <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the spotlight on">☾ Spotlight</button>
       </div>
     </div>
   </div>
@@ -415,12 +459,16 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       <span id="discMeta"></span>
     </div>
     <div class="disc-hint mono">Click a category above, or swipe to browse</div>
+    <div class="spot-slot" id="discSpotSlot"></div>
   </div>
 </div>
 
 <section id="catview" aria-label="Category photos">
   <div class="cat-head">
-    <button type="button" class="cat-back-inline" id="catBackInline">← Discover</button>
+    <div class="cat-head-top">
+      <button type="button" class="cat-back-inline" id="catBackInline">← Discover</button>
+      <div class="spot-slot" id="catSpotSlot"></div>
+    </div>
     <h1 id="catTitle"></h1>
     <p id="catLine"></p>
     <div class="cat-chips" id="catChips"></div>
@@ -478,12 +526,11 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     return m ? "/images/thumbs/" + m[1] + ".webp" : src;
   }
 
-  /* theme: mirror whatever the homepage lamp is set to. Defaults to light (lamp off) unless
-     the user explicitly chose dark before - doesn't follow the device's OS dark-mode setting. */
-  try {
-    var savedTheme = localStorage.getItem("lrl_theme");
-    document.documentElement.setAttribute("data-theme", savedTheme === "dark" ? "dark" : "light");
-  } catch(e){}
+  /* theme: this page always starts on light (lamp off), regardless of what the home page is
+     set to - landing here shouldn't inherit dark mode from a click-through. The <head> script
+     already set data-theme="light" before first paint; nothing to do here now except note it,
+     since the old second read of localStorage used to silently re-apply the synced value here
+     right after, which is exactly what caused the lamp to appear "on by default". */
 
   /* both bars are measured live (not guessed in CSS), so the photos, captions and buttons always
      clear them exactly - including the phone's home-indicator safe area inside the footer */
@@ -533,6 +580,21 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     var stage = $("#lbStage");
     var lb = $("#capLb");
     var toggle = $("#capLampToggle");
+    (function placeSpotlight(){
+      var home = toggle && toggle.parentNode;
+      var discSlot = document.getElementById("discSpotSlot"), catSlot = document.getElementById("catSpotSlot");
+      if (!toggle || !home || !discSlot || !catSlot || !window.matchMedia) return;
+      var mq = window.matchMedia("(max-width:860px)");
+      function place(){
+        var target = !mq.matches ? home
+          : (document.documentElement.classList.contains("cat-open") ? catSlot : discSlot);
+        if (toggle.parentNode !== target) { target.appendChild(toggle); syncHeaderHeight(); }
+      }
+      place();
+      if (mq.addEventListener) mq.addEventListener("change", place); else if (mq.addListener) mq.addListener(place);
+      /* follow Discover <-> category switches (they toggle .cat-open on <html>) */
+      if (window.MutationObserver) new MutationObserver(place).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
+    })();
     if (!stage || !lb || !toggle) return;
 
     var active = false, lastMoveAt = 0;
@@ -613,16 +675,18 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       var nowDark = !isDark();
       document.documentElement.setAttribute("data-theme", nowDark ? "dark" : "light");
       toggle.setAttribute("aria-pressed", String(nowDark));
-      toggle.setAttribute("aria-label", nowDark ? "Turn the lamp off" : "Turn the lamp on");
-      toggle.textContent = nowDark ? "☀ Lamp" : "☾ Lamp";
+      toggle.setAttribute("aria-label", nowDark ? "Turn the spotlight off" : "Turn the spotlight on");
+      toggle.textContent = nowDark ? "☀ Spotlight" : "☾ Spotlight";
+      var tcm = document.getElementById("themeColorMeta");
+      if (tcm) tcm.setAttribute("content", nowDark ? "#080808" : "#FFFFFF");
       try { localStorage.setItem("lrl_theme", nowDark ? "dark" : "light"); } catch(e){}
       updateLampVisibility();
     });
 
     if (isDark()) {
       toggle.setAttribute("aria-pressed", "true");
-      toggle.setAttribute("aria-label", "Turn the lamp off");
-      toggle.textContent = "☀ Lamp";
+      toggle.setAttribute("aria-label", "Turn the spotlight off");
+      toggle.textContent = "☀ Spotlight";
     }
     updateLampVisibility();
 
@@ -715,7 +779,20 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     track = $("#discTrack");
     var pool = PHOTOS.filter(function(p){ return p.showInAll !== false; });
     if (!pool.length) pool = PHOTOS;
-    discoverOrder = shuffle(pool);
+    /* Discover is a taster, not the whole archive: every photo here downloads straight away
+       (twice, for the seamless loop), so at hundreds of photos showing all of them would cost a
+       phone tens of MB. Instead: up to 30, featured first, dealt round-robin across categories so
+       every category shows up, freshly shuffled each visit. Full browsing happens per category. */
+    var MAX_DISCOVER = 30;
+    var mixed = shuffle(pool).sort(function(a, b){ return (b.featured === true) - (a.featured === true); });
+    var byCat = {}, cats = [];
+    mixed.forEach(function(p){ var c = p.category || ""; if (!byCat[c]) { byCat[c] = []; cats.push(c); } byCat[c].push(p); });
+    var picked = [], more = true;
+    while (picked.length < MAX_DISCOVER && more) {
+      more = false;
+      cats.forEach(function(c){ if (picked.length < MAX_DISCOVER && byCat[c].length) { picked.push(byCat[c].shift()); more = true; } });
+    }
+    discoverOrder = picked;
 
     /* build once, then an identical clone appended after it, so the loop point is invisible
        (the exact technique the homepage strips use). Cards start at a sensible placeholder

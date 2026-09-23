@@ -1,0 +1,18 @@
+{
+  "name": "Living Room Labs",
+  "short_name": "LRL",
+  "description": "Living Room Labs is a Hyderabad photography collective. We shoot food, pets, real estate, performing arts, products, events, portraits and travel.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#FFFFFF",
+  "icons": [
+    {
+      "src": "/logo.png",
+      "sizes": "600x600",
+      "type": "image/png",
+      "purpose": "any"
+    }
+  ]
+}

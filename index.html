@@ -3,8 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF" id="themeColorMeta">
+<meta name="view-transition" content="same-origin">
 <title>Living Room Labs | Photography Collective in Hyderabad</title>
 <link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="manifest" href="/manifest.json">
 <meta name="description" content="Living Room Labs is a Hyderabad photography collective. We shoot food, pets, real estate, performing arts, products, events, portraits and travel.">
 <link rel="canonical" href="https://livingroomlabs.in/">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -129,10 +133,47 @@
   (function() {
     try {
       var saved = localStorage.getItem("lrl_theme");
-      document.documentElement.setAttribute("data-theme", saved === "dark" ? "dark" : "light");
+      var isDark = saved === "dark";
+      document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+      var tcm = document.getElementById("themeColorMeta");
+      if (tcm) tcm.setAttribute("content", isDark ? "#080808" : "#FFFFFF");
     } catch(e) {}
   })();
 </script>
+
+<script>
+  /* The cover shows once per browser session. Checked here, before first paint, and as a class
+     on <html> (the cover element itself doesn't exist yet - body hasn't been parsed) so a
+     returning-within-session visitor never sees it flash on then off. */
+  (function () {
+    try {
+      /* also skipped for deep links (/#collective, /#what-we-capture, /#niche-..., /?enquire=...):
+         someone who asked for a specific part of the site should land on it, not on the cover */
+      var deep = /^#(collective|what-we-capture|niche-)/.test(location.hash) || /[?&]enquire=/.test(location.search);
+      var seen = false;
+      try { seen = sessionStorage.getItem("lrl_cover_seen") === "1"; } catch (e2) {}
+      if (deep || seen) document.documentElement.classList.add("cover-seen");
+    } catch (e) {}
+  })();
+</script>
+
+<script>
+  /* Marks each grid photo "loaded" the instant it finishes downloading, so the CSS above can
+     settle it from a soft blur into focus. Registered here (before any photo exists in the DOM)
+     and using the capture phase, because "load" doesn't bubble - this one listener catches every
+     photo in every grid, however and whenever it's created, including ones served from cache. */
+  (function () {
+    try {
+      document.addEventListener("load", function (e) {
+        var img = e.target;
+        if (img && img.tagName === "IMG" && img.classList.contains("lrl-loaded") === false) {
+          img.classList.add("lrl-loaded");
+        }
+      }, true);
+    } catch (e) {}
+  })();
+</script>
+
 
 <style>
 :root{
@@ -729,9 +770,10 @@ html[data-theme="dark"] .home-work-grid .plate {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   object-fit: cover;
-  transition: transform 0.65s var(--ease);
+  transition: transform 0.65s var(--ease), filter .7s var(--ease);
   opacity: 1 !important;
 }
+.plate img:not(.lrl-loaded){ filter:blur(16px); transform:scale(1.04); }
 
 .guard{position:absolute;inset:0;z-index:3;background:transparent;pointer-events:none;}
 
@@ -910,6 +952,131 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 
 .collective-nav .overlay-nav-brand .mark img {
   filter: invert(1) hue-rotate(180deg) brightness(1.25) !important;
+}
+
+/* ===== Cover: the very first screen, once per browser session (see the early <head> script
+   and the .cover-seen class it sets). A drifting strip of real photos, no header chrome, just
+   the mark, the name, and two ways in: Work (into the site) or Spotlight (a toggle-able warm
+   glow that follows the cursor/finger, reusing the same --lx/--ly technique as the lightbox's
+   lamp, just as an additive glow here rather than a brightness mask, since there's no single
+   photo to mask - just the strip). ===== */
+.cover-overlay{
+  position:fixed;inset:0;z-index:5000;
+  overflow:hidden;background:#0a0a0a;
+  display:flex;align-items:center;justify-content:center;
+  opacity:1;transition:opacity .6s cubic-bezier(.16, 1, .3, 1);
+}
+.cover-overlay.cover-hide{opacity:0;pointer-events:none}
+html.cover-seen .cover-overlay,
+.cover-overlay[hidden]{display:none}
+/* page underneath stays put while the cover is up (swipes on a phone would otherwise scroll it) */
+html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
+.cover-overlay{overscroll-behavior:contain}
+
+.cover-strip{
+  position:absolute;inset:0;display:flex;align-items:center;gap:12px;
+  width:max-content;opacity:0;transition:opacity 1s ease;
+  animation:coverDrift 54s linear infinite;
+  will-change:transform;
+}
+.cover-strip.cover-strip-filled{opacity:1}
+.cover-strip img{
+  height:100%;width:340px;object-fit:cover;flex:none;display:block;
+  filter:grayscale(15%) brightness(.68);
+}
+@keyframes coverDrift{ 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+.cover-scrim{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:radial-gradient(ellipse 65% 60% at 50% 52%, rgba(10,10,10,.5) 0%, rgba(10,10,10,.18) 55%, rgba(10,10,10,.05) 100%);
+}
+
+.cover-glow{
+  position:absolute;inset:0;pointer-events:none;opacity:0;z-index:1;
+  transition:opacity .4s ease;
+  /* a real spotlight, like the lightbox lamp: a warm pool of light where you point, and the rest
+     of the room falls into shadow - one gradient layer, so it costs nothing extra to draw */
+  background:radial-gradient(circle clamp(170px, 24vmax, 320px) at var(--clx,50%) var(--cly,50%),
+    rgba(255,200,95,.30) 0%, rgba(255,194,75,.12) 42%, rgba(8,8,8,.62) 78%, rgba(8,8,8,.72) 100%);
+}
+.cover-overlay.spotlight-on .cover-glow{opacity:1}
+
+.cover-spotlight-btn{
+  position:absolute;top:calc(24px + var(--safe-top));right:calc(24px + var(--safe-right));z-index:3;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;box-sizing:border-box;
+  border:1px solid rgba(255,255,255,.32);background:rgba(10,10,10,.3);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  color:#fff;padding:0 20px;border-radius:999px;
+  font:600 .7rem/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;
+  cursor:pointer;transition:border-color .2s ease,background .2s ease;
+}
+.cover-spotlight-btn:hover,.cover-spotlight-btn:focus-visible{border-color:rgba(255,255,255,.6)}
+.cover-spotlight-btn[aria-pressed="true"]{border-color:#FFC24B;background:rgba(255,194,75,.14);color:#FFE9C2}
+.cover-spotlight-dot{width:6px;height:6px;border-radius:999px;background:currentColor;opacity:.65;flex:none}
+.cover-spotlight-btn[aria-pressed="true"] .cover-spotlight-dot{background:#FFC24B;box-shadow:0 0 6px #FFC24B;opacity:1}
+
+.cover-center{
+  position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:32px;
+  padding:32px;
+  max-height:100vh;max-height:100dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  box-sizing:border-box;
+}
+.cover-brand-row{display:flex;align-items:center;gap:18px;}
+.cover-mark{display:block;width:clamp(52px, 6vw, 76px);filter:brightness(0) invert(1);}
+.cover-wordmark{
+  font:600 clamp(1.35rem, 3.2vw, 2.15rem)/1 'Space Grotesk', sans-serif;
+  letter-spacing:.01em;color:#fff;text-align:center;
+  text-shadow:0 2px 28px rgba(0,0,0,.55);
+}
+.cover-panel{
+  padding:26px 38px;border-radius:6px;
+  background:rgba(10,10,10,.22);
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+}
+.cover-headline{
+  font:500 clamp(1.3rem, 3vw, 2.3rem)/1.18 'Playfair Display', Georgia, serif;
+  color:#fff;text-align:center;max-width:640px;
+  text-shadow:0 2px 30px rgba(0,0,0,.55);
+}
+.cover-headline em{font-style:italic;font-weight:500}
+.cover-accent{color:#FFC24B;font-style:italic}
+.cover-work-btn{
+  border:1px solid #fff;background:none;color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;min-height:52px;box-sizing:border-box;
+  padding:0 42px;border-radius:999px;
+  font:600 .78rem/1 'JetBrains Mono', monospace;letter-spacing:.16em;text-transform:uppercase;
+  cursor:pointer;transition:background .2s ease,color .2s ease;
+}
+.cover-work-btn:hover,.cover-work-btn:focus-visible{background:#fff;color:#0a0a0a}
+
+@media (max-width:640px){
+  .cover-strip img{width:70vw}
+  .cover-spotlight-btn{padding:0 15px;font-size:.62rem;gap:7px;min-height:40px;top:calc(16px + var(--safe-top));right:calc(16px + var(--safe-right))}
+  .cover-center{gap:22px;padding:24px}
+  .cover-headline{font-size:1.15rem}
+  .cover-panel{padding:18px 22px}
+  .cover-work-btn{padding:0 36px;min-height:48px}
+}
+@media (max-height:480px){
+  .cover-center{gap:14px;padding:16px}
+  .cover-mark{width:40px}
+  .cover-wordmark{font-size:1.1rem}
+  .cover-headline{font-size:1rem;line-height:1.1}
+  .cover-panel{padding:10px 18px}
+  .cover-work-btn{min-height:40px;padding:0 28px}
+}
+@media (pointer:coarse) and (prefers-reduced-motion: no-preference){
+  .cover-strip img{filter:grayscale(15%) brightness(.72)}
+}
+/* Phones/tablets: a live backdrop blur over a strip that never stops moving re-blurs every
+   frame - costly on mobile GPUs. A slightly deeper plain tint reads the same and costs nothing. */
+@media (pointer:coarse){
+  .cover-panel{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(10,10,10,.32)}
+}
+@media (prefers-reduced-motion:reduce){
+  .cover-strip{animation:none}
+  .cover-overlay,.cover-strip,.cover-glow{transition:none}
 }
 
 .overlay-page {
@@ -1135,6 +1302,14 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 @media (max-width:640px){
   .niches-slideshow{ aspect-ratio:4/5; max-height:64vh; }
 }
+
+/* Scroll-reveal utility (see observeReveals() in the script below). Deliberately starts
+   visible-by-default is NOT used here - JS adds "in" once a row scrolls into view - but every
+   code path that can add this class is guaranteed to also call observeReveals(), which itself
+   force-reveals everything immediately if IntersectionObserver or motion isn't available, so
+   content can never get stuck invisible. */
+.lrl-reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s cubic-bezier(.16, 1, .3, 1), transform .6s cubic-bezier(.16, 1, .3, 1); }
+.lrl-reveal.in{ opacity:1; transform:translateY(0); }
 
 .niche-row {
   border-bottom: 1px solid var(--rule);
@@ -1504,7 +1679,11 @@ html[data-theme="dark"] .lb-frame {
   }
   .lb-frame.lamp-on #lb-lamp-layer{opacity:1}
 }
-@media (prefers-reduced-motion:reduce){ #lb-img-dim,#lb-lamp-layer{transition:opacity .2s ease} }
+@media (prefers-reduced-motion:reduce){
+  #lb-img-dim,#lb-lamp-layer{transition:opacity .2s ease}
+  .plate img:not(.lrl-loaded){filter:none;transform:none}
+  .lrl-reveal{opacity:1 !important;transform:none !important;transition:none !important}
+}
 
 .lb-cap{
   display:grid;grid-template-columns:1fr auto;gap:6px 20px;align-items:baseline;
@@ -1722,6 +1901,12 @@ html[data-theme="dark"] .lb-frame {
   .overlay-close::before{content:"";position:absolute;inset:-8px}
   .lb-close,.lb-nav{min-width:44px;min-height:44px}
 }
+@media (pointer:coarse) and (prefers-reduced-motion: no-preference){
+  /* Touch devices: a lighter blur costs less to composite - same "resolve into focus" feel,
+     without asking a phone's GPU to blur dozens of grid photos at once. Scoped to skip
+     entirely when reduced-motion is on, so that preference always wins outright. */
+  .plate img:not(.lrl-loaded){ filter:blur(7px); transform:scale(1.02); }
+}
 
 /* ===== Footer: top-align the logo with the Index/Elsewhere/Events/Collective columns ===== */
 .foot .foot-col-logo{align-self:start !important}
@@ -1747,6 +1932,28 @@ footer.wrap{overflow-x:clip}
 </head>
 
 <body>
+<div class="cover-overlay" id="cover-overlay" role="dialog" aria-modal="true" aria-label="Living Room Labs">
+  <div class="cover-strip" id="cover-strip" aria-hidden="true"></div>
+  <div class="cover-scrim" aria-hidden="true"></div>
+  <div class="cover-glow" id="cover-glow" aria-hidden="true"></div>
+
+  <button type="button" class="cover-spotlight-btn" id="cover-spotlight-btn" aria-pressed="false">
+    <span class="cover-spotlight-dot" aria-hidden="true"></span>
+    Spotlight
+  </button>
+
+  <div class="cover-center">
+    <div class="cover-brand-row">
+      <span class="mark lg-crop cover-mark">
+        <img src="/logo.png" alt="Living Room Labs">
+      </span>
+      <span class="cover-wordmark" data-name></span>
+    </div>
+    <div class="cover-panel"><div class="cover-headline" id="cover-headline"></div></div>
+    <button type="button" class="cover-work-btn" id="cover-work-btn">Work →</button>
+  </div>
+</div>
+
 <a class="skip-link" href="#work">Skip to the photos</a>
 <a class="skip" href="#work">Skip to work</a>
 
@@ -2071,6 +2278,33 @@ function esc(str){
   return String(str == null ? "" : str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 }
 
+/* Scroll-reveal: fades/rises static list rows (niche list, collective cards) into place the
+   first time they scroll into view. One shared observer for the whole page. Skips entirely
+   for prefers-reduced-motion, and for anyone whose browser lacks IntersectionObserver - in
+   both cases the rows are already visible by default (see .lrl-reveal CSS), so nothing breaks. */
+var revealIO = null;
+function observeReveals(container){
+  if (!container) return;
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!window.IntersectionObserver || reduced) {
+    /* no observer support, or motion turned off - show everything immediately rather than
+       risk rows staying invisible forever */
+    $$(".lrl-reveal:not(.in)", container).forEach(function (el) { el.classList.add("in"); });
+    return;
+  }
+  if (!revealIO) {
+    revealIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          revealIO.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+  }
+  $$(".lrl-reveal:not(.in)", container).forEach(function (el) { revealIO.observe(el); });
+}
+
 /* Alt text for screen readers and Google Images:
    uses the "Alt Text" box from the CMS if filled in, otherwise "Title — Category photography". */
 function altFor(p){
@@ -2144,8 +2378,25 @@ function homeCovered(){
 }
 
 /* One strip, one step. step = CSS pixels to advance this frame. */
+/* Smoothly scrolls a strip back to its first photo; auto-scroll waits until the glide has
+   finished (scrollend where supported, otherwise a timer) so it never fights the animation. */
+function rewindTrack(track, now){
+  track._holdUntil = (now || performance.now()) + 2000;
+  var done = function(){ track._holdUntil = 0; track._pos = undefined; track._maxAt = 0; };
+  if("onscrollend" in track){
+    var onEnd = function(){ track.removeEventListener("scrollend", onEnd); done(); };
+    track.addEventListener("scrollend", onEnd);
+  }
+  try { track.scrollTo({ left: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" }); }
+  catch(e){ track.scrollLeft = 0; }
+}
+
 function stepTrack(track, step){
   if(!track || track._isPaused || track._isTouching || track._offscreen) return;
+  if(track._holdUntil){
+    if(performance.now() < track._holdUntil) return;
+    track._holdUntil = 0; track._pos = undefined;
+  }
   if(track.classList && track.classList.contains("niche-preview-grid--static")) return;   /* static: never auto-scrolls */
   var now = performance.now();
   if(!track._maxAt || now - track._maxAt > 500){          /* measuring the strip forces layout, so do it twice a second, not every frame */
@@ -2166,13 +2417,16 @@ function stepTrack(track, step){
   if(track._extAt && now - track._extAt < 250) return;   /* let a swipe's momentum finish */
 
   track._pos += step;
-  if(track._looped && track._loopW > 0){
-    var loopPx = Math.round(track._loopW);
-    if(track._pos >= loopPx) track._pos -= loopPx;        /* identical picture -> seamless */
-  } else if(track._pos >= track._max){
-    track._pos = Math.round(track._max);                  /* no copy to loop into: hold at the end */
+  if(track._pos >= track._max){
+    /* reached the last photo: rest there a moment, then glide back to the first */
+    track._pos = Math.round(track._max);
+    if(!track._endAt){ track._endAt = now; track.scrollLeft = track._pos; return; }
+    if(now - track._endAt < 2200) return;
+    track._endAt = 0;
+    rewindTrack(track, now);
     return;
   }
+  track._endAt = 0;
   track.scrollLeft = track._pos;
 }
 
@@ -2209,41 +2463,16 @@ function startAutoScroll() {
 /* Seamless loop: put a second copy of the photos after the last one (only if the strip is wider than its window). */
 var STATIC_TRACK_CUTOFF = 3;
 function refreshLoop(track){
+  /* No more looping copies. The strip used to append a full duplicate set of photos for a
+     seamless wrap - but visitors can swipe or arrow to the end and see every photo twice
+     (15 Events photos showed as 30), which read as a bug. Now each strip holds exactly the
+     real photos; stepTrack() pauses at the last one and glides back to the first instead. */
   if(!track) return;
-  if(track.classList && track.classList.contains("niche-preview-grid--static")){
-    track._looped = false;   /* 3 or fewer photos: never loop, never auto-scroll */
-    return;
-  }
-  var originals = $$(".shot:not([data-clone])", track);
-  var clones = $$(".shot[data-clone]", track);
-  var want = !prefersReducedMotion() && originals.length > STATIC_TRACK_CUTOFF;
-
-  if(!want){
-    clones.forEach(function(c){ c.parentNode && c.parentNode.removeChild(c); });
-    track._looped = false;
-    return;
-  }
-  if(!clones.length){
-    if(track.scrollWidth <= track.clientWidth + 2){ track._looped = false; return; }
-    originals.forEach(function(el){
-      var c = el.cloneNode(true);
-      c.setAttribute("data-clone", "1");
-      c.setAttribute("aria-hidden", "true");
-      c.setAttribute("tabindex", "-1");
-      c.classList.remove("touch-focus");
-      track.appendChild(c);
-    });
-    clones = $$(".shot[data-clone]", track);
-  }
-  var w = clones[0].getBoundingClientRect().left - originals[0].getBoundingClientRect().left;
-  if(w >= track.clientWidth - 1){
-    track._looped = true;
-    track._loopW = w;
-  } else {
-    /* one set is narrower than the window: a loop would show repeats, so keep it a plain strip */
-    clones.forEach(function(c){ c.parentNode && c.parentNode.removeChild(c); });
-    track._looped = false;
-  }
+  $$(".shot[data-clone]", track).forEach(function(c){ c.parentNode && c.parentNode.removeChild(c); });
+  track._looped = false;
+  track._loopW = 0;
+  track._endAt = 0;
+  track._holdUntil = 0;
   track._pos = undefined;
   track._maxAt = 0;
 }
@@ -2334,6 +2563,40 @@ function buildFilters(){
   });
 }
 
+/* Cover's background strip: up to 12 featured photos (doubled, for a seamless loop), the same
+   thumbnail WebP copies the rest of the site uses. If content.json failed to load (SITE.photos
+   empty) the strip just stays empty - the cover's mark, name and buttons work fine on their
+   own against the plain dark background. Skipped entirely once the cover's already been
+   dismissed this session - display:none on the overlay doesn't stop eager images from
+   downloading, so building it at all would waste bandwidth nobody benefits from. */
+function renderCoverFilmstrip(){
+  if(document.documentElement.classList.contains("cover-seen")) return;
+  var strip = $("#cover-strip");
+  if(!strip) return;
+  var pool = (SITE.photos || []).filter(function(p){ return p.featured; }).slice(0, 12);
+  if(!pool.length) return;
+  var list = pool.concat(pool);
+  strip.innerHTML = list.map(function(p){
+    return '<img loading="eager" decoding="async" '+stripImgAttrs(p.src)+' alt="">';
+  }).join("");
+  strip.classList.add("cover-strip-filled");
+}
+
+/* Cover's headline: the same real hero lines as the rest of the site (SITE.hero, editable in
+   the Content Editor), run through the same italics() *asterisk* parser already used elsewhere
+   - so this never drifts out of sync with a hardcoded copy. The one addition: "curiosity"
+   specifically gets the amber accent color, wherever it lands in whatever the CMS currently
+   has (word-boundary matched, so it only ever catches the whole word). */
+function renderCoverHeadline(){
+  if(document.documentElement.classList.contains("cover-seen")) return;
+  var el = $("#cover-headline");
+  if(!el || !SITE.hero || !SITE.hero.length) return;
+  el.innerHTML = SITE.hero.map(function(lineStr){
+    var html = italics(lineStr).replace(/\bcuriosity\b/gi, '<span class="cover-accent">$&</span>');
+    return '<div>' + html + '</div>';
+  }).join("");
+}
+
 function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
@@ -2399,8 +2662,20 @@ function bindGridClicks(grid){
       return;
     }
     grid._isPaused = true;
-    if (grid._list) state.visible = grid._list;      /* always use THIS strip's photos, not whatever was opened last */
-    openLB(parseInt(b.dataset.idx, 10), b);
+    var idx = parseInt(b.dataset.idx, 10);
+    var list = grid._list || [];
+    var picked = list[idx];
+    /* full view stays inside the clicked photo's own category - in the All view the strip mixes
+       categories, and paging from an Events photo straight into Pets felt like a mistake */
+    if (picked) {
+      var sameCat = (SITE.photos || []).filter(function(p){ return cleanCat(p.category) === cleanCat(picked.category); });
+      if (sameCat.indexOf(picked) === -1) sameCat = [picked];
+      state.visible = sameCat;
+      idx = Math.max(0, sameCat.indexOf(picked));
+    } else {
+      state.visible = list;
+    }
+    openLB(isNaN(idx) ? 0 : idx, b);
   });
 }
 
@@ -2420,11 +2695,9 @@ function initCarouselControls() {
     prevBtn.addEventListener("click", function(e) {
       e.preventDefault();
       track._isPaused = true;
-      /* near the start? hop back one full loop first (same picture) so "previous" never hits a wall */
-      if (track._looped && track.scrollLeft < 310 && track.scrollLeft + track._loopW <= track.scrollWidth - track.clientWidth) {
-        track.scrollLeft = track.scrollLeft + track._loopW;
-      }
-      track.scrollBy({ left: -310, behavior: "smooth" });
+      /* already at the first photo? "previous" wraps round to the last, so it never hits a wall */
+      if (track.scrollLeft <= 2) track.scrollTo({ left: track.scrollWidth - track.clientWidth, behavior: "smooth" });
+      else track.scrollBy({ left: -310, behavior: "smooth" });
       setTimeout(function() { track._isPaused = false; track._pos = undefined; }, 1200);
     });
   }
@@ -2432,10 +2705,9 @@ function initCarouselControls() {
     nextBtn.addEventListener("click", function(e) {
       e.preventDefault();
       track._isPaused = true;
-      if (track._looped && track.scrollLeft + 310 > track.scrollWidth - track.clientWidth && track.scrollLeft - track._loopW >= 0) {
-        track.scrollLeft = track.scrollLeft - track._loopW;
-      }
-      track.scrollBy({ left: 310, behavior: "smooth" });
+      /* already at the last photo? "next" wraps round to the first */
+      if (track.scrollLeft >= track.scrollWidth - track.clientWidth - 2) track.scrollTo({ left: 0, behavior: "smooth" });
+      else track.scrollBy({ left: 310, behavior: "smooth" });
       setTimeout(function() { track._isPaused = false; track._pos = undefined; }, 1200);
     });
   }
@@ -2493,7 +2765,9 @@ function renderNichesList(){
       dropdownFootHTML = "";
     } else if (photosInNiche.length > 0) {
       var gridClass = "niche-preview-grid" + (isStaticPreview ? " niche-preview-grid--static" : "");
-      previewGridHTML = '<div class="' + gridClass + '">' + photosInNiche.map(function(p, pIdx){
+      /* preview strip: first 12 only - "View all N photos" below opens the rest; indexes stay
+         valid because the full view uses the same order */
+      previewGridHTML = '<div class="' + gridClass + '">' + photosInNiche.slice(0, 12).map(function(p, pIdx){
         var pos = getObjPosition(p.imagePosition);
         return '<button type="button" class="shot btn-preview-shot" data-niche-cat="'+esc(n.name)+'" data-niche-subidx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
@@ -2515,7 +2789,7 @@ function renderNichesList(){
       previewGridHTML = '<p style="opacity:0.55; margin:8px 0; font-size:0.9rem;">No photographs published in this category yet. Reach out to commission this shoot.</p>';
     }
 
-    return '<div class="niche-row" data-niche-row="'+esc(n.name)+'">' +
+    return '<div class="niche-row lrl-reveal" data-niche-row="'+esc(n.name)+'">' +
              '<button type="button" class="niche btn-toggle-niche" data-niche="'+esc(n.name)+'" aria-expanded="false" aria-label="Toggle '+esc(n.name)+' preview">'+
                '<h3>'+esc(n.name)+'<span class="arrow">&rarr;</span></h3>'+
                '<p>'+esc(n.line || "")+'</p>'+
@@ -2527,6 +2801,8 @@ function renderNichesList(){
              '</div>' +
            '</div>';
   }).join("");
+
+  observeReveals(nHost);
 
   $$(".btn-toggle-niche", nHost).forEach(function(btn){
     btn.addEventListener("click", function(e){
@@ -2547,7 +2823,10 @@ function renderNichesList(){
         if (pGrid) {
           pGrid.scrollLeft = 0;
           pGrid._pos = 0;
-          pGrid._isPaused = false;
+          /* stay paused if the cursor is already resting on the track as it expands */
+          var hovered = false;
+          try { hovered = pGrid.matches(":hover"); } catch(err) {}
+          pGrid._isPaused = hovered;
           bindTrackInteractions(pGrid);
           refreshLoop(pGrid);
         }
@@ -3141,6 +3420,111 @@ function paintLB(){
   $("#lb-n").textContent = String(state.visible.length).padStart(2,"0");
 }
 
+/* ---------------- Cover: shows once per session (see the early <head> script). Work dismisses
+   it for the rest of the session; Spotlight toggles a warm glow that follows the cursor/finger,
+   eased the same way the lightbox lamp is (a plain CSS custom-property change jumps instead of
+   gliding - browsers don't animate --custom-properties in a gradient without registering them
+   via @property, so this uses the same small rAF+lerp loop as initHomeLamp for the same reason,
+   just without that one's idle-drift wander, which isn't needed for a strip that's already
+   always moving on its own). Only two things are ever focusable while it's up - Tab is trapped
+   between them by hand, since there's no single wrapper around the rest of the page to mark
+   inert without a much larger, riskier restructure. ---------------- */
+function initCover(){
+  var overlay = $("#cover-overlay");
+  if(!overlay || document.documentElement.classList.contains("cover-seen")) return;
+
+  var spotlightBtn = $("#cover-spotlight-btn");
+  var workBtn = $("#cover-work-btn");
+  if(!spotlightBtn || !workBtn) return;
+
+  var SEEN_KEY = "lrl_cover_seen";
+  var spotlightOn = false, rafRunning = false, haveTarget = false;
+  var curX = 0, curY = 0, targetX = 0, targetY = 0;
+
+  function setTarget(clientX, clientY){
+    targetX = clientX; targetY = clientY;
+    if(!haveTarget){ curX = targetX; curY = targetY; haveTarget = true; }
+  }
+  function onMove(e){
+    var t = (e.touches && e.touches[0]) ? e.touches[0] : e;
+    if(typeof t.clientX !== "number") return;
+    setTarget(t.clientX, t.clientY);
+  }
+  function loop(){
+    if(!spotlightOn){ rafRunning = false; return; }
+    rafRunning = true;
+    var ease = prefersReducedMotion() ? 1 : 0.16;
+    curX += (targetX - curX) * ease;
+    curY += (targetY - curY) * ease;
+    overlay.style.setProperty("--clx", curX.toFixed(1) + "px");
+    overlay.style.setProperty("--cly", curY.toFixed(1) + "px");
+    requestAnimationFrame(loop);
+  }
+  function setSpotlight(on){
+    spotlightOn = on;
+    overlay.classList.toggle("spotlight-on", on);
+    spotlightBtn.setAttribute("aria-pressed", String(on));
+    if(on){
+      if(!haveTarget){
+        var r = overlay.getBoundingClientRect();
+        setTarget(r.width / 2, r.height / 2);
+      }
+      if(!rafRunning) requestAnimationFrame(loop);
+    }
+  }
+
+  function dismiss(){
+    if(overlay.classList.contains("cover-hide")) return;   /* double-tap / Escape+click guard */
+    spotlightOn = false;
+    try { sessionStorage.setItem(SEEN_KEY, "1"); } catch(e){}
+    try { window.scrollTo(0, 0); } catch(e){}
+    /* the homepage headline's rise-in already played unseen behind the cover - replay it now,
+       so it's the first thing visitors actually see as the cover fades away */
+    $$(".line-inner").forEach(function(el){
+      el.style.animationName = "none";   /* name only - the inline animation-delay stagger survives */
+      void el.offsetWidth;
+      el.style.animationName = "";
+    });
+    overlay.classList.add("cover-hide");
+    /* keep .cover-hide on screen for its fade; cover-seen (display:none + unlocks scroll) comes in finish() */
+    var finished = false;
+    function finish(){
+      if(finished) return;
+      finished = true;
+      overlay.hidden = true;
+      document.documentElement.classList.add("cover-seen");
+      var navBrand = document.querySelector(".nav .brand");
+      if(navBrand && typeof navBrand.focus === "function"){
+        try { navBrand.focus({ preventScroll: true }); } catch(e){ navBrand.focus(); }
+      }
+    }
+    /* transitionend bubbles up from children (e.g. the Work button's own hover fade), so only
+       the overlay's own opacity fade counts as "done" */
+    overlay.addEventListener("transitionend", function onEnd(e){
+      if(e.target !== overlay || e.propertyName !== "opacity") return;
+      overlay.removeEventListener("transitionend", onEnd);
+      finish();
+    });
+    setTimeout(finish, 700); /* safety net if transitionend never fires (e.g. tab was backgrounded) */
+  }
+
+  spotlightBtn.addEventListener("click", function(){ setSpotlight(!spotlightOn); });
+  workBtn.addEventListener("click", dismiss);
+  overlay.addEventListener("mousemove", onMove, { passive: true });
+  overlay.addEventListener("touchstart", onMove, { passive: true });
+  overlay.addEventListener("touchmove", onMove, { passive: true });
+
+  overlay.addEventListener("keydown", function(e){
+    if(e.key === "Escape"){ e.preventDefault(); dismiss(); return; }
+    if(e.key !== "Tab") return;
+    if(e.shiftKey && document.activeElement === spotlightBtn){
+      e.preventDefault(); workBtn.focus();
+    } else if(!e.shiftKey && document.activeElement === workBtn){
+      e.preventDefault(); spotlightBtn.focus();
+    }
+  });
+}
+
 /* ---------------- Lamplight: warm glow that follows the cursor, dark mode + desktop only.
    Mirrors capture.html's effect exactly (dim base copy, bright copy masked to a circle
    around the cursor, warm glow). Mobile never gets this here - it stays on capture.html. ---------------- */
@@ -3222,6 +3606,8 @@ function applyTheme(isDark) {
     pull.setAttribute("aria-pressed", String(isDark));
     pull.setAttribute("aria-label", isDark ? "Turn the lamp on" : "Turn the lamp off");
   }
+  var tcm = document.getElementById("themeColorMeta");
+  if (tcm) tcm.setAttribute("content", isDark ? "#080808" : "#FFFFFF");
   try {
     localStorage.setItem("lrl_theme", isDark ? "dark" : "light");
   } catch(e) {}
@@ -3521,7 +3907,7 @@ function renderContent(){
         imgTags += '<img loading="lazy" decoding="async" '+stripImgAttrs(m.photo2)+' alt="'+esc(m.name)+'" style="object-position: '+esc(mPos2)+';">';
       }
 
-      return '<div class="member-card">' +
+      return '<div class="member-card lrl-reveal">' +
                '<div class="member-plate" data-member-idx="'+mIdx+'">' +
                  imgTags +
                '</div>' +
@@ -3533,6 +3919,8 @@ function renderContent(){
                '</div>' +
              '</div>';
     }).join("");
+
+    observeReveals(collectiveGrid);
 
     window.collectiveTimers = window.collectiveTimers || [];
     window.collectiveTimers.forEach(clearInterval);
@@ -3557,6 +3945,8 @@ function renderContent(){
   buildFilters();
   renderHomeGrid();
   renderNichesList();
+  renderCoverFilmstrip();
+  renderCoverHeadline();
 
   /* the enquiry window uses the live categories, email and form settings from the Content Editor */
   if (enquiryReady()) {
@@ -3616,6 +4006,8 @@ function showLoadProblem(){
 }
 
 function initApp(){
+  /* first, and isolated: the cover must always be dismissable even if anything else fails */
+  try { initCover(); } catch(e){ document.documentElement.classList.add("cover-seen"); }
   bindGlobalEvents();
   initCarouselControls();
   initHomeLamp();
