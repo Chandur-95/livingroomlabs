@@ -791,15 +791,19 @@ html[data-theme="dark"] .home-work-grid .plate {
 
 .mobile-shoot-sec { display: none; }
 .mobile-shoot-box {
-  border: 1px solid var(--rule);
-  padding: 16px 18px;
-  background: var(--rule-soft);
+  /* One clean row that echoes the site's section heads (ink rule, mono label) instead of a grey box */
+  border: 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 2px;
+  background: none;
   cursor: pointer;
-  transition: border-color .25s ease, background .25s ease;
+  transition: border-color .25s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 .mobile-shoot-box:hover, .mobile-shoot-box:focus-visible {
-  border-color: var(--ink);
-  background: var(--paper);
+  border-bottom-color: var(--ink);
+  background: none;
 }
 .mobile-shoot-header {
   display: flex;
@@ -807,17 +811,26 @@ html[data-theme="dark"] .home-work-grid .plate {
   justify-content: space-between;
   gap: 12px;
 }
+.mobile-shoot-header .label { opacity: 1 !important; }
 .mobile-shoot-arrow {
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  line-height: 1;
   color: var(--ink);
-  transition: transform .25s var(--ease);
+  width: 30px; height: 30px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  transition: transform .25s var(--ease), background .25s ease, color .25s ease;
 }
 .mobile-shoot-box:hover .mobile-shoot-arrow,
-.mobile-shoot-box:focus-visible .mobile-shoot-arrow {
-  transform: translateX(4px);
-  color: var(--glow);
+.mobile-shoot-box:focus-visible .mobile-shoot-arrow,
+.mobile-shoot-box:active .mobile-shoot-arrow {
+  transform: translateX(3px);
+  background: var(--ink);
+  color: var(--paper);
 }
+.mobile-shoot-sec .contact-note { margin-top: 8px !important; opacity: .7; }
 
 #contact{
   padding-top:clamp(20px, 2.5vw, 36px);

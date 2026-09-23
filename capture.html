@@ -74,8 +74,8 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 .cap-brand .lg-crop{height:44px}
 .cap-brand img{filter:brightness(0) invert(1)}
 .cap-brand-text{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
-.cap-brand-text b{font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;font-weight:600}
-.cap-brand-text span{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.cap-brand-text b{font-size:.94rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;font-weight:600}
+.cap-brand-text span{font-size:.76rem;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.6)}
 
 .cap-row1-right{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:flex-end}
 .cap-links{display:flex;gap:16px;align-items:center}
@@ -146,6 +146,11 @@ html[data-theme="light"].cat-open .cap-cat-btn.active{background:#000;color:#fff
 .disc-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;transition:opacity .55s ease, filter .6s ease;}
 .disc-card img:not(.lrl-loaded){opacity:0;filter:blur(14px)}
 .disc-card.is-center{cursor:zoom-in}
+/* Spotlight: photos sit in black & white until they're the one in focus - the centered
+   carousel slide, or whichever card the cursor is over - then they come back into color. */
+.disc-card img.lrl-loaded{filter:grayscale(1)}
+.disc-card.is-center img.lrl-loaded{filter:grayscale(0)}
+@media (hover:hover){ .disc-card:hover img.lrl-loaded{filter:grayscale(0)} }
 
 .disc-caption{
   position:absolute;left:0;right:0;bottom:var(--foot-h);z-index:2;padding:18px 24px 16px;
@@ -250,6 +255,11 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
 .cat-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease, opacity .55s ease, filter .6s ease}
 .cat-card:hover img{transform:scale(1.04)}
 .cat-card img:not(.lrl-loaded){opacity:0;filter:blur(14px);transform:scale(1.03)}
+/* Spotlight: same black & white by default, color under the cursor, as the Discover carousel */
+@media (hover:hover){
+  .cat-card img.lrl-loaded{filter:grayscale(1)}
+  .cat-card:hover img.lrl-loaded{filter:grayscale(0)}
+}
 @media (pointer:coarse) and (prefers-reduced-motion: no-preference){
   /* Touch devices: a lighter blur costs less to composite - matters most here, since the
      Discover carousel eager-loads ~40 photos (20 featured, doubled for the seamless loop)
