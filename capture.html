@@ -74,8 +74,8 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 .cap-brand .lg-crop{height:44px}
 .cap-brand img{filter:brightness(0) invert(1)}
 .cap-brand-text{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
-.cap-brand-text b{font-size:.94rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;font-weight:600}
-.cap-brand-text span{font-size:.76rem;letter-spacing:.13em;text-transform:uppercase;color:rgba(255,255,255,.6)}
+.cap-brand-text b{font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;font-weight:600}
+.cap-brand-text span{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
 
 .cap-row1-right{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:flex-end}
 .cap-links{display:flex;gap:16px;align-items:center}
@@ -430,6 +430,18 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   .spot-slot #capLampToggle:not([aria-pressed="true"]){background:rgba(0,0,0,.25)}
   html[data-theme="light"].cat-open .spot-slot #capLampToggle{color:#000;background:transparent}
 }
+/* ================= Page spotlight (normal view): with Spotlight on, the page falls into a dim
+   black & white, and a warm circle that follows the cursor, finger or the phone's tilt brings the
+   photos back into colour. Fixed layers, pointer-events:none - never blocks clicks or swipes. */
+#pageLamp{position:fixed;inset:0;z-index:30;pointer-events:none;opacity:0;transition:opacity .45s ease;
+  -webkit-backdrop-filter:grayscale(1) brightness(.34);backdrop-filter:grayscale(1) brightness(.34);
+  -webkit-mask-image:radial-gradient(circle var(--pr,260px) at var(--px,50%) var(--py,50%), transparent 0%, rgba(0,0,0,.25) 45%, #000 100%);
+  mask-image:radial-gradient(circle var(--pr,260px) at var(--px,50%) var(--py,50%), transparent 0%, rgba(0,0,0,.25) 45%, #000 100%);}
+#pageLampGlow{position:fixed;inset:0;z-index:31;pointer-events:none;opacity:0;transition:opacity .45s ease;
+  background:radial-gradient(circle calc(var(--pr,260px) * 1.1) at var(--px,50%) var(--py,50%), rgba(255,190,85,.18), rgba(255,190,85,0) 70%);}
+html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1}
+html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-loaded{filter:none}
+@media (max-width:860px){ :root{--pr:170px} }
 </style>
 </head>
 <body>
@@ -495,6 +507,9 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   </div>
   <button type="button" class="btn-cap-foot-enquire mono" id="capFootEnquire">Enquire ↗</button>
 </footer>
+
+<div id="pageLamp" aria-hidden="true"></div>
+<div id="pageLampGlow" aria-hidden="true"></div>
 
 <div id="capLb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <button class="cap-lb-close" id="lbClose" aria-label="Close">✕</button>
@@ -641,6 +656,50 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       active = true;
     }
 
+    /* ---- phone tilt (gyro): a 0..1 aim point, used whenever no finger/mouse moved recently ---- */
+    var tilt = { x: .5, y: .5, at: 0, base: null, asked: false };
+    function onTilt(e){
+      if (e.gamma == null || e.beta == null) return;
+      if (tilt.base === null) tilt.base = e.beta;
+      tilt.x = Math.max(0, Math.min(1, .5 + e.gamma / 50));
+      tilt.y = Math.max(0, Math.min(1, .5 + (e.beta - tilt.base) / 40));
+      tilt.at = performance.now();
+    }
+    function startTilt(){
+      if (tilt.asked || !window.DeviceOrientationEvent) return;
+      tilt.asked = true;
+      try {
+        if (typeof DeviceOrientationEvent.requestPermission === "function") {
+          DeviceOrientationEvent.requestPermission().then(function(r){
+            if (r === "granted") window.addEventListener("deviceorientation", onTilt, {passive:true});
+          }).catch(function(){});
+        } else window.addEventListener("deviceorientation", onTilt, {passive:true});
+      } catch(e){}
+    }
+    function tiltRecent(now){ return now - tilt.at < 600; }
+
+    var pl = { cx: innerWidth/2, cy: innerHeight/2, tx: innerWidth/2, ty: innerHeight/2, at: 0 };
+    function plAim(x, y){ pl.tx = x; pl.ty = y; pl.at = performance.now(); }
+    window.addEventListener("mousemove", function(e){ plAim(e.clientX, e.clientY); }, {passive:true});
+    ["touchstart","touchmove"].forEach(function(ev){
+      window.addEventListener(ev, function(e){ if (e.touches && e.touches[0]) plAim(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
+    });
+    var plWasOn = false;
+    function plLoop(){
+      requestAnimationFrame(plLoop);
+      var on = isDark() && !lbOpen();
+      if (on !== plWasOn) { document.documentElement.classList.toggle("page-lamp-on", on); plWasOn = on; }
+      if (!on) return;
+      var now = performance.now();
+      if (now - pl.at > 1200 && tiltRecent(now)) { pl.tx = tilt.x * innerWidth; pl.ty = tilt.y * innerHeight; }
+      var k = reduceMotion ? 1 : 0.14;
+      pl.cx += (pl.tx - pl.cx) * k; pl.cy += (pl.ty - pl.cy) * k;
+      var rs = document.documentElement.style;
+      rs.setProperty("--px", pl.cx.toFixed(1) + "px");
+      rs.setProperty("--py", pl.cy.toFixed(1) + "px");
+    }
+    requestAnimationFrame(plLoop);
+
     /* tracked on the whole modal (lb), not just the small photo, so moving anywhere over
        the dark surrounding area still aims the lamp - it just clamps to the photo's edges */
     lb.addEventListener("mousemove", function(e){ setTarget(e.clientX, e.clientY); }, {passive:true});
@@ -664,7 +723,8 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       var now = performance.now();
       var recentlyActive = active || (now - lastMoveAt < 900);
       var r = stage.getBoundingClientRect();
-      if (!recentlyActive) {
+      if (!recentlyActive && tiltRecent(now)) { targetX = tilt.x * r.width; targetY = tilt.y * r.height; }
+      else if (!recentlyActive) {
         if (reduceMotion) { targetX = r.width/2; targetY = r.height/2; }
         else {
           /* idle: gentle organic drift, so the effect still reads on mobile / mouse-less visits
@@ -683,6 +743,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 
     toggle.addEventListener("click", function(){
       var nowDark = !isDark();
+      if (nowDark) startTilt();
       document.documentElement.setAttribute("data-theme", nowDark ? "dark" : "light");
       toggle.setAttribute("aria-pressed", String(nowDark));
       toggle.setAttribute("aria-label", nowDark ? "Turn the spotlight off" : "Turn the spotlight on");

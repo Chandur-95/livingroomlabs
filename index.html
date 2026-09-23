@@ -995,8 +995,17 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
 .cover-strip.cover-strip-filled{opacity:1}
 .cover-strip img{
   height:100%;width:340px;object-fit:cover;flex:none;display:block;
-  filter:grayscale(15%) brightness(.68);
+  filter:grayscale(1) brightness(.68);
 }
+/* A colour copy of the strip, drifting in step with the black & white one, shown only inside the
+   Spotlight's circle - so the light brings the photos back into colour where it falls. */
+.cover-color{
+  position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0;transition:opacity .4s ease;
+  -webkit-mask-image:radial-gradient(circle clamp(170px, 24vmax, 320px) at var(--clx,50%) var(--cly,50%), #000 0%, rgba(0,0,0,.85) 45%, rgba(0,0,0,0) 78%);
+  mask-image:radial-gradient(circle clamp(170px, 24vmax, 320px) at var(--clx,50%) var(--cly,50%), #000 0%, rgba(0,0,0,.85) 45%, rgba(0,0,0,0) 78%);
+}
+.cover-overlay.spotlight-on .cover-color{opacity:1}
+.cover-color .cover-strip img{filter:brightness(.8)}
 @keyframes coverDrift{ 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
 .cover-scrim{
@@ -1042,14 +1051,14 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
   text-shadow:0 2px 28px rgba(0,0,0,.55);
 }
 .cover-panel{
-  padding:26px 38px;border-radius:6px;
+  padding:clamp(40px, 4.4vw, 60px) clamp(56px, 6.5vw, 96px);border-radius:10px;
   background:rgba(10,10,10,.22);
   border:1px solid rgba(255,255,255,.12);
   backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
 }
 .cover-headline{
-  font:500 clamp(1.3rem, 3vw, 2.3rem)/1.18 'Playfair Display', Georgia, serif;
-  color:#fff;text-align:center;max-width:640px;
+  font:500 clamp(1.6rem, 3.9vw, 3.1rem)/1.18 'Playfair Display', Georgia, serif;
+  color:#fff;text-align:center;max-width:880px;
   text-shadow:0 2px 30px rgba(0,0,0,.55);
 }
 .cover-headline em{font-style:italic;font-weight:500}
@@ -1067,8 +1076,8 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
   .cover-strip img{width:70vw}
   .cover-spotlight-btn{padding:0 15px;font-size:.62rem;gap:7px;min-height:40px;top:calc(16px + var(--safe-top));right:calc(16px + var(--safe-right))}
   .cover-center{gap:22px;padding:24px}
-  .cover-headline{font-size:1.15rem}
-  .cover-panel{padding:18px 22px}
+  .cover-headline{font-size:1.55rem}
+  .cover-panel{padding:30px 22px;width:calc(100vw - 32px);max-width:440px;box-sizing:border-box}
   .cover-work-btn{padding:0 36px;min-height:48px}
 }
 @media (max-height:480px){
@@ -1080,7 +1089,8 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
   .cover-work-btn{min-height:40px;padding:0 28px}
 }
 @media (pointer:coarse) and (prefers-reduced-motion: no-preference){
-  .cover-strip img{filter:grayscale(15%) brightness(.72)}
+  .cover-strip img{filter:grayscale(1) brightness(.72)}
+  .cover-color .cover-strip img{filter:brightness(.82)}
 }
 /* Phones/tablets: a live backdrop blur over a strip that never stops moving re-blurs every
    frame - costly on mobile GPUs. A slightly deeper plain tint reads the same and costs nothing. */
@@ -1089,7 +1099,7 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
 }
 @media (prefers-reduced-motion:reduce){
   .cover-strip{animation:none}
-  .cover-overlay,.cover-strip,.cover-glow{transition:none}
+  .cover-overlay,.cover-strip,.cover-glow,.cover-color{transition:none}
 }
 
 .overlay-page {
@@ -1947,6 +1957,7 @@ footer.wrap{overflow-x:clip}
 <body>
 <div class="cover-overlay" id="cover-overlay" role="dialog" aria-modal="true" aria-label="Living Room Labs">
   <div class="cover-strip" id="cover-strip" aria-hidden="true"></div>
+  <div class="cover-color" aria-hidden="true"><div class="cover-strip" id="cover-strip-color"></div></div>
   <div class="cover-scrim" aria-hidden="true"></div>
   <div class="cover-glow" id="cover-glow" aria-hidden="true"></div>
 
@@ -2589,10 +2600,14 @@ function renderCoverFilmstrip(){
   var pool = (SITE.photos || []).filter(function(p){ return p.featured; }).slice(0, 12);
   if(!pool.length) return;
   var list = pool.concat(pool);
-  strip.innerHTML = list.map(function(p){
+  var stripHtml = list.map(function(p){
     return '<img loading="eager" decoding="async" '+stripImgAttrs(p.src)+' alt="">';
   }).join("");
+  strip.innerHTML = stripHtml;
   strip.classList.add("cover-strip-filled");
+  /* colour copy for the Spotlight - same photos, already downloaded, so no extra loading */
+  var colorStrip = $("#cover-strip-color");
+  if(colorStrip){ colorStrip.innerHTML = stripHtml; colorStrip.classList.add("cover-strip-filled"); }
 }
 
 /* Cover's headline: the same real hero lines as the rest of the site (SITE.hero, editable in
@@ -3458,14 +3473,40 @@ function initCover(){
     targetX = clientX; targetY = clientY;
     if(!haveTarget){ curX = targetX; curY = targetY; haveTarget = true; }
   }
+  var lastPointerAt = 0, tilt = { x:.5, y:.5, at:0, base:null, asked:false };
   function onMove(e){
     var t = (e.touches && e.touches[0]) ? e.touches[0] : e;
     if(typeof t.clientX !== "number") return;
+    lastPointerAt = performance.now();
     setTarget(t.clientX, t.clientY);
+  }
+  /* phone tilt (gyro) steers the spotlight whenever the finger isn't on the screen */
+  function onTilt(e){
+    if(e.gamma == null || e.beta == null) return;
+    if(tilt.base === null) tilt.base = e.beta;
+    tilt.x = Math.max(0, Math.min(1, .5 + e.gamma / 50));
+    tilt.y = Math.max(0, Math.min(1, .5 + (e.beta - tilt.base) / 40));
+    tilt.at = performance.now();
+  }
+  function startTilt(){
+    if(tilt.asked || !window.DeviceOrientationEvent) return;
+    tilt.asked = true;
+    try {
+      if(typeof DeviceOrientationEvent.requestPermission === "function"){
+        DeviceOrientationEvent.requestPermission().then(function(r){
+          if(r === "granted") window.addEventListener("deviceorientation", onTilt, { passive: true });
+        }).catch(function(){});
+      } else window.addEventListener("deviceorientation", onTilt, { passive: true });
+    } catch(e){}
   }
   function loop(){
     if(!spotlightOn){ rafRunning = false; return; }
     rafRunning = true;
+    var now = performance.now();
+    if(now - lastPointerAt > 1200 && now - tilt.at < 600){
+      var rr = overlay.getBoundingClientRect();
+      setTarget(tilt.x * rr.width, tilt.y * rr.height);
+    }
     var ease = prefersReducedMotion() ? 1 : 0.16;
     curX += (targetX - curX) * ease;
     curY += (targetY - curY) * ease;
@@ -3521,7 +3562,7 @@ function initCover(){
     setTimeout(finish, 700); /* safety net if transitionend never fires (e.g. tab was backgrounded) */
   }
 
-  spotlightBtn.addEventListener("click", function(){ setSpotlight(!spotlightOn); });
+  spotlightBtn.addEventListener("click", function(){ if(!spotlightOn) startTilt(); setSpotlight(!spotlightOn); });
   workBtn.addEventListener("click", dismiss);
   overlay.addEventListener("mousemove", onMove, { passive: true });
   overlay.addEventListener("touchstart", onMove, { passive: true });
@@ -3734,6 +3775,11 @@ function bindGlobalEvents() {
       e.preventDefault(); closeCollective();
     } else if (e.target.closest(".btn-close-niches")) {
       e.preventDefault(); closeNiches();
+    } else if (e.target.closest(".nav > .brand, .foot-logo-btn") && !document.querySelector(".overlay-page.open, .overlay-page.active, .overlay-page[aria-hidden='false']")) {
+      /* logo on the home page itself: show the cover again */
+      e.preventDefault();
+      try { sessionStorage.removeItem("lrl_cover_seen"); } catch(err){}
+      window.location.href = "/";
     } else if (e.target.closest(".logo-exit-btn")) {
       e.preventDefault(); exitOverlayToHome();
     } else if (e.target.closest(".nav-collective-link, .nav-collective-link-mob")) {
