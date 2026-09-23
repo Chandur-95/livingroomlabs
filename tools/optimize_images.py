@@ -99,6 +99,36 @@ def process(root, name, roles, force, log):
             if want(rel): save(fit(im, width=w), os.path.join(root, rel), "WEBP", Q["hero_webp"], icc); made.append(f"hero {w}")
     if made: log.append(f"  {name}: {', '.join(made)}")
 
+def update_colors(root, refs, changed, log):
+    """images/colors.json = {file name: "#rrggbb"}, each photo's average colour. The website paints
+    it behind a photo while it loads, so a card shows the photo's own tone instead of an empty box.
+    Kept in its own small file (never content.json, which the editors write to)."""
+    path = os.path.join(root, "images", "colors.json")
+    try: colors = json.load(open(path, encoding="utf-8"))
+    except Exception: colors = {}
+    if not isinstance(colors, dict): colors = {}
+    before = json.dumps(colors, sort_keys=True)
+    colors = {k: v for k, v in colors.items() if k in refs}          # photos that were deleted
+    for name in sorted(refs):
+        if name in colors and name not in changed: continue
+        for rel in (f"images/thumbs/{name}.jpg", f"images/thumbs/{name}.webp", f"images/uploads/{name}"):
+            full = os.path.join(root, rel)
+            if not os.path.isfile(full): continue
+            try:
+                im = Image.open(full); im.draft("RGB", (160, 160)); im = ImageOps.exif_transpose(im)
+                if im.mode in ("RGBA", "LA", "P"):
+                    im = im.convert("RGBA"); bg = Image.new("RGB", im.size, (255, 255, 255)); bg.paste(im, mask=im.getchannel("A")); im = bg
+                im = im.convert("RGB"); im.thumbnail((64, 64))
+                r, g, b = im.resize((1, 1), Image.BOX).getpixel((0, 0))
+                colors[name] = "#%02x%02x%02x" % (r, g, b)
+            except Exception as e:
+                log.append(f"  {name}: no colour ({type(e).__name__})")
+            break
+    if json.dumps(colors, sort_keys=True) != before:
+        with open(path, "w", encoding="utf-8") as f:
+            json.dump(colors, f, sort_keys=True, separators=(",", ":")); f.write("\n")
+        log.append(f"  colours: {len(colors)} photos in images/colors.json")
+
 def main():
     ap = argparse.ArgumentParser(); ap.add_argument("--root", default="."); ap.add_argument("--changed", nargs="*", default=[]); ap.add_argument("--force", action="store_true")
     a = ap.parse_args(); root = os.path.abspath(a.root)
@@ -109,6 +139,10 @@ def main():
             process(root, name, refs.get(name, set()), a.force or name in changed, log)
         except Exception as e:      # one unreadable file must never stop the others
             log.append(f"  {name}: SKIPPED ({type(e).__name__}: {e})")
+    try:
+        update_colors(root, set(refs), changed, log)
+    except Exception as e:          # colours are a nice-to-have - never fail the run over them
+        log.append(f"  colours: SKIPPED ({type(e).__name__}: {e})")
     print("\n".join(log) if log else "nothing to do - all small copies already exist")
 
 if __name__ == "__main__": main()
