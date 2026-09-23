@@ -309,6 +309,11 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
 .cat-empty-enq{margin-top:18px;border:1px solid currentColor;background:none;color:inherit;padding:11px 20px;border-radius:2px;
   font:inherit;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s ease,color .2s ease}
 .cat-empty-enq:hover,.cat-empty-enq:focus-visible{background:var(--ink,#000);color:var(--paper,#fff)}
+/* the footer logo goes to the home page, same as the top logo */
+.cap-foot-home{display:inline-flex;flex:none;line-height:0;border-radius:4px;transition:opacity .2s ease,transform .2s ease}
+.cap-foot-home:hover{opacity:.75}
+.cap-foot-home:active{transform:scale(.97)}
+.cap-foot-home:focus-visible{outline:2px solid currentColor;outline-offset:4px}
 .cap-foot{
   position:fixed;left:0;right:0;bottom:0;z-index:25;
   display:flex;align-items:center;gap:18px;
@@ -546,7 +551,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
 <button class="cat-back mono" id="catBack" style="display:none">← Discover</button>
 
 <footer class="cap-foot" id="capFoot">
-  <span class="lg-crop cap-foot-logo"><img src="/logo.png" alt="Living Room Labs"></span>
+  <a class="cap-foot-home" href="/" aria-label="Living Room Labs - home page"><span class="lg-crop cap-foot-logo"><img src="/logo.png" alt=""></span></a>
   <div class="cap-foot-text">
     <b class="mono" id="capFootHeading">Enquiry</b>
     <p class="mono" id="capFootTagline">Every frame begins with a conversation</p>

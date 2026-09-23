@@ -305,7 +305,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
 .lg-crop > img{display:block;max-width:none;width:var(--lg-w,106.383%);height:auto;margin:var(--lg-t,-20.035%) 0 0 var(--lg-l,-3.191%)}
 
 .brand{display:flex;align-items:center;gap:14px;height:100%;cursor:pointer}
-.brand .mark{height:48px}
+.brand .mark{height:56px}
 .brand .mark img{transition:transform .3s var(--ease)}
 .brand .wordmark{
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
@@ -471,6 +471,16 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .work-carousel-container {
   position: relative;
   width: 100%;
+  /* photo size + hover zoom for the Featured strip, set once here (phones/tablets override below) */
+  --card-w: clamp(280px, 21vw, 340px);
+  --hv-scale: 1.36;   /* the photo under the cursor */
+  --nb-scale: 1.16;   /* its two neighbours grow a little */
+  --gap: 18px;
+  --grow-up: calc((var(--hv-scale) - 1) * var(--card-w) * 2 / 3);
+  --grow-nb: calc((var(--nb-scale) - 1) * var(--card-w) * 2 / 3);
+  --push-near: calc((var(--hv-scale) + var(--nb-scale)) * var(--card-w) / 2 + 14px - var(--card-w) - var(--gap));
+  --push-far: calc(var(--push-near) + (var(--nb-scale) - 1) * var(--card-w) / 2 - 2px);
+  --drop-room: calc(var(--grow-up) + 14px);
 }
 
 /* ===== Contact Sheet skin: frame numbers + sprocket-hole strips (pure CSS, no markup changes) ===== */
@@ -516,13 +526,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .home-work-grid {
   display: flex !important;
   flex-direction: row !important;
-  gap: 16px !important;
+  gap: var(--gap) !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
   scroll-behavior: auto !important;
   -webkit-overflow-scrolling: touch;
-  padding-top: 130px; 
-  margin-top: -100px;
+  /* exactly enough empty room above for the hover zoom, no more */
+  padding-top: calc(var(--grow-up) + 22px);
+  margin-top: calc(-1 * var(--grow-up));
   padding-bottom: 45px;
   align-items: flex-end;
   scrollbar-width: none;
@@ -536,21 +547,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
      - only the PHOTO grows, from its centre; the caption keeps its normal size and slides down with the photo's bottom edge
      - the photos around it slide apart by exactly enough that nothing overlaps (numbers are worked out from the values below)
      - the growth is kept small enough that the photo never reaches the filter boxes above it or the edge of the strip */
-  --card-w: 240px;    /* must match the card width below */
-  --hv-scale: 1.32;   /* the photo under the cursor */
-  --nb-scale: 1.2;    /* its two neighbours grow a little */
-  --push-near: calc((var(--hv-scale) + var(--nb-scale)) * var(--card-w) / 2 + 14px - var(--card-w) - 16px);
-  --push-far: calc(var(--push-near) + (var(--nb-scale) - 1) * var(--card-w) / 2 - 2px);
-  --grow-up: calc((var(--hv-scale) - 1) * var(--card-w) * 2 / 3);
-  --grow-nb: calc((var(--nb-scale) - 1) * var(--card-w) * 2 / 3);
-  --drop-room: calc(var(--grow-up) + 14px);   /* room under the strip for the caption to slide down */
-  padding-bottom: calc(45px + var(--drop-room));
+  /* sizes come from .work-carousel-container above */
+  padding-bottom: calc(24px + var(--drop-room));
   margin-bottom: calc(-1 * var(--drop-room));
 }
 
 .home-work-grid .shot {
-  flex: 0 0 240px !important;
-  max-width: 240px !important;
+  flex: 0 0 var(--card-w) !important;
+  max-width: var(--card-w) !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -560,7 +564,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   margin: 0;
   cursor: pointer;
 }
-.home-work-grid .plate-tilt-wrap { transform-origin: center center; transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1); }
+.home-work-grid .plate-tilt-wrap { transform-origin: center center; transition: transform 0.42s cubic-bezier(0.34, 1.4, 0.64, 1); }
+.home-work-grid .shot .plate { transition: box-shadow 0.35s var(--ease), opacity 0.3s ease !important; }
+/* while one photo is in focus, the rest step back slightly so it clearly pops forward */
+@media (hover:hover) and (pointer:fine){
+  .home-work-grid:has(.shot:hover) .shot:not(:hover):not(:has(+ .shot:hover)) .plate { opacity: .72; }
+  .home-work-grid:has(.shot:hover) .shot:hover + .shot .plate { opacity: 1; }
+}
+.home-work-grid:has(.shot.touch-focus) .shot:not(.touch-focus) .plate { opacity: .72; }
 .home-work-grid .shot .cap { transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1); }
 
 /* every photo BEFORE the hovered one slides left, every photo AFTER it slides right */
@@ -618,12 +629,16 @@ html[data-theme="dark"] .home-work-grid .plate {
 
 .home-work-grid .shot:hover .plate,
 .home-work-grid .shot.touch-focus .plate {
-  box-shadow: 0 25px 50px rgba(0,0,0,0.45);
+  box-shadow: 0 28px 60px rgba(0,0,0,0.42), 0 8px 18px rgba(0,0,0,0.18);
+}
+html[data-theme="dark"] .home-work-grid .shot:hover .plate,
+html[data-theme="dark"] .home-work-grid .shot.touch-focus .plate {
+  box-shadow: 0 28px 70px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.08);
 }
 
 .carousel-nav-btn {
   position: absolute;
-  top: calc(130px + 140px);
+  top: calc(var(--grow-up) + 22px + var(--card-w) * 2 / 3);   /* the middle of the photos */
   transform: translateY(-50%);
   width: 44px;
   height: 44px;
@@ -808,8 +823,11 @@ html[data-theme="dark"] .home-work-grid .plate {
 /* the photo strip keeps some empty room above itself for its hover zoom - keep the heading, its
    links and "Featured photos" on top of that room so they always stay clickable */
 #work .sec-head,#work .featured-label{position:relative;z-index:30}
+#work{padding-bottom:clamp(8px,1.5vw,20px)}
+#work + #contact{padding-top:clamp(28px,3.5vw,56px)}
 #work .featured-label{margin:-4px 0 clamp(14px,2vw,22px);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;opacity:.6}
 @media (max-width:640px){ #work .sec-more{font-size:.6rem} }
+@media (max-width:400px){ #work .sec-more-long{display:none} }
 .mobile-shoot-box {
   /* One clean row that echoes the site's section heads (ink rule, mono label) instead of a grey box */
   border: 0;
@@ -1013,32 +1031,40 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
   will-change:transform;
 }
 .cover-strip.cover-strip-filled{opacity:1}
-/* every photo at its own true shape - full height, natural width - so nothing is ever cut off.
+/* Each photo gets a frame halfway between the old narrow slice and its full shape - far less cropped
+   than before, but still a strip of several photos, not one giant picture.
    (margin, not gap: keeps the two halves of the looping strip exactly equal, so the loop is seamless) */
 .cover-strip img{
-  height:100%;width:auto;aspect-ratio:auto var(--ar,1.5);object-fit:cover;flex:none;display:block;
+  height:100%;width:auto;aspect-ratio:var(--ar,.75);object-fit:cover;flex:none;display:block;
   margin-right:10px;filter:brightness(.68);transition:filter .45s ease;
 }
 /* Spotlight on: the room goes black & white; only the pool of light shows colour (the colour copy below) */
-.cover-overlay.spotlight-on > .cover-strip img{filter:grayscale(1) brightness(.55)}
-/* Phones and other tall screens: the photos drift upward in one full-width column instead, so each
-   photo - landscape or portrait - is seen whole, edge to edge. */
-@media (max-aspect-ratio:1/1){
-  .cover-strip{flex-direction:column;align-items:stretch;width:100%;height:max-content;animation-name:coverDriftY}
-  .cover-strip img{width:100%;height:auto;margin:0 0 10px}
-}
-@keyframes coverDriftY{ 0%{transform:translateY(0)} 100%{transform:translateY(-50%)} }
-/* A colour copy of the strip, drifting in step with the black & white one, shown only inside the
-   Spotlight's circle - so the light brings the photos back into colour where it falls. */
+.cover-overlay.spotlight-on > .cover-strip img{filter:grayscale(1) brightness(.34)}
+/* ...and the photos hold still, like the What We Capture page does - a calm, dark room you explore with
+   the light. (Both strips pause together, so the colour copy stays exactly aligned.) */
+.cover-overlay.spotlight-on .cover-strip{animation-play-state:paused}
+@media (max-aspect-ratio:1/1){ .cover-strip img{margin-right:8px} }
+/* The Spotlight's pool of light: a small round window (just the size of the light) that slides to
+   wherever you point. Inside it sits a colour copy of the strip, shifted the opposite way so it lines
+   up exactly with the black & white photos underneath - so the light brings the photos back into
+   colour where it falls. Only this small window moves (a cheap slide, nothing re-drawn), which keeps
+   it smooth even on very large screens. */
 .cover-color{
-  position:absolute;inset:0;overflow:hidden;pointer-events:none;opacity:0;visibility:hidden;
+  --cr:clamp(170px, 24vmax, 320px);
+  position:absolute;left:0;top:0;width:calc(var(--cr) * 2);height:calc(var(--cr) * 2);
+  overflow:hidden;pointer-events:none;opacity:0;visibility:hidden;will-change:transform;
+  transform:translate3d(-2000px,-2000px,0);
   transition:opacity .4s ease, visibility 0s linear .4s;
-  -webkit-mask-image:radial-gradient(circle clamp(170px, 24vmax, 320px) at var(--clx,50%) var(--cly,50%), #000 0%, rgba(0,0,0,.85) 45%, rgba(0,0,0,0) 78%);
-  mask-image:radial-gradient(circle clamp(170px, 24vmax, 320px) at var(--clx,50%) var(--cly,50%), #000 0%, rgba(0,0,0,.85) 45%, rgba(0,0,0,0) 78%);
+  -webkit-mask-image:radial-gradient(circle closest-side, #000 0%, rgba(0,0,0,.85) 45%, rgba(0,0,0,0) 78%);
+  mask-image:radial-gradient(circle closest-side, #000 0%, rgba(0,0,0,.85) 45%, rgba(0,0,0,0) 78%);
 }
+.cover-color-inner{position:absolute;left:0;top:0;width:100vw;height:100vh;will-change:transform}
+/* the warm glow travels inside the same window */
+.cover-color::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle closest-side, rgba(255,200,95,.28) 0%, rgba(255,194,75,.1) 42%, rgba(255,194,75,0) 78%)}
 .cover-overlay.spotlight-on .cover-color{opacity:1;visibility:visible;transition:opacity .4s ease, visibility 0s}
 .cover-color .cover-strip img{filter:brightness(.85)}
-.cover-overlay.spotlight-on > .cover-color .cover-strip img{filter:brightness(.85)}
+.cover-overlay.spotlight-on .cover-color .cover-strip img{filter:brightness(.85)}
 @keyframes coverDrift{ 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
 .cover-scrim{
@@ -1054,7 +1080,9 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
   background:radial-gradient(circle clamp(170px, 24vmax, 320px) at var(--clx,50%) var(--cly,50%),
     rgba(255,200,95,.30) 0%, rgba(255,194,75,.12) 42%, rgba(8,8,8,.62) 78%, rgba(8,8,8,.72) 100%);
 }
-.cover-overlay.spotlight-on .cover-glow{opacity:1}
+/* (the full-screen glow layer is no longer used - the room's darkness now comes from the photos
+   themselves, and the warm light travels with the small window above) */
+.cover-glow{display:none}
 
 .cover-spotlight-btn{
   position:absolute;top:calc(24px + var(--safe-top));right:calc(24px + var(--safe-right));z-index:3;
@@ -1076,10 +1104,11 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
   max-height:100vh;max-height:100dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;
   box-sizing:border-box;
 }
-.cover-brand-row{display:flex;align-items:center;gap:18px;}
-.cover-mark{display:block;width:clamp(52px, 6vw, 76px);filter:brightness(0) invert(1);}
+.cover-brand-row{display:flex;align-items:center;gap:clamp(16px, 2vw, 26px);}
+.cover-mark{display:block;width:clamp(104px, 10.5vw, 158px);filter:brightness(0) invert(1);
+  filter:brightness(0) invert(1) drop-shadow(0 4px 24px rgba(0,0,0,.45));}
 .cover-wordmark{
-  font:600 clamp(1.35rem, 3.2vw, 2.15rem)/1 'Space Grotesk', sans-serif;
+  font:600 clamp(1.45rem, 3.3vw, 2.35rem)/1 'Space Grotesk', sans-serif;
   letter-spacing:.01em;color:#fff;text-align:center;
   text-shadow:0 2px 28px rgba(0,0,0,.55);
 }
@@ -1089,6 +1118,9 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
   border:1px solid rgba(255,255,255,.12);
   backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
 }
+/* Spotlight on: the room is already dark, so the frosted blur behind the panel adds nothing you can
+   see - drop it (it re-blurs the moving photos every frame) and use a plain dark tint instead */
+.cover-overlay.spotlight-on .cover-panel{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(10,10,10,.4)}
 .cover-headline{
   font:500 clamp(1.6rem, 3.9vw, 3.1rem)/1.18 'Playfair Display', Georgia, serif;
   color:#fff;text-align:center;max-width:880px;
@@ -1114,7 +1146,7 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
 }
 @media (max-height:480px){
   .cover-center{gap:14px;padding:16px}
-  .cover-mark{width:40px}
+  .cover-mark{width:64px}
   .cover-wordmark{font-size:1.1rem}
   .cover-headline{font-size:1rem;line-height:1.1}
   .cover-panel{padding:10px 18px}
@@ -1801,6 +1833,7 @@ html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility
   .home-spot-btn{padding:0 9px;font-size:.54rem;letter-spacing:.08em;gap:5px;min-height:30px}
 }
 @media (max-width:350px){
+  .nav > .brand .mark{height:48px}
   .nav .nav-collective-link-mob{font-size:.54rem !important;letter-spacing:.06em !important}
   .home-spot-btn{padding:0 7px}
 }
@@ -1831,22 +1864,14 @@ html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility
     gap: 20px 24px;
   }
   
-  .home-work-grid {
-    padding-top: 90px;
-    margin-top: -65px;
-    scroll-snap-type: none !important;
-    --card-w: 210px; --hv-scale: 1.25; --nb-scale: 1.15;
-  }
-  .home-work-grid .shot {
-    flex: 0 0 210px !important;
-    max-width: 210px !important;
-    scroll-snap-align: none !important;
-  }
+  .work-carousel-container { --card-w: 250px; --hv-scale: 1.28; --nb-scale: 1.12; }
+  .home-work-grid { scroll-snap-type: none !important; }
+  .home-work-grid .shot { scroll-snap-align: none !important; }
 }
 
 @media (min-width:981px){
-  :root{ --nav-h: 100px; }
-  .brand .mark{ height:60px; }
+  :root{ --nav-h: 108px; }
+  .brand .mark{ height:72px; }
   .overlay-nav-brand .mark{ height:60px; }
 }
 
@@ -1862,7 +1887,7 @@ html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility
   .nav-collective-link-mob{padding:0 !important}
 
   .brand{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;padding-left:0}
-  .brand .mark{height:54px}
+  .brand .mark{height:60px}
   .brand .wordmark{display:none !important}
 
   .nav-right{gap:14px;flex-direction:row;align-items:center;justify-content:flex-end;align-self:stretch}
@@ -1913,19 +1938,13 @@ html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
+  .work-carousel-container { --card-w: min(64vw, 250px); --hv-scale: 1.14; --nb-scale: 1.05; --gap: 14px; }
   .home-work-grid {
-    padding-top: 70px !important;
-    margin-top: -50px !important;
-    padding-bottom: calc(30px + var(--drop-room)) !important;
+    padding-bottom: calc(18px + var(--drop-room)) !important;
     align-items: flex-end !important;
     scroll-snap-type: none !important;
-    --card-w: 170px; --hv-scale: 1.28; --nb-scale: 1.12;
   }
-  .home-work-grid .shot {
-    flex: 0 0 170px !important;
-    max-width: 170px !important;
-    scroll-snap-align: none !important;
-  }
+  .home-work-grid .shot { scroll-snap-align: none !important; }
 
   .carousel-nav-btn { display: none; }
 
@@ -2059,7 +2078,7 @@ footer.wrap{overflow-x:clip}
 <body>
 <div class="cover-overlay" id="cover-overlay" role="dialog" aria-modal="true" aria-label="Living Room Labs">
   <div class="cover-strip" id="cover-strip" aria-hidden="true"></div>
-  <div class="cover-color" aria-hidden="true"><div class="cover-strip" id="cover-strip-color"></div></div>
+  <div class="cover-color" aria-hidden="true"><div class="cover-color-inner"><div class="cover-strip" id="cover-strip-color"></div></div></div>
   <div class="cover-scrim" aria-hidden="true"></div>
   <div class="cover-glow" id="cover-glow" aria-hidden="true"></div>
 
@@ -2120,7 +2139,7 @@ footer.wrap{overflow-x:clip}
  <div class="sec-head">
       <button type="button" class="label sec-link nav-niches-link">What We Capture <span class="sec-link-arrow" aria-hidden="true">↗</span></button>
       <span class="fill"></span>
-      <button type="button" class="count mono sec-more nav-niches-link">See all categories ↗</button>
+      <button type="button" class="count mono sec-more nav-niches-link" aria-label="See all categories">See all<span class="sec-more-long"> categories</span> ↗</button>
     </div>
     <p class="featured-label mono">Featured photos</p>
     
@@ -2731,16 +2750,39 @@ function renderCoverFilmstrip(){
   if(!pool.length) return;
   var list = pool.concat(pool);
   var stripHtml = list.map(function(p){
-    return '<img loading="eager" decoding="async" '+stripImgAttrs(p.src)+' alt="" style="--ar:'+coverRatio(p)+'">';
+    return '<img loading="eager" decoding="async" '+stripImgAttrs(p.src)+' alt="" style="--ar:'+coverTile(p)+'">';
   }).join("");
   strip.innerHTML = stripHtml;
-  strip.classList.add("cover-strip-filled");
   /* colour copy for the Spotlight - same photos, already downloaded, so no extra loading */
   var colorStrip = $("#cover-strip-color");
-  if(colorStrip){ colorStrip.innerHTML = stripHtml; colorStrip.classList.add("cover-strip-filled"); }
-  pool.forEach(function(p){ p.__coverAr = coverRatio(p); });
+  if(colorStrip) colorStrip.innerHTML = stripHtml;
+  pool.forEach(function(p){ p.__coverAr = coverTile(p); });
   strip._pool = pool;
   setCoverSpeed();
+  /* Frame each photo from its REAL shape (the saved crop setting isn't always the photo's shape).
+     The strip fades in once the photos are in (or after 1.8s at most), so nothing visibly jumps. */
+  var imgs = strip.querySelectorAll("img"), cimgs = colorStrip ? colorStrip.querySelectorAll("img") : [], n = pool.length;
+  var waits = [];
+  for(var i = 0; i < n; i++) (function(im){
+    waits.push(new Promise(function(res){ if(im.complete && im.naturalWidth) res(); else { im.addEventListener("load", res, { once:true }); im.addEventListener("error", res, { once:true }); } }));
+  })(imgs[i]);
+  var shown = false;
+  function reveal(){
+    if(shown) return; shown = true;
+    for(var k = 0; k < n; k++){
+      var im = imgs[k];
+      if(im && im.naturalWidth && im.naturalHeight){
+        var t = coverTileFromRatio(im.naturalWidth / im.naturalHeight);
+        pool[k].__coverAr = t;
+        [imgs[k], imgs[k + n], cimgs[k], cimgs[k + n]].forEach(function(el){ if(el) el.style.setProperty("--ar", t); });
+      }
+    }
+    setCoverSpeed();
+    strip.classList.add("cover-strip-filled");
+    if(colorStrip) colorStrip.classList.add("cover-strip-filled");
+  }
+  Promise.all(waits).then(reveal);
+  setTimeout(reveal, 1800);
   if(!window.__coverSpeedBound){
     window.__coverSpeedBound = true;
     var t = 0;
@@ -2753,18 +2795,25 @@ function coverRatio(p){
   var r = m ? parseFloat(m[1]) / parseFloat(m[2]) : 1.5;
   return (r > 0.2 && r < 5) ? +r.toFixed(4) : 1.5;
 }
+/* the frame for a photo on the cover: halfway between the old narrow slice (0.42 wide per 1 tall)
+   and the photo's real shape - capped so no single photo takes over the screen */
+function coverTile(p){ return coverTileFromRatio(coverRatio(p)); }
+function coverTileFromRatio(r){
+  var phone = window.matchMedia && window.matchMedia("(max-aspect-ratio:1/1)").matches;
+  return +Math.max(0.48, Math.min(phone ? 0.7 : 0.85, (r + 0.42) / 2)).toFixed(4);
+}
 /* The drift moves at the same calm pace (pixels per second) whatever the photos' shapes, and both
    strips (black & white + colour) always get the identical timing so they stay perfectly aligned. */
 function setCoverSpeed(){
   var strip = $("#cover-strip");
   if(!strip || !strip._pool) return;
-  var vertical = window.matchMedia && window.matchMedia("(max-aspect-ratio:1/1)").matches;
+  var phone = window.matchMedia && window.matchMedia("(max-aspect-ratio:1/1)").matches;
   var imgs = strip.querySelectorAll("img"), half = imgs.length / 2, len = 0;
   for(var i = 0; i < half; i++){
-    var im = imgs[i], r = (im.naturalWidth && im.naturalHeight) ? im.naturalWidth / im.naturalHeight : (strip._pool[i] ? strip._pool[i].__coverAr : 1.5);
-    len += (vertical ? window.innerWidth / r : window.innerHeight * r) + 10;
+    var r = strip._pool[i] ? strip._pool[i].__coverAr : .75;
+    len += window.innerHeight * r + (phone ? 8 : 10);
   }
-  var speed = vertical ? 26 : 38;                           /* CSS px per second */
+  var speed = phone ? 30 : 40;                              /* CSS px per second */
   var secs = Math.max(30, Math.round(len / speed));
   [strip, $("#cover-strip-color")].forEach(function(el){ if(el) el.style.animationDuration = secs + "s"; });
 }
@@ -3694,10 +3743,29 @@ function initCover(){
     var ease = prefersReducedMotion() ? 1 : 0.16;
     curX += (targetX - curX) * ease;
     curY += (targetY - curY) * ease;
-    overlay.style.setProperty("--clx", curX.toFixed(1) + "px");
-    overlay.style.setProperty("--cly", curY.toFixed(1) + "px");
+    placeLight();
     requestAnimationFrame(loop);
   }
+  /* slide the small light window to the light, and its colour copy the opposite way so the photos line up */
+  var colorWin = overlay.querySelector(".cover-color"), colorInner = overlay.querySelector(".cover-color-inner");
+  var lightR = 0, lastLX = null, lastLY = null;
+  function sizeLight(){
+    if(!colorWin || !colorInner) return;
+    lightR = colorWin.offsetWidth / 2;
+    colorInner.style.width = overlay.clientWidth + "px";
+    colorInner.style.height = overlay.clientHeight + "px";
+    lastLX = lastLY = null;
+  }
+  function placeLight(){
+    if(!colorWin || !colorInner) return;
+    if(!lightR) sizeLight();
+    var dx = Math.round((curX - lightR) * 10) / 10, dy = Math.round((curY - lightR) * 10) / 10;
+    if(dx === lastLX && dy === lastLY) return;            /* light hasn't moved: nothing to do this frame */
+    lastLX = dx; lastLY = dy;
+    colorWin.style.transform = "translate3d(" + dx + "px," + dy + "px,0)";
+    colorInner.style.transform = "translate3d(" + (-dx) + "px," + (-dy) + "px,0)";
+  }
+  window.addEventListener("resize", function(){ if(spotlightOn){ sizeLight(); placeLight(); } });
   function setSpotlight(on){
     spotlightOn = on;
     overlay.classList.toggle("spotlight-on", on);
@@ -3707,6 +3775,7 @@ function initCover(){
         var r = overlay.getBoundingClientRect();
         setTarget(r.width / 2, r.height / 2);
       }
+      sizeLight(); placeLight();
       if(!rafRunning) requestAnimationFrame(loop);
     }
   }
