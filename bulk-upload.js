@@ -411,7 +411,6 @@
     $("#countLabel").textContent = photos.length + (photos.length === 1 ? " photo" : " photos") + " (max " + MAX_BATCH + ")";
     $("#toolbar").style.display = photos.length ? "flex" : "none";
     bindCardEvents();
-    syncBulkEventVisibility();
     updateUploadButton();
   }
 
@@ -425,10 +424,7 @@
           if (key === "eventTypes") p.eventTypes = splitList(field.value);
           else if (field.type === "checkbox") p[key] = field.checked;
           else p[key] = field.value;
-          if (key === "category") {
-            card.classList.toggle("is-events", p.category === "Events");
-            syncBulkEventVisibility();
-          }
+          if (key === "category") card.classList.toggle("is-events", p.category === "Events");
         };
         field.addEventListener("input", handler);
         field.addEventListener("change", handler);
@@ -460,14 +456,10 @@
     });
   }
 
-  /* ================= "Apply to all" ================= */
-  /* Event Type shows when you pick Events here, or when any photo in the batch is already Events */
-  function syncBulkEventVisibility(){
-    var show = $("#bulkCategory").value === "Events" || photos.some(function(p){ return p.category === "Events"; });
-    $("#bulkEventWrap").style.display = show ? "" : "none";
-  }
-  $("#bulkCategory").addEventListener("change", syncBulkEventVisibility);
-
+  /* ================= "Apply to all" =================
+     Category, Event type (optional), Shoot / client, Image position, Show in All.
+     (Featured is set per photo on each card.) Event type only means something on photos in the Events
+     category - pick Events here in the same Apply, or on the photos themselves. */
   $("#btnApplyBulk").addEventListener("click", function(){
     if (uploading || !photos.length) return;
     var cat = $("#bulkCategory").value;
@@ -475,9 +467,14 @@
     var events = splitList($("#bulkEventType").value);
     var position = $("#bulkPosition").value;
     var showInAll = $("#bulkShowInAll").value;
-    var featured = $("#bulkFeatured").value;
-    if (!cat && !client && !events.length && !position && !showInAll && !featured) {
-      alert("Pick at least one thing to apply (category, event type, client, position or a toggle).");
+    if (!cat && !client && !events.length && !position && !showInAll) {
+      alert("Pick at least one thing to apply (category, event type, client, position or Show in All).");
+      return;
+    }
+    /* an event type on its own, with no Events photos in the batch: say so plainly instead of silently doing nothing */
+    var willBeEvents = photos.filter(function(p){ return (cat || p.category) === "Events"; }).length;
+    if (events.length && !willBeEvents && !client && !position && !showInAll && !cat) {
+      showResult(false, "Event type is only used on photos in the Events category. Choose \"Events\" in Category (next to it) and press Apply again.");
       return;
     }
     var skippedEvents = 0;
@@ -486,7 +483,6 @@
       if (client) p.client = client;
       if (position) p.imagePosition = position;
       if (showInAll) p.showInAll = showInAll === "yes";
-      if (featured) p.featured = featured === "yes";
       if (events.length) {
         /* event types only mean something on Events photos (the site ignores them elsewhere) */
         if (p.category === "Events") p.eventTypes = events.slice();
@@ -495,7 +491,7 @@
     });
     renderGrid();
     if (events.length && skippedEvents) {
-      showResult(true, "Applied. Event type was added to the Events photos only - " + skippedEvents + " photo(s) in other categories were left without one.");
+      showResult(true, "Applied. Event type was added to the " + (photos.length - skippedEvents) + " Events photo(s) only - " + skippedEvents + " photo(s) in other categories were left without one.");
     } else {
       showResult(true, "Applied to all " + photos.length + " photo(s). You can still change any single photo below.");
     }

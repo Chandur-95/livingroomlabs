@@ -252,12 +252,15 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   border-bottom:1px solid var(--rule);
   transition:background .35s ease, border-color .35s ease;
 }
+/* LOGO: shown with its empty see-through margins trimmed (measured in /shared.js), so the box IS the
+   visible artwork - that's what lets it line up exactly with the text beside it. The defaults below
+   match the current logo, so it's right from the first paint. */
+.lg-crop{display:block;overflow:hidden;aspect-ratio:var(--lg-ar,1.4649);line-height:0;flex:none}
+.lg-crop > img{display:block;max-width:none;width:var(--lg-w,106.383%);height:auto;margin:var(--lg-t,-20.035%) 0 0 var(--lg-l,-3.191%)}
+
 .brand{display:flex;align-items:center;gap:14px;height:100%;cursor:pointer}
-.brand .mark{display:flex;align-items:center;height:74px}
-.brand .mark img{
-  height:74px;width:auto;object-fit:contain;
-  transition:transform .3s var(--ease);
-}
+.brand .mark{height:48px}
+.brand .mark img{transition:transform .3s var(--ease)}
 .brand .wordmark{
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
   text-transform:uppercase;font-weight:600;white-space:nowrap;
@@ -810,7 +813,7 @@ html[data-theme="dark"] .home-work-grid .plate {
   padding-top: 28px;
   padding-bottom: 44px;
   display: grid;
-  grid-template-columns: minmax(180px, 220px) 1.1fr 1.1fr 0.9fr 1.6fr;
+  grid-template-columns: minmax(200px, 240px) 1.1fr 1.1fr 0.9fr 1.6fr;
   gap: 24px clamp(24px, 3.5vw, 56px);
   align-items: start;
 }
@@ -827,18 +830,15 @@ html[data-theme="dark"] .home-work-grid .plate {
   background: none;
   padding: 0;
   cursor: pointer;
-  display: inline-block;
-  line-height: 1;
+  display: block;
+  width: 100%;
+  line-height: 0;
   margin: 0;
 }
-.foot-logo-btn img {
-  width: 100%;
-  max-width: 180px;
-  height: auto;
-  object-fit: contain;
-  display: block;
-  transition: transform .3s var(--ease);
-}
+/* the artwork's top edge sits level with the INDEX / ELSEWHERE / EVENTS / THE COLLECTIVE headings
+   (1px = the gap above capital letters inside those headings' line box, measured) */
+.foot-logo-btn .lg-crop { width: 100%; max-width: 240px; margin-top: 1px; }
+.foot-logo-btn img { transition: transform .3s var(--ease); }
 .foot-logo-btn:hover img { transform: scale(1.02); }
 
 .foot h4 {
@@ -956,13 +956,8 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   display:flex;align-items:center;gap:12px;cursor:pointer;height:100%;
   background:none;border:none;padding:0;
 }
-.overlay-nav-brand .mark{
-  display:flex;align-items:center;height:74px;
-}
-.overlay-nav-brand .mark img{
-  height:74px;max-height:74px;width:auto;object-fit:contain;
-  transition:transform .3s var(--ease);
-}
+.overlay-nav-brand .mark{height:48px}
+.overlay-nav-brand .mark img{transition:transform .3s var(--ease)}
 .overlay-nav-brand:hover .mark img{transform:scale(1.04)}
 
 .overlay-nav-right{
@@ -1521,150 +1516,14 @@ html[data-theme="dark"] .lb-frame {
 .lb-cap .m{opacity:.65;font-size:.82rem;text-align:right;color:inherit}
 .lb-cap .d{grid-column:1/-1;opacity:.8;font-size:.86rem;max-width:70ch;color:inherit}
 
-/* ENQUIRY MODAL (FULLSCREEN BACKDROP + SCALED INNER CARD) */
-.enquiry-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  z-index: 9999 !important;
-  background: rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.enquiry-modal.open {
-  display: flex !important;
-}
-.enquiry-modal.open .enquiry-card {
-  animation: modalFadeIn .25s var(--ease) forwards;
-}
-@keyframes modalFadeIn {
-  from { opacity: 0; transform: scale(0.96) translateY(8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-.enquiry-card {
-  position: relative;
-  background: var(--paper);
-  color: var(--ink);
-  border: 1px solid var(--ink);
-  width: 100%;
-  max-width: 500px;
-  padding: clamp(24px, 4vw, 36px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
-}
-
-.enquiry-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 12px;
-  margin-bottom: 20px;
-}
-.enquiry-head h3 {
-  margin: 0;
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 1.35rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.enquiry-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.enquiry-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.enquiry-label {
-  font-size: var(--fs-label);
-  letter-spacing: var(--tr-label);
-  text-transform: uppercase;
-  font-weight: 600;
-  opacity: 0.75;
-}
-.enquiry-input, .enquiry-textarea, .enquiry-select {
-  width: 100%;
-  background: var(--rule-soft);
-  color: var(--ink);
-  border: 1px solid var(--rule);
-  padding: 10px 14px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  border-radius: 0;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-.enquiry-input:focus, .enquiry-textarea:focus, .enquiry-select:focus {
-  border-color: var(--ink);
-  background: var(--paper);
-  outline: none;
-}
-.enquiry-textarea {
-  resize: vertical;
-  min-height: 100px;
-  max-height: 200px;
-}
-
-.char-counter {
-  font-size: 0.68rem;
-  text-align: right;
-  opacity: 0.55;
-  margin-top: 4px;
-}
-
-.enquiry-foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
-  padding-top: 14px;
-  border-top: 1px solid var(--rule);
-}
-.btn-enquiry-submit {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--ink);
-  color: var(--paper);
-  border: 1px solid var(--ink);
-  padding: 10px 22px;
-  font-size: var(--fs-label);
-  letter-spacing: var(--tr-label);
-  text-transform: uppercase;
-  font-weight: 600;
-  transition: background .2s ease, color .2s ease;
-}
-.btn-enquiry-submit:hover:not(:disabled) {
-  background: var(--paper);
-  color: var(--ink);
-}
-.btn-enquiry-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.enquiry-status-msg {
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  opacity: 0.75;
-}
+/* The enquiry window's styles live in /shared.js - one design for every page. */
 
 @media (max-width:980px){
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
   .foot{
-    grid-template-columns: 160px 1fr 1fr 0.85fr 1.3fr;
+    grid-template-columns: 170px 1fr 1fr 0.85fr 1.3fr;
     gap: 20px 24px;
   }
   
@@ -1683,10 +1542,8 @@ html[data-theme="dark"] .lb-frame {
 
 @media (min-width:981px){
   :root{ --nav-h: 100px; }
-  .brand .mark{ height:92px; width:92px; }
-  .brand .mark img{ height:92px; }
-  .overlay-nav-brand .mark{ height:92px; }
-  .overlay-nav-brand .mark img{ height:92px; max-height:92px; }
+  .brand .mark{ height:60px; }
+  .overlay-nav-brand .mark{ height:60px; }
 }
 
 @media (max-width:640px){
@@ -1694,18 +1551,18 @@ html[data-theme="dark"] .lb-frame {
     --nav-h:76px;
     --pad:12px;
   }
-  .nav{padding-inline:12px; gap:8px; align-items:center;}
+  /* Phone header: logo and The Collective share one centre line, and sit the same distance in from
+     the left and right edges as the page content below (16px). Logo is bigger than before. */
+  .nav{padding-left:calc(16px + var(--safe-left)); padding-right:calc(16px + var(--safe-right)); gap:8px; align-items:center;}
 
   .nav-collective-link-mob{padding:0 !important}
 
-  .brand{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;padding-left:8px}
-  .brand .mark{height:64px}
-  .brand .mark img{height:64px}
+  .brand{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;padding-left:0}
+  .brand .mark{height:54px}
   .brand .wordmark{display:none !important}
-  
-  /* The Collective sits at the TOP of the bar, right beside the hanging lamp rope */
-  .nav-right{gap:12px;flex-direction:row;align-items:flex-start;justify-content:flex-end;align-self:stretch}
-  .nav-right .nav-links{padding-top:14px}
+
+  .nav-right{gap:14px;flex-direction:row;align-items:center;justify-content:flex-end;align-self:stretch}
+  .nav-right .nav-links{padding-top:0}
   
   .nav-links{
     display:flex;
@@ -1784,54 +1641,27 @@ html[data-theme="dark"] .lb-frame {
     padding-bottom: clamp(12px, 1.5vw, 24px);
   }
 
+  /* Phone footer: logo, Index and Elsewhere spread across the FULL width - the last column ends on the
+     same right edge as the content above, so there's no dead space on the right. The logo grows with
+     the screen, and its top lines up with the INDEX / ELSEWHERE headings. */
   .foot{
-    display: grid !important;
-    grid-template-columns: 100px 1fr 1fr !important;
-    gap: 16px 16px !important;
-    padding-top: 24px !important;
-    padding-bottom: 28px !important;
-    align-items: start !important;
-  }
-  
-  .foot-col-logo {
-    grid-column: 1 / 2 !important;
     display: flex !important;
-    justify-content: flex-start !important;
+    justify-content: space-between !important;
     align-items: flex-start !important;
-    align-self: start !important;
-    width: 100% !important;
+    gap: 14px !important;
+    padding-top: 24px !important;
+    padding-bottom: calc(28px + var(--safe-bottom)) !important;
   }
-
-  .foot-logo-btn {
-    display: block !important;
-    text-align: left !important;
-    width: 100% !important;
-    line-height: 1 !important;
-    margin-top: 0 !important;
-  }
-
-  .foot-logo-btn img{
-    max-width: 130px !important;
-    width: 100% !important;
-    margin: 0 !important;
-  }
-
-  .foot-links-group {
-    grid-column: 2 / 4 !important;
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: flex-start !important;
-    gap: 20px !important;
-    width: 100% !important;
-  }
-
-  .foot-col-index { min-width: 70px; margin: 0 !important; padding-left: 12px; }
-  .foot-col-elsewhere { min-width: 70px; margin: 0 !important; padding-left: 12px; }
+  .foot-col-logo { flex: none; width: auto !important; }
+  .foot-logo-btn { width: auto; }
+  .foot-logo-btn .lg-crop { width: clamp(88px, 28vw, 128px); max-width: none; }
+  .foot-links-group { display: contents !important; }
+  /* columns may shrink (and wrap a long link onto two lines) rather than ever running off the screen */
+  .foot-col-index, .foot-col-elsewhere { flex: 0 1 auto; min-width: 0; margin: 0 !important; padding: 0 !important; }
   .foot-col-events { display: none !important; }
   .foot-col-team { display: none !important; }
 
-  .overlay-nav-brand .mark{height:52px}
-  .overlay-nav-brand .mark img{height:52px;max-height:52px}
+  .overlay-nav-brand .mark{height:44px}
   .overlay-nav .mono{display:none}
 
   .collective-hero{
@@ -1898,6 +1728,21 @@ html[data-theme="dark"] .lb-frame {
 
 /* Very narrow phones (320px): a long footer label could spill a few px sideways and make the whole page wiggle. */
 footer.wrap{overflow-x:clip}
+@media (max-width:374px){
+  .foot{ gap: 10px !important; }
+  .foot-logo-btn .lg-crop{ width: 22vw; }
+  .foot h4{ letter-spacing: .12em; }
+  .foot ul li, .foot ul a, .foot ul button{ font-size: .84rem; }
+}
+/* Tablets (641-980px): five columns in one row were too tight (names, roles and "Performing Arts"
+   wrapped awkwardly). Logo | Index | Elsewhere | Events on the first row, The Collective on its own row
+   underneath with the members side by side. */
+@media (min-width:641px) and (max-width:980px){
+  .foot{ grid-template-columns: 150px 1fr 1fr 1fr !important; row-gap: 28px !important; }
+  .foot-col-team{ grid-column: 2 / -1; }
+  .foot-col-team ul{ display: flex; flex-wrap: wrap; gap: 10px 32px; }
+  .foot-col-team li{ white-space: nowrap; }
+}
 </style>
 </head>
 
@@ -1907,7 +1752,7 @@ footer.wrap{overflow-x:clip}
 
 <nav class="nav">
   <button class="brand logo-exit-btn" aria-label="Living Room Labs (Reload)">
-    <span class="mark">
+    <span class="mark lg-crop">
       <img src="/logo.png" alt="Living Room Labs">
     </span>
     <span class="wordmark" data-name></span>
@@ -1984,7 +1829,7 @@ footer.wrap{overflow-x:clip}
     <div class="foot">
       <div class="foot-col-logo">
         <button class="foot-logo-btn logo-exit-btn" aria-label="Scroll to top of page">
-          <img src="/logo.png" alt="Living Room Labs">
+          <span class="lg-crop"><img src="/logo.png" alt="Living Room Labs"></span>
         </button>
       </div>
 
@@ -2017,7 +1862,7 @@ footer.wrap{overflow-x:clip}
 <div class="overlay-page" id="niches-page" role="dialog" aria-modal="true" aria-label="What We Capture">
   <div class="overlay-nav niches-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
-      <span class="mark">
+      <span class="mark lg-crop">
         <img src="/logo.png" alt="Living Room Labs">
       </span>
     </button>
@@ -2068,7 +1913,7 @@ footer.wrap{overflow-x:clip}
 <div class="overlay-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
-      <span class="mark">
+      <span class="mark lg-crop">
         <img src="/logo.png" alt="Living Room Labs">
       </span>
     </button>
@@ -2148,62 +1993,8 @@ footer.wrap{overflow-x:clip}
   </div>
 </div>
 
-<!-- ENQUIRY MODAL DIALOG -->
-<div class="enquiry-modal" id="enquiry-modal" role="dialog" aria-modal="true" aria-label="Enquiry">
-  <div class="enquiry-card">
-    <div class="enquiry-head">
-      <div>
-        <h3>Enquiry</h3>
-        <span class="mono" style="display:block; margin-top:2px; font-size:0.68rem; opacity:0.65;">Every frame begins with a conversation.</span>
-      </div>
-      <button type="button" id="btn-close-enquiry-modal" class="mono" style="font-size: 0.8rem; opacity: 0.65;">[ ESC / CLOSE ]</button>
-    </div>
-
-    <form class="enquiry-form" id="enquiry-form">
-      <div class="enquiry-field">
-        <label class="enquiry-label" for="enq-name">Your Name</label>
-        <input class="enquiry-input" type="text" id="enq-name" name="name" required maxlength="100" placeholder="Jane Doe" autocomplete="name">
-      </div>
-
-      <div class="enquiry-field">
-        <label class="enquiry-label" for="enq-email">Your Email</label>
-        <input class="enquiry-input" type="email" id="enq-email" name="email" required maxlength="254" placeholder="name@domain.com" autocomplete="email">
-      </div>
-
-      <div class="enquiry-field">
-        <label class="enquiry-label" for="enq-niche">Shoot Category</label>
-        <select class="enquiry-select" id="enq-niche" name="category">
-          <option value="General Enquiry">General Enquiry</option>
-          <option value="Food">Food</option>
-          <option value="Pets">Pets</option>
-          <option value="Real Estate">Real Estate</option>
-          <option value="Products">Products</option>
-          <option value="Events">Events</option>
-          <option value="Portraits">Portraits</option>
-          <option value="Travel">Travel</option>
-        </select>
-      </div>
-
-      <div class="enquiry-field">
-        <label class="enquiry-label" for="enq-msg">Shoot Details & Timeline</label>
-        <textarea class="enquiry-textarea" id="enq-msg" name="message" maxlength="500" required placeholder="Tell us what you're shooting, roughly when, and the location."></textarea>
-        <div class="char-counter mono"><span id="char-count">0</span> / 500 CHARACTERS</div>
-      </div>
-
-      <div class="hp-field" aria-hidden="true">
-        <label for="enq-website">Leave this field empty</label>
-        <input type="text" id="enq-website" name="_gotcha" tabindex="-1" autocomplete="off">
-      </div>
-
-      <div class="enquiry-foot">
-        <span class="mono enquiry-status-msg" id="enquiry-status" role="status" aria-live="polite">READY</span>
-        <button type="submit" class="btn-enquiry-submit" id="btn-enquiry-send">
-          Send Enquiry &rarr;
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
+<!-- The enquiry window is built by /shared.js (one design, used on every page) -->
+<script src="/shared.js"></script>
 
 <script>
 var SITE = {};
@@ -3008,14 +2799,13 @@ function restoreOpener(key){
 function focusDialog(dlg){
   if(!dlg) return;
   setTimeout(function(){
-    var target = dlg.querySelector(".overlay-close, #lb-close, #btn-close-enquiry-modal");
+    var target = dlg.querySelector(".overlay-close, #lb-close");
     if(!target){ dlg.setAttribute("tabindex", "-1"); target = dlg; }
     try { target.focus({ preventScroll: true }); } catch(err) { target.focus(); }
   }, 60);
 }
 function topDialog(){
-  var modal = document.getElementById("enquiry-modal");
-  if(modal && modal.classList.contains("open")) return modal;
+  if(enquiryIsOpen()) return window.LRL.enquiry.el();
   if(typeof lb !== "undefined" && lb && lb.classList.contains("on")) return lb;
   if(collectivePage && collectivePage.classList.contains("open")) return collectivePage;
   if(nichesPage && nichesPage.classList.contains("open")) return nichesPage;
@@ -3153,66 +2943,23 @@ window.addEventListener("hashchange", function(){
   }
 });
 
-/* ROBUST ENQUIRY MODAL SYSTEM */
-function populateEnquirySelect() {
-  var enqSelect = document.getElementById("enq-niche");
-  if (!enqSelect) return;
-  var currentVal = enqSelect.value;
-  var cats = ["General Enquiry"];
-  (SITE.niches || []).forEach(function(n) {
-    if (n && n.name && cats.indexOf(n.name) === -1) {
-      cats.push(n.name);
-    }
-  });
-  enqSelect.innerHTML = cats.map(function(c) {
-    return '<option value="' + esc(c) + '">' + esc(c) + '</option>';
-  }).join("");
-  if (currentVal && cats.indexOf(currentVal) !== -1) {
-    enqSelect.value = currentVal;
+/* ENQUIRY - the window itself lives in /shared.js so every page shows the exact same form (it also
+   gives the form its own Back-button step: Back on a phone closes it instead of leaving the site).
+   These two names stay so every existing Enquire button keeps working. If shared.js ever fails to
+   load, Enquire opens the visitor's mail app instead of doing nothing. */
+function enquiryReady(){ return !!(window.LRL && window.LRL.enquiry); }
+function openEnquiryModal(preselectedCategory, eventType) {
+  if (enquiryReady()) {
+    window.LRL.enquiry.open({ category: preselectedCategory || "General Enquiry", eventType: eventType || "" });
+    return;
   }
+  window.location.href = "mailto:" + (SITE.email || "hello@livingroomlabs.in") +
+    "?subject=" + encodeURIComponent("Enquiry: " + (preselectedCategory || "General Enquiry"));
 }
-
-function openEnquiryModal(preselectedCategory) {
-  var modal = document.getElementById("enquiry-modal");
-  if (!modal) return;
-  
-  populateEnquirySelect();
-  var select = document.getElementById("enq-niche");
-  if (select && preselectedCategory) {
-    var cleanTarget = String(preselectedCategory).trim().toLowerCase();
-    var found = false;
-    for (var i = 0; i < select.options.length; i++) {
-      if (select.options[i] && select.options[i].value && select.options[i].value.trim().toLowerCase() === cleanTarget) {
-        select.selectedIndex = i;
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      var opt = document.createElement("option");
-      opt.value = preselectedCategory;
-      opt.textContent = preselectedCategory;
-      opt.selected = true;
-      select.appendChild(opt);
-    }
-  }
-  
-  if (!modal.classList.contains("open")) rememberOpener("enquiry");
-  state.enqOpenedAt = Date.now();
-  state.enqWarned = false;
-  modal.classList.add("open");
-  var nameInput = document.getElementById("enq-name");
-  if (nameInput) {
-    setTimeout(function() { nameInput.focus(); }, 80);
-  }
-}
-
 function closeEnquiryModal() {
-  var modal = document.getElementById("enquiry-modal");
-  var wasOpen = !!(modal && modal.classList.contains("open"));
-  if (modal) modal.classList.remove("open");
-  if (wasOpen) restoreOpener("enquiry");
+  if (enquiryReady()) window.LRL.enquiry.close();
 }
+function enquiryIsOpen(){ return enquiryReady() && window.LRL.enquiry.isOpen(); }
 
 function initSlideshow(){
   var slides = [];
@@ -3512,7 +3259,7 @@ document.addEventListener("keydown", function(e){
 
   if(e.key === "Escape" && top){
     /* close only the pop-up that is on top (a photo opened inside "What we capture" closes first) */
-    if(top.id === "enquiry-modal") closeEnquiryModal();
+    if(enquiryIsOpen()) closeEnquiryModal();
     else if(top === lb) closeLB();
     else if(top === collectivePage) closeCollective();
     else closeNiches();
@@ -3575,18 +3322,8 @@ function bindGlobalEvents() {
       return;
     }
 
-    // Modal Close triggers
-    var closeEnq = e.target.closest("#btn-close-enquiry-modal");
-    if (closeEnq) {
-      e.preventDefault();
-      closeEnquiryModal();
-      return;
-    }
-    var modal = document.getElementById("enquiry-modal");
-    if (e.target === modal) {
-      closeEnquiryModal();
-      return;
-    }
+    // clicks inside the enquiry window are handled by the window itself (shared.js)
+    if (e.target.closest && e.target.closest("#lrlEnq")) return;
 
     if (!e.target.closest("#grid .shot") && !e.target.closest(".niche-preview-grid")) {
       $$("#grid .shot.touch-focus, .btn-preview-shot.touch-focus").forEach(function(s) {
@@ -3621,14 +3358,6 @@ function bindGlobalEvents() {
     }
   });
 
-  var enqMsg = document.getElementById("enq-msg");
-  var charCount = document.getElementById("char-count");
-  if (enqMsg && charCount) {
-    enqMsg.addEventListener("input", function() {
-      charCount.textContent = enqMsg.value.length;
-    });
-  }
-
   /* Events footer sub-links: Miss Universe, Performing Arts */
   var eventSubLinks = $$(".foot-event-sub");
   eventSubLinks.forEach(function(btn) {
@@ -3641,83 +3370,6 @@ function bindGlobalEvents() {
     });
   });
 
-  var enqForm = document.getElementById("enquiry-form");
-  if (enqForm) {
-    enqForm.addEventListener("submit", function(e) {
-      e.preventDefault();
-      if (state.isSubmitting) return;
-
-      /* --- spam checks (people never notice these) --- */
-      var enqStatusEl = document.getElementById("enquiry-status");
-      var hpEl = document.getElementById("enq-website");
-      if (hpEl && hpEl.value) {
-        /* a bot filled the hidden field: look successful, send nothing */
-        if (enqStatusEl) enqStatusEl.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
-        return;
-      }
-      var nowMs = Date.now();
-      if (state.enqOpenedAt && nowMs - state.enqOpenedAt < 4000 && !state.enqWarned) {
-        /* impossibly fast: ask once for a double-check (a real person just presses Send again) */
-        state.enqWarned = true;
-        if (enqStatusEl) enqStatusEl.textContent = "PLEASE DOUBLE-CHECK, THEN PRESS SEND AGAIN";
-        return;
-      }
-      if (state.lastEnqSentAt && nowMs - state.lastEnqSentAt < 30000) {
-        if (enqStatusEl) enqStatusEl.textContent = "ALREADY SENT // PLEASE WAIT A MOMENT";
-        return;
-      }
-
-      var btn = document.getElementById("btn-enquiry-send");
-      var enqStatus = document.getElementById("enquiry-status");
-      state.isSubmitting = true;
-      if (btn) btn.disabled = true;
-      if (enqStatus) enqStatus.textContent = "TRANSMITTING...";
-
-      var payload = {
-        name: $("#enq-name").value,
-        email: $("#enq-email").value,
-        category: $("#enq-niche").value,
-        message: $("#enq-msg").value,
-        _gotcha: hpEl ? hpEl.value : ""
-      };
-
-      var formId = SITE.formspreeId || "xjykvnoz";
-
-      fetch("https://formspree.io/f/" + formId, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json", 
-          "Accept": "application/json" 
-        },
-        body: JSON.stringify(payload)
-      })
-      .then(function(res) {
-        if (res.ok) {
-          state.lastEnqSentAt = Date.now();
-          if (enqStatus) enqStatus.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
-          setTimeout(function() {
-            enqForm.reset();
-            if (charCount) charCount.textContent = "0";
-            closeEnquiryModal();
-            state.isSubmitting = false;
-            if (btn) btn.disabled = false;
-            if (enqStatus) enqStatus.textContent = "READY";
-          }, 1800);
-        } else {
-          throw new Error("Submission failed");
-        }
-      })
-      .catch(function() {
-        if (enqStatus) enqStatus.textContent = "DISPATCHING VIA MAIL CLIENT...";
-        window.location.href = "mailto:" + (SITE.email || "hello@livingroomlabs.in") +
-          "?subject=" + encodeURIComponent("Enquiry: " + payload.category + " — " + payload.name) +
-          "&body=" + encodeURIComponent("Name: " + payload.name + "\nEmail: " + payload.email + "\nCategory: " + payload.category + "\n\nMessage:\n" + payload.message);
-        state.isSubmitting = false;
-        if (btn) btn.disabled = false;
-        setTimeout(closeEnquiryModal, 1500);
-      });
-    });
-  }
 }
 
 function toggleMemberPhoto(plate) {
@@ -3905,7 +3557,16 @@ function renderContent(){
   buildFilters();
   renderHomeGrid();
   renderNichesList();
-  populateEnquirySelect();
+
+  /* the enquiry window uses the live categories, email and form settings from the Content Editor */
+  if (enquiryReady()) {
+    var evTypes = [];
+    SITE.photos.forEach(function(p){ (p.eventTypes || []).forEach(function(et){ if (evTypes.indexOf(et) === -1) evTypes.push(et); }); });
+    window.LRL.enquiry.configure({
+      categories: SITE.niches.map(function(n){ return (n && n.name) || n; }),
+      formspreeId: SITE.formspreeId, email: SITE.email, eventTypes: evTypes
+    });
+  }
 
   if(window.location.hash === "#collective"){
     openCollective();

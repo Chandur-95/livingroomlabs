@@ -53,7 +53,11 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 }
 .cap-row1{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
 .cap-brand{display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;padding:0}
-.cap-brand img{width:64px;height:64px;object-fit:contain;filter:brightness(0) invert(1)}
+/* logo: shown with its empty see-through margins trimmed (see shared.js), so the visible artwork IS the box */
+.lg-crop{display:block;overflow:hidden;aspect-ratio:var(--lg-ar,1.4649);line-height:0;flex:none}
+.lg-crop > img{display:block;max-width:none;width:var(--lg-w,106.383%);height:auto;margin:var(--lg-t,-20.035%) 0 0 var(--lg-l,-3.191%)}
+.cap-brand .lg-crop{height:44px}
+.cap-brand img{filter:brightness(0) invert(1)}
 .cap-brand-text{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
 .cap-brand-text b{font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;font-weight:600}
 .cap-brand-text span{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
@@ -65,13 +69,6 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
   text-transform:uppercase;cursor:pointer;text-decoration:none;padding:0;white-space:nowrap;
 }
 .cap-links a:hover,.cap-links button:hover{opacity:1;text-decoration:underline}
-/* ".cap-links .cap-enquire" (not just ".cap-enquire") - the generic ".cap-links button{background:none}"
-   rule above is more specific and was silently removing this pill, leaving black text on the black header */
-.cap-links .cap-enquire{
-  background:#fff;color:#000 !important;border-radius:999px;padding:7px 16px !important;
-  opacity:1 !important;text-decoration:none !important;font-weight:600;
-}
-.cap-links .cap-enquire:hover{background:#e8e8e8}
 
 /* While a category is open the page behind the header is white (light mode) or near-black (dark
    mode), so the see-through dark gradient no longer works - the header gets a solid backdrop
@@ -87,14 +84,12 @@ html[data-theme="light"].cat-open .cap-brand-text span{color:rgba(0,0,0,.55)}
 html[data-theme="light"].cat-open .cap-links a,
 html[data-theme="light"].cat-open .cap-links button{color:#000}
 html[data-theme="light"].cat-open #capLampToggle{border-color:rgba(0,0,0,.28) !important}
-html[data-theme="light"].cat-open .cap-links .cap-enquire{background:#000;color:#fff !important}
-html[data-theme="light"].cat-open .cap-links .cap-enquire:hover{background:#333}
 html[data-theme="light"].cat-open .cap-cat-btn{border-color:rgba(0,0,0,.22);color:#000}
 html[data-theme="light"].cat-open .cap-cat-btn:hover,
 html[data-theme="light"].cat-open .cap-cat-btn:focus-visible{border-color:#000}
 html[data-theme="light"].cat-open .cap-cat-btn.active{background:#000;color:#fff;border-color:#000}
 
-.cap-cats{display:flex;gap:6px;flex-wrap:wrap}
+.cap-cats{display:flex;gap:6px;flex-wrap:wrap;position:relative}
 .cap-cat-btn{
   background:none;border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:999px;
   padding:6px 14px;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
@@ -106,7 +101,6 @@ html[data-theme="light"].cat-open .cap-cat-btn.active{background:#000;color:#fff
 @media (max-width:860px){
   .cap-header{padding:calc(10px + var(--safe-top)) 14px 10px}
   .cap-row1{margin-bottom:8px}
-  .cap-brand img{width:52px;height:52px}
   .cap-brand-text{display:none}
   .cap-mobile-hide{display:none !important}
   .cap-cats{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;-webkit-overflow-scrolling:touch;justify-content:flex-start}
@@ -258,7 +252,7 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
   transition:background .35s ease, border-color .35s ease, color .35s ease;
 }
 html[data-theme="dark"] .cap-foot{ background:rgba(8,8,8,.85); }
-.cap-foot-logo{width:76px;height:auto;object-fit:contain;opacity:.9;flex:none}
+.cap-foot-logo{height:48px;opacity:.9}
 .cap-foot-text{flex:1;min-width:0;text-align:left}
 .cap-foot-text b{display:block;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;opacity:.9;font-weight:600}
 .cap-foot-text p{margin:3px 0 0;font-size:.82rem;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -272,7 +266,6 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 @media (max-width:640px){
   :root{ --foot-h:88px; }
   .cap-foot{ padding:16px 16px calc(16px + var(--safe-bottom)); gap:12px; }
-  .cap-foot-logo{width:40px;height:40px}
   .cap-foot-text b{font-size:.7rem;letter-spacing:.1em}
   .cap-foot-text p{font-size:.76rem;white-space:normal;overflow:visible;line-height:1.35}
   .btn-cap-foot-enquire{padding:9px 16px;font-size:.68rem}
@@ -301,42 +294,83 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 .cap-lb-next{right:14px;top:50%;transform:translateY(-50%)}
 .cap-lb-cap{position:absolute;left:0;right:0;bottom:calc(18px + var(--safe-bottom));text-align:center;color:#fff;font-size:.85rem;opacity:.85}
 
-/* ================= enquiry form - opens right here instead of sending you to the home page ================= */
-#capEnq{
-  position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;
-  background:rgba(0,0,0,.6);padding:calc(16px + var(--safe-top)) 16px calc(16px + var(--safe-bottom));
-  overflow-y:auto;-webkit-overflow-scrolling:touch;
+/* the enquiry window comes from /shared.js - one design for every page */
+
+/* ================= Phones: What We Capture, reworked =================
+   Header: logo | page title | lamp, balanced. Categories in one edge-to-edge rail that fades where
+   there's more to scroll. Photos sized to fit the screen with the next ones peeking in; the caption
+   and pause button get their own band UNDER the photos instead of covering them. Footer slimmer and
+   dark over the photo stream. Categories: back link above the title, event filters in one row, and
+   a full-width lead photo followed by the two-column grid. */
+.cap-title{display:none}
+.cat-back-inline{display:none}
+.cat-card .cc-c{opacity:.7}
+@media (max-width:860px){
+  .cap-row1{position:relative}
+  .cap-title{
+    display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
+    margin:0;font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
+    color:#fff;white-space:nowrap;pointer-events:none;
+  }
+  html[data-theme="light"].cat-open .cap-title{color:#000}
 }
-#capEnq.on{display:flex}
-.enq-card{
-  width:100%;max-width:520px;margin:auto;background:var(--paper);color:var(--ink);
-  border:1px solid var(--line);border-radius:10px;padding:26px 26px 22px;
-  box-shadow:0 30px 80px rgba(0,0,0,.45);
+@media (max-width:640px){
+  :root{ --cap-h:66px; }
+  .cap-header{padding:calc(10px + var(--safe-top)) 16px 8px}
+  .cap-row1{margin-bottom:10px;min-height:40px}
+  .cap-brand .lg-crop{height:38px}
+  #capLampToggle{padding:6px 12px !important;font-size:.64rem !important}
+
+  .cap-cats{margin:0 -16px;padding:0 16px 2px;gap:6px}
+  .cap-cats.more-right:not(.more-left){-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
+  .cap-cats.more-left:not(.more-right){-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px);mask-image:linear-gradient(90deg,transparent,#000 44px)}
+  .cap-cats.more-left.more-right{-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent)}
+  .cap-cat-btn{flex:none;padding:6px 13px;font-size:.64rem;letter-spacing:.1em}
+
+  .disc-stage{padding-bottom:calc(var(--foot-h) + var(--cap-h))}
+  .disc-track{gap:12px}
+  .disc-card{height:calc(100% - 20px);border-radius:4px;box-shadow:0 18px 40px rgba(0,0,0,.6)}
+  .disc-nav-btn{display:none}
+  .disc-caption{
+    bottom:var(--foot-h);height:var(--cap-h);padding:0 70px 0 16px;background:none;align-items:center;
+  }
+  .disc-caption > div:first-child{min-width:0;flex:1}
+  #discTitle{font-family:'Inter',system-ui,sans-serif;font-size:1rem;font-weight:600;letter-spacing:-.005em;
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  #discMeta{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
+    opacity:.55;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .disc-hint{display:none}
+  .disc-pause{right:16px;bottom:calc(var(--foot-h) + (var(--cap-h) - 38px) / 2);width:38px;height:38px;font-size:.8rem}
+
+  .cap-foot{padding:10px 16px calc(10px + var(--safe-bottom));gap:12px}
+  .cap-foot-logo{height:30px}
+  .cap-foot-text b{font-size:.62rem;letter-spacing:.16em}
+  .cap-foot-text p{font-size:.66rem;line-height:1.35;margin-top:3px}
+  .btn-cap-foot-enquire{padding:9px 15px;font-size:.64rem}
+  html:not(.cat-open) .cap-foot{background:rgba(5,5,5,.94);color:#fff;border-top-color:rgba(255,255,255,.1)}
+  html:not(.cat-open) .cap-foot-logo{filter:brightness(0) invert(1);opacity:.85}
+  html:not(.cat-open) .btn-cap-foot-enquire{border-color:rgba(255,255,255,.85);color:#fff}
+  html:not(.cat-open) .btn-cap-foot-enquire:hover{background:#fff;color:#000}
+
+  .cat-back{display:none !important}
+  .cat-back-inline{
+    display:inline-flex;align-items:center;gap:6px;background:none;border:0;margin:0 0 8px;padding:6px 0;
+    color:inherit;opacity:.6;cursor:pointer;font:500 .62rem/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;
+  }
+  .cat-back-inline:hover,.cat-back-inline:focus-visible{opacity:1}
+  .cat-head{padding:4px 16px 12px}
+  .cat-head h1{font-size:2rem;letter-spacing:-.02em;line-height:1.05;margin:0 0 8px}
+  .cat-head p{font-size:.86rem;line-height:1.45}
+  .cat-chips{flex-wrap:nowrap;overflow-x:auto;margin:14px -16px 0;padding:0 16px 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
+  .cat-chips::-webkit-scrollbar{display:none}
+  .cat-chip{flex:none;padding:6px 12px;font-size:.64rem}
+  .cat-grid{gap:8px;padding:4px 16px calc(var(--foot-h) + 24px)}
+  .cat-card{border-radius:3px}
+  .cat-card.wide{grid-column:1 / -1;aspect-ratio:var(--r,4/5)}
+  .cat-card .cc-cap{padding:26px 10px 8px;font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .cat-card .cc-c{display:none}
+  .cat-card.wide .cc-cap{font-size:.84rem;padding:34px 14px 12px}
 }
-.enq-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
-.enq-head h2{margin:0;font-size:1.25rem;font-weight:600}
-.enq-head p{margin:3px 0 0;font-size:.72rem;opacity:.6}
-.enq-close{background:none;border:none;color:var(--ink);opacity:.65;cursor:pointer;font-size:.74rem;padding:4px 0;white-space:nowrap}
-.enq-close:hover{opacity:1}
-.enq-field{margin-bottom:14px}
-.enq-field label{display:block;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin-bottom:6px}
-.enq-field input,.enq-field select,.enq-field textarea{
-  width:100%;background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:6px;
-  padding:10px 12px;font:inherit;font-size:.92rem;
-}
-.enq-field select option{color:#000}
-.enq-field textarea{min-height:110px;resize:vertical}
-.enq-field input:focus,.enq-field select:focus,.enq-field textarea:focus{outline:none;border-color:var(--ink)}
-.enq-count{font-size:.64rem;opacity:.5;text-align:right;margin-top:4px}
-.enq-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.enq-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
-.enq-status{font-size:.68rem;letter-spacing:.08em;opacity:.7}
-.enq-send{
-  background:var(--ink);color:var(--paper);border:1px solid var(--ink);border-radius:999px;
-  padding:11px 24px;font:600 .76rem/1 'Inter',system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;
-}
-.enq-send:disabled{opacity:.45;cursor:not-allowed}
-@media (max-width:640px){ .enq-card{padding:22px 18px 18px} }
 
 .skip-link{position:absolute;left:12px;top:-64px;z-index:100;background:#fff;color:#000;padding:10px 16px;
   font-weight:600;font-size:.85rem;text-decoration:none;transition:top .15s ease}
@@ -349,19 +383,19 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 
 <header class="cap-header" id="capHeader">
   <div class="cap-row1">
-    <button class="cap-brand" id="capBrand" aria-label="Back to Home">
-      <img src="/logo.png" alt="Living Room Labs">
+    <button class="cap-brand" id="capBrand" aria-label="Living Room Labs - back to the home page">
+      <span class="lg-crop"><img src="/logo.png" alt="Living Room Labs"></span>
       <span class="cap-brand-text">
         <b>Living Room Labs</b>
         <span id="capTagline" class="mono"></span>
       </span>
     </button>
+    <p class="cap-title">What We Capture</p>
     <div class="cap-row1-right">
       <div class="cap-links">
         <button type="button" id="capCollective" class="cap-mobile-hide">The Collective ↗</button>
         <a href="#" id="capElsewhere" class="cap-mobile-hide" target="_blank" rel="noopener">Elsewhere ↗</a>
         <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the lamp on">☾ Lamp</button>
-        <button type="button" id="capEnquire" class="cap-enquire">Enquire ↗</button>
       </div>
     </div>
   </div>
@@ -386,6 +420,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 
 <section id="catview" aria-label="Category photos">
   <div class="cat-head">
+    <button type="button" class="cat-back-inline" id="catBackInline">← Discover</button>
     <h1 id="catTitle"></h1>
     <p id="catLine"></p>
     <div class="cat-chips" id="catChips"></div>
@@ -395,7 +430,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 <button class="cat-back mono" id="catBack" style="display:none">← Discover</button>
 
 <footer class="cap-foot" id="capFoot">
-  <img src="/logo.png" alt="Living Room Labs" class="cap-foot-logo">
+  <span class="lg-crop cap-foot-logo"><img src="/logo.png" alt="Living Room Labs"></span>
   <div class="cap-foot-text">
     <b class="mono" id="capFootHeading">Enquiry</b>
     <p class="mono" id="capFootTagline">Every frame begins with a conversation</p>
@@ -415,49 +450,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   <div class="cap-lb-cap mono" id="lbCap"></div>
 </div>
 
-<div id="capEnq" role="dialog" aria-modal="true" aria-labelledby="enqTitle">
-  <div class="enq-card">
-    <div class="enq-head">
-      <div>
-        <h2 id="enqTitle">Enquiry</h2>
-        <p class="mono">Every frame begins with a conversation.</p>
-      </div>
-      <button type="button" class="enq-close mono" id="enqClose" aria-label="Close enquiry">[ ESC / CLOSE ]</button>
-    </div>
-    <form id="enqForm" novalidate>
-      <div class="enq-field">
-        <label for="enqName">Your Name</label>
-        <input type="text" id="enqName" name="name" required maxlength="100" placeholder="Jane Doe" autocomplete="name">
-      </div>
-      <div class="enq-field">
-        <label for="enqEmail">Your Email</label>
-        <input type="email" id="enqEmail" name="email" required maxlength="254" placeholder="name@domain.com" autocomplete="email">
-      </div>
-      <div class="enq-field">
-        <label for="enqCat">Shoot Category</label>
-        <select id="enqCat" name="category"><option value="General Enquiry">General Enquiry</option></select>
-      </div>
-      <div class="enq-field" id="enqEventWrap" style="display:none">
-        <label for="enqEvent">Event Type</label>
-        <input type="text" id="enqEvent" name="eventType" maxlength="80" placeholder="e.g. Birthday, Wedding, Performing Arts">
-      </div>
-      <div class="enq-field">
-        <label for="enqMsg">Shoot Details &amp; Timeline</label>
-        <textarea id="enqMsg" name="message" required maxlength="500" placeholder="Tell us what you're shooting, roughly when, and the location."></textarea>
-        <div class="enq-count mono"><span id="enqCount">0</span> / 500</div>
-      </div>
-      <div class="enq-hp" aria-hidden="true">
-        <label for="enqWebsite">Leave this field empty</label>
-        <input type="text" id="enqWebsite" name="_gotcha" tabindex="-1" autocomplete="off">
-      </div>
-      <div class="enq-foot">
-        <span class="enq-status mono" id="enqStatus" role="status" aria-live="polite">READY</span>
-        <button type="submit" class="enq-send" id="enqSend">Send Enquiry &rarr;</button>
-      </div>
-    </form>
-  </div>
-</div>
-
+<script src="/shared.js"></script>
 <script>
 (function(){
   "use strict";
@@ -468,7 +461,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   var frameEst = 1000/60, scrollPlan = null, autoRaf = null;
   var track, trackLoopW = 0, trackPos = 0, isTouching = false, extAt = 0, manualPauseUntil = 0;
   var currentCat = null, currentEvent = null, lbList = [], lbIdx = 0;
-  var openOverlay = null; /* "lb" (photo viewer) | "enq" (enquiry form) | null */
+  var openOverlay = null; /* "lb" (photo viewer) | null  - the enquiry form manages itself (shared.js) */
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function $(s,r){ return (r||document).querySelector(s); }
@@ -494,13 +487,26 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 
   /* both bars are measured live (not guessed in CSS), so the photos, captions and buttons always
      clear them exactly - including the phone's home-indicator safe area inside the footer */
+  var lastBars = "";
   function syncHeaderHeight(){
     var h = document.getElementById("capHeader").offsetHeight;
     document.documentElement.style.setProperty("--header-h", h + "px");
     var f = document.getElementById("capFoot");
-    if (f && f.offsetHeight) document.documentElement.style.setProperty("--foot-h", f.offsetHeight + "px");
+    var fh = (f && f.offsetHeight) || 0;
+    if (fh) document.documentElement.style.setProperty("--foot-h", fh + "px");
+    /* bars changed size (fonts arriving, rotation...) -> the photo stage changed too: refit the cards */
+    var bars = h + "|" + fh;
+    if (lastBars && bars !== lastBars && track) {
+      requestAnimationFrame(function(){ $all(".disc-card", track).forEach(sizeCard); if (settleDiscover) settleDiscover(); });
+    }
+    lastBars = bars;
   }
   syncHeaderHeight();
+  if (window.ResizeObserver) {
+    var barsRO = new ResizeObserver(function(){ syncHeaderHeight(); });
+    barsRO.observe(document.getElementById("capHeader"));
+    barsRO.observe(document.getElementById("capFoot"));
+  }
   window.addEventListener("resize", syncHeaderHeight);
   window.addEventListener("orientationchange", function(){ setTimeout(syncHeaderHeight, 250); });
 
@@ -631,6 +637,13 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   function buildHeader(){
     var catsHost = $("#capCats");
     catsHost.innerHTML = "";
+    /* "All" = the Discover stream of every category; it's also the way back from a category */
+    var allBtn = document.createElement("button");
+    allBtn.className = "cap-cat-btn active"; allBtn.type = "button";
+    allBtn.textContent = "All";
+    allBtn.setAttribute("data-cat", "");
+    allBtn.addEventListener("click", function(){ if (currentCat) goDiscover(); });
+    catsHost.appendChild(allBtn);
     NICHES.forEach(function(n){
       var name = (n && n.name) || n;
       var btn = document.createElement("button");
@@ -640,6 +653,28 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       btn.addEventListener("click", function(){ showCategory(name); });
       catsHost.appendChild(btn);
     });
+    catsHost.addEventListener("scroll", railEdges, {passive:true});
+    window.addEventListener("resize", railEdges);
+    railEdges();
+
+    /* same logo file as the home page (the one set in the Content Editor), trimmed to its artwork */
+    if (DATA.logo) {
+      $all(".lg-crop > img").forEach(function(img){
+        img.addEventListener("error", function onErr(){ img.removeEventListener("error", onErr); img.src = "/logo.png"; });
+        img.src = DATA.logo;
+      });
+    }
+    if (window.LRL && LRL.trimLogos) LRL.trimLogos();
+
+    /* the enquiry window uses the live categories, email and form settings */
+    if (window.LRL && LRL.enquiry) {
+      var evs = [];
+      PHOTOS.forEach(function(p){ (p.eventTypes||[]).forEach(function(et){ if (evs.indexOf(et) === -1) evs.push(et); }); });
+      LRL.enquiry.configure({
+        categories: NICHES.map(function(n){ return (n && n.name) || n; }),
+        formspreeId: DATA.formspreeId, email: DATA.email, eventTypes: evs
+      });
+    }
 
     $("#capTagline").textContent = DATA.tagline || "";
     $("#capFootTagline").textContent = "Every frame begins with a conversation";
@@ -651,6 +686,28 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     else $("#capElsewhere").style.display = "none";
 
     syncHeaderHeight();
+  }
+
+  /* category rail: fade the edge(s) that still have more chips to scroll to (phones) */
+  function railEdges(){
+    var r = $("#capCats");
+    if (!r) return;
+    r.classList.toggle("more-left", r.scrollLeft > 4);
+    r.classList.toggle("more-right", r.scrollLeft + r.clientWidth < r.scrollWidth - 4);
+  }
+  /* mark the chip for what's on screen and slide the rail so it's visible (it was off-screen on phones) */
+  function markActiveChip(name){
+    var rail = $("#capCats"), active = null;
+    $all(".cap-cat-btn", rail).forEach(function(b){
+      var on = b.getAttribute("data-cat") === (name || "");
+      b.classList.toggle("active", on);
+      if (on) { active = b; b.setAttribute("aria-current", "true"); } else b.removeAttribute("aria-current");
+    });
+    if (active && rail.scrollWidth > rail.clientWidth) {
+      var target = active.offsetLeft - (rail.clientWidth - active.offsetWidth) / 2;
+      rail.scrollTo({ left: Math.max(0, target), behavior: reduceMotion ? "auto" : "smooth" });
+    }
+    setTimeout(railEdges, 400);
   }
 
   /* ---------------- discover: continuous flowing carousel with dock magnification ---------------- */
@@ -684,19 +741,21 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       }
       applyDockScale();
     }
+    settleDiscover = settle;
+    var placeholderW = Math.round(Math.min(512, (track.clientWidth || window.innerWidth) * maxCardShare()));
     [discoverOrder, discoverOrder].forEach(function(list, copyNum){
       list.forEach(function(p){
         var card = document.createElement("div");
         card.className = "disc-card";
         card.dataset.copy = copyNum;
-        card.style.width = "512px"; /* placeholder until the real dimensions are known */
+        card.style.width = placeholderW + "px"; /* placeholder until the real dimensions are known */
         var img = document.createElement("img");
         img.loading = "eager";
         img.alt = p.alt || p.title || "";
         img.addEventListener("load", function(){
           if (img.naturalWidth && img.naturalHeight) {
-            var h = card.offsetHeight;
-            card.style.width = Math.round(h * (img.naturalWidth / img.naturalHeight)) + "px";
+            card.dataset.ratio = String(img.naturalWidth / img.naturalHeight);
+            sizeCard(card);
           }
           loadedCount++;
           if (loadedCount === totalCount || loadedCount === 6) settle();
@@ -734,6 +793,35 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       if (Math.abs(track.scrollLeft - trackPos) > 1.5) { extAt = performance.now(); }
     }, {passive:true});
   }
+
+  /* a photo card is as tall as the stage allows, at the photo's real shape - but never wider than
+     most of the screen, so on a phone the next photos still peek in from the sides */
+  var settleDiscover = null;
+  function maxCardShare(){ return window.innerWidth <= 640 ? 0.84 : 0.9; }
+  function sizeCard(card){
+    var r = parseFloat(card.dataset.ratio);
+    if (!r || !track) return;
+    card.style.height = "";                       /* back to the stylesheet height, then fit */
+    var h = card.offsetHeight;
+    var maxW = (track.clientWidth || window.innerWidth) * maxCardShare();
+    var w = h * r;
+    if (w > maxW) { w = maxW; card.style.height = Math.round(maxW / r) + "px"; }
+    card.style.width = Math.round(w) + "px";
+  }
+  /* turning the phone or resizing the window: refit every card and re-measure the loop */
+  (function(){
+    var t = null, lastW = window.innerWidth, lastH = window.innerHeight;
+    window.addEventListener("resize", function(){
+      if (window.innerWidth === lastW && Math.abs(window.innerHeight - lastH) < 120) return; /* phone address bar */
+      lastW = window.innerWidth; lastH = window.innerHeight;
+      clearTimeout(t);
+      t = setTimeout(function(){
+        if (!track) return;
+        $all(".disc-card", track).forEach(sizeCard);
+        if (settleDiscover) settleDiscover();
+      }, 180);
+    });
+  })();
 
   function nearestCardTo(x){
     var cards = $all(".disc-card", track);
@@ -782,11 +870,12 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     var half = track.clientWidth/2;
     var cards = $all(".disc-card", track);
     var winner = null, winnerDist = Infinity;
+    var shrink = window.innerWidth <= 640 ? 0.22 : 0.32;  /* gentler on phones, so the peeking photos stay readable */
     cards.forEach(function(card){
       var cx = card.offsetLeft + card.offsetWidth/2;
       var dist = Math.abs(cx - centerX);
       var t = Math.min(1, dist / half);
-      var scale = 1 - t*0.32;
+      var scale = 1 - t*shrink;
       card.style.transform = "scale(" + scale.toFixed(3) + ")";
       if (dist < winnerDist) { winnerDist = dist; winner = card; }
     });
@@ -836,7 +925,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       lastFrameT = now;
       refreshScrollPlan();
       frameTick++;
-      if (discoverPaused || isTouching || currentCat || openOverlay) return;
+      if (discoverPaused || isTouching || currentCat || openOverlay || enqOpen()) return;
       if (window.__isDark && window.__isDark()) return; /* lamp on -> the strip holds still, matching a calm, static room */
       if (manualPauseUntil && now < manualPauseUntil) return;
       if (extAt && now - extAt < 250) return;
@@ -906,7 +995,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     $("#discover").style.display = "none";
     $("#catview").classList.add("on");
     $("#catBack").style.display = "block";
-    $all(".cap-cat-btn").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-cat") === name); });
+    markActiveChip(name);
 
     var nicheInfo = NICHES.find(function(n){ return (n.name||n) === name; }) || {};
     $("#catTitle").textContent = name;
@@ -955,12 +1044,27 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       grid.innerHTML = '<div class="cat-empty mono">No photos here yet.</div>';
       return;
     }
+    /* phones: the first photo runs full width at its own shape (a lead frame), then two columns;
+       if that leaves one photo on its own at the end, it runs full width too instead of a half-empty row */
+    var lastWide = (list.length - 1) % 2 === 1;
     list.forEach(function(p, i){
       var card = document.createElement("div");
-      card.className = "cat-card";
+      card.className = "cat-card" + ((i === 0 || (lastWide && i === list.length - 1)) ? " wide" : "");
+      card.setAttribute("role", "button");
+      card.setAttribute("tabindex", "0");
+      card.setAttribute("aria-label", "Open photo: " + (p.title || "Untitled"));
+      var ratio = /^\s*(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*$/.exec(p.ratio || "");
+      if (ratio) card.style.setProperty("--r", ratio[1] + " / " + ratio[2]);
       card.innerHTML = '<img loading="lazy" src="'+esc(p.src)+'" alt="'+esc(p.alt||p.title||"")+'" style="object-position:'+esc((p.imagePosition||"center").toLowerCase())+'">'+
-        '<div class="cc-cap">'+esc(p.title||"")+(p.client?' <span style="opacity:.7">— '+esc(p.client)+'</span>':'')+'</div>';
-      card.addEventListener("click", function(){ lbList = list; lbIdx = i; renderLb(); showOverlay("lb"); $("#lbClose").focus(); });
+        '<div class="cc-cap"><span class="cc-t">'+esc(p.title||"")+'</span>'+(p.client?'<span class="cc-c"> — '+esc(p.client)+'</span>':'')+'</div>';
+      var img = card.querySelector("img");
+      img.addEventListener("load", function(){
+        /* the Content Editor's ratio isn't always right - the photo's real shape wins */
+        if (img.naturalWidth && img.naturalHeight) card.style.setProperty("--r", img.naturalWidth + " / " + img.naturalHeight);
+      });
+      function openIt(){ lbList = list; lbIdx = i; renderLb(); showOverlay("lb"); $("#lbClose").focus(); }
+      card.addEventListener("click", openIt);
+      card.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openIt(); } });
       grid.appendChild(card);
     });
   }
@@ -971,7 +1075,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     $("#catview").classList.remove("on");
     $("#catBack").style.display = "none";
     $("#discover").style.display = "";   /* back to the stylesheet's flex layout (was forced to "block") */
-    $all(".cap-cat-btn").forEach(function(b){ b.classList.remove("active"); });
+    markActiveChip(null);
     if (mode !== "none") updateUrl(null, null, false, false);
     syncHeaderHeight();
     applyDockScale();
@@ -986,9 +1090,10 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     else backToDiscover("replace");
   }
   $("#catBack").addEventListener("click", goDiscover);
+  $("#catBackInline").addEventListener("click", goDiscover);
 
   /* ---------------- overlays (photo viewer + enquiry form) ---------------- */
-  function overlayEl(name){ return name === "lb" ? $("#capLb") : $("#capEnq"); }
+  function overlayEl(name){ return $("#capLb"); }
   function showOverlay(name){
     if (openOverlay && openOverlay !== name) hideOverlayUI(openOverlay);
     var el = overlayEl(name);
@@ -1045,123 +1150,26 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   $("#lbNext").addEventListener("click", function(){ if (!lbList.length) return; lbIdx = (lbIdx + 1) % lbList.length; renderLb(); });
   $("#capLb").addEventListener("click", function(e){ if (e.target.id === "capLb") closeLb(); });
 
-  /* ---------------- enquiry form (opens right here - no trip to the home page) ---------------- */
-  var enqOpenedAt = 0, enqWarned = false, enqSentAt = 0, enqBusy = false, enqDownOnBackdrop = false;
-  var DEFAULT_CATS = ["Food", "Pets", "Real Estate", "Products", "Events", "Portraits", "Travel"];
-
-  function fillEnqCategories(){
-    var sel = $("#enqCat");
-    var keep = sel.value;
-    var cats = ["General Enquiry"];
-    var source = NICHES.length ? NICHES : DEFAULT_CATS;
-    source.forEach(function(n){
-      var nm = (n && n.name) || n;
-      if (nm && cats.indexOf(nm) === -1) cats.push(nm);
-    });
-    sel.innerHTML = cats.map(function(c){ return '<option value="'+esc(c)+'">'+esc(c)+'</option>'; }).join("");
-    if (cats.indexOf(keep) > -1) sel.value = keep;
-  }
-  function syncEnqEvent(){
-    $("#enqEventWrap").style.display = $("#enqCat").value === "Events" ? "" : "none";
-  }
+  /* ---------------- enquiry form ----------------
+     The window itself lives in /shared.js so it looks and behaves exactly the same on every page
+     (including its own Back-button step). If that file ever fails to load, Enquire still works by
+     opening the visitor's mail app instead of doing nothing. */
+  function enqOpen(){ return !!(window.LRL && LRL.enquiry && LRL.enquiry.isOpen()); }
   function openEnquiry(){
-    fillEnqCategories();
-    var sel = $("#enqCat");
-    var want = currentCat || "General Enquiry";
-    var has = Array.prototype.some.call(sel.options, function(o){ return o.value === want; });
-    if (!has) {
-      var opt = document.createElement("option");
-      opt.value = want; opt.textContent = want;
-      sel.appendChild(opt);
-    }
-    sel.value = want;
-    if (currentEvent) $("#enqEvent").value = currentEvent;
-    syncEnqEvent();
-    enqOpenedAt = Date.now(); enqWarned = false;
-    if (!enqBusy) $("#enqStatus").textContent = "READY";
-    showOverlay("enq");
-    setTimeout(function(){ $("#enqName").focus(); }, 80);
-  }
-
-  $("#capEnquire").addEventListener("click", openEnquiry);
-  $("#capFootEnquire").addEventListener("click", openEnquiry);
-  $("#capBrand").addEventListener("click", function(){ window.location.href = "/"; });
-  $("#enqClose").addEventListener("click", function(){ closeOverlay("enq"); });
-  $("#enqCat").addEventListener("change", syncEnqEvent);
-  $("#enqMsg").addEventListener("input", function(){ $("#enqCount").textContent = String(this.value.length); });
-  /* only a click that STARTS and ends on the dark backdrop closes it - dragging to select text
-     inside a field and releasing outside the card won't throw away what you typed */
-  $("#capEnq").addEventListener("mousedown", function(e){ enqDownOnBackdrop = (e.target.id === "capEnq"); });
-  $("#capEnq").addEventListener("click", function(e){
-    if (e.target.id === "capEnq" && enqDownOnBackdrop) closeOverlay("enq");
-    enqDownOnBackdrop = false;
-  });
-
-  $("#enqForm").addEventListener("submit", function(e){
-    e.preventDefault();
-    if (enqBusy) return;
-    var form = this, status = $("#enqStatus"), send = $("#enqSend");
-    if (form.reportValidity && !form.reportValidity()) return; /* browser's own "please fill this in" hints */
-
-    /* same quiet spam checks as the home page form */
-    if ($("#enqWebsite").value) { status.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H"; return; }
-    var now = Date.now();
-    if (now - enqOpenedAt < 4000 && !enqWarned) {
-      enqWarned = true;
-      status.textContent = "PLEASE DOUBLE-CHECK, THEN PRESS SEND AGAIN";
+    var cat = currentCat || "General Enquiry";
+    if (window.LRL && LRL.enquiry) {
+      LRL.enquiry.open({ category: cat, eventType: currentEvent || "" });
       return;
     }
-    if (enqSentAt && now - enqSentAt < 30000) { status.textContent = "ALREADY SENT // PLEASE WAIT A MOMENT"; return; }
-
-    var cat = $("#enqCat").value;
-    var ev = cat === "Events" ? $("#enqEvent").value.trim() : "";
-    var payload = {
-      name: $("#enqName").value.trim(),
-      email: $("#enqEmail").value.trim(),
-      category: cat,
-      message: $("#enqMsg").value.trim(),
-      _gotcha: ""
-    };
-    if (ev) payload.eventType = ev;
-
-    enqBusy = true; send.disabled = true;
-    status.textContent = "TRANSMITTING...";
-    var formId = (DATA && DATA.formspreeId) || "xjykvnoz";
-
-    fetch("https://formspree.io/f/" + formId, {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify(payload)
-    }).then(function(res){
-      if (!res.ok) throw new Error("Submission failed (" + res.status + ")");
-      enqSentAt = Date.now();
-      status.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
-      setTimeout(function(){
-        form.reset();
-        $("#enqCount").textContent = "0";
-        syncEnqEvent();
-        enqBusy = false; send.disabled = false;
-        status.textContent = "READY";
-        closeOverlay("enq");
-      }, 1800);
-    }).catch(function(){
-      /* keep the form open with everything typed, and hand off to the mail app as a backup */
-      status.textContent = "OPENING YOUR MAIL APP...";
-      enqBusy = false; send.disabled = false;
-      var to = (DATA && DATA.email) || "hello@livingroomlabs.in";
-      window.location.href = "mailto:" + to +
-        "?subject=" + encodeURIComponent("Enquiry: " + payload.category + (ev ? " (" + ev + ")" : "") + " — " + payload.name) +
-        "&body=" + encodeURIComponent("Name: " + payload.name + "\nEmail: " + payload.email + "\nCategory: " + payload.category +
-          (ev ? "\nEvent type: " + ev : "") + "\n\nMessage:\n" + payload.message);
-    });
-  });
+    var to = (DATA && DATA.email) || "hello@livingroomlabs.in";
+    window.location.href = "mailto:" + to + "?subject=" + encodeURIComponent("Enquiry: " + cat + (currentEvent ? " (" + currentEvent + ")" : ""));
+  }
+  $("#capFootEnquire").addEventListener("click", openEnquiry);
+  $("#capBrand").addEventListener("click", function(){ window.location.href = "/"; });
 
   /* ---------------- keyboard ---------------- */
   document.addEventListener("keydown", function(e){
-    if (openOverlay === "enq") {
-      if (e.key === "Escape") closeOverlay("enq");
-      return; /* arrows etc. belong to the form fields while it's open */
-    }
+    if (enqOpen()) return; /* the enquiry window handles its own keys (Escape, Tab) */
     if (openOverlay === "lb") {
       if (e.key === "Escape") closeLb();
       else if (e.key === "ArrowLeft") $("#lbPrev").click();
