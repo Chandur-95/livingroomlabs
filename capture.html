@@ -22,14 +22,15 @@
 <meta property="og:locale" content="en_IN">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://livingroomlabs.in/og-image.jpg">
-<!-- Always starts light (lamp off), no matter what theme the home page was left in - see the
-     second note near initLamp() for why this no longer mirrors localStorage on arrival. -->
+<!-- Light / dark follows whatever was chosen on the home page (the lamp cord), set before first
+     paint so nothing flashes. Spotlight is a separate switch and always starts off. -->
 <script>
   (function(){
     try {
-      document.documentElement.setAttribute("data-theme", "light");
+      var dark = localStorage.getItem("lrl_theme") === "dark";
+      document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
       var tcm = document.getElementById("themeColorMeta");
-      if (tcm) tcm.setAttribute("content", "#FFFFFF");
+      if (tcm) tcm.setAttribute("content", dark ? "#080808" : "#FFFFFF");
     } catch(e) {}
   })();
 </script>
@@ -67,6 +68,7 @@
 }
 html[data-theme="dark"]{ --paper:#080808; --ink:#FFFFFF; --dim:rgba(255,255,255,.6); --line:rgba(255,255,255,.14); }
 *{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:hidden;
   font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
 .mono{font-family:'JetBrains Mono',monospace}
@@ -118,17 +120,17 @@ html.cat-open .cap-header{
   background:rgba(8,8,8,.96);border-bottom:1px solid rgba(255,255,255,.08);
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
 }
-html[data-theme="light"].cat-open .cap-header{background:rgba(255,255,255,.96);border-bottom-color:rgba(0,0,0,.08)}
-html[data-theme="light"].cat-open .cap-brand img{filter:none}
-html[data-theme="light"].cat-open .cap-brand-text b{color:#000}
-html[data-theme="light"].cat-open .cap-brand-text span{color:rgba(0,0,0,.55)}
-html[data-theme="light"].cat-open .cap-links a,
-html[data-theme="light"].cat-open .cap-links button{color:#000}
-html[data-theme="light"].cat-open #capLampToggle{border-color:rgba(0,0,0,.28) !important}
-html[data-theme="light"].cat-open .cap-cat-btn{border-color:rgba(0,0,0,.22);color:#000}
-html[data-theme="light"].cat-open .cap-cat-btn:hover,
-html[data-theme="light"].cat-open .cap-cat-btn:focus-visible{border-color:#000}
-html[data-theme="light"].cat-open .cap-cat-btn.active{background:#000;color:#fff;border-color:#000}
+html[data-theme="light"] .cap-header{background:rgba(255,255,255,.96);border-bottom-color:rgba(0,0,0,.08)}
+html[data-theme="light"] .cap-brand img{filter:none}
+html[data-theme="light"] .cap-brand-text b{color:#000}
+html[data-theme="light"] .cap-brand-text span{color:rgba(0,0,0,.55)}
+html[data-theme="light"] .cap-links a,
+html[data-theme="light"] .cap-links button{color:#000}
+html[data-theme="light"] #capLampToggle{border-color:rgba(0,0,0,.28) !important}
+html[data-theme="light"] .cap-cat-btn{border-color:rgba(0,0,0,.22);color:#000}
+html[data-theme="light"] .cap-cat-btn:hover,
+html[data-theme="light"] .cap-cat-btn:focus-visible{border-color:#000}
+html[data-theme="light"] .cap-cat-btn.active{background:#000;color:#fff;border-color:#000}
 
 .cap-cats{display:flex;gap:6px;flex-wrap:wrap;position:relative}
 .cap-cat-btn{
@@ -207,6 +209,10 @@ html[data-theme="light"].cat-open .cap-cat-btn.active{background:#000;color:#fff
   opacity:.9 !important;text-decoration:none !important;font-size:.7rem !important;
 }
 #capLampToggle[aria-pressed="true"]{background:rgba(255,196,75,.16);border-color:rgba(255,196,75,.55) !important;color:#ffe9c2 !important}
+#capLampToggle{display:inline-flex;align-items:center;gap:7px}
+.spot-dot{width:6px;height:6px;border-radius:999px;background:currentColor;opacity:.6;flex:none}
+#capLampToggle[aria-pressed="true"] .spot-dot{background:#FFC24B;box-shadow:0 0 6px #FFC24B;opacity:1}
+html[data-theme="light"] #capLampToggle[aria-pressed="true"]{color:#7a4d00 !important;background:rgba(255,196,75,.22)}
 
 /* ================= Lamplight: your cursor/finger is a lamp - the photo stays dim
    everywhere except a circle that follows you, matching the original concept board
@@ -218,7 +224,7 @@ html[data-theme="light"].cat-open .cap-cat-btn.active{background:#000;color:#fff
 #lbStage img{display:block;max-width:92vw;max-height:86vh;object-fit:contain}
 #lbImgDim{
   position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
-  filter:brightness(.16) saturate(.55);opacity:0;transition:opacity .5s ease;pointer-events:none;
+  filter:grayscale(1) brightness(.2);opacity:0;transition:opacity .5s ease;pointer-events:none;
 }
 #lbStage.lamp-on #lbImgDim{opacity:1}
 #lbStage.lamp-on #lbImg{
@@ -373,7 +379,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     margin:0;font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
     color:#fff;white-space:nowrap;pointer-events:none;
   }
-  html[data-theme="light"].cat-open .cap-title{color:#000}
+  html[data-theme="light"] .cap-title{color:#000}
 }
 @media (max-width:640px){
   :root{ --cap-h:66px; }
@@ -408,10 +414,10 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   .cap-foot-text b{font-size:.62rem;letter-spacing:.16em}
   .cap-foot-text p{font-size:.66rem;line-height:1.35;margin-top:3px}
   .btn-cap-foot-enquire{padding:9px 15px;font-size:.64rem}
-  html:not(.cat-open) .cap-foot{background:rgba(5,5,5,.94);color:#fff;border-top-color:rgba(255,255,255,.1)}
-  html:not(.cat-open) .cap-foot-logo{filter:brightness(0) invert(1);opacity:.85}
-  html:not(.cat-open) .btn-cap-foot-enquire{border-color:rgba(255,255,255,.85);color:#fff}
-  html:not(.cat-open) .btn-cap-foot-enquire:hover{background:#fff;color:#000}
+  html[data-theme="dark"]:not(.cat-open) .cap-foot{background:rgba(5,5,5,.94);color:#fff;border-top-color:rgba(255,255,255,.1)}
+  html[data-theme="dark"]:not(.cat-open) .cap-foot-logo{filter:brightness(0) invert(1);opacity:.85}
+  html[data-theme="dark"]:not(.cat-open) .btn-cap-foot-enquire{border-color:rgba(255,255,255,.85);color:#fff}
+  html[data-theme="dark"]:not(.cat-open) .btn-cap-foot-enquire:hover{background:#fff;color:#000}
 
   .cat-back{display:none !important}
   .cat-back-inline{
@@ -452,20 +458,36 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     display:inline-flex;align-items:center;gap:6px;
   }
   .spot-slot #capLampToggle:not([aria-pressed="true"]){background:rgba(0,0,0,.25)}
-  html[data-theme="light"].cat-open .spot-slot #capLampToggle{color:#000;background:transparent}
+  html[data-theme="light"] .spot-slot #capLampToggle{color:#000;background:transparent}
 }
 /* ================= Page spotlight (normal view): with Spotlight on, the page falls into a dim
    black & white, and a warm circle that follows the cursor, finger or the phone's tilt brings the
    photos back into colour. Fixed layers, pointer-events:none - never blocks clicks or swipes. */
-#pageLamp{position:fixed;inset:0;z-index:30;pointer-events:none;opacity:0;transition:opacity .45s ease;
+#pageLamp{position:fixed;inset:0;z-index:30;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s;
   -webkit-backdrop-filter:grayscale(1) brightness(.34);backdrop-filter:grayscale(1) brightness(.34);
   -webkit-mask-image:radial-gradient(circle var(--pr,260px) at var(--px,50%) var(--py,50%), transparent 0%, rgba(0,0,0,.25) 45%, #000 100%);
   mask-image:radial-gradient(circle var(--pr,260px) at var(--px,50%) var(--py,50%), transparent 0%, rgba(0,0,0,.25) 45%, #000 100%);}
-#pageLampGlow{position:fixed;inset:0;z-index:31;pointer-events:none;opacity:0;transition:opacity .45s ease;
+#pageLampGlow{position:fixed;inset:0;z-index:31;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s;
   background:radial-gradient(circle calc(var(--pr,260px) * 1.1) at var(--px,50%) var(--py,50%), rgba(255,190,85,.18), rgba(255,190,85,0) 70%);}
-html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1}
+html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility:visible;transition:opacity .45s ease,visibility 0s}
 html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-loaded{filter:none}
 @media (max-width:860px){ :root{--pr:170px} }
+/* ================= Light mode for the whole page =================
+   What We Capture follows the theme chosen on the home page everywhere - Discover included. In light
+   mode Discover is a clean white gallery; in dark mode it stays the black stage. Photos are always in
+   full colour either way. */
+html[data-theme="light"],html[data-theme="light"] body{background:#fff;color:#000}
+html[data-theme="light"] #discover{background:#fff}
+html[data-theme="light"] .cap-header{background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
+html[data-theme="light"] .cap-cat-btn.active{background:#000;color:#fff;border-color:#000}
+html[data-theme="light"] .disc-card{background:#eee;box-shadow:0 18px 44px rgba(0,0,0,.16)}
+html[data-theme="light"] .disc-caption{background:linear-gradient(0deg,rgba(255,255,255,.94) 0%,rgba(255,255,255,0) 100%);color:#000}
+html[data-theme="light"] .disc-nav-btn{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.18);color:#000;box-shadow:0 4px 14px rgba(0,0,0,.12)}
+html[data-theme="light"] .disc-nav-btn:hover{background:#fff}
+html[data-theme="light"] .disc-pause{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.2);color:#000}
+html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !important}
+@media (max-width:860px){ html[data-theme="light"] .disc-card{box-shadow:0 12px 30px rgba(0,0,0,.16)} }
 </style>
 </head>
 <body>
@@ -485,7 +507,7 @@ html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-
       <div class="cap-links">
         <button type="button" id="capCollective" class="cap-mobile-hide">The Collective ↗</button>
         <a href="#" id="capElsewhere" class="cap-mobile-hide" target="_blank" rel="noopener">Elsewhere ↗</a>
-        <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the spotlight on">☾ Spotlight</button>
+        <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the spotlight on"><span class="spot-dot" aria-hidden="true"></span>Spotlight</button>
       </div>
     </div>
   </div>
@@ -612,11 +634,15 @@ html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-
     });
   }
 
-  /* theme: this page always starts on light (lamp off), regardless of what the home page is
-     set to - landing here shouldn't inherit dark mode from a click-through. The <head> script
-     already set data-theme="light" before first paint; nothing to do here now except note it,
-     since the old second read of localStorage used to silently re-apply the synced value here
-     right after, which is exactly what caused the lamp to appear "on by default". */
+  /* theme: set in <head> from the home page's saved choice. If the theme is changed on another
+     tab, follow it here too. */
+  window.addEventListener("storage", function(e){
+    if (e.key !== "lrl_theme") return;
+    var dark = e.newValue === "dark";
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    var tcm = document.getElementById("themeColorMeta");
+    if (tcm) tcm.setAttribute("content", dark ? "#080808" : "#FFFFFF");
+  });
 
   /* both bars are measured live (not guessed in CSS), so the photos, captions and buttons always
      clear them exactly - including the phone's home-indicator safe area inside the footer */
@@ -708,13 +734,14 @@ html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-
     var curX = 0, curY = 0, targetX = 0, targetY = 0, haveStageSize = false;
     var idlePhase = Math.random() * 1000;
 
-    function isDark(){ return document.documentElement.getAttribute("data-theme") === "dark"; }
+    var spot = false;                       /* Spotlight: off on every visit, only the button turns it on */
+    function spotOn(){ return spot; }
     function lbOpen(){ return lb.classList.contains("on"); }
 
     function updateLampVisibility(){
       /* the spotlight only ever shows over a full, still photo - not the moving strip,
          not the grid. Turning the lamp on also parks the carousel (see startAutoScroll). */
-      var show = isDark() && lbOpen();
+      var show = spotOn() && lbOpen();
       stage.classList.toggle("lamp-on", show);
       if (show && !active) centerTarget();
       if (show) lbWake();
@@ -777,7 +804,7 @@ html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-
     });
     var plWasOn = false, plRunning = false;
     function plLoop(){
-      var on = isDark() && !lbOpen();
+      var on = spotOn() && !lbOpen();
       if (on !== plWasOn) { document.documentElement.classList.toggle("page-lamp-on", on); plWasOn = on; }
       if (!on) { plRunning = false; return; }   /* sleeps while off - no work, no battery drain */
       requestAnimationFrame(plLoop);
@@ -833,24 +860,19 @@ html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-
     }
     function lbWake(){ if (!lbRunning) { lbRunning = true; requestAnimationFrame(loop); } }
 
-    toggle.addEventListener("click", function(){
-      var nowDark = !isDark();
-      if (nowDark) startTilt();
-      document.documentElement.setAttribute("data-theme", nowDark ? "dark" : "light");
-      toggle.setAttribute("aria-pressed", String(nowDark));
-      toggle.setAttribute("aria-label", nowDark ? "Turn the spotlight off" : "Turn the spotlight on");
-      toggle.textContent = nowDark ? "☀ Spotlight" : "☾ Spotlight";
-      var tcm = document.getElementById("themeColorMeta");
-      if (tcm) tcm.setAttribute("content", nowDark ? "#080808" : "#FFFFFF");
-      try { localStorage.setItem("lrl_theme", nowDark ? "dark" : "light"); } catch(e){}
-      updateLampVisibility();
-    });
-
-    if (isDark()) {
-      toggle.setAttribute("aria-pressed", "true");
-      toggle.setAttribute("aria-label", "Turn the spotlight off");
-      toggle.textContent = "☀ Spotlight";
+    function paintToggle(){
+      toggle.setAttribute("aria-pressed", String(spot));
+      toggle.setAttribute("aria-label", spot ? "Turn the spotlight off" : "Turn the spotlight on");
+      toggle.innerHTML = '<span class="spot-dot" aria-hidden="true"></span>Spotlight';
     }
+    toggle.addEventListener("click", function(){
+      spot = !spot;
+      if (spot) startTilt();
+      paintToggle();
+      updateLampVisibility();
+      if (window.__spotChanged) window.__spotChanged(spot);
+    });
+    paintToggle();
     updateLampVisibility();
 
     if (window.MutationObserver) {
@@ -858,7 +880,7 @@ html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-
       mo.observe(lb, { attributes: true, attributeFilter: ["class"] });
     }
     window.__lampRecheck = updateLampVisibility;
-    window.__isDark = isDark;
+    window.__spotOn = spotOn;
   }
 
   function buildHeader(){
@@ -1159,7 +1181,7 @@ html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-
       refreshScrollPlan();
       frameTick++;
       if (discoverPaused || isTouching || currentCat || openOverlay || enqOpen()) return;
-      if (window.__isDark && window.__isDark()) return; /* lamp on -> the strip holds still, matching a calm, static room */
+      if (window.__spotOn && window.__spotOn()) return; /* lamp on -> the strip holds still, matching a calm, static room */
       if (manualPauseUntil && now < manualPauseUntil) return;
       if (extAt && now - extAt < 250) return;
       if (frameTick % scrollPlan.every !== 0) return;
