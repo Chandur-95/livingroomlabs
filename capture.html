@@ -67,7 +67,7 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
   background:linear-gradient(180deg,rgba(0,0,0,.72) 0%,rgba(0,0,0,.35) 70%,rgba(0,0,0,0) 100%);
 }
 .cap-row1{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
-.cap-brand{display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;padding:0}
+.cap-brand{display:flex;align-items:center;gap:12px;background:none;border:none;cursor:default;padding:0}
 /* logo: shown with its empty see-through margins trimmed (see shared.js), so the visible artwork IS the box */
 .lg-crop{display:block;overflow:hidden;aspect-ratio:var(--lg-ar,1.4649);line-height:0;flex:none}
 .lg-crop > img{display:block;max-width:none;width:var(--lg-w,106.383%);height:auto;margin:var(--lg-t,-20.035%) 0 0 var(--lg-l,-3.191%)}
@@ -449,7 +449,7 @@ html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-
 
 <header class="cap-header" id="capHeader">
   <div class="cap-row1">
-    <button class="cap-brand" id="capBrand" aria-label="Living Room Labs - back to the home page">
+    <button class="cap-brand" id="capBrand" aria-label="Living Room Labs">
       <span class="lg-crop"><img src="/logo.png" alt="Living Room Labs"></span>
       <span class="cap-brand-text">
         <b>Living Room Labs</b>
@@ -852,17 +852,11 @@ html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-
     if (!pool.length) pool = PHOTOS;
     /* Discover is a taster, not the whole archive: every photo here downloads straight away
        (twice, for the seamless loop), so at hundreds of photos showing all of them would cost a
-       phone tens of MB. Instead: up to 30, featured first, dealt round-robin across categories so
-       every category shows up, freshly shuffled each visit. Full browsing happens per category. */
+       phone tens of MB. Instead: up to 30 random photos, freshly shuffled each visit - different
+       variety across categories every load. Full browsing happens per category. */
     var MAX_DISCOVER = 30;
-    var mixed = shuffle(pool).sort(function(a, b){ return (b.featured === true) - (a.featured === true); });
-    var byCat = {}, cats = [];
-    mixed.forEach(function(p){ var c = p.category || ""; if (!byCat[c]) { byCat[c] = []; cats.push(c); } byCat[c].push(p); });
-    var picked = [], more = true;
-    while (picked.length < MAX_DISCOVER && more) {
-      more = false;
-      cats.forEach(function(c){ if (picked.length < MAX_DISCOVER && byCat[c].length) { picked.push(byCat[c].shift()); more = true; } });
-    }
+    var shuffled = shuffle(pool);
+    var picked = shuffled.slice(0, Math.min(MAX_DISCOVER, shuffled.length));
     discoverOrder = picked;
 
     /* build once, then an identical clone appended after it, so the loop point is invisible
@@ -1313,7 +1307,7 @@ html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-
     window.location.href = "mailto:" + to + "?subject=" + encodeURIComponent("Enquiry: " + cat + (currentEvent ? " (" + currentEvent + ")" : ""));
   }
   $("#capFootEnquire").addEventListener("click", openEnquiry);
-  $("#capBrand").addEventListener("click", function(){ window.location.href = "/"; });
+  /* capBrand is just the page's own logo/label here (not a link) - clicking it does nothing */
 
   /* ---------------- keyboard ---------------- */
   document.addEventListener("keydown", function(e){
