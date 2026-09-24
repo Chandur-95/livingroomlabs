@@ -2,6 +2,14 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
+<script>
+  /* old What We Capture links (/#what-we-capture, /#niche-Food) -> the What We Capture page */
+  (function(){ try { var h = location.hash, n;
+    if (h === "#what-we-capture") location.replace("/capture.html");
+    else if (h.indexOf("#niche-") === 0) { n = h.slice(7); try { n = decodeURIComponent(n); } catch(e){}
+      location.replace(n ? "/capture.html?category=" + encodeURIComponent(n) : "/capture.html"); }
+  } catch(e){} })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#FFFFFF" id="themeColorMeta">
 <meta name="view-transition" content="same-origin">
@@ -305,7 +313,7 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
 .lg-crop > img{display:block;max-width:none;width:var(--lg-w,106.383%);height:auto;margin:var(--lg-t,-20.035%) 0 0 var(--lg-l,-3.191%)}
 
 .brand{display:flex;align-items:center;gap:14px;height:100%;cursor:pointer}
-.brand .mark{height:56px}
+.brand .mark{height:56px;width:calc(56px * var(--lg-ar,1.4649))}
 .brand .mark img{transition:transform .3s var(--ease)}
 .brand .wordmark{
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
@@ -1220,7 +1228,7 @@ html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
   display:flex;align-items:center;gap:12px;cursor:pointer;height:100%;
   background:none;border:none;padding:0;
 }
-.overlay-nav-brand .mark{height:48px}
+.overlay-nav-brand .mark{height:48px;width:calc(48px * var(--lg-ar,1.4649))}
 .overlay-nav-brand .mark img{transition:transform .3s var(--ease)}
 .overlay-nav-brand:hover .mark img{transform:scale(1.04)}
 
@@ -1824,29 +1832,50 @@ html[data-theme="dark"] .lb-frame {
 html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility:visible;transition:opacity .45s ease,visibility 0s}
 @media (max-width:860px){ :root{--pr:170px} }
 
-/* the Spotlight button in the top bar */
+/* The Spotlight switch: under "See all categories", on the same line as "Featured photos" (phone and
+   desktop). It sits above the dimming with a solid background, so while the page goes dark it stays
+   lit and easy to find again. */
+#work .featured-row{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:-4px 0 clamp(14px,2vw,22px)}
+#work .featured-row .featured-label{margin:0}
+#work .featured-row .home-spot-btn{position:relative;z-index:65;flex:none}
 .home-spot-btn{
   display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 14px;box-sizing:border-box;
-  border:1px solid var(--rule);border-radius:999px;background:transparent;color:var(--ink);
+  border:1px solid var(--rule);border-radius:999px;background:var(--paper);color:var(--ink);
   font:600 .64rem/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
   cursor:pointer;transition:border-color .2s ease,background .2s ease,color .2s ease;
 }
 .home-spot-btn:hover,.home-spot-btn:focus-visible{border-color:var(--ink)}
 .home-spot-btn .spot-dot{width:6px;height:6px;border-radius:999px;background:currentColor;opacity:.55;flex:none}
-.home-spot-btn[aria-pressed="true"]{border-color:#E0A21C;background:rgba(255,194,75,.14)}
+.home-spot-btn[aria-pressed="true"]{border-color:#E0A21C;background:linear-gradient(rgba(255,194,75,.16),rgba(255,194,75,.16)),var(--paper)}
 .home-spot-btn[aria-pressed="true"] .spot-dot{background:#FFC24B;box-shadow:0 0 6px #FFC24B;opacity:1}
-@media (max-width:640px){ .home-spot-btn{min-height:32px;padding:0 11px;font-size:.58rem;letter-spacing:.1em;gap:6px} }
-/* phones: logo, The Collective, Spotlight and the lamp cord all fit on one line, down to 320px wide */
+@media (max-width:640px){ .home-spot-btn{min-height:36px;padding:0 13px;font-size:.6rem;letter-spacing:.12em;gap:7px} }
+@media (pointer:coarse){ .home-spot-btn::before{content:"";position:absolute;inset:-6px -4px} }
+/* Spotlight on, but its switch has scrolled out of sight (e.g. down at Contact): a small copy of the
+   switch waits in the bottom corner, so the page is never stuck dim. Tap it to turn the Spotlight off. */
+.home-spot-float{position:fixed;right:calc(16px + var(--safe-right));bottom:calc(16px + var(--safe-bottom));z-index:66;
+  display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;box-sizing:border-box;border-radius:999px;
+  border:1px solid #E0A21C;background:linear-gradient(rgba(255,194,75,.16),rgba(255,194,75,.16)),var(--paper);color:var(--ink);
+  font:600 .62rem/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;cursor:pointer;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);-webkit-tap-highlight-color:transparent;
+  opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s}
+.home-spot-float.on{opacity:1;visibility:visible;transform:none;transition:opacity .25s ease,transform .25s ease,visibility 0s}
+.home-spot-float .spot-dot{width:6px;height:6px;border-radius:999px;background:#FFC24B;box-shadow:0 0 6px #FFC24B;flex:none}
+.home-spot-float:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){ .home-spot-float{transform:none;transition:none} }
+/* while that corner switch is showing, the footer gets a little empty space at the very bottom for it
+   to sit in - so at the end of the page it never covers the footer links */
+html.spot-float-on footer.wrap::after{content:"";display:block;height:calc(64px + var(--safe-bottom))}
+/* phones: logo, The Collective and the lamp cord on one line, down to 320px wide */
 @media (max-width:480px){
   .nav{gap:8px}
   .nav-right,.nav-links{gap:10px}
   .nav .nav-collective-link-mob{font-size:.6rem !important;letter-spacing:.1em !important;white-space:nowrap}
-  .home-spot-btn{padding:0 9px;font-size:.54rem;letter-spacing:.08em;gap:5px;min-height:30px}
 }
 @media (max-width:350px){
-  .nav > .brand .mark{height:48px}
+  .nav > .brand .mark{height:48px;width:calc(48px * var(--lg-ar,1.4649))}
   .nav .nav-collective-link-mob{font-size:.54rem !important;letter-spacing:.06em !important}
-  .home-spot-btn{padding:0 7px}
 }
 @media (prefers-reduced-motion:reduce){
   #lb-img-dim,#lb-lamp-layer{transition:opacity .2s ease}
@@ -1882,8 +1911,8 @@ html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility
 
 @media (min-width:981px){
   :root{ --nav-h: 108px; }
-  .brand .mark{ height:72px; }
-  .overlay-nav-brand .mark{ height:60px; }
+  .brand .mark{ height:72px;width:calc(72px * var(--lg-ar,1.4649))}
+  .overlay-nav-brand .mark{ height:60px;width:calc(60px * var(--lg-ar,1.4649))}
 }
 
 @media (max-width:640px){
@@ -1898,7 +1927,7 @@ html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility
   .nav-collective-link-mob{padding:0 !important}
 
   .brand{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;padding-left:0}
-  .brand .mark{height:60px}
+  .brand .mark{height:60px;width:calc(60px * var(--lg-ar,1.4649))}
   .brand .wordmark{display:none !important}
 
   .nav-right{gap:14px;flex-direction:row;align-items:center;justify-content:flex-end;align-self:stretch}
@@ -1995,7 +2024,7 @@ html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility
   .foot-col-events { display: none !important; }
   .foot-col-team { display: none !important; }
 
-  .overlay-nav-brand .mark{height:44px}
+  .overlay-nav-brand .mark{height:44px;width:calc(44px * var(--lg-ar,1.4649))}
   .overlay-nav .mono{display:none}
 
   .collective-hero{
@@ -2125,7 +2154,6 @@ footer.wrap{overflow-x:clip}
       <button type="button" class="nav-collective-link nav-desktop-only">The Collective</button>
       <button type="button" class="nav-collective-link-mob nav-mobile-only" style="display:none;">The Collective</button>
     </div>
-    <button type="button" class="home-spot-btn" id="homeSpot" aria-pressed="false" aria-label="Turn the spotlight on"><span class="spot-dot" aria-hidden="true"></span>Spotlight</button>
     <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
       <span class="cord" aria-hidden="true"></span>
       <span class="bead" aria-hidden="true"></span>
@@ -2152,7 +2180,10 @@ footer.wrap{overflow-x:clip}
       <span class="fill"></span>
       <button type="button" class="count mono sec-more nav-niches-link" aria-label="See all categories">See all<span class="sec-more-long"> categories</span> ↗</button>
     </div>
-    <p class="featured-label mono">Featured photos</p>
+    <div class="featured-row">
+      <p class="featured-label mono">Featured photos</p>
+      <button type="button" class="home-spot-btn" id="homeSpot" aria-pressed="false" aria-label="Turn the spotlight on"><span class="spot-dot" aria-hidden="true"></span>Spotlight</button>
+    </div>
     
     <div class="sprocket-strip" aria-hidden="true"></div>
     <div class="work-carousel-container">
@@ -2211,56 +2242,7 @@ footer.wrap{overflow-x:clip}
   </footer>
 </main>
 
-<!-- WHAT WE CAPTURE OVERLAY -->
-<div class="overlay-page" id="niches-page" role="dialog" aria-modal="true" aria-label="What We Capture">
-  <div class="overlay-nav niches-nav">
-    <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
-      <span class="mark lg-crop">
-        <img src="/logo.png" alt="Living Room Labs">
-      </span>
-    </button>
-    <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE CAPTURE // CATEGORIES</span>
-    <div class="overlay-nav-right">
-      <button class="overlay-close niches-close btn-close-niches">
-        Back to Studio
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="overlay-content-sec niches-content-sec">
-    <div id="niches-list-container">
-      <div class="niches-slideshow" id="niches-slideshow" aria-hidden="true"></div>
-      <div class="sprocket-strip" aria-hidden="true"></div>
-      <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Capture</h1>
-      <p style="opacity:.7; max-width:600px; margin-bottom:clamp(24px, 4vw, 44px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
-      
-      <div id="niches-list" data-niches></div>
-
-      <div class="niche-enquire-sec">
-        <div class="sec-head" style="margin-bottom:12px;">
-          <span class="label">Let's make it official</span>
-          <span class="fill"></span>
-        </div>
-        <button type="button" class="niche-enquire-trigger" id="btn-enquire-overview">Enquire ↗</button>
-        <p class="niche-enquire-tagline">Every frame begins with a conversation.</p>
-      </div>
-    </div>
-    
-    <div id="niche-view-box" style="display:none;"></div>
-
-    <div class="collective-about-wrap">
-      <div class="collective-about-text">
-        <button type="button" class="niche-back btn-close-niches" style="padding:10px 20px; cursor:pointer;">← Back to Studio</button>
-      </div>
-      <div class="collective-about-logo">
-        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="/logo.png" alt="Living Room Labs">
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<button type="button" class="home-spot-float" id="homeSpotFloat" aria-pressed="true" aria-label="Turn the spotlight off"><span class="spot-dot" aria-hidden="true"></span>Spotlight</button>
 
 <!-- THE COLLECTIVE OVERLAY -->
 <div class="overlay-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
@@ -2845,22 +2827,37 @@ function renderCoverHeadline(){
   }).join("");
 }
 
-/* Featured photos in a calm, grouped order: category by category, in the same order as the site's
-   categories (set in the Content Editor), and inside Events, event by event (all Miss Universe
-   together, then all Performing Arts...). Within a group, photos keep their Content Editor order.
-   No shuffling - models stay with models, pets with pets. */
-function homeFeaturedOrder(list){
-  var catOrder = categories().map(cleanCat);
-  function catRank(p){ var i = catOrder.indexOf(cleanCat(p.category)); return i < 0 ? 999 : i; }
-  var evFirstSeen = {};
-  list.forEach(function(p, i){
-    var ev = (p.eventTypes && p.eventTypes[0]) ? String(p.eventTypes[0]).toLowerCase() : "";
-    if(!(ev in evFirstSeen)) evFirstSeen[ev] = i;
-  });
-  function evRank(p){ var ev = (p.eventTypes && p.eventTypes[0]) ? String(p.eventTypes[0]).toLowerCase() : ""; return evFirstSeen[ev]; }
-  return list.map(function(p, i){ return { p: p, i: i }; }).sort(function(a, b){
-    return (catRank(a.p) - catRank(b.p)) || (evRank(a.p) - evRank(b.p)) || (a.i - b.i);
-  }).map(function(x){ return x.p; });
+/* Featured strip: a fresh, balanced mix on every visit. Up to 12 Featured photos, dealt evenly from
+   every category (so one category with lots of Featured photos - Events - can't take over the strip),
+   then ordered so two photos from the same category never sit side by side. Categories with more
+   Featured photos than they get a turn for show a different selection each time. */
+var HOME_FEATURED_MAX = 12;
+function homeShuffle(a){ a = a.slice(); for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function homeGroups(list){
+  var g = {}, keys = [];
+  homeShuffle(list).forEach(function(p){ var c = String(p.category || "").trim().toLowerCase(); if(!g[c]){ g[c] = []; keys.push(c); } g[c].push(p); });
+  return { g: g, keys: keys };
+}
+function homeFeaturedMix(list, max){
+  if(!list.length) return [];
+  var pick = list;
+  if(list.length > max){                               /* deal round by round, one per category */
+    var G = homeGroups(list), out = [];
+    while(out.length < max){
+      homeShuffle(G.keys).forEach(function(k){ if(out.length < max && G.g[k].length) out.push(G.g[k].pop()); });
+    }
+    pick = out;
+  }
+  var H = homeGroups(pick), res = [], prev = null;     /* then spread them out */
+  while(res.length < pick.length){
+    var cand = H.keys.filter(function(k){ return H.g[k].length && k !== prev; });
+    if(!cand.length) cand = H.keys.filter(function(k){ return H.g[k].length; });
+    var total = 0; cand.forEach(function(k){ total += H.g[k].length * H.g[k].length; });
+    var r = Math.random() * total, k2 = cand[cand.length - 1];
+    for(var i = 0; i < cand.length; i++){ r -= H.g[cand[i]].length * H.g[cand[i]].length; if(r < 0){ k2 = cand[i]; break; } }
+    res.push(H.g[k2].pop()); prev = k2;
+  }
+  return res;
 }
 
 function renderHomeGrid() {
@@ -2872,9 +2869,7 @@ function renderHomeGrid() {
      If nothing is marked Featured yet, show everything rather than an empty strip. */
   var all = (SITE.photos || []).filter(function(p){ return p && p.src; });
   var feat = all.filter(function(p){ return p.featured !== false && String(p.featured).toLowerCase() !== "false"; });
-  var list = homeFeaturedOrder(feat.length ? feat : all).filter(function(p){
-    return true; 
-  });
+  var list = homeFeaturedMix(feat.length ? feat : all, HOME_FEATURED_MAX);
 
   state.visible = list;
   grid._list = list;                 /* remember which photos this strip shows */
@@ -3521,18 +3516,7 @@ function initNichesSlideshow(){
   }, 4200);
 }
 
-function openNiches(){
-  if(nichesPage && !nichesPage.classList.contains("open")) rememberOpener("niches");
-  if(collectivePage && collectivePage.classList.contains("open")) closeCollective();
-  if(nichesPage){
-    nichesPage.classList.add("open");
-    document.body.style.overflow = "hidden";
-    window.location.hash = "what-we-capture";
-    nichesPage.scrollTop = 0;
-    focusDialog(nichesPage);
-    initNichesSlideshow();
-  }
-}
+function openNiches(){ window.location.href = "/capture.html"; }
 
 function closeNiches(){
   if(nichesPage){
@@ -3554,16 +3538,21 @@ function exitOverlayToHome(){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+/* old links from when What We Capture was a pop-up on this page (/#what-we-capture, /#niche-Food)
+   now open the real What We Capture page, on the same category */
+function oldCaptureLink(hash){
+  if(hash.indexOf("#niche-") !== 0) return "/capture.html";
+  var name = hash.slice(7);
+  try { name = decodeURIComponent(name); } catch(e){}
+  return name ? "/capture.html?category=" + encodeURIComponent(name) : "/capture.html";
+}
+
 window.addEventListener("hashchange", function(){
   var hash = window.location.hash;
   if(hash === "#collective"){
     openCollective();
-  } else if(hash === "#what-we-capture"){
-    openNiches();
-  } else if(hash.startsWith("#niche-")){
-    openNiches();
-    var niche = decodeURIComponent(hash.replace("#niche-", ""));
-    openNicheView(niche);
+  } else if(hash === "#what-we-capture" || hash.indexOf("#niche-") === 0){
+    window.location.replace(oldCaptureLink(hash));
   } else {
     if(collectivePage && collectivePage.classList.contains("open")) closeCollective();
     if(nichesPage && nichesPage.classList.contains("open")) closeNiches();
@@ -3712,7 +3701,7 @@ function openLB(i, opener){
 function closeLB(){
   lb.classList.remove("on");
   lb.removeAttribute("open");
-  document.body.style.overflow = (collectivePage.classList.contains("open") || nichesPage.classList.contains("open")) ? "hidden" : "";
+  document.body.style.overflow = (collectivePage.classList.contains("open") || (nichesPage && nichesPage.classList.contains("open"))) ? "hidden" : "";
   if(state.opener) {
     state.opener.classList.remove("touch-focus");
     if(kbdNav){ try { state.opener.focus({ preventScroll: true }); } catch(err){ state.opener.focus(); } }
@@ -3933,7 +3922,8 @@ function initCover(){
 }
 
 /* ---------------- Spotlight (home page) ----------------
-   Its own on/off button in the top bar - never tied to dark mode, and off on every visit.
+   Its own on/off button under "See all categories" - never tied to dark mode, and off on every visit.
+   If it's on and that button scrolls out of sight, a small copy of it waits in the bottom corner.
    On: the page falls into a dim black & white and a warm pool of light that follows the mouse,
    finger or the phone's tilt brings the photos back into colour. Open a photo with it on and the
    same light moves over the photo instead. Every loop sleeps while it's off - no battery cost. */
@@ -3942,6 +3932,15 @@ function initHomeLamp(){
   var frame = document.querySelector(".lb-frame");
   if(!btn) return;
   var spot = false;
+  var floatBtn = $("#homeSpotFloat"), pillSeen = true;
+  function syncFloat(){
+    if(!floatBtn) return;
+    var show = pageMode() && !pillSeen;
+    if(floatBtn.classList.contains("on") !== show){
+      floatBtn.classList.toggle("on", show);
+      document.documentElement.classList.toggle("spot-float-on", show);
+    }
+  }
   var root = document.documentElement;
 
   /* ---- phone tilt (gyro), asked for only when the Spotlight is first switched on ---- */
@@ -4014,6 +4013,7 @@ function initHomeLamp(){
     }
   }
   function wake(){
+    syncFloat();
     if(!pageMode() && !photoMode()){
       /* only touch the class when it really changes - rewriting it would re-trigger the watcher below */
       if(root.classList.contains("page-lamp-on")) root.classList.remove("page-lamp-on");
@@ -4035,6 +4035,21 @@ function initHomeLamp(){
     paint(); wake();
   });
   paint();
+  if(floatBtn){
+    floatBtn.addEventListener("click", function(){
+      var hadFocus = document.activeElement === floatBtn;
+      spot = false; paint(); wake();
+      if(hadFocus){ try { btn.focus({ preventScroll:true }); } catch(e){} }
+    });
+    /* is the real switch properly on screen? Half-hidden under the fixed top bar counts as out of sight */
+    if(window.IntersectionObserver){
+      var navEl = document.querySelector(".nav"), navH = navEl ? navEl.offsetHeight : 0;
+      new IntersectionObserver(function(entries){
+        var en = entries[entries.length - 1];
+        pillSeen = en.isIntersecting && en.intersectionRatio >= 0.9; syncFloat();
+      }, { rootMargin: "-" + navH + "px 0px 0px 0px", threshold: [0, 0.9, 1] }).observe(btn);
+    }
+  }
 
   /* the photo viewer and the pop-up pages open/close by class - re-check whenever they change */
   if(window.MutationObserver){
@@ -4402,7 +4417,6 @@ function renderContent(){
 
   buildFilters();
   renderHomeGrid();
-  renderNichesList();
   renderCoverFilmstrip();
   renderCoverHeadline();
 
@@ -4418,12 +4432,8 @@ function renderContent(){
 
   if(window.location.hash === "#collective"){
     openCollective();
-  } else if(window.location.hash === "#what-we-capture"){
-    openNiches();
-  } else if(window.location.hash.startsWith("#niche-")){
-    openNiches();
-    var niche = decodeURIComponent(window.location.hash.replace("#niche-", ""));
-    openNicheView(niche);
+  } else if(window.location.hash === "#what-we-capture" || window.location.hash.indexOf("#niche-") === 0){
+    window.location.replace(oldCaptureLink(window.location.hash));
   }
 }
 
