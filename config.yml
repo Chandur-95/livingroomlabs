@@ -1,0 +1,139 @@
+backend:
+  name: github
+  repo: Chandur-95/livingroomlabs
+  branch: main
+  base_url: https://livingroomlabs.in
+  auth_endpoint: api/auth
+
+media_folder: "images/uploads"
+public_folder: "/images/uploads"
+
+collections:
+  - name: "website"
+    label: "Website Content"
+    files:
+      - file: "content.json"
+        label: "Site Settings & Portfolio"
+        name: "content"
+        fields:
+          - { label: "Site Name", name: "name", widget: "string", required: false, default: "Living Room Labs" }
+          - { label: "Tagline", name: "tagline", widget: "string", required: false, default: "CAPTURE . CREATE . INSPIRE" }
+          - { label: "Studio Logo", name: "logo", widget: "image", required: false, default: "/logo.png" }
+          - { label: "City", name: "city", widget: "string", required: false, default: "Hyderabad, India" }
+          - { label: "Email", name: "email", widget: "string", required: false, default: "hello@livingroomlabs.in" }
+          - { label: "Formspree Form ID", name: "formspreeId", widget: "string", required: false, default: "xjykvnoz" }
+          - { label: "Body Font", name: "bodyFont", widget: "string", required: false, default: "Inter" }
+
+          - label: "Social Links"
+            name: "socials"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Platform Name", name: "name", widget: "string" }
+              - { label: "URL", name: "url", widget: "string" }
+
+          - label: "Hero Lines"
+            name: "hero"
+            widget: "list"
+            required: false
+            field: { label: "Line (*asterisks for italics*)", name: "line", widget: "string" }
+
+          - label: "Hero Slideshow Banner"
+            name: "bandSlides"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Image", name: "src", widget: "image" }
+              - label: "Image Position"
+                name: "imagePosition"
+                widget: "select"
+                options: ["Center", "Top", "Bottom", "Left", "Right"]
+                default: "Center"
+                required: false
+              - { label: "Alt Text", name: "alt", widget: "string", required: false }
+
+          - { label: "Statement", name: "statement", widget: "text", required: false }
+          - { label: "Statement By", name: "statementBy", widget: "string", required: false }
+
+          - label: "What We Capture (Niches)"
+            name: "niches"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Category Name", name: "name", widget: "string" }
+              - { label: "Description / Tagline", name: "line", widget: "string" }
+
+          - { label: "Contact Note", name: "contactNote", widget: "text", required: false }
+          - { label: "Mobile Shoot Note", name: "mobileShootNote", widget: "string", required: false }
+
+          - { label: "Collective Hero Image", name: "teamHeroImg", widget: "image", required: false }
+          - label: "Collective Hero Position"
+            name: "teamHeroImgPosition"
+            widget: "select"
+            options: ["Center", "Top", "Bottom", "Left", "Right"]
+            default: "Center"
+            required: false
+          - { label: "Collective Hero Intro", name: "teamHeroIntro", widget: "text", required: false }
+
+          - label: "The Collective Team"
+            name: "team"
+            widget: "list"
+            required: false
+            fields:
+              - { label: "Name", name: "name", widget: "string" }
+              - { label: "Role", name: "role", widget: "string" }
+              - { label: "Bio", name: "bio", widget: "text", required: false }
+              - { label: "Photo 1", name: "photo", widget: "image" }
+              - label: "Photo 1 Position"
+                name: "imagePosition"
+                widget: "select"
+                options: ["Center", "Top", "Bottom", "Left", "Right"]
+                default: "Center"
+                required: false
+              - { label: "Photo 2 (Hover/Alternate)", name: "photo2", widget: "image", required: false }
+              - label: "Photo 2 Position"
+                name: "imagePosition2"
+                widget: "select"
+                options: ["Center", "Top", "Bottom", "Left", "Right"]
+                default: "Center"
+                required: false
+              - { label: "Instagram URL", name: "instagram", widget: "string", required: false }
+              - { label: "Portfolio URL", name: "portfolio", widget: "string", required: false }
+
+          - label: "Photos & Portfolio"
+            name: "photos"
+            widget: "list"
+            allow_add: true
+            summary: "{{fields.title}} [{{fields.category}}]"
+            fields:
+              - { label: "Title", name: "title", widget: "string" }
+              - { label: "Shoot / Client Name", name: "client", widget: "string", required: false, default: "Studio", hint: "Use this to tell apart two shoots of the same Event Type, e.g. two different Birthday parties (\"Chandu's Birthday\" vs \"Swetha's Birthday\")." }
+              - label: "Category"
+                name: "category"
+                widget: "string"
+                default: "Food"
+                hint: "Type exactly as spelled in \"What We Capture (Niches)\" above (e.g. Food, Pets, Sports). Add a brand new category there first, then use its exact name here - it needs no code change. Performing Arts lives inside Events - use the Event Type field below for that."
+              - label: "Event Type (only for Events photos)"
+                name: "eventTypes"
+                widget: "list"
+                required: false
+                default: []
+                hint: "Type any event type: Miss Universe, Performing Arts, Baby Shower, Housewarming, Couple Shoot, or a brand new one. You can add as many as you like - each becomes its own button on the site. Leave empty for a category other than Events."
+              
+              - { label: "Show in homepage All strip", name: "showInAll", widget: "boolean", default: true, required: false, hint: "Turn off to keep a photo out of the homepage highlight reel - it still appears inside What We Capture." }
+              - { label: "Caption (Optional)", name: "caption", widget: "text", required: false }
+              - { label: "Alt Text (describe what is in the photo)", name: "alt", widget: "string", required: false, hint: "Helps Google Images and screen readers. Example: Steaming momos on a black plate, restaurant table" }
+              - label: "Aspect Ratio"
+                name: "ratio"
+                widget: "select"
+                options: ["1/1", "4/5", "5/4", "3/4", "4/3", "16/9", "16/10"]
+                default: "4/5"
+                required: false
+              - { label: "Image", name: "src", widget: "image" }
+              - label: "Image Position"
+                name: "imagePosition"
+                widget: "select"
+                options: ["Center", "Top", "Bottom", "Left", "Right"]
+                default: "Center"
+                required: false
+              - { label: "Featured on Home Grid", name: "featured", widget: "boolean", default: true, required: false }

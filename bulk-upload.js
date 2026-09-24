@@ -21,6 +21,12 @@
   var photos = [];              /* the batch being prepared */
   var seq = 0;
   var uploading = false;
+  /* Edits and deletes on already-uploaded photos are queued here instead of publishing right
+     away - keyed by the photo's CURRENT src (never changes pre-commit, even mid-queue), value is
+     { action: "edit", changes: {...}, replace: {file,url,ratio}|null } or { action: "delete" }.
+     Nothing reaches GitHub until "Commit changes" is pressed, and then every queued photo goes up
+     as ONE commit - same all-or-nothing pattern as the New Upload batch. */
+  var pendingEdits = {};
 
   function $(s, r){ return (r || document).querySelector(s); }
   function $all(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -259,25 +265,44 @@
       }
       return true;
     });
-    $("#existingCountLabel").textContent = list.length + " of " + existingPhotos.length + " photos live";
+    $("#existingCountLabel").textContent = list.length + " of " + existingPhotos.length + " photos live" +
+      (Object.keys(pendingEdits).length ? " (" + Object.keys(pendingEdits).length + " change(s) queued)" : "");
     if (!list.length) {
       grid.innerHTML = '<div class="existing-empty">' + (existingPhotos.length ? "No photos match." : "No photos yet.") + '</div>';
+      renderPendingBar();
       return;
     }
     grid.innerHTML = list.map(function(p){
-      /* just-committed photos show from the local copy until the site finishes building them */
-      var src = p.__preview || thumbFor(p.src);
-      return '<div class="existing-card">' +
+      var pend = pendingEdits[p.src];
+      if (pend && pend.action === "delete") {
+        var src0 = p.__preview || thumbFor(p.src);
+        return '<div class="existing-card is-pending is-pending-delete">' +
+          '<img src="'+esc(src0)+'" data-full="'+esc(p.src)+'" alt="" loading="lazy">' +
+          '<div class="ec-body">' +
+            '<div class="ec-badge del">QUEUED FOR DELETE</div>' +
+            '<div class="ec-title">' + esc(p.title || "Untitled") + '</div>' +
+            '<button type="button" class="btn small" data-undo-src="' + esc(p.src) + '">Restore</button>' +
+          '</div>' +
+        '</div>';
+      }
+      /* a queued edit's changes (and, if chosen, its queued replacement image) take over the
+         card's display, so what you see here is what "Commit changes" will publish */
+      var d = pend ? Object.assign({}, p, pend.changes) : p;
+      var src = (pend && pend.replace) ? pend.replace.url : (p.__preview || thumbFor(p.src));
+      return '<div class="existing-card' + (pend ? " is-pending" : "") + '">' +
         '<img src="'+esc(src)+'" data-full="'+esc(p.src)+'" alt="" loading="lazy">' +
         '<div class="ec-body">' +
-          '<div class="ec-title">' + (p.__justAdded ? '<span class="ec-new">NEW</span> ' : '') + esc(p.title || "Untitled") + '</div>' +
-          '<div class="ec-meta">' + esc(p.category || "") + ((p.eventTypes && p.eventTypes.length) ? " · " + esc(p.eventTypes.join(", ")) : "") + '</div>' +
-          (p.client ? '<div class="ec-meta">' + esc(p.client) + '</div>' : '') +
-          (p.featured ? '<div class="ec-meta">★ Featured</div>' : '') +
+          (pend ? '<div class="ec-badge">CHANGE QUEUED</div>' : '') +
+          '<div class="ec-title">' + (p.__justAdded ? '<span class="ec-new">NEW</span> ' : '') + esc(d.title || "Untitled") + '</div>' +
+          '<div class="ec-meta">' + esc(d.category || "") + ((d.eventTypes && d.eventTypes.length) ? " · " + esc(d.eventTypes.join(", ")) : "") + '</div>' +
+          (d.client ? '<div class="ec-meta">' + esc(d.client) + '</div>' : '') +
+          (d.featured ? '<div class="ec-meta">★ Featured</div>' : '') +
           '<button type="button" class="btn small ec-edit" data-edit-src="' + esc(p.src) + '">Edit</button>' +
+          (pend ? '<button type="button" class="btn small ec-undo" data-undo-src="' + esc(p.src) + '">Undo</button>' : '') +
         '</div>' +
       '</div>';
     }).join("");
+    renderPendingBar();
     /* no thumbnail yet (new or unprocessed photo)? fall back to the original file */
     $all("img[data-full]", grid).forEach(function(img){
       img.addEventListener("error", function onErr(){
@@ -327,7 +352,24 @@
       "#bulkEdit .be-foot .be-delete:hover:not(:disabled){background:#b02a2a;color:#fff}",
       "#bulkEdit .be-events{display:none}",
       "#bulkEdit.is-events .be-events{display:block}",
-      "@media (max-width:560px){#bulkEdit{padding:0}#bulkEdit .be-card{max-width:none;min-height:100%;max-height:none;border-radius:0}#bulkEdit .be-row{grid-template-columns:1fr}}"
+      "@media (max-width:560px){#bulkEdit{padding:0}#bulkEdit .be-card{max-width:none;min-height:100%;max-height:none;border-radius:0}#bulkEdit .be-row{grid-template-columns:1fr}}",
+      /* pending-changes bar (sits above the "Already Uploaded" grid) */
+      ".pending-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;",
+      "  margin:0 0 14px;padding:10px 14px;border-radius:8px;border:1px solid #d8b34a;background:#fff8e6;color:#0a0a0a}",
+      ".pending-bar[hidden]{display:none}",
+      ".pending-bar .pb-msg{font-size:.82rem;flex:1 1 220px}",
+      ".pending-bar .pb-msg.err{color:#b02a2a;font-weight:600}",
+      ".pending-bar .pb-btns{display:flex;gap:8px;flex-wrap:wrap}",
+      ".pending-bar button{min-height:34px;padding:0 14px;border-radius:999px;border:1px solid #0a0a0a;font:600 .74rem/1 inherit;cursor:pointer;background:#fff;color:#0a0a0a}",
+      ".pending-bar .pb-commit{background:#0a0a0a;color:#fff}",
+      ".pending-bar button:disabled{opacity:.45;cursor:not-allowed}",
+      /* badges + dimming on cards that have a queued change */
+      ".existing-card.is-pending{outline:2px solid #d8b34a;outline-offset:-2px}",
+      ".existing-card.is-pending-delete{opacity:.5}",
+      ".existing-card .ec-badge{display:inline-block;font:600 .62rem/1 'JetBrains Mono',monospace;letter-spacing:.04em;",
+      "  padding:3px 6px;border-radius:4px;background:#d8b34a;color:#000;margin-bottom:4px}",
+      ".existing-card .ec-badge.del{background:#b02a2a;color:#fff}",
+      ".existing-card .ec-undo{margin-left:6px}"
     ].join("\n");
     var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
   })();
@@ -387,26 +429,32 @@
   }
 
   function openEdit(src){
+    if (committingPending) return;
     var p = null;
     existingPhotos.forEach(function(x){ if (x.src === src) p = x; });
     if (!p) return;
+    /* opening the editor on a photo queued for deletion means "keep it after all" */
+    if (pendingEdits[src] && pendingEdits[src].action === "delete") delete pendingEdits[src];
+    var queued = pendingEdits[src];               /* an already-queued edit, if any, wins over the live values */
+    var d = queued ? Object.assign({}, p, queued.changes) : p;
     var el = editPanel();
     editSrc = src;
-    var cats = CATEGORIES.slice(); if (p.category && cats.indexOf(p.category) === -1) cats.push(p.category);
-    $("#beCategory", el).innerHTML = optionList(cats, p.category);
-    $("#bePos", el).innerHTML = optionList(POSITIONS, p.imagePosition || "Center");
+    var cats = CATEGORIES.slice(); if (d.category && cats.indexOf(d.category) === -1) cats.push(d.category);
+    $("#beCategory", el).innerHTML = optionList(cats, d.category);
+    $("#bePos", el).innerHTML = optionList(POSITIONS, d.imagePosition || "Center");
     clearReplace();
+    editReplace = (queued && queued.replace) || null;   /* re-adopt an already-queued replacement, if any */
     setReplaceUI();
     $("#beFile", el).textContent = uploadName(p.src) || p.src;
-    $("#beTitle", el).value = p.title || "";
-    $("#beClient", el).value = p.client || "";
-    $("#beEvents", el).value = (p.eventTypes || []).join(", ");
-    $("#beCaption", el).value = p.caption || "";
-    $("#beAlt", el).value = p.alt || "";
-    $("#beFeatured", el).checked = !!p.featured;
-    $("#beShowAll", el).checked = p.showInAll !== false;
-    el.classList.toggle("is-events", p.category === "Events");
-    setEditMsg("", false);
+    $("#beTitle", el).value = d.title || "";
+    $("#beClient", el).value = d.client || "";
+    $("#beEvents", el).value = (d.eventTypes || []).join(", ");
+    $("#beCaption", el).value = d.caption || "";
+    $("#beAlt", el).value = d.alt || "";
+    $("#beFeatured", el).checked = !!d.featured;
+    $("#beShowAll", el).checked = d.showInAll !== false;
+    el.classList.toggle("is-events", d.category === "Events");
+    setEditMsg(queued ? "This photo already has a queued change - saving here updates it." : "", false);
     setBusy(el, false);
     el.classList.add("on");
     setTimeout(function(){ try { $("#beTitle", el).focus({ preventScroll: true }); } catch(e){} }, 30);
@@ -501,43 +549,26 @@
       });
   }
 
-  /* ---- deleting a photo ---- */
+  /* ---- deleting a photo: queued, not published, until "Commit changes" ---- */
   function deletePhoto(){
     if (editSaving || !editSrc) return;
-    var el = editPanel(), src = editSrc, p = editingPhoto();
+    var src = editSrc, p = editingPhoto();
     var label = (p && p.title) || uploadName(src) || "this photo";
-    if (!confirm('Delete "' + label + '" from the website?\n\nIt disappears from every page in about a minute, and its image file is removed too. This can\'t be undone from here.')) return;
-    editSaving = true;
-    setBusy(el, true);
-    setEditMsg("Deleting… reading the latest version of the site", false);
-    readRepoState()
-      .then(function(state){
-        var before = state.content.photos.length;
-        state.content.photos = state.content.photos.filter(function(x){ return !(x && x.src === src); });
-        if (state.content.photos.length === before) throw new Error("This photo is already gone from the site. Close this and reopen the uploader to refresh the list.");
-        setEditMsg("Deleting… publishing", false);
-        return commitContent(state, removalEntries(state, src), "Delete photo: " + (uploadName(src) || src) + " via bulk uploader");
-      })
-      .then(function(){
-        existingPhotos = existingPhotos.filter(function(x){ return x.src !== src; });
-        window.__bulkCommitted = true;   /* the Content Editor reloads when you return to it */
-        editSaving = false;
-        renderExistingGrid();
-        setEditMsg("✓ Deleted. It disappears from the live site in about a minute.", false);
-        setTimeout(function(){ if (editSrc === src) closeEdit(); }, 1400);
-      })
-      .catch(function(err){
-        editSaving = false;
-        setBusy(el, false);
-        setEditMsg("Not deleted - the site is unchanged. " + friendlyError(err), true);
-        console.error(err);
-      });
+    if (!confirm('Queue "' + label + '" for deletion?\n\nNothing is removed from the live site yet - it happens when you press "Commit changes". You can Restore it any time before then.')) return;
+    var queued = pendingEdits[src];
+    if (queued && queued.replace && queued.replace.url) URL.revokeObjectURL(queued.replace.url);
+    pendingEdits[src] = { action: "delete" };
+    renderExistingGrid();
+    setEditMsg('✓ Queued for deletion. Press "Commit changes" above the grid to publish.', false);
+    setTimeout(function(){ if (editSrc === src) closeEdit(); }, 1100);
   }
   function setEditMsg(text, isErr){
     var m = document.getElementById("beMsg");
     if (m) { m.textContent = text; m.className = "be-msg" + (isErr ? " err" : ""); }
   }
 
+  /* Queues the edit (and, if chosen, the replacement image) instead of publishing right away.
+     Nothing reaches GitHub here - press "Commit changes" above the grid when you're done editing. */
   function saveEdit(){
     if (editSaving || !editSrc) return;
     var el = document.getElementById("bulkEdit");
@@ -556,70 +587,174 @@
       featured: $("#beFeatured", el).checked,
       showInAll: $("#beShowAll", el).checked
     };
-    var src = editSrc, rep = editReplace, newSrc = null;
-    editSaving = true;
-    setBusy(el, true);
-    setEditMsg("Saving… reading the latest version of the site", false);
-    readRepoState()
-      .then(function(state){
-        var hit = null;
-        state.content.photos.forEach(function(x){ if (x && x.src === src) hit = x; });
-        if (!hit) throw new Error("This photo is no longer on the site (it may have been removed in the Content Editor). Close this and reopen the uploader to refresh the list.");
-        Object.keys(changes).forEach(function(k){ hit[k] = changes[k]; });
-        if (!rep) {
-          setEditMsg("Saving… writing the change", false);
-          return commitContent(state, [], "Edit photo details: " + (uploadName(src) || src) + " via bulk uploader");
-        }
-        /* new image file: uploaded under a NEW name (so nobody's browser keeps showing the old
-           picture from its cache), then the old file and its small copies are removed */
-        state.uploadNames.forEach(function(n){ knownUploadNames[n.toLowerCase()] = true; });
-        var newName = uniqueFilename(rep.file.name, "__replace");
-        setEditMsg("Saving… uploading the new image", false);
-        return fileToBase64(rep.file)
-          .then(function(b64){
-            return ghFetch("/repos/" + REPO + "/git/blobs", { method: "POST", body: JSON.stringify({ content: b64, encoding: "base64" }) });
-          })
-          .then(function(blob){
-            newSrc = "/images/uploads/" + newName;
-            hit.src = newSrc;
-            hit.ratio = rep.ratio;
-            var entries = [{ path: "images/uploads/" + newName, mode: "100644", type: "blob", sha: blob.sha }].concat(removalEntries(state, src));
-            setEditMsg("Saving… publishing", false);
-            return commitContent(state, entries, "Replace photo: " + (uploadName(src) || src) + " -> " + newName + " via bulk uploader");
-          });
-      })
-      .then(function(){
-        existingPhotos.forEach(function(x){
-          if (x.src !== src) return;
-          Object.keys(changes).forEach(function(k){ x[k] = changes[k]; });
-          if (newSrc) {
-            x.src = newSrc; x.ratio = rep.ratio;
-            x.__preview = rep.url; rep.kept = true;   /* shown from this copy until the site finishes building */
-            x.__justAdded = true;
-            knownUploadNames[uploadName(newSrc).toLowerCase()] = true;
-          }
-        });
-        changes.eventTypes.forEach(function(et){ if (knownEventTypes.indexOf(et) === -1) knownEventTypes.push(et); });
-        fillEventSuggestions();
-        window.__bulkCommitted = true;   /* the Content Editor reloads when you return to it */
-        editSaving = false;
-        if (newSrc) { editReplace = null; editSrc = newSrc; src = newSrc; }
-        renderExistingGrid();
-        setEditMsg(newSrc ? "✓ Saved with the new image. The live site updates in a few minutes." : "✓ Saved. The live site updates in about a minute.", false);
-        setTimeout(function(){ if (editSrc === src) closeEdit(); }, 1400);
-      })
-      .catch(function(err){
-        editSaving = false;
-        setBusy(el, false);
-        setEditMsg("Not saved - the site is unchanged. " + friendlyError(err), true);
-        console.error(err);
-      });
+    var src = editSrc, rep = editReplace;
+    pendingEdits[src] = { action: "edit", changes: changes, replace: rep };
+    editReplace = null;   /* ownership of the file + its object URL moves to the queue - don't revoke it */
+    changes.eventTypes.forEach(function(et){ if (knownEventTypes.indexOf(et) === -1) knownEventTypes.push(et); });
+    fillEventSuggestions();
+    renderExistingGrid();
+    setEditMsg(rep ? "✓ Queued with the new image. Press \"Commit changes\" above the grid to publish." : "✓ Queued. Press \"Commit changes\" above the grid to publish.", false);
+    setTimeout(function(){ if (editSrc === src) closeEdit(); }, 1100);
   }
 
   $("#existingGrid").addEventListener("click", function(e){
+    var u = e.target.closest ? e.target.closest("[data-undo-src]") : null;
+    if (u) { undoPending(u.getAttribute("data-undo-src")); return; }
     var b = e.target.closest ? e.target.closest("[data-edit-src]") : null;
     if (b) openEdit(b.getAttribute("data-edit-src"));
   });
+
+  /* ---- the pending-changes queue: nothing here touches GitHub until commitPendingChanges() ---- */
+  var committingPending = false;
+  var pendingMsg = null;   /* { ok, text } - result of the last "Commit changes" attempt */
+
+  function undoPending(src){
+    if (committingPending) return;
+    var pend = pendingEdits[src];
+    if (!pend) return;
+    if (pend.replace && pend.replace.url) URL.revokeObjectURL(pend.replace.url);
+    delete pendingEdits[src];
+    pendingMsg = null;
+    renderExistingGrid();
+  }
+  function discardAllPending(){
+    if (committingPending) return;
+    var keys = Object.keys(pendingEdits);
+    if (!keys.length) return;
+    if (!confirm(keys.length + " queued change(s) will be discarded. Nothing was published, so this is safe. Continue?")) return;
+    keys.forEach(function(k){
+      var pend = pendingEdits[k];
+      if (pend.replace && pend.replace.url) URL.revokeObjectURL(pend.replace.url);
+    });
+    pendingEdits = {};
+    pendingMsg = null;
+    renderExistingGrid();
+  }
+  function renderPendingBar(){
+    var bar = $("#pendingBar");
+    if (!bar) return;
+    var n = Object.keys(pendingEdits).length;
+    if (!n && !pendingMsg) { bar.hidden = true; bar.innerHTML = ""; return; }
+    bar.hidden = false;
+    var msgHtml = pendingMsg
+      ? '<span class="pb-msg' + (pendingMsg.ok ? "" : " err") + '">' + esc(pendingMsg.text) + '</span>'
+      : '<span class="pb-msg">' + n + ' change' + (n === 1 ? "" : "s") + ' queued - nothing is live yet.</span>';
+    if (!n) {
+      bar.innerHTML = msgHtml + '<span class="pb-btns"><button type="button" id="btnDismissPending">Dismiss</button></span>';
+      $("#btnDismissPending", bar).addEventListener("click", function(){ pendingMsg = null; renderPendingBar(); });
+      return;
+    }
+    bar.innerHTML = msgHtml +
+      '<span class="pb-btns">' +
+        '<button type="button" id="btnDiscardPending"' + (committingPending ? " disabled" : "") + '>Discard all</button>' +
+        '<button type="button" class="pb-commit" id="btnCommitPending"' + (committingPending ? " disabled" : "") + '>' +
+          (committingPending ? "Committing…" : ("Commit " + n + " change" + (n === 1 ? "" : "s"))) +
+        '</button>' +
+      '</span>';
+    $("#btnDiscardPending", bar).addEventListener("click", discardAllPending);
+    $("#btnCommitPending", bar).addEventListener("click", function(){
+      if (committingPending) return;
+      if (!confirm("Publish " + n + " queued change(s) to livingroomlabs.in now? They go live in about a minute.")) return;
+      commitPendingChanges();
+    });
+  }
+
+  /* Applies every queued edit/delete to ONE freshly-read copy of content.json and publishes it as
+     ONE commit - same all-or-nothing pattern as the New Upload batch. A photo changed or removed
+     elsewhere in the meantime (e.g. in the Content Editor) is skipped rather than failing the
+     whole batch; everything else still goes through. */
+  function commitPendingChanges(){
+    var keys = Object.keys(pendingEdits);
+    if (!keys.length || committingPending) return;
+    committingPending = true;
+    pendingMsg = null;
+    renderPendingBar();
+    setProgress(4, "Reading the latest version of the site…");
+    var base, entries = [], applied = 0, skipped = [];
+    readRepoState()
+      .then(function(state){
+        base = state;
+        var chain = Promise.resolve();
+        keys.forEach(function(src, i){
+          chain = chain.then(function(){
+            setProgress(8 + Math.round((i / keys.length) * 70), "Applying change " + (i + 1) + " of " + keys.length + "…");
+            var pend = pendingEdits[src];
+            if (pend.action === "delete") {
+              var idx = -1;
+              state.content.photos.forEach(function(x, j){ if (x && x.src === src) idx = j; });
+              if (idx === -1) { skipped.push(src); return; }
+              state.content.photos.splice(idx, 1);
+              entries = entries.concat(removalEntries(state, src));
+              applied++;
+              return;
+            }
+            var hit = null;
+            state.content.photos.forEach(function(x){ if (x && x.src === src) hit = x; });
+            if (!hit) { skipped.push(src); return; }
+            Object.keys(pend.changes).forEach(function(k){ hit[k] = pend.changes[k]; });
+            applied++;
+            if (!pend.replace) return;
+            var newName = uniqueFilename(pend.replace.file.name, "__replace_" + i);
+            return fileToBase64(pend.replace.file)
+              .then(function(b64){
+                return ghFetch("/repos/" + REPO + "/git/blobs", { method: "POST", body: JSON.stringify({ content: b64, encoding: "base64" }) });
+              })
+              .then(function(blob){
+                var newSrc = "/images/uploads/" + newName;
+                entries.push({ path: "images/uploads/" + newName, mode: "100644", type: "blob", sha: blob.sha });
+                entries = entries.concat(removalEntries(state, src));
+                hit.src = newSrc;
+                hit.ratio = pend.replace.ratio;
+                pend.__newSrc = newSrc;
+              });
+          });
+        });
+        return chain;
+      })
+      .then(function(){
+        if (!applied) throw new Error("Nothing left to commit - every queued photo had already changed elsewhere. Close this and reopen the uploader to refresh the list.");
+        setProgress(82, "Saving the updated photo list…");
+        return commitContent(base, entries, "Bulk edit: " + applied + " change(s) via bulk uploader");
+      })
+      .then(function(commit){
+        setProgress(96, "Publishing to livingroomlabs.in…");
+        keys.forEach(function(src){
+          var pend = pendingEdits[src];
+          if (!pend || skipped.indexOf(src) > -1) return;
+          if (pend.action === "delete") {
+            existingPhotos = existingPhotos.filter(function(x){ return x.src !== src; });
+            return;
+          }
+          existingPhotos.forEach(function(x){
+            if (x.src !== src) return;
+            Object.keys(pend.changes).forEach(function(k){ x[k] = pend.changes[k]; });
+            if (pend.__newSrc) {
+              x.src = pend.__newSrc; x.ratio = pend.replace.ratio;
+              x.__preview = pend.replace.url; pend.replace.kept = true;   /* shown from this copy until the site finishes building */
+              x.__justAdded = true;
+              knownUploadNames[uploadName(pend.__newSrc).toLowerCase()] = true;
+            }
+          });
+          pend.changes.eventTypes.forEach(function(et){ if (knownEventTypes.indexOf(et) === -1) knownEventTypes.push(et); });
+        });
+        pendingEdits = {};
+        window.__bulkCommitted = true;   /* the Content Editor reloads when you return to it */
+        committingPending = false;
+        setProgress(100, "Done!");
+        var note = skipped.length ? (" " + skipped.length + " photo(s) had already changed elsewhere and were skipped - reopen the uploader to see their current state.") : "";
+        pendingMsg = { ok: true, text: "✓ " + applied + " change(s) committed (" + commit.sha.slice(0, 7) + "). The site updates in about a minute." + note };
+        fillEventSuggestions();
+        renderExistingGrid();
+        setTimeout(hideProgress, 1500);
+      })
+      .catch(function(err){
+        committingPending = false;
+        hideProgress();
+        pendingMsg = { ok: false, text: "Not committed - the site is unchanged. " + friendlyError(err) };
+        renderPendingBar();
+        console.error(err);
+      });
+  }
 
   /* ================= choosing photos ================= */
   var picker = $("#picker"), fileInput = $("#fileInput");
@@ -901,9 +1036,10 @@
   }
   function clearResult(){ var el = $("#resultBanner"); el.className = "result-banner"; el.textContent = ""; }
 
-  /* leaving mid-upload would silently abandon it */
+  /* leaving mid-upload - or with edits/deletes still queued and not yet committed - would
+     silently abandon them */
   window.addEventListener("beforeunload", function(e){
-    if (uploading) { e.preventDefault(); e.returnValue = ""; }
+    if (uploading || committingPending || Object.keys(pendingEdits).length) { e.preventDefault(); e.returnValue = ""; }
   });
 
   /* ================= commit ================= */
