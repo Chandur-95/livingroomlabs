@@ -110,10 +110,9 @@ collections:
               - { label: "Shoot / Client Name", name: "client", widget: "string", required: false, default: "Studio", hint: "Use this to tell apart two shoots of the same Event Type, e.g. two different Birthday parties (\"Chandu's Birthday\" vs \"Swetha's Birthday\")." }
               - label: "Category"
                 name: "category"
-                widget: "select"
-                options: ["Food", "Pets", "Real Estate", "Products", "Events", "Portraits", "Travel"]
+                widget: "string"
                 default: "Food"
-                hint: "Pick from the list. Performing Arts now lives inside Events - use the Event Type field below for that."
+                hint: "Type exactly as spelled in \"What We Capture (Niches)\" above (e.g. Food, Pets, Sports). Add a brand new category there first, then use its exact name here - it needs no code change. Performing Arts lives inside Events - use the Event Type field below for that."
               - label: "Event Type (only for Events photos)"
                 name: "eventTypes"
                 widget: "list"
