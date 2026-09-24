@@ -824,10 +824,7 @@ html[data-theme="dark"] .home-work-grid .shot.touch-focus .plate {
   cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
 #work .sec-link-arrow{display:inline-block;transition:transform .25s var(--ease)}
 #work .sec-link:hover .sec-link-arrow,#work .sec-link:focus-visible .sec-link-arrow{transform:translate(2px,-2px)}
-#work .sec-link:hover,#work .sec-more:hover{text-decoration:underline;text-underline-offset:4px}
-#work .sec-more{background:none;border:0;padding:0;color:inherit;font-family:"JetBrains Mono",monospace;line-height:inherit;
-  font-size:var(--fs-label);letter-spacing:.1em;text-transform:uppercase;cursor:pointer;white-space:nowrap;opacity:.7}
-#work .sec-more:hover,#work .sec-more:focus-visible{opacity:1}
+#work .sec-link:hover{text-decoration:underline;text-underline-offset:4px}
 /* the photo strip keeps some empty room above itself for its hover zoom - keep the heading, its
    links and "Featured photos" on top of that room so they always stay clickable */
 #work .sec-head,#work .featured-label{position:relative;z-index:30}
@@ -845,8 +842,6 @@ html[data-theme="dark"] .home-work-grid .shot.touch-focus .plate {
 #work{padding-bottom:clamp(8px,1.5vw,20px)}
 #work + #contact{padding-top:clamp(28px,3.5vw,56px)}
 #work .featured-label{margin:-4px 0 clamp(14px,2vw,22px);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;opacity:.6}
-@media (max-width:640px){ #work .sec-more{font-size:.6rem} }
-@media (max-width:400px){ #work .sec-more-long{display:none} }
 .mobile-shoot-box {
   /* One clean row that echoes the site's section heads (ink rule, mono label) instead of a grey box */
   border: 0;
@@ -1832,7 +1827,7 @@ html[data-theme="dark"] .lb-frame {
 html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility:visible;transition:opacity .45s ease,visibility 0s}
 @media (max-width:860px){ :root{--pr:170px} }
 
-/* The Spotlight switch: under "See all categories", on the same line as "Featured photos" (phone and
+/* The Spotlight switch: on the "Featured photos" line under the "What We Capture" heading (phone and
    desktop). It sits above the dimming with a solid background, so while the page goes dark it stays
    lit and easy to find again. */
 #work .featured-row{display:flex;align-items:center;justify-content:space-between;gap:12px;
@@ -2177,8 +2172,6 @@ footer.wrap{overflow-x:clip}
   <section class="sec wrap" id="work" tabindex="-1">
  <div class="sec-head">
       <button type="button" class="label sec-link nav-niches-link">What We Capture <span class="sec-link-arrow" aria-hidden="true">↗</span></button>
-      <span class="fill"></span>
-      <button type="button" class="count mono sec-more nav-niches-link" aria-label="See all categories">See all<span class="sec-more-long"> categories</span> ↗</button>
     </div>
     <div class="featured-row">
       <p class="featured-label mono">Featured photos</p>
@@ -2793,8 +2786,9 @@ function coverRatio(p){
 function coverTile(p){ return coverTileFromRatio(coverRatio(p)); }
 function coverTileFromRatio(r){
   var phone = window.matchMedia && window.matchMedia("(max-aspect-ratio:1/1)").matches;
-  /* a third of the way from the old narrow slice towards the photo's real shape */
-  return +Math.max(0.44, Math.min(phone ? 0.6 : 0.72, (r + 0.42 * 2) / 3)).toFixed(4);
+  /* a third of the way from the old narrow slice towards the photo's real shape - a tighter,
+     narrower band on phones (0.44-0.52) crops in a little more than desktop's (0.44-0.72) */
+  return +Math.max(0.44, Math.min(phone ? 0.52 : 0.72, (r + 0.42 * 2) / 3)).toFixed(4);
 }
 /* The drift moves at the same calm pace (pixels per second) whatever the photos' shapes, and both
    strips (black & white + colour) always get the identical timing so they stay perfectly aligned. */
@@ -2807,7 +2801,7 @@ function setCoverSpeed(){
     var r = strip._pool[i] ? strip._pool[i].__coverAr : .75;
     len += window.innerHeight * r + (phone ? 8 : 10);
   }
-  var speed = phone ? 46 : 62;                              /* CSS px per second */
+  var speed = phone ? 56 : 62;                              /* CSS px per second */
   var secs = Math.max(30, Math.round(len / speed));
   [strip, $("#cover-strip-color")].forEach(function(el){ if(el) el.style.animationDuration = secs + "s"; });
 }
@@ -3872,6 +3866,7 @@ function initCover(){
     if(overlay.classList.contains("cover-hide")) return;   /* double-tap / Escape+click guard */
     spotlightOn = false;
     try { sessionStorage.setItem(SEEN_KEY, "1"); } catch(e){}
+    if(typeof applyTheme === "function") applyTheme(false);   /* land on the home page in light, always */
     try { window.scrollTo(0, 0); } catch(e){}
     /* the homepage headline's rise-in already played unseen behind the cover - replay it now,
        so it's the first thing visitors actually see as the cover fades away */
@@ -3922,7 +3917,7 @@ function initCover(){
 }
 
 /* ---------------- Spotlight (home page) ----------------
-   Its own on/off button under "See all categories" - never tied to dark mode, and off on every visit.
+   Its own on/off button on the "Featured photos" line - never tied to dark mode, and off on every visit.
    If it's on and that button scrolls out of sight, a small copy of it waits in the bottom corner.
    On: the page falls into a dim black & white and a warm pool of light that follows the mouse,
    finger or the phone's tilt brings the photos back into colour. Open a photo with it on and the
