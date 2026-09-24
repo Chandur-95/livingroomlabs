@@ -309,8 +309,11 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
 .cat-empty-enq{margin-top:18px;border:1px solid currentColor;background:none;color:inherit;padding:11px 20px;border-radius:2px;
   font:inherit;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s ease,color .2s ease}
 .cat-empty-enq:hover,.cat-empty-enq:focus-visible{background:var(--ink,#000);color:var(--paper,#fff)}
-/* the footer logo goes to the home page, same as the top logo */
-.cap-foot-home{display:inline-flex;flex:none;line-height:0;border-radius:4px;transition:opacity .2s ease,transform .2s ease}
+/* the footer logo goes to the home page, same as the top logo. Only the logo itself is tappable -
+   the rest of the bar is not a link. */
+.cap-foot-home{-webkit-appearance:none;appearance:none;background:none;border:0;padding:0;margin:0;color:inherit;
+  display:block;flex:0 0 auto;width:auto;align-self:center;line-height:0;border-radius:4px;cursor:pointer;
+  -webkit-tap-highlight-color:transparent;transition:opacity .2s ease,transform .2s ease}
 .cap-foot-home:hover{opacity:.75}
 .cap-foot-home:active{transform:scale(.97)}
 .cap-foot-home:focus-visible{outline:2px solid currentColor;outline-offset:4px}
@@ -415,7 +418,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   .disc-pause{right:16px;bottom:calc(var(--foot-h) + (var(--cap-h) - 38px) / 2);width:38px;height:38px;font-size:.8rem}
 
   .cap-foot{padding:10px 16px calc(10px + var(--safe-bottom));gap:12px}
-  .cap-foot-logo{height:30px}
+  .cap-foot-logo{height:42px}
   .cap-foot-text b{font-size:.62rem;letter-spacing:.16em}
   .cap-foot-text p{font-size:.66rem;line-height:1.35;margin-top:3px}
   .btn-cap-foot-enquire{padding:9px 15px;font-size:.64rem}
@@ -477,6 +480,22 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility:visible;transition:opacity .45s ease,visibility 0s}
 html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-loaded{filter:none}
 @media (max-width:860px){ :root{--pr:170px} }
+/* ================= Footer bar: fixed colours per theme =================
+   Stated outright (not left to inherit) so no browser or phone setting can ever turn the text or the
+   Enquire button white-on-white or black-on-black. */
+html[data-theme="light"]{color-scheme:light}
+html[data-theme="dark"]{color-scheme:dark}
+html[data-theme="light"] .cap-foot{background:rgba(255,255,255,.96) !important;color:#000 !important;border-top-color:rgba(0,0,0,.1) !important}
+html[data-theme="light"] .cap-foot-text b,html[data-theme="light"] .cap-foot-text p{color:#000 !important;-webkit-text-fill-color:#000}
+html[data-theme="light"] .btn-cap-foot-enquire{color:#000 !important;-webkit-text-fill-color:#000;border-color:#000 !important;background:transparent !important}
+html[data-theme="light"] .btn-cap-foot-enquire:hover{background:#000 !important;color:#fff !important;-webkit-text-fill-color:#fff}
+html[data-theme="light"] .cap-foot-logo{filter:none !important;opacity:.95}
+html[data-theme="dark"] .cap-foot{background:rgba(6,6,6,.95) !important;color:#fff !important;border-top-color:rgba(255,255,255,.1) !important}
+html[data-theme="dark"] .cap-foot-text b,html[data-theme="dark"] .cap-foot-text p{color:#fff !important;-webkit-text-fill-color:#fff}
+html[data-theme="dark"] .btn-cap-foot-enquire{color:#fff !important;-webkit-text-fill-color:#fff;border-color:rgba(255,255,255,.85) !important;background:transparent !important}
+html[data-theme="dark"] .btn-cap-foot-enquire:hover{background:#fff !important;color:#000 !important;-webkit-text-fill-color:#000}
+html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1) !important;opacity:.9}
+
 /* ================= Light mode for the whole page =================
    What We Capture follows the theme chosen on the home page everywhere - Discover included. In light
    mode Discover is a clean white gallery; in dark mode it stays the black stage. Photos are always in
@@ -551,7 +570,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
 <button class="cat-back mono" id="catBack" style="display:none">← Discover</button>
 
 <footer class="cap-foot" id="capFoot">
-  <a class="cap-foot-home" href="/" aria-label="Living Room Labs - home page"><span class="lg-crop cap-foot-logo"><img src="/logo.png" alt=""></span></a>
+  <button type="button" class="cap-foot-home" id="capFootHome" aria-label="Living Room Labs - home page"><span class="lg-crop cap-foot-logo"><img src="/logo.png" alt=""></span></button>
   <div class="cap-foot-text">
     <b class="mono" id="capFootHeading">Enquiry</b>
     <p class="mono" id="capFootTagline">Every frame begins with a conversation</p>
@@ -1470,6 +1489,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
   }
   $("#capFootEnquire").addEventListener("click", openEnquiry);
   $("#capBrand").addEventListener("click", function(){ window.location.href = "/"; });
+  $("#capFootHome").addEventListener("click", function(e){ e.stopPropagation(); window.location.href = "/"; });
 
   /* ---------------- keyboard ---------------- */
   document.addEventListener("keydown", function(e){
