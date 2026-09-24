@@ -189,8 +189,16 @@ html[data-theme="light"] .cap-cat-btn.active{background:#000;color:#fff;border-c
 .disc-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;transition:opacity .55s ease, filter .6s ease;}
 .disc-card img:not(.lrl-loaded){opacity:0;filter:blur(14px)}
 .disc-card.is-center{cursor:zoom-in}
-/* photos are always in full colour (the Spotlight's own dimming comes from #pageLamp) */
+/* Desktop: photos are always in full colour (the Spotlight's own dimming comes from #pageLamp).
+   Phones: only the centred photo is in colour - everything drifting past it is black & white, so
+   the one you're looking at reads clearly against the ones still moving. */
 .disc-card img.lrl-loaded{filter:none}
+@media (max-width:640px){
+  .disc-card img.lrl-loaded{filter:grayscale(1)}
+  .disc-card.is-center img.lrl-loaded{filter:none}
+  html.page-lamp-on .disc-card img.lrl-loaded{filter:grayscale(1)}         /* the Spotlight already dims everything */
+  html.page-lamp-on .disc-card.is-center img.lrl-loaded{filter:none}
+}
 
 .disc-caption{
   position:absolute;left:0;right:0;bottom:var(--foot-h);z-index:2;padding:18px 24px 16px;
@@ -498,7 +506,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 #pageLampGlow{position:fixed;inset:0;z-index:31;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s;
   background:radial-gradient(circle calc(var(--pr,260px) * 1.1) at var(--px,50%) var(--py,50%), rgba(255,190,85,.18), rgba(255,190,85,0) 70%);}
 html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility:visible;transition:opacity .45s ease,visibility 0s}
-html.page-lamp-on .disc-card img.lrl-loaded,html.page-lamp-on .cat-card img.lrl-loaded{filter:none}
+html.page-lamp-on .cat-card img.lrl-loaded{filter:none}   /* Discover's own colour/grayscale rule (above) covers .disc-card */
 @media (max-width:860px){ :root{--pr:170px} }
 /* ================= Footer bar: fixed colours per theme =================
    Stated outright (not left to inherit) so no browser or phone setting can ever turn the text or the
@@ -622,7 +630,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
   var DATA = null, PHOTOS = [], NICHES = [];
   var discoverOrder = [], discoverPaused = false;
   /* CSS px/second - same values the homepage uses: faster on phones, where 60px/s felt sluggish */
-  function scrollSpeed(){ return window.innerWidth <= 640 ? 92 : 60; }
+  function scrollSpeed(){ return window.innerWidth <= 640 ? 72 : 60; }
   var frameEst = 1000/60, scrollPlan = null, autoRaf = null;
   var track, trackLoopW = 0, trackPos = 0, isTouching = false, extAt = 0, manualPauseUntil = 0;
   var currentCat = null, currentEvent = null, lbList = [], lbIdx = 0;
