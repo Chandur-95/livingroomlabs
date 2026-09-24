@@ -727,6 +727,186 @@
       "eventTypes": [
         "Sports"
       ]
+    },
+    {
+      "title": "We Did It",
+      "client": "Vikings PC",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "A championship-winning point, and the whole team piles in.",
+      "alt": "We Did It",
+      "ratio": "3/4",
+      "src": "/images/uploads/dsc06776-2.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Respect at the Net",
+      "client": "Vikings PC",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "Rivals turned handshake, right after the final point.",
+      "alt": "Respect at the Net",
+      "ratio": "1/1",
+      "src": "/images/uploads/dsc01779-2.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Dig Deep",
+      "client": "Vikings PC",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "Lunging low to keep the rally alive.",
+      "alt": "Dig Deep",
+      "ratio": "4/5",
+      "src": "/images/uploads/dsc06745-2.jpg",
+      "imagePosition": "Center",
+      "featured": true
+    },
+    {
+      "title": "Fixing the Grip",
+      "client": "Privare",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "A coach dials in the fundamentals, one small correction at a time.",
+      "alt": "Fixing the Grip",
+      "ratio": "16/10",
+      "src": "/images/uploads/dsc04063.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Eyes on the Scoreboard",
+      "client": "Vikings PC",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "Walking the baseline as the numbers tell the story.",
+      "alt": "Eyes on the Scoreboard",
+      "ratio": "3/4",
+      "src": "/images/uploads/img-2374.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Match Won",
+      "client": "Vikings PC",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "Paddle raised, job done, walking off a winner.",
+      "alt": "Match Won",
+      "ratio": "4/5",
+      "src": "/images/uploads/img-2380.jpg",
+      "imagePosition": "Center",
+      "featured": true
+    },
+    {
+      "title": "Serve & Strid",
+      "client": "Vikings PC",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "Yellow-lit motion captures a player mid-serve on an outdoor court at dusk.",
+      "alt": "Serve & Strid",
+      "ratio": "1/1",
+      "src": "/images/uploads/dsc04948.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Coach's Eye",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "Talking through the swing before it becomes muscle memory.",
+      "alt": "Coach's Eye",
+      "ratio": "1/1",
+      "src": "/images/uploads/dsc03817.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Locked In",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "Four players, one rhythm, drilling footwork before it counts.",
+      "alt": "Locked In",
+      "ratio": "5/4",
+      "src": "/images/uploads/dsc03912.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Feed and Fire",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "Ball after ball off the machine, sharpening the same shot.",
+      "alt": "Feed and Fire",
+      "ratio": "1/1",
+      "src": "/images/uploads/dsc03820.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Full Swing",
+      "client": "Vikings PC",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "Follow-through complete, ball already gone",
+      "alt": "Full Swing",
+      "ratio": "3/4",
+      "src": "/images/uploads/dsc01415.jpg",
+      "imagePosition": "Center",
+      "featured": true
+    },
+    {
+      "title": "On the Move",
+      "client": "Vikings PC",
+      "category": "Events",
+      "eventTypes": [
+        "Sports"
+      ],
+      "showInAll": false,
+      "caption": "Covering court at full speed, paddle ready for the next ball.",
+      "alt": "On the Move",
+      "ratio": "4/5",
+      "src": "/images/uploads/dsc00482.jpg",
+      "imagePosition": "Center",
+      "featured": false
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
