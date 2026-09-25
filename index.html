@@ -451,24 +451,6 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .band-eye:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
 @media (max-width:640px){ .band-eye{ width:38px; height:38px; } }
 
-/* Phone-only "What We Capture" call-to-action under the banner - desktop already has it in the top bar */
-.wwc-cta{ display:none; }
-@media (max-width:640px){
-  .wwc-cta{
-    display:flex; align-items:center; justify-content:space-between; gap:14px;
-    width:calc(100% - 32px); margin:18px auto 0; padding:16px 18px;
-    border:1.5px solid var(--ink); border-radius:14px;
-    background:var(--ink); color:var(--paper);
-    font:inherit; text-align:left; cursor:pointer;
-    -webkit-tap-highlight-color:transparent;
-  }
-  .wwc-cta:active{ transform:scale(.98); }
-  .wwc-cta-title{ font-size:1.2rem; font-weight:800; line-height:1.1; text-transform:uppercase; letter-spacing:.02em; }
-  .wwc-cta-more{ display:inline-flex; align-items:center; gap:6px; flex:none; font-size:.7rem; letter-spacing:.1em; text-transform:uppercase; opacity:.85; }
-  .wwc-cta-arrow{ display:inline-block; font-size:1rem; animation:wwcNudge 1.8s ease-in-out infinite; }
-}
-@keyframes wwcNudge{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(5px); } }
-@media (prefers-reduced-motion:reduce){ .wwc-cta-arrow{ animation:none; } }
 
 .sec{padding-block:var(--sec)}
 .sec-head{
@@ -477,6 +459,15 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-bottom:10px;margin-bottom:clamp(16px, 2.5vw, 28px);
 }
 .sec-head .fill{flex:1;height:1px}
+.wwc-view-more{ display:none; padding:0; border:0; background:none; color:inherit; cursor:pointer; align-items:center; gap:5px; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; }
+.wwc-vm-arrow{ display:inline-block; font-size:.9rem; animation:wwcVmNudge 1.6s ease-in-out infinite; }
+@keyframes wwcVmNudge{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(4px); } }
+@media (prefers-reduced-motion:reduce){ .wwc-vm-arrow{ animation:none; } }
+@media (max-width:640px){
+  .sec-head-work{ justify-content:space-between; }
+  .sec-head-work .wwc-heading{ font-weight:700; letter-spacing:.04em; }
+  .wwc-view-more{ display:inline-flex; }
+}
 .sec-head .count{font-size:var(--fs-label);letter-spacing:.1em;opacity:.55;white-space:nowrap}
 
 .filters{
@@ -2223,18 +2214,14 @@ footer.wrap{overflow-x:clip}
   <div class="band" id="hero-slideshow" role="region" aria-label="Hero image slideshow" tabindex="0">
     <div class="band-stage" id="band-stage"></div>
     <button type="button" class="band-eye" aria-label="View this photo">
-      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M1.5 12S5.5 4.5 12 4.5 22.5 12 22.5 12 18.5 19.5 12 19.5 1.5 12 1.5 12z"/><circle cx="12" cy="12" r="3.2"/></svg>
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="12" height="12" rx="2.2"/><circle cx="7" cy="9" r="1.15"/><path d="M4 15.3l3.6-4 2.4 2.4 3.4-3.9"/><path fill="currentColor" stroke="none" d="M19 3l.85 2.25L22 6l-2.15.75L19 9l-.85-2.25L16 6l2.15-.75z"/><path fill="currentColor" stroke="none" d="M21.3 9.4l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z"/></svg>
     </button>
   </div>
 
-  <button type="button" class="nav-niches-link wwc-cta" aria-label="Explore What We Capture">
-    <span class="wwc-cta-title">What We Capture</span>
-    <span class="wwc-cta-more mono">View more <span class="wwc-cta-arrow" aria-hidden="true">→</span></span>
-  </button>
-
   <section class="sec wrap" id="work" tabindex="-1">
- <div class="sec-head">
-      <button type="button" class="label sec-link nav-niches-link">What We Capture <span class="sec-link-arrow" aria-hidden="true">↗</span></button>
+ <div class="sec-head sec-head-work">
+      <button type="button" class="label sec-link nav-niches-link wwc-heading">What We Capture <span class="sec-link-arrow" aria-hidden="true">↗</span></button>
+      <button type="button" class="nav-niches-link wwc-view-more" aria-label="View all photos"><span class="mono">View more</span><span class="wwc-vm-arrow" aria-hidden="true">→</span></button>
     </div>
     <div class="featured-row">
       <p class="featured-label mono">Featured photos</p>
