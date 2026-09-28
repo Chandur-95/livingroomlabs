@@ -190,10 +190,10 @@ html[data-theme="light"] .cap-cat-btn.active{background:#000;color:#fff;border-c
 .disc-card img:not(.lrl-loaded){opacity:0;filter:blur(14px)}
 .disc-card.is-center{cursor:zoom-in}
 /* Desktop: photos are always in full colour (the Spotlight's own dimming comes from #pageLamp).
-   Phones: only the centred photo is in colour - everything drifting past it is black & white, so
-   the one you're looking at reads clearly against the ones still moving. */
+   Phones and tablets/iPads (touch screens): only the centred photo is in colour - everything drifting
+   past it is black & white, so the one you're looking at reads clearly against the ones still moving. */
 .disc-card img.lrl-loaded{filter:none}
-@media (max-width:640px){
+@media (max-width:640px), (pointer:coarse){
   .disc-card img.lrl-loaded{filter:grayscale(1)}
   .disc-card.is-center img.lrl-loaded{filter:none}
   html.page-lamp-on .disc-card img.lrl-loaded{filter:grayscale(1)}         /* the Spotlight already dims everything */
@@ -548,7 +548,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
 <header class="cap-header" id="capHeader">
   <div class="cap-row1">
     <button class="cap-brand" id="capBrand" aria-label="Living Room Labs - back to the home page">
-      <span class="lg-crop"><img src="/logo.png" alt="Living Room Labs"></span>
+      <span class="lg-crop"><img src="/logo.png" width="600" height="600" alt="Living Room Labs"></span>
       <span class="cap-brand-text">
         <b>Living Room Labs</b>
         <span id="capTagline" class="mono"></span>
@@ -600,7 +600,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
 <button class="cat-back mono" id="catBack" style="display:none">← Discover</button>
 
 <footer class="cap-foot" id="capFoot">
-  <button type="button" class="cap-foot-home" id="capFootHome" aria-label="Living Room Labs - home page"><span class="lg-crop cap-foot-logo"><img src="/logo.png" alt=""></span></button>
+  <button type="button" class="cap-foot-home" id="capFootHome" aria-label="Living Room Labs - home page"><span class="lg-crop cap-foot-logo"><img src="/logo.png" width="600" height="600" alt=""></span></button>
   <div class="cap-foot-text">
     <b class="mono" id="capFootHeading">Enquiry</b>
     <p class="mono" id="capFootTagline">Every frame begins with a conversation</p>
@@ -623,7 +623,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
   <div class="cap-lb-cap mono" id="lbCap"></div>
 </div>
 
-<script src="/shared.js"></script>
+<script src="/shared.js" defer></script>
 <script>
 (function(){
   "use strict";
