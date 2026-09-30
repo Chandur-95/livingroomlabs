@@ -1024,6 +1024,96 @@
       "src": "/images/uploads/recreated.jpg",
       "imagePosition": "Center",
       "featured": false
+    },
+    {
+      "title": "In the Warmth",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Couple Shoot"
+      ],
+      "showInAll": true,
+      "caption": "Soft lights, quiet laughter, and moments that don't need posing.",
+      "alt": "In the Warmth",
+      "ratio": "4/5",
+      "src": "/images/uploads/img-4429.jpg",
+      "imagePosition": "Center",
+      "featured": true
+    },
+    {
+      "title": "The Ask",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Couple Shoot"
+      ],
+      "showInAll": false,
+      "caption": "A calm lake, an evening sky, and a question that changed everything.",
+      "alt": "The Ask",
+      "ratio": "16/10",
+      "src": "/images/uploads/dsc00732.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Evening Calm",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Couple Shoot"
+      ],
+      "showInAll": false,
+      "caption": "Still waters and two silhouettes against the fading glow.",
+      "alt": "Evening Calm",
+      "ratio": "16/10",
+      "src": "/images/uploads/dsc00734.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Adrift at Dusk",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Couple Shoot"
+      ],
+      "showInAll": false,
+      "caption": "Still waters and two silhouettes against the fading glow.",
+      "alt": "Adrift at Dusk",
+      "ratio": "3/4",
+      "src": "/images/uploads/dsc00731.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Easy Laughter",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Couple Shoot"
+      ],
+      "showInAll": false,
+      "caption": "Vibrant colors and candid moments out in the open air.",
+      "alt": "Easy Laughter",
+      "ratio": "4/5",
+      "src": "/images/uploads/dsc08063.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Rooted in Joy",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Couple Shoot"
+      ],
+      "showInAll": false,
+      "caption": "The best shots are always the unscripted ones.",
+      "alt": "Rooted in Joy",
+      "ratio": "1/1",
+      "src": "/images/uploads/dsc08062.jpg",
+      "imagePosition": "Center",
+      "featured": false
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
