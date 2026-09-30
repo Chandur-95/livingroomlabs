@@ -1264,6 +1264,126 @@
       "src": "/images/uploads/dsc06482.jpg",
       "imagePosition": "Center",
       "featured": true
+    },
+    {
+      "title": "The First Diya",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Housewarming"
+      ],
+      "showInAll": true,
+      "caption": "Stepping across the threshold with warm smiles, family close, and prayers for light in every room.",
+      "alt": "The First Diya",
+      "ratio": "1/1",
+      "src": "/images/uploads/dust-pixels-7intbvhcdn0-unsplash.jpg",
+      "imagePosition": "Center",
+      "featured": true
+    },
+    {
+      "title": "Happy Family",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Housewarming"
+      ],
+      "showInAll": true,
+      "caption": "Quiet moments of prayer broken by a toddler’s curiosity right at the altar.",
+      "alt": "Happy Family",
+      "ratio": "16/10",
+      "src": "/images/uploads/dust-pixels-lveldkbcezg-unsplash.jpg",
+      "imagePosition": "Center",
+      "featured": true
+    },
+    {
+      "title": "Hosts for the Evening",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Housewarming"
+      ],
+      "showInAll": false,
+      "caption": "Traditional silk, woven textures, and welcoming the very first guests through the doors.",
+      "alt": "Hosts for the Evening",
+      "ratio": "3/4",
+      "src": "/images/uploads/img-2468-tif-original.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Stolen Kisses",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Housewarming"
+      ],
+      "showInAll": false,
+      "caption": "An unscripted nose boop amidst the morning setup—making the new place feel like home immediately.",
+      "alt": "Stolen Kisses",
+      "ratio": "3/4",
+      "src": "/images/uploads/img-2349-original.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Family",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Housewarming"
+      ],
+      "showInAll": false,
+      "caption": "Dressed in deep blues and woven teal, pausing outside the new entryway before celebrations begin.",
+      "alt": "Family",
+      "ratio": "5/4",
+      "src": "/images/uploads/img-2460-original.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Mid-Ceremony Chuckles",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Housewarming"
+      ],
+      "showInAll": false,
+      "caption": "Genuine, unguarded laughter right in the middle of traditional rituals.",
+      "alt": "Mid-Ceremony Chuckles",
+      "ratio": "16/10",
+      "src": "/images/uploads/img-2350-original.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Namaste to the New Home",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Housewarming"
+      ],
+      "showInAll": true,
+      "caption": "Hands folded at the threshold to welcome family and friends to their new beginning.",
+      "alt": "Namaste to the New Home",
+      "ratio": "16/10",
+      "src": "/images/uploads/img-2462-original.jpg",
+      "imagePosition": "Center",
+      "featured": true
+    },
+    {
+      "title": "Warmest Greetings",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Housewarming"
+      ],
+      "showInAll": true,
+      "caption": "Shared smiles and festive cheer celebrating friends turning a new space into a home.",
+      "alt": "Warmest Greetings",
+      "ratio": "3/4",
+      "src": "/images/uploads/img-2466-original.jpg",
+      "imagePosition": "Center",
+      "featured": true
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
