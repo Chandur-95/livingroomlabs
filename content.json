@@ -1114,6 +1114,156 @@
       "src": "/images/uploads/dsc08062.jpg",
       "imagePosition": "Center",
       "featured": false
+    },
+    {
+      "title": "Side by Side",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Baby Shower"
+      ],
+      "showInAll": false,
+      "caption": "Draped in tradition and smiling through every moment of the celebration.",
+      "alt": "Side by Side",
+      "ratio": "3/4",
+      "src": "/images/uploads/dsc09450.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "The Prankster",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Baby Shower"
+      ],
+      "showInAll": false,
+      "caption": "Never missing an opportunity to pull a face, even mid-ceremony.",
+      "alt": "The Prankster",
+      "ratio": "5/4",
+      "src": "/images/uploads/dsc09453.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Traditional Blessings",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Baby Shower"
+      ],
+      "showInAll": false,
+      "caption": "Surrounded by flowers, fruit offerings, and the quiet excitement of what is to come.",
+      "alt": "Traditional Blessings",
+      "ratio": "3/4",
+      "src": "/images/uploads/dsc09383.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Soft Light",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Baby Shower"
+      ],
+      "showInAll": false,
+      "caption": "A gentle outdoor portrait framed by the porch and afternoon greens.",
+      "alt": "Soft Light",
+      "ratio": "3/4",
+      "src": "/images/uploads/dsc09308.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "In Full Glow",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Baby Shower"
+      ],
+      "showInAll": false,
+      "caption": "Radiant in gold, caught right in the middle of greeting loved ones.",
+      "alt": "In Full Glow",
+      "ratio": "3/4",
+      "src": "/images/uploads/dsc06699.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Quiet Grace",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Baby Shower"
+      ],
+      "showInAll": false,
+      "caption": "Traditional silk, delicate temple jewelry, and an easy, grounded smile.",
+      "alt": "Quiet Grace",
+      "ratio": "3/4",
+      "src": "/images/uploads/dsc09307.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "The Green Bangles",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Baby Shower"
+      ],
+      "showInAll": true,
+      "caption": "Celebrating customs with an armful of festive glass bangles and mehndi.",
+      "alt": "The Green Bangles",
+      "ratio": "16/10",
+      "src": "/images/uploads/dsc06610.jpg",
+      "imagePosition": "Center",
+      "featured": true
+    },
+    {
+      "title": "Sweet Teasing",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Baby Shower"
+      ],
+      "showInAll": true,
+      "caption": " When they thought the camera wasn’t looking.",
+      "alt": "Sweet Teasing",
+      "ratio": "3/4",
+      "src": "/images/uploads/dsc06514.jpg",
+      "imagePosition": "Center",
+      "featured": true
+    },
+    {
+      "title": "Playful",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Baby Shower"
+      ],
+      "showInAll": false,
+      "caption": "A playful, knowing glance out on the tree-lined path.",
+      "alt": "Playful",
+      "ratio": "3/4",
+      "src": "/images/uploads/dsc06531.jpg",
+      "imagePosition": "Center",
+      "featured": false
+    },
+    {
+      "title": "Waiting on Little Steps",
+      "client": "Private",
+      "category": "Events",
+      "eventTypes": [
+        "Baby Shower"
+      ],
+      "showInAll": true,
+      "caption": "The story begins.",
+      "alt": "Waiting on Little Steps",
+      "ratio": "3/4",
+      "src": "/images/uploads/dsc06482.jpg",
+      "imagePosition": "Center",
+      "featured": true
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
