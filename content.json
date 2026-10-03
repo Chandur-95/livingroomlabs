@@ -729,661 +729,661 @@
       ]
     },
     {
-      "title": "We Did It",
-      "client": "Vikings PC",
-      "category": "Events",
-      "eventTypes": [
-        "Sports"
-      ],
-      "showInAll": false,
+      "src": "/images/uploads/dsc06776-2.jpg",
+      "imagePosition": "Center",
       "caption": "A championship-winning point, and the whole team piles in.",
       "alt": "We Did It",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc06776-2.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Respect at the Net",
       "client": "Vikings PC",
+      "featured": false,
+      "title": "We Did It",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Sports"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc01779-2.jpg",
+      "imagePosition": "Center",
       "caption": "Rivals turned handshake, right after the final point.",
       "alt": "Respect at the Net",
       "ratio": "1/1",
-      "src": "/images/uploads/dsc01779-2.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Dig Deep",
       "client": "Vikings PC",
+      "featured": false,
+      "title": "Respect at the Net",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Sports"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc06745-2.jpg",
+      "imagePosition": "Center",
       "caption": "Lunging low to keep the rally alive.",
       "alt": "Dig Deep",
       "ratio": "4/5",
-      "src": "/images/uploads/dsc06745-2.jpg",
-      "imagePosition": "Center",
-      "featured": true
-    },
-    {
-      "title": "Fixing the Grip",
-      "client": "Privare",
+      "client": "Vikings PC",
+      "featured": true,
+      "title": "Dig Deep",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Sports"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc04063.jpg",
+      "imagePosition": "Center",
       "caption": "A coach dials in the fundamentals, one small correction at a time.",
       "alt": "Fixing the Grip",
       "ratio": "16/10",
-      "src": "/images/uploads/dsc04063.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Eyes on the Scoreboard",
-      "client": "Vikings PC",
+      "client": "Privare",
+      "featured": false,
+      "title": "Fixing the Grip",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Sports"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/img-2374.jpg",
+      "imagePosition": "Center",
       "caption": "Walking the baseline as the numbers tell the story.",
       "alt": "Eyes on the Scoreboard",
       "ratio": "3/4",
-      "src": "/images/uploads/img-2374.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Match Won",
       "client": "Vikings PC",
+      "featured": false,
+      "title": "Eyes on the Scoreboard",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Sports"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/img-2380.jpg",
+      "imagePosition": "Center",
       "caption": "Paddle raised, job done, walking off a winner.",
       "alt": "Match Won",
       "ratio": "4/5",
-      "src": "/images/uploads/img-2380.jpg",
-      "imagePosition": "Center",
-      "featured": true
-    },
-    {
-      "title": "Serve & Strid",
       "client": "Vikings PC",
+      "featured": true,
+      "title": "Match Won",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Sports"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc04948.jpg",
+      "imagePosition": "Center",
       "caption": "Yellow-lit motion captures a player mid-serve on an outdoor court at dusk.",
       "alt": "Serve & Strid",
       "ratio": "1/1",
-      "src": "/images/uploads/dsc04948.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Coach's Eye",
-      "client": "Private",
+      "client": "Vikings PC",
+      "featured": false,
+      "title": "Serve & Strid",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Sports"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc03817.jpg",
+      "imagePosition": "Center",
       "caption": "Talking through the swing before it becomes muscle memory.",
       "alt": "Coach's Eye",
       "ratio": "1/1",
-      "src": "/images/uploads/dsc03817.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Locked In",
       "client": "Private",
+      "featured": false,
+      "title": "Coach's Eye",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Sports"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc03912.jpg",
+      "imagePosition": "Center",
       "caption": "Four players, one rhythm, drilling footwork before it counts.",
       "alt": "Locked In",
       "ratio": "5/4",
-      "src": "/images/uploads/dsc03912.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Feed and Fire",
       "client": "Private",
+      "featured": false,
+      "title": "Locked In",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Sports"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc03820.jpg",
+      "imagePosition": "Center",
       "caption": "Ball after ball off the machine, sharpening the same shot.",
       "alt": "Feed and Fire",
       "ratio": "1/1",
-      "src": "/images/uploads/dsc03820.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Full Swing",
-      "client": "Vikings PC",
+      "client": "Private",
+      "featured": false,
+      "title": "Feed and Fire",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Sports"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc01415.jpg",
+      "imagePosition": "Center",
       "caption": "Follow-through complete, ball already gone",
       "alt": "Full Swing",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc01415.jpg",
-      "imagePosition": "Center",
-      "featured": true
-    },
-    {
-      "title": "On the Move",
       "client": "Vikings PC",
+      "featured": true,
+      "title": "Full Swing",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Sports"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc00482.jpg",
+      "imagePosition": "Center",
       "caption": "Covering court at full speed, paddle ready for the next ball.",
       "alt": "On the Move",
       "ratio": "4/5",
-      "src": "/images/uploads/dsc00482.jpg",
-      "imagePosition": "Center",
-      "featured": false
+      "client": "Vikings PC",
+      "featured": false,
+      "title": "On the Move",
+      "category": "Events",
+      "showInAll": false,
+      "eventTypes": [
+        "Sports"
+      ]
     },
     {
-      "title": "Little Rider",
-      "client": "Private",
-      "category": "Portraits",
-      "eventTypes": [],
-      "showInAll": false,
+      "src": "/images/uploads/dsc09406.jpg",
+      "imagePosition": "Center",
       "caption": "Serious business on two wheels. Capturing the quiet focus of a toddler mid-adventure.",
       "alt": "Little Rider",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc09406.jpg",
-      "imagePosition": "Center",
-      "featured": false
+      "client": "Private",
+      "featured": false,
+      "title": "Little Rider",
+      "category": "Portraits",
+      "showInAll": false,
+      "eventTypes": []
     },
     {
-      "title": "Simple Wonders",
-      "client": "Private",
-      "category": "Portraits",
-      "eventTypes": [],
-      "showInAll": false,
+      "src": "/images/uploads/dsc09239.jpg",
+      "imagePosition": "Center",
       "caption": "Fleeting moments and floating bubbles in the afternoon glow.",
       "alt": "Simple Wonders",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc09239.jpg",
-      "imagePosition": "Center",
-      "featured": false
+      "client": "Private",
+      "featured": false,
+      "title": "Simple Wonders",
+      "category": "Portraits",
+      "showInAll": false,
+      "eventTypes": []
     },
     {
-      "title": "Quiet Curiosity",
-      "client": "Private",
-      "category": "Portraits",
-      "eventTypes": [],
-      "showInAll": false,
+      "src": "/images/uploads/dsc09246.jpg",
+      "imagePosition": "Center",
       "caption": "Unfiltered childhood—taking in the world one little breeze at a time.",
       "alt": "Quiet Curiosity",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc09246.jpg",
-      "imagePosition": "Center",
-      "featured": false
+      "client": "Private",
+      "featured": false,
+      "title": "Quiet Curiosity",
+      "category": "Portraits",
+      "showInAll": false,
+      "eventTypes": []
     },
     {
-      "title": "Full Throttle",
-      "client": "Private",
-      "category": "Portraits",
-      "eventTypes": [],
-      "showInAll": false,
+      "src": "/images/uploads/dsc09409.jpg",
+      "imagePosition": "Center",
       "caption": "mid-adventure.",
       "alt": "Full Throttle",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc09409.jpg",
-      "imagePosition": "Center",
-      "featured": false
+      "client": "Private",
+      "featured": false,
+      "title": "Full Throttle",
+      "category": "Portraits",
+      "showInAll": false,
+      "eventTypes": []
     },
     {
-      "title": "In Good Company",
-      "client": "Private",
-      "category": "Portraits",
-      "eventTypes": [],
-      "showInAll": false,
+      "src": "/images/uploads/dsc09225.jpg",
+      "imagePosition": "Center",
       "caption": "Easy smiles, warm light, and a family portrait that feels just like home.",
       "alt": "In Good Company",
       "ratio": "4/5",
-      "src": "/images/uploads/dsc09225.jpg",
-      "imagePosition": "Center",
-      "featured": false
+      "client": "Private",
+      "featured": false,
+      "title": "In Good Company",
+      "category": "Portraits",
+      "showInAll": false,
+      "eventTypes": []
     },
     {
-      "title": "Summer Shade",
-      "client": "Private",
-      "category": "Portraits",
-      "eventTypes": [],
-      "showInAll": false,
+      "src": "/images/uploads/3.jpg",
+      "imagePosition": "Center",
       "caption": "Sun-drenched textures, floral prints, and the quiet comfort of a warm afternoon.",
       "alt": "Summer Shade",
       "ratio": "3/4",
-      "src": "/images/uploads/3.jpg",
-      "imagePosition": "Center",
-      "featured": false
+      "client": "Private",
+      "featured": false,
+      "title": "Summer Shade",
+      "category": "Portraits",
+      "showInAll": false,
+      "eventTypes": []
     },
     {
-      "title": "Afternoon Pause",
-      "client": "Private",
-      "category": "Portraits",
-      "eventTypes": [],
-      "showInAll": true,
+      "src": "/images/uploads/2.jpg",
+      "imagePosition": "Center",
       "caption": "Lost between the lines of a good book on a quiet outdoor afternoon.",
       "alt": "Afternoon Pause",
       "ratio": "3/4",
-      "src": "/images/uploads/2.jpg",
-      "imagePosition": "Center",
-      "featured": true
+      "client": "Private",
+      "featured": true,
+      "title": "Afternoon Pause",
+      "category": "Portraits",
+      "showInAll": true,
+      "eventTypes": []
     },
     {
-      "title": "Pages & Daydreams",
-      "client": "Private",
-      "category": "Portraits",
-      "eventTypes": [],
-      "showInAll": false,
+      "src": "/images/uploads/1.jpg",
+      "imagePosition": "Center",
       "caption": "quiet outdoor afternoon.",
       "alt": "Pages & Daydreams",
       "ratio": "3/4",
-      "src": "/images/uploads/1.jpg",
-      "imagePosition": "Center",
-      "featured": false
+      "client": "Private",
+      "featured": false,
+      "title": "Pages & Daydreams",
+      "category": "Portraits",
+      "showInAll": false,
+      "eventTypes": []
     },
     {
-      "title": "In Stillness",
-      "client": "Private",
-      "category": "Portraits",
-      "eventTypes": [],
-      "showInAll": false,
+      "src": "/images/uploads/recreated.jpg",
+      "imagePosition": "Center",
       "caption": "Classic monochrome tones and honest light. A quiet study in expression and profile.",
       "alt": "In Stillness",
       "ratio": "3/4",
-      "src": "/images/uploads/recreated.jpg",
-      "imagePosition": "Center",
-      "featured": false
+      "client": "Private",
+      "featured": false,
+      "title": "In Stillness",
+      "category": "Portraits",
+      "showInAll": false,
+      "eventTypes": []
     },
     {
-      "title": "In the Warmth",
-      "client": "Private",
-      "category": "Events",
-      "eventTypes": [
-        "Couple Shoot"
-      ],
-      "showInAll": true,
+      "src": "/images/uploads/img-4429.jpg",
+      "imagePosition": "Center",
       "caption": "Soft lights, quiet laughter, and moments that don't need posing.",
       "alt": "In the Warmth",
       "ratio": "4/5",
-      "src": "/images/uploads/img-4429.jpg",
-      "imagePosition": "Center",
-      "featured": true
-    },
-    {
-      "title": "The Ask",
       "client": "Private",
+      "featured": true,
+      "title": "In the Warmth",
       "category": "Events",
+      "showInAll": true,
       "eventTypes": [
         "Couple Shoot"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc00732.jpg",
+      "imagePosition": "Center",
       "caption": "A calm lake, an evening sky, and a question that changed everything.",
       "alt": "The Ask",
       "ratio": "16/10",
-      "src": "/images/uploads/dsc00732.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Evening Calm",
       "client": "Private",
+      "featured": false,
+      "title": "The Ask",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Couple Shoot"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc00734.jpg",
+      "imagePosition": "Center",
       "caption": "Still waters and two silhouettes against the fading glow.",
       "alt": "Evening Calm",
       "ratio": "16/10",
-      "src": "/images/uploads/dsc00734.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Adrift at Dusk",
       "client": "Private",
+      "featured": false,
+      "title": "Evening Calm",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Couple Shoot"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc00731.jpg",
+      "imagePosition": "Center",
       "caption": "Still waters and two silhouettes against the fading glow.",
       "alt": "Adrift at Dusk",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc00731.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Easy Laughter",
       "client": "Private",
+      "featured": false,
+      "title": "Adrift at Dusk",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Couple Shoot"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc08063.jpg",
+      "imagePosition": "Center",
       "caption": "Vibrant colors and candid moments out in the open air.",
       "alt": "Easy Laughter",
       "ratio": "4/5",
-      "src": "/images/uploads/dsc08063.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Rooted in Joy",
       "client": "Private",
+      "featured": false,
+      "title": "Easy Laughter",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Couple Shoot"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc08062.jpg",
+      "imagePosition": "Center",
       "caption": "The best shots are always the unscripted ones.",
       "alt": "Rooted in Joy",
       "ratio": "1/1",
-      "src": "/images/uploads/dsc08062.jpg",
-      "imagePosition": "Center",
-      "featured": false
+      "client": "Private",
+      "featured": false,
+      "title": "Rooted in Joy",
+      "category": "Events",
+      "showInAll": false,
+      "eventTypes": [
+        "Couple Shoot"
+      ]
     },
     {
-      "title": "Side by Side",
-      "client": "Private",
-      "category": "Events",
-      "eventTypes": [
-        "Baby Shower"
-      ],
-      "showInAll": false,
+      "src": "/images/uploads/dsc09450.jpg",
+      "imagePosition": "Center",
       "caption": "Draped in tradition and smiling through every moment of the celebration.",
       "alt": "Side by Side",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc09450.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "The Prankster",
       "client": "Private",
+      "featured": false,
+      "title": "Side by Side",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Baby Shower"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc09453.jpg",
+      "imagePosition": "Center",
       "caption": "Never missing an opportunity to pull a face, even mid-ceremony.",
       "alt": "The Prankster",
       "ratio": "5/4",
-      "src": "/images/uploads/dsc09453.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Traditional Blessings",
       "client": "Private",
+      "featured": false,
+      "title": "The Prankster",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Baby Shower"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc09383.jpg",
+      "imagePosition": "Center",
       "caption": "Surrounded by flowers, fruit offerings, and the quiet excitement of what is to come.",
       "alt": "Traditional Blessings",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc09383.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Soft Light",
       "client": "Private",
+      "featured": false,
+      "title": "Traditional Blessings",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Baby Shower"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc09308.jpg",
+      "imagePosition": "Center",
       "caption": "A gentle outdoor portrait framed by the porch and afternoon greens.",
       "alt": "Soft Light",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc09308.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "In Full Glow",
       "client": "Private",
+      "featured": false,
+      "title": "Soft Light",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Baby Shower"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc06699.jpg",
+      "imagePosition": "Center",
       "caption": "Radiant in gold, caught right in the middle of greeting loved ones.",
       "alt": "In Full Glow",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc06699.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Quiet Grace",
       "client": "Private",
+      "featured": false,
+      "title": "In Full Glow",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Baby Shower"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc09307.jpg",
+      "imagePosition": "Center",
       "caption": "Traditional silk, delicate temple jewelry, and an easy, grounded smile.",
       "alt": "Quiet Grace",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc09307.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "The Green Bangles",
       "client": "Private",
+      "featured": false,
+      "title": "Quiet Grace",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Baby Shower"
-      ],
-      "showInAll": true,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc06610.jpg",
+      "imagePosition": "Center",
       "caption": "Celebrating customs with an armful of festive glass bangles and mehndi.",
       "alt": "The Green Bangles",
       "ratio": "16/10",
-      "src": "/images/uploads/dsc06610.jpg",
-      "imagePosition": "Center",
-      "featured": true
-    },
-    {
-      "title": "Sweet Teasing",
       "client": "Private",
+      "featured": true,
+      "title": "The Green Bangles",
       "category": "Events",
+      "showInAll": true,
       "eventTypes": [
         "Baby Shower"
-      ],
-      "showInAll": true,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc06514.jpg",
+      "imagePosition": "Center",
       "caption": " When they thought the camera wasn’t looking.",
       "alt": "Sweet Teasing",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc06514.jpg",
-      "imagePosition": "Center",
-      "featured": true
-    },
-    {
-      "title": "Playful",
       "client": "Private",
+      "featured": true,
+      "title": "Sweet Teasing",
       "category": "Events",
+      "showInAll": true,
       "eventTypes": [
         "Baby Shower"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc06531.jpg",
+      "imagePosition": "Center",
       "caption": "A playful, knowing glance out on the tree-lined path.",
       "alt": "Playful",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc06531.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Waiting on Little Steps",
       "client": "Private",
+      "featured": false,
+      "title": "Playful",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Baby Shower"
-      ],
-      "showInAll": true,
+      ]
+    },
+    {
+      "src": "/images/uploads/dsc06482.jpg",
+      "imagePosition": "Center",
       "caption": "The story begins.",
       "alt": "Waiting on Little Steps",
       "ratio": "3/4",
-      "src": "/images/uploads/dsc06482.jpg",
-      "imagePosition": "Center",
-      "featured": true
+      "client": "Private",
+      "featured": true,
+      "title": "Waiting on Little Steps",
+      "category": "Events",
+      "showInAll": true,
+      "eventTypes": [
+        "Baby Shower"
+      ]
     },
     {
-      "title": "The First Diya",
-      "client": "Private",
-      "category": "Events",
-      "eventTypes": [
-        "Housewarming"
-      ],
-      "showInAll": true,
+      "src": "/images/uploads/dust-pixels-7intbvhcdn0-unsplash.jpg",
+      "imagePosition": "Center",
       "caption": "Stepping across the threshold with warm smiles, family close, and prayers for light in every room.",
       "alt": "The First Diya",
       "ratio": "1/1",
-      "src": "/images/uploads/dust-pixels-7intbvhcdn0-unsplash.jpg",
-      "imagePosition": "Center",
-      "featured": true
-    },
-    {
-      "title": "Happy Family",
       "client": "Private",
+      "featured": true,
+      "title": "The First Diya",
       "category": "Events",
+      "showInAll": true,
       "eventTypes": [
         "Housewarming"
-      ],
-      "showInAll": true,
+      ]
+    },
+    {
+      "src": "/images/uploads/dust-pixels-lveldkbcezg-unsplash.jpg",
+      "imagePosition": "Center",
       "caption": "Quiet moments of prayer broken by a toddler’s curiosity right at the altar.",
       "alt": "Happy Family",
       "ratio": "16/10",
-      "src": "/images/uploads/dust-pixels-lveldkbcezg-unsplash.jpg",
-      "imagePosition": "Center",
-      "featured": true
-    },
-    {
-      "title": "Hosts for the Evening",
       "client": "Private",
+      "featured": true,
+      "title": "Happy Family",
       "category": "Events",
+      "showInAll": true,
       "eventTypes": [
         "Housewarming"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/img-2468-tif-original.jpg",
+      "imagePosition": "Center",
       "caption": "Traditional silk, woven textures, and welcoming the very first guests through the doors.",
       "alt": "Hosts for the Evening",
       "ratio": "3/4",
-      "src": "/images/uploads/img-2468-tif-original.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Stolen Kisses",
       "client": "Private",
+      "featured": false,
+      "title": "Hosts for the Evening",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Housewarming"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/img-2349-original.jpg",
+      "imagePosition": "Center",
       "caption": "An unscripted nose boop amidst the morning setup—making the new place feel like home immediately.",
       "alt": "Stolen Kisses",
       "ratio": "3/4",
-      "src": "/images/uploads/img-2349-original.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Family",
       "client": "Private",
+      "featured": false,
+      "title": "Stolen Kisses",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Housewarming"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/img-2460-original.jpg",
+      "imagePosition": "Center",
       "caption": "Dressed in deep blues and woven teal, pausing outside the new entryway before celebrations begin.",
       "alt": "Family",
       "ratio": "5/4",
-      "src": "/images/uploads/img-2460-original.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Mid-Ceremony Chuckles",
       "client": "Private",
+      "featured": false,
+      "title": "Family",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Housewarming"
-      ],
-      "showInAll": false,
+      ]
+    },
+    {
+      "src": "/images/uploads/img-2350-original.jpg",
+      "imagePosition": "Center",
       "caption": "Genuine, unguarded laughter right in the middle of traditional rituals.",
       "alt": "Mid-Ceremony Chuckles",
       "ratio": "16/10",
-      "src": "/images/uploads/img-2350-original.jpg",
-      "imagePosition": "Center",
-      "featured": false
-    },
-    {
-      "title": "Namaste to the New Home",
       "client": "Private",
+      "featured": false,
+      "title": "Mid-Ceremony Chuckles",
       "category": "Events",
+      "showInAll": false,
       "eventTypes": [
         "Housewarming"
-      ],
-      "showInAll": true,
+      ]
+    },
+    {
+      "src": "/images/uploads/img-2462-original.jpg",
+      "imagePosition": "Center",
       "caption": "Hands folded at the threshold to welcome family and friends to their new beginning.",
       "alt": "Namaste to the New Home",
       "ratio": "16/10",
-      "src": "/images/uploads/img-2462-original.jpg",
-      "imagePosition": "Center",
-      "featured": true
-    },
-    {
-      "title": "Warmest Greetings",
       "client": "Private",
+      "featured": true,
+      "title": "Namaste to the New Home",
       "category": "Events",
+      "showInAll": true,
       "eventTypes": [
         "Housewarming"
-      ],
-      "showInAll": true,
+      ]
+    },
+    {
+      "src": "/images/uploads/img-2466-original.jpg",
+      "imagePosition": "Center",
       "caption": "Shared smiles and festive cheer celebrating friends turning a new space into a home.",
       "alt": "Warmest Greetings",
       "ratio": "3/4",
-      "src": "/images/uploads/img-2466-original.jpg",
-      "imagePosition": "Center",
-      "featured": true
+      "client": "Private",
+      "featured": true,
+      "title": "Warmest Greetings",
+      "category": "Events",
+      "showInAll": true,
+      "eventTypes": [
+        "Housewarming"
+      ]
     }
   ],
   "statementBy": "Everything on this page was shot by us, for someone who needed it.",
@@ -1400,7 +1400,7 @@
   "city": "Hyderabad/India",
   "logo": "/images/uploads/logo.png",
   "name": "Living Room Labs",
-  "teamHeroImg": "/images/uploads/img_3095.jpg.jpeg",
+  "teamHeroImg": "/images/uploads/dsc08939.jpeg",
   "niches": [
     {
       "name": "Food",
