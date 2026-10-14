@@ -38,6 +38,61 @@
     "Fun fact: my rainbow stripe is load-bearing."
   ];
   var SLEEP_LINE = "Out of film... zzz";
+
+  /* Lamp rope (theme switch) */
+  var LIGHTS_OFF = "Who turned off the lights? Good thing I brought my own flash.";
+  var LIGHTS_ON = "Too bright! My aperture can't take this.";
+  /* Fast scrolling */
+  var FAST_SCROLL = ["Whoa, motion blur!", "Slow down! My shutter speed can't keep up.", "Panning shot! Very artistic."];
+
+  /* Time of day greetings (visitor's own clock) */
+  var TIME_GREETINGS = [
+    [5, 11, ["Good morning! Best light of the day, and you're here for it.", "Morning! I've had my coffee. Well, my film."]],
+    [11, 16, ["Good afternoon! Harsh light outside. Perfect light in here."]],
+    [16, 19, ["Golden hour! Everyone looks good right now. Including you."]],
+    [19, 24, ["Good evening! Blue hour is the photographer's secret. Now it's yours too."]],
+    [0, 5, ["Up late? Shooting the night sky too?", "It's past midnight. Long exposure time."]]
+  ];
+
+  /* Festivals. "md" = same date every year (MM-DD). "from"/"to" = that year's dates (YYYY-MM-DD).
+     Most Indian festivals follow the lunar calendar, so add next year's dates here (or in
+     content.json as "fotuFestivals", same format) before they run out. Dates marked * depend on moon sighting. */
+  var FESTIVALS = [
+    { md: "01-01", line: "Happy New Year! New year, new memories, same great lighting." },
+    { md: "01-13", line: "Happy Lohri! Bonfire glow is basically free golden hour." },
+    { md: "01-14", to_md: "01-15", line: "Happy Sankranti! Kites in the sky, me on the ground. Fair trade." },
+    { md: "01-26", line: "Happy Republic Day! Saluting in 4K." },
+    { md: "04-14", line: "Happy Baisakhi, Vishu and Puthandu! Many new years, many new photos." },
+    { md: "06-02", line: "Happy Telangana Formation Day! Proud Hyderabadi camera here." },
+    { md: "08-15", line: "Happy Independence Day! Tiranga colours look great on every sensor." },
+    { md: "10-02", line: "Happy Gandhi Jayanti! Simple living, simple framing." },
+    { md: "12-25", line: "Merry Christmas! I asked Santa for a new lens cap." },
+    { md: "12-31", line: "Last day of the year! Time for the year's best shots." },
+    /* 2026 */
+    { from: "2026-11-06", to: "2026-11-09", line: "Happy Diwali! Finally, lighting I don't have to provide." },
+    { from: "2026-11-15", to: "2026-11-15", line: "Happy Chhath Puja! Sunrise and sunset by the water. Photographer's dream." },
+    { from: "2026-11-24", to: "2026-11-24", line: "Happy Guru Nanak Jayanti! Lights everywhere today." },
+    /* 2027 */
+    { from: "2027-03-06", to: "2027-03-06", line: "Happy Maha Shivaratri! An all-night shoot. I respect that." },
+    { from: "2027-03-10", to: "2027-03-10", line: "Eid Mubarak! Biryani, sheer khurma and great photos. Hyderabad does it best. *" },
+    { from: "2027-03-21", to: "2027-03-22", line: "Happy Holi! Please don't throw colours at me. I'm not waterproof." },
+    { from: "2027-04-07", to: "2027-04-07", line: "Ugadi Subhakankshalu! Sweet, sour, spicy... like my reviews." },
+    { from: "2027-04-15", to: "2027-04-15", line: "Happy Sri Rama Navami! Wishing you a blessed day." },
+    { from: "2027-04-18", to: "2027-04-19", line: "Happy Mahavir Jayanti! Peace, kindness and soft lighting." },
+    { from: "2027-05-17", to: "2027-05-17", line: "Bakrid Mubarak! Wishing you a feast full of family. *" },
+    { from: "2027-05-20", to: "2027-05-20", line: "Happy Buddha Purnima! Full moon tonight. Tripods out." },
+    /* Bonalu: Sundays of Ashada month. Approximate, check the official dates each year. */
+    { from: "2027-07-11", to: "2027-08-01", sundays: true, line: "Happy Bonalu! Pothurajus, drums and colour. Hyderabad's best photo day." },
+    { from: "2027-08-17", to: "2027-08-17", line: "Happy Raksha Bandhan! Siblings: the hardest group photo." },
+    { from: "2027-08-25", to: "2027-08-25", line: "Happy Krishna Janmashtami! Butter not included." },
+    { from: "2027-09-12", to: "2027-09-12", line: "Happy Onam! A pookalam is the most photogenic floor in the world." },
+    { from: "2027-09-04", to: "2027-09-14", line: "Ganpati Bappa Morya! Pandal-hopping with a camera is the best kind of cardio." },
+    { from: "2027-09-29", to: "2027-10-07", line: "Happy Bathukamma! Towers of flowers. My favourite still life." },
+    { from: "2027-10-08", to: "2027-10-09", line: "Happy Dussehra! Good wins over evil, and over bad lighting." },
+    { from: "2027-10-27", to: "2027-10-30", line: "Happy Diwali! Finally, lighting I don't have to provide." },
+    { from: "2027-11-04", to: "2027-11-04", line: "Happy Chhath Puja! Sunrise and sunset by the water. Photographer's dream." },
+    { from: "2027-11-14", to: "2027-11-14", line: "Happy Guru Nanak Jayanti! Lights everywhere today." }
+  ];
   var PERSONAL_SPACE = "Personal space! Instant film is delicate.";
   var CLOSE_LINE = "Back to work. These photos won't print themselves.";
   var EMPTY_LINE = "Fotu needs actual words here.";
@@ -61,6 +116,37 @@
     SITE = d || {};
     (d.photos || []).forEach(function (p) { if (p && p.src && p.category) catBySrc[base(p.src)] = p.category; });
   }).catch(function () {});
+
+  function pad(n) { return (n < 10 ? "0" : "") + n; }
+  function todayFestival() {
+    var d = new Date(), ymd = d.getFullYear() + "-" + pad(d.getMonth() + 1) + "-" + pad(d.getDate()), md = ymd.slice(5);
+    var list = (SITE.fotuFestivals || []).concat(FESTIVALS);
+    for (var i = 0; i < list.length; i++) {
+      var f = list[i];
+      if (!f || !f.line) continue;
+      if (f.sundays && d.getDay() !== 0) continue;
+      if (f.md && md >= f.md && md <= (f.to_md || f.md)) return f.line.replace(/ \*$/, "");
+      if (f.from && ymd >= f.from && ymd <= (f.to || f.from)) return f.line.replace(/ \*$/, "");
+    }
+    return null;
+  }
+  function timeGreeting() {
+    var h = new Date().getHours();
+    for (var i = 0; i < TIME_GREETINGS.length; i++) if (h >= TIME_GREETINGS[i][0] && h < TIME_GREETINGS[i][1]) return pick(TIME_GREETINGS[i][2]);
+    return null;
+  }
+  function welcomeLine() {
+    return todayFestival() || (Math.random() < 0.6 ? timeGreeting() : null) || pick(WELCOME);
+  }
+
+  /* "Know what works": count chats opened and enquiries sent (totals only, nothing personal) */
+  function track(event) {
+    try {
+      var body = JSON.stringify({ event: event, page: location.pathname });
+      if (navigator.sendBeacon) navigator.sendBeacon("/api/fotu-stats", new Blob([body], { type: "application/json" }));
+      else fetch("/api/fotu-stats", { method: "POST", headers: { "Content-Type": "application/json" }, body: body, keepalive: true });
+    } catch (e) {}
+  }
 
   /* ================= styles ================= */
   var css = [
@@ -93,6 +179,9 @@
     "@keyframes fotuMouth{0%,100%{transform:scale(.5)}45%{transform:scale(1.25)}}",
     "#fotu-bot.sleep .ey{transform:scaleY(.08)!important}",
     "#fotu-bot .lid{display:none}#fotu-bot.sleep .lid{display:block}",
+    "#fotu-bot.squint .ey{transform:scaleY(.35)}",
+    "#fotu-bot.wobble .fb{animation:fotuWobble .6s ease-in-out 2}",
+    "@keyframes fotuWobble{0%,100%{transform:none}20%{transform:rotate(-14deg) translateX(-4px)}50%{transform:rotate(12deg) translateX(4px)}80%{transform:rotate(-6deg)}}",
     "#fotu-bub{position:fixed;z-index:66;max-width:230px;background:var(--f-paper);color:var(--f-ink);border:1px solid var(--f-line);border-radius:14px;padding:9px 12px;font-size:13.5px;line-height:1.45;box-shadow:0 6px 24px rgba(0,0,0,.12);display:none;pointer-events:none}",
     "#fotu-bub.on{display:block;animation:fotuPop .2s ease-out}",
     "@keyframes fotuPop{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}",
@@ -177,6 +266,11 @@
     var s = size();
     var top = Math.max(cssPx("--header-h"), cssPx("--nav-h"), 70) + 8;
     var bottom = window.innerHeight - cssPx("--foot-h") - s - 10;
+    /* stand on top of the site's own corner buttons (e.g. the Spotlight switch) instead of covering them */
+    document.querySelectorAll("#homeSpotFloat.on, .home-spot-float.on").forEach(function (el) {
+      var r = el.getBoundingClientRect();
+      if (r.width && r.right > window.innerWidth - 220) bottom = Math.min(bottom, r.top - s - 6);
+    });
     if (bottom < top) bottom = top;
     return { minX: 6, maxX: window.innerWidth - s - 6, minY: top, maxY: bottom };
   }
@@ -310,7 +404,7 @@
 
   /* ================= behaviour loop ================= */
   function tick() {
-    if (isOpen || hidden || paused || walking || document.hidden) return;
+    if (!welcomed || Date.now() < quietUntil || isOpen || hidden || paused || walking || document.hidden) return;
     idle++;
     var r = Math.random();
     if (idle > 6 && r < 0.3) { bot.classList.add("sleep"); bubble(SLEEP_LINE, 2600); idle = 0; return; }
@@ -325,6 +419,10 @@
 
   /* pause and hide while the site's photo viewer or enquiry form is open */
   function overlayOpen() {
+    var cover = document.getElementById("cover-overlay");
+    if (cover && !cover.hidden && !cover.classList.contains("cover-hide") &&
+        !document.documentElement.classList.contains("cover-seen") && getComputedStyle(cover).display !== "none") return true;
+    try { if (window.LRL && window.LRL.enquiry && window.LRL.enquiry.isOpen && window.LRL.enquiry.isOpen()) return true; } catch (e) {}
     return !!document.querySelector("#capLb.on, #capEnq.on, #lb.on, #lb[open], .lb.on, .enquiry-modal.open, body.bulk-open");
   }
   setInterval(function () {
@@ -333,6 +431,12 @@
       paused = o;
       root.classList.toggle("paused", paused);
       if (paused) { hideBubble(); if (walking) stopWalk(); if (isOpen) closeChat(true); }
+      else if (window.__fotuWelcome) setTimeout(window.__fotuWelcome, 700);
+    }
+    /* keep standing on the floor if a corner button appears or disappears below Fotu */
+    if (!paused && !hidden && !walking) {
+      var fl = bounds().maxY;
+      if (Math.abs(pos.y - fl) > 2) { bot.style.transition = "transform .35s ease"; pos.y = fl; place(); }
     }
   }, 400);
 
@@ -455,6 +559,7 @@
     }).then(function (res) {
       if (!res.ok) throw new Error("bad status");
       store(SENT_KEY, String(Date.now()));
+      track("sent");
       sending = false;
       say("Printed and sent! " + enq.cat + " shoot for " + enq.name + ". Reply coming to " + enq.email + ".");
       chatHome();
@@ -483,6 +588,7 @@
     bot.classList.remove("sleep"); idle = 0;
     placePanel(); panel.classList.add("on");
     chatOpenedAt = Date.now();
+    track("open");
     hop();
     if (!logEl.children.length) {
       say(CLICK_HELLO[0]);
@@ -517,19 +623,71 @@
     startPos(); hop(); bubble("I'm back! Did you miss me? Don't answer that.", 3000);
   });
 
+  /* ================= lamp rope (theme switch) ================= */
+  var lastTheme = document.documentElement.getAttribute("data-theme");
+  new MutationObserver(function () {
+    var t = document.documentElement.getAttribute("data-theme");
+    if (t === lastTheme) return;
+    lastTheme = t;
+    if (hidden || paused) return;
+    if (walking) stopWalk();
+    bot.classList.remove("sleep"); idle = 0;
+    if (t === "dark") {
+      fbulb.setAttribute("fill", "#FFF8D6");
+      var f = document.createElement("div");
+      f.className = "fotu-flash";
+      f.style.cssText = "left:0;top:0;width:100vw;height:100vh;border-radius:0;opacity:.6";
+      document.body.appendChild(f);
+      setTimeout(function () { f.remove(); fbulb.setAttribute("fill", "#444441"); }, 600);
+      hop(); bubble(LIGHTS_OFF, 3200);
+    } else {
+      bot.classList.add("squint");
+      setTimeout(function () { bot.classList.remove("squint"); }, 1800);
+      bubble(LIGHTS_ON, 3000);
+    }
+  }).observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+
+  /* ================= fast scrolling ================= */
+  var wheelSum = 0, wheelStart = 0, lastFast = 0, touchY = null, touchT = 0;
+  function fastScroll() {
+    if (hidden || paused || isOpen || Date.now() - lastFast < 20000) return;
+    lastFast = Date.now();
+    bot.classList.remove("sleep"); idle = 0;
+    bot.classList.add("wobble");
+    setTimeout(function () { bot.classList.remove("wobble"); }, 1250);
+    bubble(pick(FAST_SCROLL), 2600);
+  }
+  window.addEventListener("wheel", function (e) {
+    var now = Date.now();
+    if (now - wheelStart > 400) { wheelStart = now; wheelSum = 0; }
+    wheelSum += Math.abs(e.deltaY) + Math.abs(e.deltaX);
+    if (wheelSum > 2400) { wheelSum = 0; fastScroll(); }
+  }, { passive: true });
+  window.addEventListener("touchstart", function (e) { var t = e.touches[0]; touchY = t ? t.clientY + t.clientX : null; touchT = Date.now(); }, { passive: true });
+  window.addEventListener("touchend", function (e) {
+    var t = e.changedTouches[0]; if (touchY === null || !t) return;
+    var dist = Math.abs(t.clientY + t.clientX - touchY), dt = Date.now() - touchT;
+    if (dt > 0 && dt < 250 && dist / dt > 2.2) fastScroll();
+    touchY = null;
+  }, { passive: true });
+
   /* ================= start ================= */
   startPos();
   applyHidden();
-  setTimeout(function () {
-    if (hidden || paused) return;
-    var b = bounds(); pos.x = b.maxX; place();
+  var welcomed = false, quietUntil = 0;
+  function welcome() {
+    if (welcomed || hidden || paused) return;
+    welcomed = true; quietUntil = Date.now() + 9000;
+    var b = bounds(); pos.x = b.maxX; pos.y = b.maxY; place();
     walkTo(b.maxX - 60, b.maxY, function () {
       hop();
       printImg.setAttribute("fill", "#85B7EB");
       printEl.classList.add("out");
-      bubble(pick(WELCOME), 5000);
+      bubble(welcomeLine(), 5000);
       setTimeout(function () { printEl.classList.remove("out"); }, 4200);
     });
-  }, 1200);
+  }
+  window.__fotuWelcome = welcome;
+  setTimeout(welcome, 1200);
   setInterval(tick, 4500);
 })();

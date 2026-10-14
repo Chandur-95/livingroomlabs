@@ -2,9 +2,21 @@
 <html lang="en" data-theme="light">
 <head>
 <meta charset="utf-8">
+<script>
+  /* old What We Capture links (/#what-we-capture, /#niche-Food) -> the What We Capture page */
+  (function(){ try { var h = location.hash, n;
+    if (h === "#what-we-capture") location.replace("/capture.html");
+    else if (h.indexOf("#niche-") === 0) { n = h.slice(7); try { n = decodeURIComponent(n); } catch(e){}
+      location.replace(n ? "/capture.html?category=" + encodeURIComponent(n) : "/capture.html"); }
+  } catch(e){} })();
+</script>
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#FFFFFF" id="themeColorMeta">
+<meta name="view-transition" content="same-origin">
 <title>Living Room Labs | Photography Collective in Hyderabad</title>
 <link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="manifest" href="/manifest.json">
 <meta name="description" content="Living Room Labs is a Hyderabad photography collective. We shoot food, pets, real estate, performing arts, products, events, portraits and travel.">
 <link rel="canonical" href="https://livingroomlabs.in/">
 <meta name="robots" content="index, follow, max-image-preview:large">
@@ -92,12 +104,17 @@
       });
       p.catch(function () {});
       window.__lrlContent = p;
+      /* each photo's own colour, shown behind it while it loads (made by the GitHub photo workflow) */
+      window.__lrlColors = fetch('/images/colors.json', { cache: 'no-cache' })
+        .then(function (r) { return r.ok ? r.json() : {}; })
+        .catch(function () { return {}; });
     } catch (e) {}
   })();
 </script>
 <link rel="preload" href="/fonts/inter-latin-normal.woff2" as="font" type="font/woff2" crossorigin>
 <link rel="preload" href="/fonts/space-grotesk-latin-normal.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 /* Fonts (Inter, JetBrains Mono, Playfair Display, Space Grotesk) are served from /fonts/ - see fonts/README.txt */
 @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/inter-latin-ext-normal.woff2) format('woff2');unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF}
 @font-face{font-family:'Inter';font-style:normal;font-weight:400;font-display:swap;src:url(/fonts/inter-latin-normal.woff2) format('woff2');unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
@@ -129,10 +146,47 @@
   (function() {
     try {
       var saved = localStorage.getItem("lrl_theme");
-      document.documentElement.setAttribute("data-theme", saved === "dark" ? "dark" : "light");
+      var isDark = saved === "dark";
+      document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
+      var tcm = document.getElementById("themeColorMeta");
+      if (tcm) tcm.setAttribute("content", isDark ? "#080808" : "#FFFFFF");
     } catch(e) {}
   })();
 </script>
+
+<script>
+  /* The cover shows once per browser session. Checked here, before first paint, and as a class
+     on <html> (the cover element itself doesn't exist yet - body hasn't been parsed) so a
+     returning-within-session visitor never sees it flash on then off. */
+  (function () {
+    try {
+      /* also skipped for deep links (/#collective, /#what-we-capture, /#niche-..., /?enquire=...):
+         someone who asked for a specific part of the site should land on it, not on the cover */
+      var deep = /^#(collective|what-we-capture|niche-)/.test(location.hash) || /[?&]enquire=/.test(location.search);
+      var seen = false;
+      try { seen = sessionStorage.getItem("lrl_cover_seen") === "1"; } catch (e2) {}
+      if (deep || seen) document.documentElement.classList.add("cover-seen");
+    } catch (e) {}
+  })();
+</script>
+
+<script>
+  /* Marks each grid photo "loaded" the instant it finishes downloading, so the CSS above can
+     settle it from a soft blur into focus. Registered here (before any photo exists in the DOM)
+     and using the capture phase, because "load" doesn't bubble - this one listener catches every
+     photo in every grid, however and whenever it's created, including ones served from cache. */
+  (function () {
+    try {
+      document.addEventListener("load", function (e) {
+        var img = e.target;
+        if (img && img.tagName === "IMG" && img.classList.contains("lrl-loaded") === false) {
+          img.classList.add("lrl-loaded");
+        }
+      }, true);
+    } catch (e) {}
+  })();
+</script>
+
 
 <style>
 :root{
@@ -252,12 +306,15 @@ body.power-flux{animation:powerPulse .32s ease-in-out forwards}
   border-bottom:1px solid var(--rule);
   transition:background .35s ease, border-color .35s ease;
 }
+/* LOGO: shown with its empty see-through margins trimmed (measured in /shared.js), so the box IS the
+   visible artwork - that's what lets it line up exactly with the text beside it. The defaults below
+   match the current logo, so it's right from the first paint. */
+.lg-crop{display:block;overflow:hidden;aspect-ratio:var(--lg-ar,1.4649);line-height:0;flex:none}
+.lg-crop > img{display:block;max-width:none;width:var(--lg-w,106.383%);height:auto;margin:var(--lg-t,-20.035%) 0 0 var(--lg-l,-3.191%)}
+
 .brand{display:flex;align-items:center;gap:14px;height:100%;cursor:pointer}
-.brand .mark{display:flex;align-items:center;height:74px}
-.brand .mark img{
-  height:74px;width:auto;object-fit:contain;
-  transition:transform .3s var(--ease);
-}
+.brand .mark{height:56px;width:calc(56px * var(--lg-ar,1.4649))}
+.brand .mark img{transition:transform .3s var(--ease)}
 .brand .wordmark{
   font-size:var(--fs-label);letter-spacing:var(--tr-label);
   text-transform:uppercase;font-weight:600;white-space:nowrap;
@@ -369,16 +426,31 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   object-position:center center;
   opacity:0;
   pointer-events:none;
-  transform:scale(1.05);
-  transition: opacity 1s ease-in-out, transform 4s ease-out;
+  transform:scale(1.08);
+  transition: opacity 1.4s ease-in-out, transform 6s ease-out;
   z-index:1;
 }
 .band-img.active{
   opacity:1;
   pointer-events:auto;
-  transform:scale(1);
+  transform:scale(1.03);
   z-index:2;
 }
+
+/* "View" eye button on the banner */
+.band-eye{
+  position:absolute; right:clamp(12px,2vw,24px); bottom:clamp(12px,2vw,24px); z-index:5;
+  display:inline-flex; align-items:center; justify-content:center;
+  width:42px; height:42px; padding:0; border-radius:50%;
+  border:1px solid rgba(255,255,255,.55); background:rgba(0,0,0,.38); color:#fff;
+  -webkit-backdrop-filter:blur(6px); backdrop-filter:blur(6px);
+  font:600 .72rem/1 inherit; letter-spacing:.08em; text-transform:uppercase; cursor:pointer;
+  transition:background .25s ease, transform .25s ease;
+}
+.band-eye:hover{ background:rgba(0,0,0,.6); transform:translateY(-1px); }
+.band-eye:focus-visible{ outline:2px solid #fff; outline-offset:3px; }
+@media (max-width:640px){ .band-eye{ width:38px; height:38px; } }
+
 
 .sec{padding-block:var(--sec)}
 .sec-head{
@@ -387,6 +459,15 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   padding-bottom:10px;margin-bottom:clamp(16px, 2.5vw, 28px);
 }
 .sec-head .fill{flex:1;height:1px}
+.wwc-view-more{ display:none; padding:0; border:0; background:none; color:inherit; cursor:pointer; align-items:center; gap:5px; font-size:.7rem; letter-spacing:.08em; text-transform:uppercase; }
+.wwc-vm-arrow{ display:inline-block; font-size:.9rem; animation:wwcVmNudge 1.6s ease-in-out infinite; }
+@keyframes wwcVmNudge{ 0%,100%{ transform:translateX(0); } 50%{ transform:translateX(4px); } }
+@media (prefers-reduced-motion:reduce){ .wwc-vm-arrow{ animation:none; } }
+@media (max-width:640px){
+  .sec-head-work{ justify-content:space-between; }
+  .sec-head-work .wwc-heading{ font-weight:700; letter-spacing:.04em; }
+  .wwc-view-more{ display:inline-flex; }
+}
 .sec-head .count{font-size:var(--fs-label);letter-spacing:.1em;opacity:.55;white-space:nowrap}
 
 .filters{
@@ -422,6 +503,16 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .work-carousel-container {
   position: relative;
   width: 100%;
+  /* photo size + hover zoom for the Featured strip, set once here (phones/tablets override below) */
+  --card-w: clamp(280px, 21vw, 340px);
+  --hv-scale: 1.36;   /* the photo under the cursor */
+  --nb-scale: 1.16;   /* its two neighbours grow a little */
+  --gap: 18px;
+  --grow-up: calc((var(--hv-scale) - 1) * var(--card-w) * 2 / 3);
+  --grow-nb: calc((var(--nb-scale) - 1) * var(--card-w) * 2 / 3);
+  --push-near: calc((var(--hv-scale) + var(--nb-scale)) * var(--card-w) / 2 + 14px - var(--card-w) - var(--gap));
+  --push-far: calc(var(--push-near) + (var(--nb-scale) - 1) * var(--card-w) / 2 - 2px);
+  --drop-room: calc(var(--grow-up) + 14px);
 }
 
 /* ===== Contact Sheet skin: frame numbers + sprocket-hole strips (pure CSS, no markup changes) ===== */
@@ -467,13 +558,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
 .home-work-grid {
   display: flex !important;
   flex-direction: row !important;
-  gap: 16px !important;
+  gap: var(--gap) !important;
   overflow-x: auto !important;
   overflow-y: hidden !important;
   scroll-behavior: auto !important;
   -webkit-overflow-scrolling: touch;
-  padding-top: 130px; 
-  margin-top: -100px;
+  /* exactly enough empty room above for the hover zoom, no more */
+  padding-top: calc(var(--grow-up) + 22px);
+  margin-top: calc(-1 * var(--grow-up));
   padding-bottom: 45px;
   align-items: flex-end;
   scrollbar-width: none;
@@ -487,21 +579,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
      - only the PHOTO grows, from its centre; the caption keeps its normal size and slides down with the photo's bottom edge
      - the photos around it slide apart by exactly enough that nothing overlaps (numbers are worked out from the values below)
      - the growth is kept small enough that the photo never reaches the filter boxes above it or the edge of the strip */
-  --card-w: 240px;    /* must match the card width below */
-  --hv-scale: 1.32;   /* the photo under the cursor */
-  --nb-scale: 1.2;    /* its two neighbours grow a little */
-  --push-near: calc((var(--hv-scale) + var(--nb-scale)) * var(--card-w) / 2 + 14px - var(--card-w) - 16px);
-  --push-far: calc(var(--push-near) + (var(--nb-scale) - 1) * var(--card-w) / 2 - 2px);
-  --grow-up: calc((var(--hv-scale) - 1) * var(--card-w) * 2 / 3);
-  --grow-nb: calc((var(--nb-scale) - 1) * var(--card-w) * 2 / 3);
-  --drop-room: calc(var(--grow-up) + 14px);   /* room under the strip for the caption to slide down */
-  padding-bottom: calc(45px + var(--drop-room));
+  /* sizes come from .work-carousel-container above */
+  padding-bottom: calc(24px + var(--drop-room));
   margin-bottom: calc(-1 * var(--drop-room));
 }
 
 .home-work-grid .shot {
-  flex: 0 0 240px !important;
-  max-width: 240px !important;
+  flex: 0 0 var(--card-w) !important;
+  max-width: var(--card-w) !important;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -511,7 +596,14 @@ main{padding-top:calc(var(--nav-h) + var(--safe-top))}
   margin: 0;
   cursor: pointer;
 }
-.home-work-grid .plate-tilt-wrap { transform-origin: center center; transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1); }
+.home-work-grid .plate-tilt-wrap { transform-origin: center center; transition: transform 0.42s cubic-bezier(0.34, 1.4, 0.64, 1); }
+.home-work-grid .shot .plate { transition: box-shadow 0.35s var(--ease), opacity 0.3s ease !important; }
+/* while one photo is in focus, the rest step back slightly so it clearly pops forward */
+@media (hover:hover) and (pointer:fine){
+  .home-work-grid:has(.shot:hover) .shot:not(:hover):not(:has(+ .shot:hover)) .plate { opacity: .72; }
+  .home-work-grid:has(.shot:hover) .shot:hover + .shot .plate { opacity: 1; }
+}
+.home-work-grid:has(.shot.touch-focus) .shot:not(.touch-focus) .plate { opacity: .72; }
 .home-work-grid .shot .cap { transition: transform 0.32s cubic-bezier(0.22, 0.61, 0.36, 1); }
 
 /* every photo BEFORE the hovered one slides left, every photo AFTER it slides right */
@@ -569,12 +661,16 @@ html[data-theme="dark"] .home-work-grid .plate {
 
 .home-work-grid .shot:hover .plate,
 .home-work-grid .shot.touch-focus .plate {
-  box-shadow: 0 25px 50px rgba(0,0,0,0.45);
+  box-shadow: 0 28px 60px rgba(0,0,0,0.42), 0 8px 18px rgba(0,0,0,0.18);
+}
+html[data-theme="dark"] .home-work-grid .shot:hover .plate,
+html[data-theme="dark"] .home-work-grid .shot.touch-focus .plate {
+  box-shadow: 0 28px 70px rgba(0,0,0,0.85), 0 0 0 1px rgba(255,255,255,0.08);
 }
 
 .carousel-nav-btn {
   position: absolute;
-  top: calc(130px + 140px);
+  top: calc(var(--grow-up) + 22px + var(--card-w) * 2 / 3);   /* the middle of the photos */
   transform: translateY(-50%);
   width: 44px;
   height: 44px;
@@ -726,9 +822,10 @@ html[data-theme="dark"] .home-work-grid .plate {
   position: absolute;
   top: 0; left: 0; width: 100%; height: 100%;
   object-fit: cover;
-  transition: transform 0.65s var(--ease);
+  transition: transform 0.65s var(--ease), filter .7s var(--ease);
   opacity: 1 !important;
 }
+.plate img:not(.lrl-loaded){ filter:blur(16px); transform:scale(1.04); }
 
 .guard{position:absolute;inset:0;z-index:3;background:transparent;pointer-events:none;}
 
@@ -745,16 +842,44 @@ html[data-theme="dark"] .home-work-grid .plate {
 .home-work-grid .cap .t { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
 .mobile-shoot-sec { display: none; }
+/* "What We Capture ↗" heading = a link to the full page; "Featured photos" underneath */
+#work .sec-link{background:none;border:0;padding:0;margin:0;color:inherit;font-family:inherit;line-height:inherit;
+  font-size:var(--fs-label);letter-spacing:var(--tr-label);text-transform:uppercase;font-weight:600;
+  cursor:pointer;display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+#work .sec-link-arrow{display:inline-block;transition:transform .25s var(--ease)}
+#work .sec-link:hover .sec-link-arrow,#work .sec-link:focus-visible .sec-link-arrow{transform:translate(2px,-2px)}
+#work .sec-link:hover{text-decoration:underline;text-underline-offset:4px}
+/* the photo strip keeps some empty room above itself for its hover zoom - keep the heading, its
+   links and "Featured photos" on top of that room so they always stay clickable */
+#work .sec-head,#work .featured-label{position:relative;z-index:30}
+/* phones: the 3D dock (see initDock) - photos snap to the centre; the first and last can reach it too */
+.home-work-grid.dock{
+  position:relative;
+  scroll-snap-type:x mandatory !important;
+  padding-left:calc(50% - var(--card-w) / 2) !important;
+  padding-right:calc(50% - var(--card-w) / 2) !important;
+}
+.home-work-grid.dock .shot{scroll-snap-align:center !important;scroll-snap-stop:normal;transform:none !important}
+.home-work-grid.dock .plate-tilt-wrap,.home-work-grid.dock .shot .cap{transition:none !important;will-change:transform,opacity}
+.home-work-grid.dock .shot .plate{opacity:1 !important}
+.home-work-grid.dock .shot .cap{transform-origin:center top}
+#work{padding-bottom:clamp(8px,1.5vw,20px)}
+#work + #contact{padding-top:clamp(28px,3.5vw,56px)}
+#work .featured-label{margin:-4px 0 clamp(14px,2vw,22px);font-size:.66rem;letter-spacing:.2em;text-transform:uppercase;opacity:.6}
 .mobile-shoot-box {
-  border: 1px solid var(--rule);
-  padding: 16px 18px;
-  background: var(--rule-soft);
+  /* One clean row that echoes the site's section heads (ink rule, mono label) instead of a grey box */
+  border: 0;
+  border-top: 1px solid var(--ink);
+  border-bottom: 1px solid var(--rule);
+  padding: 14px 2px;
+  background: none;
   cursor: pointer;
-  transition: border-color .25s ease, background .25s ease;
+  transition: border-color .25s ease;
+  -webkit-tap-highlight-color: transparent;
 }
 .mobile-shoot-box:hover, .mobile-shoot-box:focus-visible {
-  border-color: var(--ink);
-  background: var(--paper);
+  border-bottom-color: var(--ink);
+  background: none;
 }
 .mobile-shoot-header {
   display: flex;
@@ -762,22 +887,53 @@ html[data-theme="dark"] .home-work-grid .plate {
   justify-content: space-between;
   gap: 12px;
 }
+.mobile-shoot-header .label { opacity: 1 !important; }
 .mobile-shoot-arrow {
   font-family: "JetBrains Mono", monospace;
-  font-size: 0.85rem;
+  font-size: 0.8rem;
+  line-height: 1;
   color: var(--ink);
-  transition: transform .25s var(--ease);
+  width: 30px; height: 30px; flex: none;
+  display: inline-flex; align-items: center; justify-content: center;
+  border: 1px solid var(--ink);
+  border-radius: 50%;
+  transition: transform .25s var(--ease), background .25s ease, color .25s ease;
 }
 .mobile-shoot-box:hover .mobile-shoot-arrow,
-.mobile-shoot-box:focus-visible .mobile-shoot-arrow {
-  transform: translateX(4px);
-  color: var(--glow);
+.mobile-shoot-box:focus-visible .mobile-shoot-arrow,
+.mobile-shoot-box:active .mobile-shoot-arrow {
+  transform: translateX(3px);
+  background: var(--ink);
+  color: var(--paper);
 }
+.mobile-shoot-sec .contact-note { margin-top: 8px !important; opacity: .7; }
 
 #contact{
   padding-top:clamp(20px, 2.5vw, 36px);
   padding-bottom:clamp(8px, 1.2vw, 16px);
 }
+.contact-or{
+  margin-top:10px;
+  font-size:clamp(.86rem, .3vw + .8rem, .96rem);
+  letter-spacing:.06em;
+  opacity:.6;
+}
+.link-enquire{
+  display:inline;
+  border:0;background:none;padding:0;margin:0;cursor:pointer;
+  color:var(--ink);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  font-weight:800;
+  font-size:clamp(1.14rem, .5vw + 1.02rem, 1.4rem);
+  letter-spacing:-.01em;
+  text-transform:none;
+  background-image:linear-gradient(var(--glow),var(--glow));
+  background-repeat:no-repeat;
+  background-position:0 100%;
+  background-size:0% 3px;
+  transition:background-size .3s var(--ease);
+}
+.link-enquire:hover,.link-enquire:focus-visible{background-size:100% 3px}
 .mail{
   display:inline-block;
   font-size:clamp(1.2rem, 3vw, 2.2rem);
@@ -805,12 +961,12 @@ html[data-theme="dark"] .home-work-grid .plate {
    SYMMETRICAL, CLEAN FOOTER
    ============================================================ */
 .foot {
-  margin-top: 48px;
+  margin-top: 22px;
   border-top: 1px solid var(--ink);
   padding-top: 28px;
   padding-bottom: 44px;
   display: grid;
-  grid-template-columns: minmax(180px, 220px) 1.1fr 1.1fr 0.9fr 1.6fr;
+  grid-template-columns: minmax(200px, 240px) 1.1fr 1.1fr 0.9fr 1.6fr;
   gap: 24px clamp(24px, 3.5vw, 56px);
   align-items: start;
 }
@@ -827,18 +983,15 @@ html[data-theme="dark"] .home-work-grid .plate {
   background: none;
   padding: 0;
   cursor: pointer;
-  display: inline-block;
-  line-height: 1;
+  display: block;
+  width: 100%;
+  line-height: 0;
   margin: 0;
 }
-.foot-logo-btn img {
-  width: 100%;
-  max-width: 180px;
-  height: auto;
-  object-fit: contain;
-  display: block;
-  transition: transform .3s var(--ease);
-}
+/* the artwork's top edge sits level with the INDEX / ELSEWHERE / EVENTS / THE COLLECTIVE headings
+   (1px = the gap above capital letters inside those headings' line box, measured) */
+.foot-logo-btn .lg-crop { width: 100%; max-width: 240px; margin-top: 1px; }
+.foot-logo-btn img { transition: transform .3s var(--ease); }
 .foot-logo-btn:hover img { transform: scale(1.02); }
 
 .foot h4 {
@@ -912,6 +1065,166 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   filter: invert(1) hue-rotate(180deg) brightness(1.25) !important;
 }
 
+/* ===== Cover: the very first screen, once per browser session (see the early <head> script
+   and the .cover-seen class it sets). A drifting strip of real photos, no header chrome, just
+   the mark, the name, and two ways in: Work (into the site) or Spotlight (a toggle-able warm
+   glow that follows the cursor/finger, reusing the same --lx/--ly technique as the lightbox's
+   lamp, just as an additive glow here rather than a brightness mask, since there's no single
+   photo to mask - just the strip). ===== */
+.cover-overlay{
+  position:fixed;inset:0;z-index:5000;
+  overflow:hidden;background:#0a0a0a;
+  display:flex;align-items:center;justify-content:center;
+  opacity:1;transition:opacity .6s cubic-bezier(.16, 1, .3, 1);
+}
+.cover-overlay.cover-hide{opacity:0;pointer-events:none}
+html.cover-seen .cover-overlay,
+.cover-overlay[hidden]{display:none}
+/* page underneath stays put while the cover is up (swipes on a phone would otherwise scroll it) */
+html:not(.cover-seen),html:not(.cover-seen) body{overflow:hidden}
+.cover-overlay{overscroll-behavior:contain}
+
+.cover-strip{
+  position:absolute;top:0;left:0;height:100%;display:flex;align-items:center;
+  width:max-content;opacity:0;transition:opacity 1s ease;
+  animation:coverDrift 120s linear infinite;   /* real length set by script: same calm speed however many photos */
+  will-change:transform;
+}
+.cover-strip.cover-strip-filled{opacity:1}
+/* Each photo gets a frame halfway between the old narrow slice and its full shape - far less cropped
+   than before, but still a strip of several photos, not one giant picture.
+   (margin, not gap: keeps the two halves of the looping strip exactly equal, so the loop is seamless) */
+.cover-strip img{
+  height:100%;width:auto;aspect-ratio:var(--ar,.75);object-fit:cover;flex:none;display:block;
+  margin-right:10px;filter:brightness(.68);transition:filter .45s ease;
+}
+/* Spotlight on: the room goes black & white; only the pool of light shows colour (the colour copy below) */
+.cover-overlay.spotlight-on > .cover-strip img{filter:grayscale(1) brightness(.34)}
+/* ...and the photos hold still, like the What We Capture page does - a calm, dark room you explore with
+   the light. (Both strips pause together, so the colour copy stays exactly aligned.) */
+.cover-overlay.spotlight-on .cover-strip{animation-play-state:paused}
+@media (max-aspect-ratio:1/1){ .cover-strip img{margin-right:8px} }
+/* The Spotlight's pool of light: a small round window (just the size of the light) that slides to
+   wherever you point. Inside it sits a colour copy of the strip, shifted the opposite way so it lines
+   up exactly with the black & white photos underneath - so the light brings the photos back into
+   colour where it falls. Only this small window moves (a cheap slide, nothing re-drawn), which keeps
+   it smooth even on very large screens. */
+.cover-color{
+  --cr:clamp(170px, 24vmax, 320px);
+  position:absolute;left:0;top:0;width:calc(var(--cr) * 2);height:calc(var(--cr) * 2);
+  overflow:hidden;pointer-events:none;opacity:0;visibility:hidden;will-change:transform;
+  transform:translate3d(-2000px,-2000px,0);
+  transition:opacity .4s ease, visibility 0s linear .4s;
+  -webkit-mask-image:radial-gradient(circle closest-side, #000 0%, rgba(0,0,0,.85) 45%, rgba(0,0,0,0) 78%);
+  mask-image:radial-gradient(circle closest-side, #000 0%, rgba(0,0,0,.85) 45%, rgba(0,0,0,0) 78%);
+}
+.cover-color-inner{position:absolute;left:0;top:0;width:100vw;height:100vh;will-change:transform}
+/* the warm glow travels inside the same window */
+.cover-color::after{content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(circle closest-side, rgba(255,200,95,.28) 0%, rgba(255,194,75,.1) 42%, rgba(255,194,75,0) 78%)}
+.cover-overlay.spotlight-on .cover-color{opacity:1;visibility:visible;transition:opacity .4s ease, visibility 0s}
+.cover-color .cover-strip img{filter:brightness(.85)}
+.cover-overlay.spotlight-on .cover-color .cover-strip img{filter:brightness(.85)}
+@keyframes coverDrift{ 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+.cover-scrim{
+  position:absolute;inset:0;pointer-events:none;z-index:1;
+  background:radial-gradient(ellipse 65% 60% at 50% 52%, rgba(10,10,10,.5) 0%, rgba(10,10,10,.18) 55%, rgba(10,10,10,.05) 100%);
+}
+
+.cover-glow{
+  position:absolute;inset:0;pointer-events:none;opacity:0;z-index:1;
+  transition:opacity .4s ease;
+  /* a real spotlight, like the lightbox lamp: a warm pool of light where you point, and the rest
+     of the room falls into shadow - one gradient layer, so it costs nothing extra to draw */
+  background:radial-gradient(circle clamp(170px, 24vmax, 320px) at var(--clx,50%) var(--cly,50%),
+    rgba(255,200,95,.30) 0%, rgba(255,194,75,.12) 42%, rgba(8,8,8,.62) 78%, rgba(8,8,8,.72) 100%);
+}
+/* (the full-screen glow layer is no longer used - the room's darkness now comes from the photos
+   themselves, and the warm light travels with the small window above) */
+.cover-glow{display:none}
+
+.cover-spotlight-btn{
+  position:absolute;top:calc(24px + var(--safe-top));right:calc(24px + var(--safe-right));z-index:3;
+  display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:44px;box-sizing:border-box;
+  border:1px solid rgba(255,255,255,.32);background:rgba(10,10,10,.3);
+  backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);
+  color:#fff;padding:0 20px;border-radius:999px;
+  font:600 .7rem/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;
+  cursor:pointer;transition:border-color .2s ease,background .2s ease;
+}
+.cover-spotlight-btn:hover,.cover-spotlight-btn:focus-visible{border-color:rgba(255,255,255,.6)}
+.cover-spotlight-btn[aria-pressed="true"]{border-color:#FFC24B;background:rgba(255,194,75,.14);color:#FFE9C2}
+.cover-spotlight-dot{width:6px;height:6px;border-radius:999px;background:currentColor;opacity:.65;flex:none}
+.cover-spotlight-btn[aria-pressed="true"] .cover-spotlight-dot{background:#FFC24B;box-shadow:0 0 6px #FFC24B;opacity:1}
+
+.cover-center{
+  position:relative;z-index:3;display:flex;flex-direction:column;align-items:center;gap:32px;
+  padding:32px;
+  max-height:100vh;max-height:100dvh;overflow-y:auto;-webkit-overflow-scrolling:touch;
+  box-sizing:border-box;
+}
+.cover-brand-row{display:flex;align-items:center;gap:clamp(16px, 2vw, 26px);}
+.cover-mark{display:block;width:clamp(104px, 10.5vw, 158px);filter:brightness(0) invert(1);
+  filter:brightness(0) invert(1) drop-shadow(0 4px 24px rgba(0,0,0,.45));}
+.cover-wordmark{
+  font:600 clamp(1.45rem, 3.3vw, 2.35rem)/1 'Space Grotesk', sans-serif;
+  letter-spacing:.01em;color:#fff;text-align:center;
+  text-shadow:0 2px 28px rgba(0,0,0,.55);
+}
+.cover-panel{
+  padding:clamp(40px, 4.4vw, 60px) clamp(56px, 6.5vw, 96px);border-radius:10px;
+  background:rgba(10,10,10,.22);
+  border:1px solid rgba(255,255,255,.12);
+  backdrop-filter:blur(5px);-webkit-backdrop-filter:blur(5px);
+}
+/* Spotlight on: the room is already dark, so the frosted blur behind the panel adds nothing you can
+   see - drop it (it re-blurs the moving photos every frame) and use a plain dark tint instead */
+.cover-overlay.spotlight-on .cover-panel{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(10,10,10,.4)}
+.cover-headline{
+  font:500 clamp(1.6rem, 3.9vw, 3.1rem)/1.18 'Playfair Display', Georgia, serif;
+  color:#fff;text-align:center;max-width:880px;
+  text-shadow:0 2px 30px rgba(0,0,0,.55);
+}
+.cover-headline em{font-style:italic;font-weight:500}
+.cover-accent{color:#FFC24B;font-style:italic}
+.cover-work-btn{
+  border:1px solid #fff;background:none;color:#fff;
+  display:inline-flex;align-items:center;justify-content:center;min-height:52px;box-sizing:border-box;
+  padding:0 42px;border-radius:999px;
+  font:600 .78rem/1 'JetBrains Mono', monospace;letter-spacing:.16em;text-transform:uppercase;
+  cursor:pointer;transition:background .2s ease,color .2s ease;
+}
+.cover-work-btn:hover,.cover-work-btn:focus-visible{background:#fff;color:#0a0a0a}
+
+@media (max-width:640px){
+  .cover-spotlight-btn{padding:0 15px;font-size:.62rem;gap:7px;min-height:40px;top:calc(16px + var(--safe-top));right:calc(16px + var(--safe-right))}
+  .cover-center{gap:22px;padding:24px}
+  .cover-headline{font-size:1.55rem}
+  .cover-panel{padding:30px 22px;width:calc(100vw - 32px);max-width:440px;box-sizing:border-box}
+  .cover-work-btn{padding:0 36px;min-height:48px}
+}
+@media (max-height:480px){
+  .cover-center{gap:14px;padding:16px}
+  .cover-mark{width:64px}
+  .cover-wordmark{font-size:1.1rem}
+  .cover-headline{font-size:1rem;line-height:1.1}
+  .cover-panel{padding:10px 18px}
+  .cover-work-btn{min-height:40px;padding:0 28px}
+}
+@media (pointer:coarse) and (prefers-reduced-motion: no-preference){
+  .cover-strip img{filter:brightness(.72)}
+}
+/* Phones/tablets: a live backdrop blur over a strip that never stops moving re-blurs every
+   frame - costly on mobile GPUs. A slightly deeper plain tint reads the same and costs nothing. */
+@media (pointer:coarse){
+  .cover-panel{backdrop-filter:none;-webkit-backdrop-filter:none;background:rgba(10,10,10,.32)}
+}
+@media (prefers-reduced-motion:reduce){
+  .cover-strip{animation:none}
+  .cover-overlay,.cover-strip,.cover-glow,.cover-color{transition:none}
+}
+
 .overlay-page {
   position:fixed;inset:0;z-index:150;
   background:var(--paper);color:var(--ink);
@@ -956,13 +1269,8 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
   display:flex;align-items:center;gap:12px;cursor:pointer;height:100%;
   background:none;border:none;padding:0;
 }
-.overlay-nav-brand .mark{
-  display:flex;align-items:center;height:74px;
-}
-.overlay-nav-brand .mark img{
-  height:74px;max-height:74px;width:auto;object-fit:contain;
-  transition:transform .3s var(--ease);
-}
+.overlay-nav-brand .mark{height:48px;width:calc(48px * var(--lg-ar,1.4649))}
+.overlay-nav-brand .mark img{transition:transform .3s var(--ease)}
 .overlay-nav-brand:hover .mark img{transform:scale(1.04)}
 
 .overlay-nav-right{
@@ -977,14 +1285,18 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .collective-close {
   color:#FFF;
-  background:rgba(0,0,0,0.35);
-  backdrop-filter:blur(8px);
-  -webkit-backdrop-filter:blur(8px);
-  padding:8px 16px;
-  border:1px solid rgba(255,255,255,0.25);
+  background:rgba(0,0,0,0.42);
+  padding:0 14px;
+  min-height:34px;
+  border:1px solid rgba(255,255,255,0.5);
+  border-radius:2px;
+  white-space:nowrap;
+  flex:none;
+  line-height:1;
 }
 .collective-close:hover{
-  background:rgba(255,255,255,0.15);
+  background:#FFF;
+  color:#000;
   border-color:#FFF;
 }
 .niches-close {
@@ -996,6 +1308,14 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 .niches-close:hover {
   background:var(--ink);
   color:var(--paper);
+}
+@media (max-width:640px){
+  .overlay-close{padding:6px 11px;gap:6px;font-size:.6rem;letter-spacing:.12em}
+  .overlay-close svg{width:10px;height:10px}
+  /* phones: one slim line, never wraps */
+  .collective-close{padding:0 10px;min-height:30px;gap:7px;font-size:.56rem;letter-spacing:.14em;white-space:nowrap}
+  .collective-close svg{width:9px;height:9px;flex:none}
+  .collective-nav .overlay-nav-right{flex:none}
 }
 
 .collective-hero{
@@ -1140,6 +1460,14 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 @media (max-width:640px){
   .niches-slideshow{ aspect-ratio:4/5; max-height:64vh; }
 }
+
+/* Scroll-reveal utility (see observeReveals() in the script below). Deliberately starts
+   visible-by-default is NOT used here - JS adds "in" once a row scrolls into view - but every
+   code path that can add this class is guaranteed to also call observeReveals(), which itself
+   force-reveals everything immediately if IntersectionObserver or motion isn't available, so
+   content can never get stuck invisible. */
+.lrl-reveal{ opacity:0; transform:translateY(18px); transition:opacity .6s cubic-bezier(.16, 1, .3, 1), transform .6s cubic-bezier(.16, 1, .3, 1); }
+.lrl-reveal.in{ opacity:1; transform:translateY(0); }
 
 .niche-row {
   border-bottom: 1px solid var(--rule);
@@ -1414,6 +1742,26 @@ html[data-theme="dark"] .overlay-nav-brand .mark img {
 }
 .collective-about-logo button:hover img{transform:scale(1.03)}
 
+.lb:focus,.overlay-page:focus{outline:none}
+
+/* ===== Page-to-page: a short cross-fade between the home page and What We Capture, with the logo
+   gliding into place instead of the page flashing white. Browsers without support simply change
+   page as before; people who turn animations off in their settings get no transition at all. ===== */
+@view-transition{navigation:auto}
+@media (prefers-reduced-motion:reduce){ @view-transition{navigation:none} }
+::view-transition-old(root),::view-transition-new(root){animation-duration:.26s}
+.nav > .brand .mark{view-transition-name:lrl-logo}
+html:not(.cover-seen) .nav > .brand .mark{view-transition-name:none}  /* cover up: nothing may float above it */
+::view-transition-group(lrl-logo){animation-duration:.34s;animation-timing-function:cubic-bezier(.16,1,.3,1)}
+
+/* ===== "View" tag that follows the mouse over photos (desktop mouse only - never on touch) ===== */
+.lrl-view-tag{position:fixed;left:0;top:0;z-index:9500;pointer-events:none;
+  padding:7px 12px 6px;border-radius:999px;background:rgba(10,10,10,.84);color:#fff;
+  font:600 .6rem/1 'JetBrains Mono',monospace;letter-spacing:.18em;text-transform:uppercase;
+  opacity:0;scale:.8;translate:-200px -200px;transition:opacity .16s ease,scale .2s cubic-bezier(.16,1,.3,1);will-change:translate}
+.lrl-view-tag.on{opacity:1;scale:1}
+html[data-theme="dark"] .lrl-view-tag{background:rgba(255,255,255,.92);color:#0a0a0a}
+@media (prefers-reduced-motion:reduce){ .lrl-view-tag{transition:none} }
 .lb{
   position:fixed;inset:0;z-index:500;
   background:rgba(255, 255, 255, 0.96);
@@ -1429,6 +1777,9 @@ html[data-theme="dark"] .lb {
   background:rgba(6, 6, 6, .97);
   color:#FFF;
 }
+/* Spotlight on: the viewer is a dark room in either theme, so the light reads properly */
+html.lb-spot .lb{background:rgba(6,6,6,.97);color:#FFF;transition:background .4s ease,color .4s ease}
+html.lb-spot .lb-frame{box-shadow:0 0 40px rgba(0,0,0,.9)}
 
 .lb[open],.lb.on{display:flex;animation:shutterFade .32s var(--ease) forwards}
 @keyframes shutterFade{0%{opacity:0;backdrop-filter:blur(0px)}100%{opacity:1;backdrop-filter:blur(12px)}}
@@ -1487,13 +1838,12 @@ html[data-theme="dark"] .lb-frame {
   100%{transform:scale(1);opacity:1}
 }
 
-/* ============ Lamplight (desktop only, dark mode): your cursor is a lamp -
-   a dim base copy of the photo, with the bright copy masked to a circle that
-   follows the cursor, plus a soft warm glow. Mirrors the effect on
-   capture.html. Mobile keeps the lamplight effect on capture.html only. ============ */
+/* ============ Spotlight inside the photo viewer (when the Spotlight button is on): a dim black &
+   white copy of the photo, with the full-colour photo showing only inside a circle of light that
+   follows the cursor, finger or phone tilt. Same look as capture.html. ============ */
 #lb-img-dim{
   position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
-  filter:brightness(.16) saturate(.55);opacity:0;transition:opacity .5s ease;pointer-events:none;
+  filter:grayscale(1) brightness(.2);opacity:0;transition:opacity .5s ease;pointer-events:none;
   animation:none !important;
 }
 #lb-lamp-layer{
@@ -1501,15 +1851,78 @@ html[data-theme="dark"] .lb-frame {
   transition:opacity .5s ease;
   background:radial-gradient(circle calc(var(--lr,240px) * 1.2) at var(--lx,50%) var(--ly,50%), rgba(255,184,77,.22), rgba(255,184,77,0) 72%);
 }
-@media (min-width:861px){
-  .lb-frame.lamp-on #lb-img-dim{opacity:1}
-  .lb-frame.lamp-on #lb-img{
-    -webkit-mask-image:radial-gradient(circle var(--lr,240px) at var(--lx,50%) var(--ly,50%), #000 0%, rgba(0,0,0,.9) 55%, rgba(0,0,0,0) 100%);
-    mask-image:radial-gradient(circle var(--lr,240px) at var(--lx,50%) var(--ly,50%), #000 0%, rgba(0,0,0,.9) 55%, rgba(0,0,0,0) 100%);
-  }
-  .lb-frame.lamp-on #lb-lamp-layer{opacity:1}
+.lb-frame.lamp-on #lb-img-dim{opacity:1}
+.lb-frame.lamp-on #lb-img{
+  -webkit-mask-image:radial-gradient(circle var(--lr,240px) at var(--lx,50%) var(--ly,50%), #000 0%, rgba(0,0,0,.9) 55%, rgba(0,0,0,0) 100%);
+  mask-image:radial-gradient(circle var(--lr,240px) at var(--lx,50%) var(--ly,50%), #000 0%, rgba(0,0,0,.9) 55%, rgba(0,0,0,0) 100%);
 }
-@media (prefers-reduced-motion:reduce){ #lb-img-dim,#lb-lamp-layer{transition:opacity .2s ease} }
+.lb-frame.lamp-on #lb-lamp-layer{opacity:1}
+@media (max-width:860px){ .lb-frame{--lr:150px} }
+
+/* ============ Page Spotlight (home page, Spotlight button on): the page goes dim black & white,
+   a warm circle following you shows the true colours. Fixed, click-through layers under the top
+   bar; hidden completely (no drawing cost at all) while off. ============ */
+#pageLamp{position:fixed;inset:0;z-index:60;pointer-events:none;opacity:0;visibility:hidden;
+  transition:opacity .45s ease,visibility 0s linear .45s;
+  -webkit-backdrop-filter:grayscale(1) brightness(.34);backdrop-filter:grayscale(1) brightness(.34);
+  -webkit-mask-image:radial-gradient(circle var(--pr,260px) at var(--px,50%) var(--py,50%), transparent 0%, rgba(0,0,0,.25) 45%, #000 100%);
+  mask-image:radial-gradient(circle var(--pr,260px) at var(--px,50%) var(--py,50%), transparent 0%, rgba(0,0,0,.25) 45%, #000 100%);}
+#pageLampGlow{position:fixed;inset:0;z-index:61;pointer-events:none;opacity:0;visibility:hidden;
+  transition:opacity .45s ease,visibility 0s linear .45s;
+  background:radial-gradient(circle calc(var(--pr,260px) * 1.1) at var(--px,50%) var(--py,50%), rgba(255,190,85,.18), rgba(255,190,85,0) 70%);}
+html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility:visible;transition:opacity .45s ease,visibility 0s}
+@media (max-width:860px){ :root{--pr:170px} }
+
+/* The Spotlight switch: on the "Featured photos" line under the "What We Capture" heading (phone and
+   desktop). It sits above the dimming with a solid background, so while the page goes dark it stays
+   lit and easy to find again. */
+#work .featured-row{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  margin:-4px 0 clamp(14px,2vw,22px)}
+#work .featured-row .featured-label{margin:0}
+#work .featured-row .home-spot-btn{position:relative;z-index:65;flex:none}
+.home-spot-btn{
+  display:inline-flex;align-items:center;gap:7px;min-height:34px;padding:0 14px;box-sizing:border-box;
+  border:1px solid var(--rule);border-radius:999px;background:var(--paper);color:var(--ink);
+  font:600 .64rem/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;
+  cursor:pointer;transition:border-color .2s ease,background .2s ease,color .2s ease;
+}
+.home-spot-btn:hover,.home-spot-btn:focus-visible{border-color:var(--ink)}
+.home-spot-btn .spot-dot{width:6px;height:6px;border-radius:999px;background:currentColor;opacity:.55;flex:none}
+.home-spot-btn[aria-pressed="true"]{border-color:#E0A21C;background:linear-gradient(rgba(255,194,75,.16),rgba(255,194,75,.16)),var(--paper)}
+.home-spot-btn[aria-pressed="true"] .spot-dot{background:#FFC24B;box-shadow:0 0 6px #FFC24B;opacity:1}
+@media (max-width:640px){ .home-spot-btn{min-height:36px;padding:0 13px;font-size:.6rem;letter-spacing:.12em;gap:7px} }
+@media (pointer:coarse){ .home-spot-btn::before{content:"";position:absolute;inset:-6px -4px} }
+/* Spotlight on, but its switch has scrolled out of sight (e.g. down at Contact): a small copy of the
+   switch waits in the bottom corner, so the page is never stuck dim. Tap it to turn the Spotlight off. */
+.home-spot-float{position:fixed;right:calc(16px + var(--safe-right));bottom:calc(16px + var(--safe-bottom));z-index:66;
+  display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 16px;box-sizing:border-box;border-radius:999px;
+  border:1px solid #E0A21C;background:linear-gradient(rgba(255,194,75,.16),rgba(255,194,75,.16)),var(--paper);color:var(--ink);
+  font:600 .62rem/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;white-space:nowrap;cursor:pointer;
+  box-shadow:0 8px 24px rgba(0,0,0,.35);-webkit-tap-highlight-color:transparent;
+  opacity:0;visibility:hidden;transform:translateY(10px);
+  transition:opacity .25s ease,transform .25s ease,visibility 0s linear .25s}
+.home-spot-float.on{opacity:1;visibility:visible;transform:none;transition:opacity .25s ease,transform .25s ease,visibility 0s}
+.home-spot-float .spot-dot{width:6px;height:6px;border-radius:999px;background:#FFC24B;box-shadow:0 0 6px #FFC24B;flex:none}
+.home-spot-float:focus-visible{outline:2px solid var(--ink);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){ .home-spot-float{transform:none;transition:none} }
+/* while that corner switch is showing, the footer gets a little empty space at the very bottom for it
+   to sit in - so at the end of the page it never covers the footer links */
+html.spot-float-on footer.wrap::after{content:"";display:block;height:calc(64px + var(--safe-bottom))}
+/* phones: logo, The Collective and the lamp cord on one line, down to 320px wide */
+@media (max-width:480px){
+  .nav{gap:8px}
+  .nav-right,.nav-links{gap:10px}
+  .nav .nav-collective-link-mob{font-size:.6rem !important;letter-spacing:.1em !important;white-space:nowrap}
+}
+@media (max-width:350px){
+  .nav > .brand .mark{height:48px;width:calc(48px * var(--lg-ar,1.4649))}
+  .nav .nav-collective-link-mob{font-size:.54rem !important;letter-spacing:.06em !important}
+}
+@media (prefers-reduced-motion:reduce){
+  #lb-img-dim,#lb-lamp-layer{transition:opacity .2s ease}
+  .plate img:not(.lrl-loaded){filter:none;transform:none}
+  .lrl-reveal{opacity:1 !important;transform:none !important;transition:none !important}
+}
 
 .lb-cap{
   display:grid;grid-template-columns:1fr auto;gap:6px 20px;align-items:baseline;
@@ -1521,172 +1934,26 @@ html[data-theme="dark"] .lb-frame {
 .lb-cap .m{opacity:.65;font-size:.82rem;text-align:right;color:inherit}
 .lb-cap .d{grid-column:1/-1;opacity:.8;font-size:.86rem;max-width:70ch;color:inherit}
 
-/* ENQUIRY MODAL (FULLSCREEN BACKDROP + SCALED INNER CARD) */
-.enquiry-modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100vw;
-  height: 100vh;
-  height: 100dvh;
-  z-index: 9999 !important;
-  background: rgba(0, 0, 0, 0.78);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
-  display: none;
-  align-items: center;
-  justify-content: center;
-  padding: 20px;
-}
-.enquiry-modal.open {
-  display: flex !important;
-}
-.enquiry-modal.open .enquiry-card {
-  animation: modalFadeIn .25s var(--ease) forwards;
-}
-@keyframes modalFadeIn {
-  from { opacity: 0; transform: scale(0.96) translateY(8px); }
-  to { opacity: 1; transform: scale(1) translateY(0); }
-}
-
-.enquiry-card {
-  position: relative;
-  background: var(--paper);
-  color: var(--ink);
-  border: 1px solid var(--ink);
-  width: 100%;
-  max-width: 500px;
-  padding: clamp(24px, 4vw, 36px);
-  box-shadow: 0 16px 48px rgba(0, 0, 0, 0.35);
-}
-
-.enquiry-head {
-  display: flex;
-  justify-content: space-between;
-  align-items: baseline;
-  border-bottom: 1px solid var(--rule);
-  padding-bottom: 12px;
-  margin-bottom: 20px;
-}
-.enquiry-head h3 {
-  margin: 0;
-  font-family: "Space Grotesk", sans-serif;
-  font-size: 1.35rem;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-}
-
-.enquiry-form {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-.enquiry-field {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-.enquiry-label {
-  font-size: var(--fs-label);
-  letter-spacing: var(--tr-label);
-  text-transform: uppercase;
-  font-weight: 600;
-  opacity: 0.75;
-}
-.enquiry-input, .enquiry-textarea, .enquiry-select {
-  width: 100%;
-  background: var(--rule-soft);
-  color: var(--ink);
-  border: 1px solid var(--rule);
-  padding: 10px 14px;
-  font-family: inherit;
-  font-size: 0.95rem;
-  border-radius: 0;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-.enquiry-input:focus, .enquiry-textarea:focus, .enquiry-select:focus {
-  border-color: var(--ink);
-  background: var(--paper);
-  outline: none;
-}
-.enquiry-textarea {
-  resize: vertical;
-  min-height: 100px;
-  max-height: 200px;
-}
-
-.char-counter {
-  font-size: 0.68rem;
-  text-align: right;
-  opacity: 0.55;
-  margin-top: 4px;
-}
-
-.enquiry-foot {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  margin-top: 8px;
-  padding-top: 14px;
-  border-top: 1px solid var(--rule);
-}
-.btn-enquiry-submit {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  background: var(--ink);
-  color: var(--paper);
-  border: 1px solid var(--ink);
-  padding: 10px 22px;
-  font-size: var(--fs-label);
-  letter-spacing: var(--tr-label);
-  text-transform: uppercase;
-  font-weight: 600;
-  transition: background .2s ease, color .2s ease;
-}
-.btn-enquiry-submit:hover:not(:disabled) {
-  background: var(--paper);
-  color: var(--ink);
-}
-.btn-enquiry-submit:disabled {
-  opacity: 0.6;
-  cursor: not-allowed;
-}
-
-.enquiry-status-msg {
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  opacity: 0.75;
-}
+/* The enquiry window's styles live in /shared.js - one design for every page. */
 
 @media (max-width:980px){
   .collective-grid{grid-template-columns:repeat(2, 1fr)}
   .niche{grid-template-columns:1fr auto;gap:6px 16px}
   .niche p{grid-column:1/-1}
   .foot{
-    grid-template-columns: 160px 1fr 1fr 0.85fr 1.3fr;
+    grid-template-columns: 170px 1fr 1fr 0.85fr 1.3fr;
     gap: 20px 24px;
   }
   
-  .home-work-grid {
-    padding-top: 90px;
-    margin-top: -65px;
-    scroll-snap-type: none !important;
-    --card-w: 210px; --hv-scale: 1.25; --nb-scale: 1.15;
-  }
-  .home-work-grid .shot {
-    flex: 0 0 210px !important;
-    max-width: 210px !important;
-    scroll-snap-align: none !important;
-  }
+  .work-carousel-container { --card-w: 250px; --hv-scale: 1.28; --nb-scale: 1.12; }
+  .home-work-grid { scroll-snap-type: none !important; }
+  .home-work-grid .shot { scroll-snap-align: none !important; }
 }
 
 @media (min-width:981px){
-  :root{ --nav-h: 100px; }
-  .brand .mark{ height:92px; width:92px; }
-  .brand .mark img{ height:92px; }
-  .overlay-nav-brand .mark{ height:92px; }
-  .overlay-nav-brand .mark img{ height:92px; max-height:92px; }
+  :root{ --nav-h: 108px; }
+  .brand .mark{ height:72px;width:calc(72px * var(--lg-ar,1.4649))}
+  .overlay-nav-brand .mark{ height:60px;width:calc(60px * var(--lg-ar,1.4649))}
 }
 
 @media (max-width:640px){
@@ -1694,18 +1961,18 @@ html[data-theme="dark"] .lb-frame {
     --nav-h:76px;
     --pad:12px;
   }
-  .nav{padding-inline:12px; gap:8px; align-items:center;}
+  /* Phone header: logo and The Collective share one centre line, and sit the same distance in from
+     the left and right edges as the page content below (16px). Logo is bigger than before. */
+  .nav{padding-left:calc(16px + var(--safe-left)); padding-right:calc(16px + var(--safe-right)); gap:8px; align-items:center;}
 
   .nav-collective-link-mob{padding:0 !important}
 
-  .brand{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;padding-left:8px}
-  .brand .mark{height:64px}
-  .brand .mark img{height:64px}
+  .brand{flex-direction:row;align-items:center;justify-content:flex-start;gap:10px;padding-left:0}
+  .brand .mark{height:60px;width:calc(60px * var(--lg-ar,1.4649))}
   .brand .wordmark{display:none !important}
-  
-  /* The Collective sits at the TOP of the bar, right beside the hanging lamp rope */
-  .nav-right{gap:12px;flex-direction:row;align-items:flex-start;justify-content:flex-end;align-self:stretch}
-  .nav-right .nav-links{padding-top:14px}
+
+  .nav-right{gap:14px;flex-direction:row;align-items:center;justify-content:flex-end;align-self:stretch}
+  .nav-right .nav-links{padding-top:0}
   
   .nav-links{
     display:flex;
@@ -1752,19 +2019,13 @@ html[data-theme="dark"] .lb-frame {
   .filters::-webkit-scrollbar{display:none}
   .chip{flex-shrink:0;padding:6px 12px;font-size:0.62rem}
 
+  .work-carousel-container { --card-w: min(55vw, 240px); --hv-scale: 1.2; --nb-scale: 1.05; --gap: 12px; }
   .home-work-grid {
-    padding-top: 70px !important;
-    margin-top: -50px !important;
-    padding-bottom: calc(30px + var(--drop-room)) !important;
+    padding-bottom: calc(18px + var(--drop-room)) !important;
     align-items: flex-end !important;
     scroll-snap-type: none !important;
-    --card-w: 170px; --hv-scale: 1.28; --nb-scale: 1.12;
   }
-  .home-work-grid .shot {
-    flex: 0 0 170px !important;
-    max-width: 170px !important;
-    scroll-snap-align: none !important;
-  }
+  .home-work-grid .shot { scroll-snap-align: none !important; }
 
   .carousel-nav-btn { display: none; }
 
@@ -1784,54 +2045,27 @@ html[data-theme="dark"] .lb-frame {
     padding-bottom: clamp(12px, 1.5vw, 24px);
   }
 
+  /* Phone footer: logo, Index and Elsewhere spread across the FULL width - the last column ends on the
+     same right edge as the content above, so there's no dead space on the right. The logo grows with
+     the screen, and its top lines up with the INDEX / ELSEWHERE headings. */
   .foot{
-    display: grid !important;
-    grid-template-columns: 100px 1fr 1fr !important;
-    gap: 16px 16px !important;
-    padding-top: 24px !important;
-    padding-bottom: 28px !important;
-    align-items: start !important;
-  }
-  
-  .foot-col-logo {
-    grid-column: 1 / 2 !important;
     display: flex !important;
-    justify-content: flex-start !important;
+    justify-content: space-between !important;
     align-items: flex-start !important;
-    align-self: start !important;
-    width: 100% !important;
+    gap: 14px !important;
+    padding-top: 24px !important;
+    padding-bottom: calc(28px + var(--safe-bottom)) !important;
   }
-
-  .foot-logo-btn {
-    display: block !important;
-    text-align: left !important;
-    width: 100% !important;
-    line-height: 1 !important;
-    margin-top: 0 !important;
-  }
-
-  .foot-logo-btn img{
-    max-width: 130px !important;
-    width: 100% !important;
-    margin: 0 !important;
-  }
-
-  .foot-links-group {
-    grid-column: 2 / 4 !important;
-    display: flex !important;
-    flex-direction: row !important;
-    justify-content: flex-start !important;
-    gap: 20px !important;
-    width: 100% !important;
-  }
-
-  .foot-col-index { min-width: 70px; margin: 0 !important; padding-left: 12px; }
-  .foot-col-elsewhere { min-width: 70px; margin: 0 !important; padding-left: 12px; }
+  .foot-col-logo { flex: none; width: auto !important; }
+  .foot-logo-btn { width: auto; }
+  .foot-logo-btn .lg-crop { width: clamp(88px, 28vw, 128px); max-width: none; }
+  .foot-links-group { display: contents !important; }
+  /* columns may shrink (and wrap a long link onto two lines) rather than ever running off the screen */
+  .foot-col-index, .foot-col-elsewhere { flex: 0 1 auto; min-width: 0; margin: 0 !important; padding: 0 !important; }
   .foot-col-events { display: none !important; }
   .foot-col-team { display: none !important; }
 
-  .overlay-nav-brand .mark{height:52px}
-  .overlay-nav-brand .mark img{height:52px;max-height:52px}
+  .overlay-nav-brand .mark{height:44px;width:calc(44px * var(--lg-ar,1.4649))}
   .overlay-nav .mono{display:none}
 
   .collective-hero{
@@ -1892,23 +2126,66 @@ html[data-theme="dark"] .lb-frame {
   .overlay-close::before{content:"";position:absolute;inset:-8px}
   .lb-close,.lb-nav{min-width:44px;min-height:44px}
 }
+@media (pointer:coarse) and (prefers-reduced-motion: no-preference){
+  /* Touch devices: a lighter blur costs less to composite - same "resolve into focus" feel,
+     without asking a phone's GPU to blur dozens of grid photos at once. Scoped to skip
+     entirely when reduced-motion is on, so that preference always wins outright. */
+  .plate img:not(.lrl-loaded){ filter:blur(7px); transform:scale(1.02); }
+}
 
 /* ===== Footer: top-align the logo with the Index/Elsewhere/Events/Collective columns ===== */
 .foot .foot-col-logo{align-self:start !important}
 
 /* Very narrow phones (320px): a long footer label could spill a few px sideways and make the whole page wiggle. */
 footer.wrap{overflow-x:clip}
+@media (max-width:374px){
+  .foot{ gap: 10px !important; }
+  .foot-logo-btn .lg-crop{ width: 22vw; }
+  .foot h4{ letter-spacing: .12em; }
+  .foot ul li, .foot ul a, .foot ul button{ font-size: .84rem; }
+}
+/* Tablets (641-980px): five columns in one row were too tight (names, roles and "Performing Arts"
+   wrapped awkwardly). Logo | Index | Elsewhere | Events on the first row, The Collective on its own row
+   underneath with the members side by side. */
+@media (min-width:641px) and (max-width:980px){
+  .foot{ grid-template-columns: 150px 1fr 1fr 1fr !important; row-gap: 28px !important; }
+  .foot-col-team{ grid-column: 2 / -1; }
+  .foot-col-team ul{ display: flex; flex-wrap: wrap; gap: 10px 32px; }
+  .foot-col-team li{ white-space: nowrap; }
+}
 </style>
 </head>
 
 <body>
+<div class="cover-overlay" id="cover-overlay" role="dialog" aria-modal="true" aria-label="Living Room Labs">
+  <div class="cover-strip" id="cover-strip" aria-hidden="true"></div>
+  <div class="cover-color" aria-hidden="true"><div class="cover-color-inner"><div class="cover-strip" id="cover-strip-color"></div></div></div>
+  <div class="cover-scrim" aria-hidden="true"></div>
+  <div class="cover-glow" id="cover-glow" aria-hidden="true"></div>
+
+  <button type="button" class="cover-spotlight-btn" id="cover-spotlight-btn" aria-pressed="false">
+    <span class="cover-spotlight-dot" aria-hidden="true"></span>
+    Spotlight
+  </button>
+
+  <div class="cover-center">
+    <div class="cover-brand-row">
+      <span class="mark lg-crop cover-mark">
+        <img src="/logo.png" width="600" height="600" alt="Living Room Labs">
+      </span>
+      <span class="cover-wordmark" data-name></span>
+    </div>
+    <div class="cover-panel"><div class="cover-headline" id="cover-headline"></div></div>
+    <button type="button" class="cover-work-btn" id="cover-work-btn">Home →</button>
+  </div>
+</div>
+
 <a class="skip-link" href="#work">Skip to the photos</a>
-<a class="skip" href="#work">Skip to work</a>
 
 <nav class="nav">
   <button class="brand logo-exit-btn" aria-label="Living Room Labs (Reload)">
-    <span class="mark">
-      <img src="/logo.png" alt="Living Room Labs">
+    <span class="mark lg-crop">
+      <img src="/logo.png" width="600" height="600" alt="Living Room Labs">
     </span>
     <span class="wordmark" data-name></span>
   </button>
@@ -1936,17 +2213,21 @@ footer.wrap{overflow-x:clip}
 
   <div class="band" id="hero-slideshow" role="region" aria-label="Hero image slideshow" tabindex="0">
     <div class="band-stage" id="band-stage"></div>
+    <button type="button" class="band-eye" aria-label="View this photo">
+      <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="12" height="12" rx="2.2"/><circle cx="7" cy="9" r="1.15"/><path d="M4 15.3l3.6-4 2.4 2.4 3.4-3.9"/><path fill="currentColor" stroke="none" d="M19 3l.85 2.25L22 6l-2.15.75L19 9l-.85-2.25L16 6l2.15-.75z"/><path fill="currentColor" stroke="none" d="M21.3 9.4l.5 1.3 1.3.5-1.3.5-.5 1.3-.5-1.3-1.3-.5 1.3-.5z"/></svg>
+    </button>
   </div>
 
   <section class="sec wrap" id="work" tabindex="-1">
-    <div class="sec-head">
-      <span class="label">Work</span>
-      <span class="fill"></span>
-      <span class="count mono" data-workcount></span>
+ <div class="sec-head sec-head-work">
+      <button type="button" class="label sec-link nav-niches-link wwc-heading">What We Capture <span class="sec-link-arrow" aria-hidden="true">↗</span></button>
+      <button type="button" class="nav-niches-link wwc-view-more" aria-label="View all photos"><span class="mono">View more</span><span class="wwc-vm-arrow" aria-hidden="true">→</span></button>
     </div>
-    <div class="filters" role="group" aria-label="Filter work by category" data-filters></div>
+    <div class="featured-row">
+      <p class="featured-label mono">Featured photos</p>
+      <button type="button" class="home-spot-btn" id="homeSpot" aria-pressed="false" aria-label="Turn the spotlight on"><span class="spot-dot" aria-hidden="true"></span>Spotlight</button>
+    </div>
     
-    <div class="sprocket-strip" aria-hidden="true"></div>
     <div class="work-carousel-container">
       <button type="button" class="carousel-nav-btn prev" id="carousel-prev" aria-label="Scroll left">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 19l-7-7 7-7"/></svg>
@@ -1960,16 +2241,6 @@ footer.wrap{overflow-x:clip}
     </div>
   </section>
 
-  <section class="sec wrap mobile-shoot-sec" id="mobile-shoot">
-    <div class="mobile-shoot-box nav-niches-link" role="button" tabindex="0">
-      <div class="mobile-shoot-header">
-        <span class="label mono" style="opacity:0.65;">WHAT WE CAPTURE</span>
-        <span class="mobile-shoot-arrow">↗</span>
-      </div>
-    </div>
-    <p class="contact-note" data-mobile-shoot-note style="margin-top:10px;"></p>
-  </section>
-
   <section class="sec wrap" id="contact">
     <div class="sec-head">
       <span class="label">Contact</span>
@@ -1977,6 +2248,7 @@ footer.wrap{overflow-x:clip}
       <span class="count mono" data-place2></span>
     </div>
     <a class="mail" data-mail href="#"></a>
+    <p class="contact-or mono">Or <button type="button" class="link-enquire" id="btnContactEnquire">Enquire ↗</button></p>
     <p class="contact-note" data-contact-note></p>
   </section>
 
@@ -1984,7 +2256,7 @@ footer.wrap{overflow-x:clip}
     <div class="foot">
       <div class="foot-col-logo">
         <button class="foot-logo-btn logo-exit-btn" aria-label="Scroll to top of page">
-          <img src="/logo.png" alt="Living Room Labs">
+          <span class="lg-crop"><img src="/logo.png" width="600" height="600" alt="Living Room Labs"></span>
         </button>
       </div>
 
@@ -2013,63 +2285,14 @@ footer.wrap{overflow-x:clip}
   </footer>
 </main>
 
-<!-- WHAT WE CAPTURE OVERLAY -->
-<div class="overlay-page" id="niches-page" role="dialog" aria-modal="true" aria-label="What We Capture">
-  <div class="overlay-nav niches-nav">
-    <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
-      <span class="mark">
-        <img src="/logo.png" alt="Living Room Labs">
-      </span>
-    </button>
-    <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">WHAT WE CAPTURE // CATEGORIES</span>
-    <div class="overlay-nav-right">
-      <button class="overlay-close niches-close btn-close-niches">
-        Back to Studio
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M4 4l16 16M20 4L4 20"/></svg>
-      </button>
-    </div>
-  </div>
-
-  <div class="overlay-content-sec niches-content-sec">
-    <div id="niches-list-container">
-      <div class="niches-slideshow" id="niches-slideshow" aria-hidden="true"></div>
-      <div class="sprocket-strip" aria-hidden="true"></div>
-      <h1 style="font-family:'Space Grotesk', sans-serif; font-size:clamp(2.5rem, 6vw, 4.8rem); line-height:1; margin:0 0 16px; letter-spacing:-0.03em;">What We Capture</h1>
-      <p style="opacity:.7; max-width:600px; margin-bottom:clamp(24px, 4vw, 44px); font-size:clamp(1rem, 1.4vw, 1.25rem);">Explore our categorized portfolio. Every niche, every frame, uncompromisingly real.</p>
-      
-      <div id="niches-list" data-niches></div>
-
-      <div class="niche-enquire-sec">
-        <div class="sec-head" style="margin-bottom:12px;">
-          <span class="label">Let's make it official</span>
-          <span class="fill"></span>
-        </div>
-        <button type="button" class="niche-enquire-trigger" id="btn-enquire-overview">Enquire ↗</button>
-        <p class="niche-enquire-tagline">Every frame begins with a conversation.</p>
-      </div>
-    </div>
-    
-    <div id="niche-view-box" style="display:none;"></div>
-
-    <div class="collective-about-wrap">
-      <div class="collective-about-text">
-        <button type="button" class="niche-back btn-close-niches" style="padding:10px 20px; cursor:pointer;">← Back to Studio</button>
-      </div>
-      <div class="collective-about-logo">
-        <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="/logo.png" alt="Living Room Labs">
-        </button>
-      </div>
-    </div>
-  </div>
-</div>
+<button type="button" class="home-spot-float" id="homeSpotFloat" aria-pressed="true" aria-label="Turn the spotlight off"><span class="spot-dot" aria-hidden="true"></span>Spotlight</button>
 
 <!-- THE COLLECTIVE OVERLAY -->
 <div class="overlay-page" id="collective-page" role="dialog" aria-modal="true" aria-label="The Collective">
   <div class="overlay-nav collective-nav">
     <button class="overlay-nav-brand logo-exit-btn" aria-label="Back to Home">
-      <span class="mark">
-        <img src="/logo.png" alt="Living Room Labs">
+      <span class="mark lg-crop">
+        <img src="/logo.png" width="600" height="600" alt="Living Room Labs">
       </span>
     </button>
     <span class="label mono nav-desktop-only" style="letter-spacing:0.18em;">THE COLLECTIVE // LAB ROSTER</span>
@@ -2109,7 +2332,7 @@ footer.wrap{overflow-x:clip}
       </div>
       <div class="collective-about-logo">
         <button class="logo-exit-btn" aria-label="Back to Home" style="border:0;background:none;padding:0;cursor:pointer;display:block;line-height:0;">
-          <img src="/logo.png" alt="Living Room Labs">
+          <img src="/logo.png" width="600" height="600" alt="Living Room Labs">
         </button>
       </div>
     </div>
@@ -2148,62 +2371,8 @@ footer.wrap{overflow-x:clip}
   </div>
 </div>
 
-<!-- ENQUIRY MODAL DIALOG -->
-<div class="enquiry-modal" id="enquiry-modal" role="dialog" aria-modal="true" aria-label="Enquiry">
-  <div class="enquiry-card">
-    <div class="enquiry-head">
-      <div>
-        <h3>Enquiry</h3>
-        <span class="mono" style="display:block; margin-top:2px; font-size:0.68rem; opacity:0.65;">Every frame begins with a conversation.</span>
-      </div>
-      <button type="button" id="btn-close-enquiry-modal" class="mono" style="font-size: 0.8rem; opacity: 0.65;">[ ESC / CLOSE ]</button>
-    </div>
-
-    <form class="enquiry-form" id="enquiry-form">
-      <div class="enquiry-field">
-        <label class="enquiry-label" for="enq-name">Your Name</label>
-        <input class="enquiry-input" type="text" id="enq-name" name="name" required maxlength="100" placeholder="Jane Doe" autocomplete="name">
-      </div>
-
-      <div class="enquiry-field">
-        <label class="enquiry-label" for="enq-email">Your Email</label>
-        <input class="enquiry-input" type="email" id="enq-email" name="email" required maxlength="254" placeholder="name@domain.com" autocomplete="email">
-      </div>
-
-      <div class="enquiry-field">
-        <label class="enquiry-label" for="enq-niche">Shoot Category</label>
-        <select class="enquiry-select" id="enq-niche" name="category">
-          <option value="General Enquiry">General Enquiry</option>
-          <option value="Food">Food</option>
-          <option value="Pets">Pets</option>
-          <option value="Real Estate">Real Estate</option>
-          <option value="Products">Products</option>
-          <option value="Events">Events</option>
-          <option value="Portraits">Portraits</option>
-          <option value="Travel">Travel</option>
-        </select>
-      </div>
-
-      <div class="enquiry-field">
-        <label class="enquiry-label" for="enq-msg">Shoot Details & Timeline</label>
-        <textarea class="enquiry-textarea" id="enq-msg" name="message" maxlength="500" required placeholder="Tell us what you're shooting, roughly when, and the location."></textarea>
-        <div class="char-counter mono"><span id="char-count">0</span> / 500 CHARACTERS</div>
-      </div>
-
-      <div class="hp-field" aria-hidden="true">
-        <label for="enq-website">Leave this field empty</label>
-        <input type="text" id="enq-website" name="_gotcha" tabindex="-1" autocomplete="off">
-      </div>
-
-      <div class="enquiry-foot">
-        <span class="mono enquiry-status-msg" id="enquiry-status" role="status" aria-live="polite">READY</span>
-        <button type="submit" class="btn-enquiry-submit" id="btn-enquiry-send">
-          Send Enquiry &rarr;
-        </button>
-      </div>
-    </form>
-  </div>
-</div>
+<!-- The enquiry window is built by /shared.js (one design, used on every page) -->
+<script src="/shared.js" defer></script>
 
 <script>
 var SITE = {};
@@ -2280,6 +2449,33 @@ function esc(str){
   return String(str == null ? "" : str).replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/"/g,"&quot;");
 }
 
+/* Scroll-reveal: fades/rises static list rows (niche list, collective cards) into place the
+   first time they scroll into view. One shared observer for the whole page. Skips entirely
+   for prefers-reduced-motion, and for anyone whose browser lacks IntersectionObserver - in
+   both cases the rows are already visible by default (see .lrl-reveal CSS), so nothing breaks. */
+var revealIO = null;
+function observeReveals(container){
+  if (!container) return;
+  var reduced = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (!window.IntersectionObserver || reduced) {
+    /* no observer support, or motion turned off - show everything immediately rather than
+       risk rows staying invisible forever */
+    $$(".lrl-reveal:not(.in)", container).forEach(function (el) { el.classList.add("in"); });
+    return;
+  }
+  if (!revealIO) {
+    revealIO = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.isIntersecting) {
+          entry.target.classList.add("in");
+          revealIO.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.15, rootMargin: "0px 0px -40px 0px" });
+  }
+  $$(".lrl-reveal:not(.in)", container).forEach(function (el) { revealIO.observe(el); });
+}
+
 /* Alt text for screen readers and Google Images:
    uses the "Alt Text" box from the CMS if filled in, otherwise "Title — Category photography". */
 function altFor(p){
@@ -2353,8 +2549,25 @@ function homeCovered(){
 }
 
 /* One strip, one step. step = CSS pixels to advance this frame. */
+/* Smoothly scrolls a strip back to its first photo; auto-scroll waits until the glide has
+   finished (scrollend where supported, otherwise a timer) so it never fights the animation. */
+function rewindTrack(track, now){
+  track._holdUntil = (now || performance.now()) + 2000;
+  var done = function(){ track._holdUntil = 0; track._pos = undefined; track._maxAt = 0; };
+  if("onscrollend" in track){
+    var onEnd = function(){ track.removeEventListener("scrollend", onEnd); done(); };
+    track.addEventListener("scrollend", onEnd);
+  }
+  try { track.scrollTo({ left: 0, behavior: prefersReducedMotion() ? "auto" : "smooth" }); }
+  catch(e){ track.scrollLeft = 0; }
+}
+
 function stepTrack(track, step){
   if(!track || track._isPaused || track._isTouching || track._offscreen) return;
+  if(track._holdUntil){
+    if(performance.now() < track._holdUntil) return;
+    track._holdUntil = 0; track._pos = undefined;
+  }
   if(track.classList && track.classList.contains("niche-preview-grid--static")) return;   /* static: never auto-scrolls */
   var now = performance.now();
   if(!track._maxAt || now - track._maxAt > 500){          /* measuring the strip forces layout, so do it twice a second, not every frame */
@@ -2375,13 +2588,16 @@ function stepTrack(track, step){
   if(track._extAt && now - track._extAt < 250) return;   /* let a swipe's momentum finish */
 
   track._pos += step;
-  if(track._looped && track._loopW > 0){
-    var loopPx = Math.round(track._loopW);
-    if(track._pos >= loopPx) track._pos -= loopPx;        /* identical picture -> seamless */
-  } else if(track._pos >= track._max){
-    track._pos = Math.round(track._max);                  /* no copy to loop into: hold at the end */
+  if(track._pos >= track._max){
+    /* reached the last photo: rest there a moment, then glide back to the first */
+    track._pos = Math.round(track._max);
+    if(!track._endAt){ track._endAt = now; track.scrollLeft = track._pos; return; }
+    if(now - track._endAt < 2200) return;
+    track._endAt = 0;
+    rewindTrack(track, now);
     return;
   }
+  track._endAt = 0;
   track.scrollLeft = track._pos;
 }
 
@@ -2409,8 +2625,13 @@ function runAutoScroll(now){
   autoScrollRaf = requestAnimationFrame(runAutoScroll);
 }
 
+/* Auto-scroll is switched OFF on the home page (phones and desktop): the photo strips stay still
+   until the visitor swipes, scrolls or uses the arrows. Nothing runs in the background either. */
+var HOME_AUTOSCROLL = false;
 function startAutoScroll() {
   if (autoScrollRaf) cancelAnimationFrame(autoScrollRaf);
+  autoScrollRaf = null;
+  if (!HOME_AUTOSCROLL) return;
   lastScrollTime = performance.now();
   autoScrollRaf = requestAnimationFrame(runAutoScroll);
 }
@@ -2418,41 +2639,16 @@ function startAutoScroll() {
 /* Seamless loop: put a second copy of the photos after the last one (only if the strip is wider than its window). */
 var STATIC_TRACK_CUTOFF = 3;
 function refreshLoop(track){
+  /* No more looping copies. The strip used to append a full duplicate set of photos for a
+     seamless wrap - but visitors can swipe or arrow to the end and see every photo twice
+     (15 Events photos showed as 30), which read as a bug. Now each strip holds exactly the
+     real photos; stepTrack() pauses at the last one and glides back to the first instead. */
   if(!track) return;
-  if(track.classList && track.classList.contains("niche-preview-grid--static")){
-    track._looped = false;   /* 3 or fewer photos: never loop, never auto-scroll */
-    return;
-  }
-  var originals = $$(".shot:not([data-clone])", track);
-  var clones = $$(".shot[data-clone]", track);
-  var want = !prefersReducedMotion() && originals.length > STATIC_TRACK_CUTOFF;
-
-  if(!want){
-    clones.forEach(function(c){ c.parentNode && c.parentNode.removeChild(c); });
-    track._looped = false;
-    return;
-  }
-  if(!clones.length){
-    if(track.scrollWidth <= track.clientWidth + 2){ track._looped = false; return; }
-    originals.forEach(function(el){
-      var c = el.cloneNode(true);
-      c.setAttribute("data-clone", "1");
-      c.setAttribute("aria-hidden", "true");
-      c.setAttribute("tabindex", "-1");
-      c.classList.remove("touch-focus");
-      track.appendChild(c);
-    });
-    clones = $$(".shot[data-clone]", track);
-  }
-  var w = clones[0].getBoundingClientRect().left - originals[0].getBoundingClientRect().left;
-  if(w >= track.clientWidth - 1){
-    track._looped = true;
-    track._loopW = w;
-  } else {
-    /* one set is narrower than the window: a loop would show repeats, so keep it a plain strip */
-    clones.forEach(function(c){ c.parentNode && c.parentNode.removeChild(c); });
-    track._looped = false;
-  }
+  $$(".shot[data-clone]", track).forEach(function(c){ c.parentNode && c.parentNode.removeChild(c); });
+  track._looped = false;
+  track._loopW = 0;
+  track._endAt = 0;
+  track._holdUntil = 0;
   track._pos = undefined;
   track._maxAt = 0;
 }
@@ -2543,19 +2739,181 @@ function buildFilters(){
   });
 }
 
+/* Cover's background strip: up to 12 featured photos (doubled, for a seamless loop), the same
+   thumbnail WebP copies the rest of the site uses. If content.json failed to load (SITE.photos
+   empty) the strip just stays empty - the cover's mark, name and buttons work fine on their
+   own against the plain dark background. Skipped entirely once the cover's already been
+   dismissed this session - display:none on the overlay doesn't stop eager images from
+   downloading, so building it at all would waste bandwidth nobody benefits from. */
+/* Random every visit, but evenly spread: up to max photos dealt from every category in turn,
+   then ordered so neighbours (almost) never share a category - one busy category can't take over. */
+function coverShuffle(a){
+  a = a.slice();
+  for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; }
+  return a;
+}
+function coverMix(list, max){
+  function group(arr){
+    var g = { groups:{}, keys:[] };
+    coverShuffle(arr).forEach(function(p){ var c = p.category || ""; if(!g.groups[c]){ g.groups[c] = []; g.keys.push(c); } g.groups[c].push(p); });
+    return g;
+  }
+  var picked = list.slice();
+  if(picked.length > max){
+    var g = group(list); picked = [];
+    while(picked.length < max){
+      coverShuffle(g.keys).forEach(function(k){ if(picked.length < max && g.groups[k].length) picked.push(g.groups[k].pop()); });
+    }
+  }
+  var h = group(picked), out = [], prev = null;
+  while(out.length < picked.length){
+    var cand = h.keys.filter(function(k){ return h.groups[k].length && k !== prev; });
+    if(!cand.length) cand = h.keys.filter(function(k){ return h.groups[k].length; });
+    var total = 0; cand.forEach(function(k){ total += h.groups[k].length * h.groups[k].length; });
+    var r = Math.random() * total, pick = cand[cand.length - 1];
+    for(var i = 0; i < cand.length; i++){ r -= h.groups[cand[i]].length * h.groups[cand[i]].length; if(r < 0){ pick = cand[i]; break; } }
+    out.push(h.groups[pick].pop()); prev = pick;
+  }
+  return out;
+}
+function renderCoverFilmstrip(){
+  if(document.documentElement.classList.contains("cover-seen")) return;
+  var strip = $("#cover-strip");
+  if(!strip) return;
+  var all = (SITE.photos || []).filter(function(p){ return p && p.src && p.showInAll !== false; });
+  if(!all.length) all = (SITE.photos || []).filter(function(p){ return p && p.src; });
+  var pool = coverMix(all, 12);  /* a fresh selection, evenly from every category, in a new order each visit */
+  if(!pool.length) return;
+  var list = pool.concat(pool);
+  var stripHtml = list.map(function(p){
+    return '<img loading="eager" decoding="async" '+stripImgAttrs(p.src)+' alt="" style="--ar:'+coverTile(p)+'">';
+  }).join("");
+  strip.innerHTML = stripHtml;
+  /* colour copy for the Spotlight - same photos, already downloaded, so no extra loading */
+  var colorStrip = $("#cover-strip-color");
+  if(colorStrip) colorStrip.innerHTML = stripHtml;
+  pool.forEach(function(p){ p.__coverAr = coverTile(p); });
+  strip._pool = pool;
+  setCoverSpeed();
+  /* Frame each photo from its REAL shape (the saved crop setting isn't always the photo's shape).
+     The strip fades in once the photos are in (or after 1.8s at most), so nothing visibly jumps. */
+  var imgs = strip.querySelectorAll("img"), cimgs = colorStrip ? colorStrip.querySelectorAll("img") : [], n = pool.length;
+  var waits = [];
+  for(var i = 0; i < n; i++) (function(im){
+    waits.push(new Promise(function(res){ if(im.complete && im.naturalWidth) res(); else { im.addEventListener("load", res, { once:true }); im.addEventListener("error", res, { once:true }); } }));
+  })(imgs[i]);
+  var shown = false;
+  function reveal(){
+    if(shown) return; shown = true;
+    for(var k = 0; k < n; k++){
+      var im = imgs[k];
+      if(im && im.naturalWidth && im.naturalHeight){
+        var t = coverTileFromRatio(im.naturalWidth / im.naturalHeight);
+        pool[k].__coverAr = t;
+        [imgs[k], imgs[k + n], cimgs[k], cimgs[k + n]].forEach(function(el){ if(el) el.style.setProperty("--ar", t); });
+      }
+    }
+    setCoverSpeed();
+    strip.classList.add("cover-strip-filled");
+    if(colorStrip) colorStrip.classList.add("cover-strip-filled");
+  }
+  Promise.all(waits).then(reveal);
+  setTimeout(reveal, 1800);
+  if(!window.__coverSpeedBound){
+    window.__coverSpeedBound = true;
+    var t = 0;
+    window.addEventListener("resize", function(){ clearTimeout(t); t = setTimeout(setCoverSpeed, 200); });
+  }
+}
+/* width / height of a photo, from its saved shape ("3/2", "4/5"...) - a first guess until it loads */
+function coverRatio(p){
+  var m = /^\s*(\d+(?:\.\d+)?)\s*[\/:x]\s*(\d+(?:\.\d+)?)\s*$/.exec(String(p && p.ratio || ""));
+  var r = m ? parseFloat(m[1]) / parseFloat(m[2]) : 1.5;
+  return (r > 0.2 && r < 5) ? +r.toFixed(4) : 1.5;
+}
+/* the frame for a photo on the cover: halfway between the old narrow slice (0.42 wide per 1 tall)
+   and the photo's real shape - capped so no single photo takes over the screen */
+function coverTile(p){ return coverTileFromRatio(coverRatio(p)); }
+function coverTileFromRatio(r){
+  var phone = window.matchMedia && window.matchMedia("(max-aspect-ratio:1/1)").matches;
+  /* a third of the way from the old narrow slice towards the photo's real shape - a tighter,
+     narrower band on phones (0.44-0.52) crops in a little more than desktop's (0.44-0.72) */
+  return +Math.max(0.44, Math.min(phone ? 0.52 : 0.72, (r + 0.42 * 2) / 3)).toFixed(4);
+}
+/* The drift moves at the same calm pace (pixels per second) whatever the photos' shapes, and both
+   strips (black & white + colour) always get the identical timing so they stay perfectly aligned. */
+function setCoverSpeed(){
+  var strip = $("#cover-strip");
+  if(!strip || !strip._pool) return;
+  var phone = window.matchMedia && window.matchMedia("(max-aspect-ratio:1/1)").matches;
+  var imgs = strip.querySelectorAll("img"), half = imgs.length / 2, len = 0;
+  for(var i = 0; i < half; i++){
+    var r = strip._pool[i] ? strip._pool[i].__coverAr : .75;
+    len += window.innerHeight * r + (phone ? 8 : 10);
+  }
+  var speed = phone ? 56 : 62;                              /* CSS px per second */
+  var secs = Math.max(30, Math.round(len / speed));
+  [strip, $("#cover-strip-color")].forEach(function(el){ if(el) el.style.animationDuration = secs + "s"; });
+}
+
+/* Cover's headline: the same real hero lines as the rest of the site (SITE.hero, editable in
+   the Content Editor), run through the same italics() *asterisk* parser already used elsewhere
+   - so this never drifts out of sync with a hardcoded copy. The one addition: "curiosity"
+   specifically gets the amber accent color, wherever it lands in whatever the CMS currently
+   has (word-boundary matched, so it only ever catches the whole word). */
+function renderCoverHeadline(){
+  if(document.documentElement.classList.contains("cover-seen")) return;
+  var el = $("#cover-headline");
+  if(!el || !SITE.hero || !SITE.hero.length) return;
+  el.innerHTML = SITE.hero.map(function(lineStr){
+    var html = italics(lineStr).replace(/\bcuriosity\b/gi, '<span class="cover-accent">$&</span>');
+    return '<div>' + html + '</div>';
+  }).join("");
+}
+
+/* Featured strip: a fresh, balanced mix on every visit. Up to 12 Featured photos, dealt evenly from
+   every category (so one category with lots of Featured photos - Events - can't take over the strip),
+   then ordered so two photos from the same category never sit side by side. Categories with more
+   Featured photos than they get a turn for show a different selection each time. */
+var HOME_FEATURED_MAX = 12;
+function homeShuffle(a){ a = a.slice(); for(var i = a.length - 1; i > 0; i--){ var j = Math.floor(Math.random() * (i + 1)); var t = a[i]; a[i] = a[j]; a[j] = t; } return a; }
+function homeGroups(list){
+  var g = {}, keys = [];
+  homeShuffle(list).forEach(function(p){ var c = String(p.category || "").trim().toLowerCase(); if(!g[c]){ g[c] = []; keys.push(c); } g[c].push(p); });
+  return { g: g, keys: keys };
+}
+function homeFeaturedMix(list, max){
+  if(!list.length) return [];
+  var pick = list;
+  if(list.length > max){                               /* deal round by round, one per category */
+    var G = homeGroups(list), out = [];
+    while(out.length < max){
+      homeShuffle(G.keys).forEach(function(k){ if(out.length < max && G.g[k].length) out.push(G.g[k].pop()); });
+    }
+    pick = out;
+  }
+  var H = homeGroups(pick), res = [], prev = null;     /* then spread them out */
+  while(res.length < pick.length){
+    var cand = H.keys.filter(function(k){ return H.g[k].length && k !== prev; });
+    if(!cand.length) cand = H.keys.filter(function(k){ return H.g[k].length; });
+    var total = 0; cand.forEach(function(k){ total += H.g[k].length * H.g[k].length; });
+    var r = Math.random() * total, k2 = cand[cand.length - 1];
+    for(var i = 0; i < cand.length; i++){ r -= H.g[cand[i]].length * H.g[cand[i]].length; if(r < 0){ k2 = cand[i]; break; } }
+    res.push(H.g[k2].pop()); prev = k2;
+  }
+  return res;
+}
+
 function renderHomeGrid() {
   var grid = $("#grid");
   if(!grid) return;
   grid.className = "home-work-grid";
   
-  var list = (SITE.photos || []).filter(function(p){
-    var matchesCat = state.filter === "All" || cleanCat(p.category) === cleanCat(state.filter);
-    if (!matchesCat) return false;
-    if (state.filter === "All") {
-      return (p.featured !== false && String(p.featured).toLowerCase() !== "false");
-    }
-    return true; 
-  });
+ /* Featured photos only (no category filters here - "What We Capture" has every category).
+     If nothing is marked Featured yet, show everything rather than an empty strip. */
+  var all = (SITE.photos || []).filter(function(p){ return p && p.src; });
+  var feat = all.filter(function(p){ return p.featured !== false && String(p.featured).toLowerCase() !== "false"; });
+  var list = homeFeaturedMix(feat.length ? feat : all, HOME_FEATURED_MAX);
 
   state.visible = list;
   grid._list = list;                 /* remember which photos this strip shows */
@@ -2589,6 +2947,77 @@ function renderHomeGrid() {
   grid.scrollLeft = 0;
   grid._pos = 0;
   refreshLoop(grid);
+  initDock(grid);
+}
+
+/* ---------------- Phones: the Featured strip as a 3D "dock" ----------------
+   Swipe sideways and the photo in the middle swells forward while the ones beside it turn slightly
+   away and dim - like the Mac dock, in 3D. Each photo snaps to the centre. Tap a side photo to bring it
+   to the middle; tap the middle one to open it. Only transforms change (no re-layout), once per frame
+   and only while scrolling, so it stays smooth. Not used with a mouse, or if animations are turned off. */
+var DOCK_MQ = window.matchMedia ? window.matchMedia("(hover:none) and (pointer:coarse)") : null;
+function dockWanted(){ return !!(DOCK_MQ && DOCK_MQ.matches) && !prefersReducedMotion(); }
+function initDock(grid){
+  if(!grid) return;
+  var on = dockWanted();
+  grid.classList.toggle("dock", on);
+  var shots = $$(".shot", grid);
+  if(!on){
+    shots.forEach(function(sh){
+      sh.style.zIndex = "";
+      var w = sh.querySelector(".plate-tilt-wrap"), c = sh.querySelector(".cap");
+      if(w){ w.style.transform = ""; w.style.opacity = ""; }
+      if(c){ c.style.transform = ""; c.style.opacity = ""; }
+    });
+    return;
+  }
+  var centers = [], step = 1, H = 0, raf = 0;
+  var parts = shots.map(function(sh){ return { sh: sh, w: sh.querySelector(".plate-tilt-wrap"), c: sh.querySelector(".cap") }; });
+  function measure(){
+    centers = shots.map(function(sh){ return sh.offsetLeft + sh.offsetWidth / 2; });
+    step = centers.length > 1 ? Math.max(1, centers[1] - centers[0]) : Math.max(1, shots[0] ? shots[0].offsetWidth : 1);
+    var pl = shots[0] ? shots[0].querySelector(".plate") : null;
+    H = pl ? pl.offsetHeight : 0;
+  }
+  function paint(){
+    raf = 0;
+    var mid = grid.scrollLeft + grid.clientWidth / 2;
+    for(var i = 0; i < parts.length; i++){
+      var t = (centers[i] - mid) / step, a = Math.min(Math.abs(t), 2);
+      var near = Math.max(0, 1 - a);                        /* 1 in the middle, 0 one photo away */
+      var sc = 1 + 0.18 * near * near * (3 - 2 * near);      /* smooth swell, like the dock */
+      var rot = Math.max(-24, Math.min(24, -t * 20));        /* side photos turn to face the middle */
+      var P = parts[i];
+      if(P.w){
+        P.w.style.transform = "perspective(900px) rotateY(" + rot.toFixed(2) + "deg) scale(" + sc.toFixed(3) + ")";
+        P.w.style.opacity = (1 - 0.3 * Math.min(a, 1)).toFixed(3);
+      }
+      if(P.c){
+        P.c.style.transform = "translateY(" + ((sc - 1) * H / 2).toFixed(1) + "px)";
+        P.c.style.opacity = (1 - 0.55 * Math.min(a, 1)).toFixed(3);
+      }
+      P.sh.style.zIndex = String(100 - Math.round(a * 20));
+    }
+  }
+  grid._dock = {
+    queue: function(){ if(!raf) raf = requestAnimationFrame(paint); },
+    refresh: function(){ measure(); paint(); },
+    centers: function(){ return centers; }
+  };
+  if(!grid._dockBound){
+    grid._dockBound = true;
+    grid.addEventListener("scroll", function(){ if(grid._dock && grid.classList.contains("dock")) grid._dock.queue(); }, { passive: true });
+    var rt = 0;
+    window.addEventListener("resize", function(){
+      clearTimeout(rt);
+      rt = setTimeout(function(){
+        var want = dockWanted();
+        if(want !== grid.classList.contains("dock")) initDock(grid);
+        else if(grid._dock && want) grid._dock.refresh();
+      }, 150);
+    });
+  }
+  grid._dock.refresh();
 }
 
 /* One click handler for the whole strip, so the looping copies work exactly like the originals. */
@@ -2600,7 +3029,14 @@ function bindGridClicks(grid){
     if(!b || !grid.contains(b)) return;
     e.stopPropagation();
     var isTouch = ('ontouchstart' in window) || (navigator.maxTouchPoints > 0);
-    if (isTouch && !b.classList.contains("touch-focus")) {
+    if (grid.classList.contains("dock")) {
+      var mid = grid.scrollLeft + grid.clientWidth / 2, c = b.offsetLeft + b.offsetWidth / 2;
+      if (Math.abs(c - mid) > b.offsetWidth * 0.35) {
+        e.preventDefault();
+        grid.scrollTo({ left: c - grid.clientWidth / 2, behavior: prefersReducedMotion() ? "auto" : "smooth" });
+        return;
+      }
+    } else if (isTouch && !b.classList.contains("touch-focus")) {
       e.preventDefault();
       $$(".shot", grid).forEach(function(other) { other.classList.remove("touch-focus"); });
       b.classList.add("touch-focus");
@@ -2608,8 +3044,20 @@ function bindGridClicks(grid){
       return;
     }
     grid._isPaused = true;
-    if (grid._list) state.visible = grid._list;      /* always use THIS strip's photos, not whatever was opened last */
-    openLB(parseInt(b.dataset.idx, 10), b);
+    var idx = parseInt(b.dataset.idx, 10);
+    var list = grid._list || [];
+    var picked = list[idx];
+    /* full view stays inside the clicked photo's own category - in the All view the strip mixes
+       categories, and paging from an Events photo straight into Pets felt like a mistake */
+    if (picked) {
+      var sameCat = (SITE.photos || []).filter(function(p){ return cleanCat(p.category) === cleanCat(picked.category); });
+      if (sameCat.indexOf(picked) === -1) sameCat = [picked];
+      state.visible = sameCat;
+      idx = Math.max(0, sameCat.indexOf(picked));
+    } else {
+      state.visible = list;
+    }
+    openLB(isNaN(idx) ? 0 : idx, b);
   });
 }
 
@@ -2629,11 +3077,9 @@ function initCarouselControls() {
     prevBtn.addEventListener("click", function(e) {
       e.preventDefault();
       track._isPaused = true;
-      /* near the start? hop back one full loop first (same picture) so "previous" never hits a wall */
-      if (track._looped && track.scrollLeft < 310 && track.scrollLeft + track._loopW <= track.scrollWidth - track.clientWidth) {
-        track.scrollLeft = track.scrollLeft + track._loopW;
-      }
-      track.scrollBy({ left: -310, behavior: "smooth" });
+      /* already at the first photo? "previous" wraps round to the last, so it never hits a wall */
+      if (track.scrollLeft <= 2) track.scrollTo({ left: track.scrollWidth - track.clientWidth, behavior: "smooth" });
+      else track.scrollBy({ left: -310, behavior: "smooth" });
       setTimeout(function() { track._isPaused = false; track._pos = undefined; }, 1200);
     });
   }
@@ -2641,10 +3087,9 @@ function initCarouselControls() {
     nextBtn.addEventListener("click", function(e) {
       e.preventDefault();
       track._isPaused = true;
-      if (track._looped && track.scrollLeft + 310 > track.scrollWidth - track.clientWidth && track.scrollLeft - track._loopW >= 0) {
-        track.scrollLeft = track.scrollLeft - track._loopW;
-      }
-      track.scrollBy({ left: 310, behavior: "smooth" });
+      /* already at the last photo? "next" wraps round to the first */
+      if (track.scrollLeft >= track.scrollWidth - track.clientWidth - 2) track.scrollTo({ left: 0, behavior: "smooth" });
+      else track.scrollBy({ left: 310, behavior: "smooth" });
       setTimeout(function() { track._isPaused = false; track._pos = undefined; }, 1200);
     });
   }
@@ -2702,7 +3147,9 @@ function renderNichesList(){
       dropdownFootHTML = "";
     } else if (photosInNiche.length > 0) {
       var gridClass = "niche-preview-grid" + (isStaticPreview ? " niche-preview-grid--static" : "");
-      previewGridHTML = '<div class="' + gridClass + '">' + photosInNiche.map(function(p, pIdx){
+      /* preview strip: first 12 only - "View all N photos" below opens the rest; indexes stay
+         valid because the full view uses the same order */
+      previewGridHTML = '<div class="' + gridClass + '">' + photosInNiche.slice(0, 12).map(function(p, pIdx){
         var pos = getObjPosition(p.imagePosition);
         return '<button type="button" class="shot btn-preview-shot" data-niche-cat="'+esc(n.name)+'" data-niche-subidx="'+pIdx+'" aria-label="Open '+esc(p.title||"Frame")+'">'+
                  '<div class="plate-tilt-wrap">'+
@@ -2724,7 +3171,7 @@ function renderNichesList(){
       previewGridHTML = '<p style="opacity:0.55; margin:8px 0; font-size:0.9rem;">No photographs published in this category yet. Reach out to commission this shoot.</p>';
     }
 
-    return '<div class="niche-row" data-niche-row="'+esc(n.name)+'">' +
+    return '<div class="niche-row lrl-reveal" data-niche-row="'+esc(n.name)+'">' +
              '<button type="button" class="niche btn-toggle-niche" data-niche="'+esc(n.name)+'" aria-expanded="false" aria-label="Toggle '+esc(n.name)+' preview">'+
                '<h3>'+esc(n.name)+'<span class="arrow">&rarr;</span></h3>'+
                '<p>'+esc(n.line || "")+'</p>'+
@@ -2736,6 +3183,8 @@ function renderNichesList(){
              '</div>' +
            '</div>';
   }).join("");
+
+  observeReveals(nHost);
 
   $$(".btn-toggle-niche", nHost).forEach(function(btn){
     btn.addEventListener("click", function(e){
@@ -2756,7 +3205,10 @@ function renderNichesList(){
         if (pGrid) {
           pGrid.scrollLeft = 0;
           pGrid._pos = 0;
-          pGrid._isPaused = false;
+          /* stay paused if the cursor is already resting on the track as it expands */
+          var hovered = false;
+          try { hovered = pGrid.matches(":hover"); } catch(err) {}
+          pGrid._isPaused = hovered;
           bindTrackInteractions(pGrid);
           refreshLoop(pGrid);
         }
@@ -3005,17 +3457,21 @@ function restoreOpener(key){
     try { el.focus({ preventScroll: true }); } catch(err) { el.focus(); }
   }
 }
+/* keyboard vs. mouse/touch: opening a pop-up by tap, click or a link shouldn't light up a focus
+   ring on its close button - only keyboard users need focus placed on a button */
+var kbdNav = false;
+document.addEventListener("keydown", function(e){ if(e.key === "Tab" || e.key === "Enter" || e.key === " ") kbdNav = true; }, true);
+["mousedown", "touchstart"].forEach(function(ev){ document.addEventListener(ev, function(){ kbdNav = false; }, { capture: true, passive: true }); });
 function focusDialog(dlg){
   if(!dlg) return;
   setTimeout(function(){
-    var target = dlg.querySelector(".overlay-close, #lb-close, #btn-close-enquiry-modal");
+    var target = kbdNav ? dlg.querySelector(".overlay-close, #lb-close") : null;
     if(!target){ dlg.setAttribute("tabindex", "-1"); target = dlg; }
     try { target.focus({ preventScroll: true }); } catch(err) { target.focus(); }
   }, 60);
 }
 function topDialog(){
-  var modal = document.getElementById("enquiry-modal");
-  if(modal && modal.classList.contains("open")) return modal;
+  if(enquiryIsOpen()) return window.LRL.enquiry.el();
   if(typeof lb !== "undefined" && lb && lb.classList.contains("on")) return lb;
   if(collectivePage && collectivePage.classList.contains("open")) return collectivePage;
   if(nichesPage && nichesPage.classList.contains("open")) return nichesPage;
@@ -3104,18 +3560,7 @@ function initNichesSlideshow(){
   }, 4200);
 }
 
-function openNiches(){
-  if(nichesPage && !nichesPage.classList.contains("open")) rememberOpener("niches");
-  if(collectivePage && collectivePage.classList.contains("open")) closeCollective();
-  if(nichesPage){
-    nichesPage.classList.add("open");
-    document.body.style.overflow = "hidden";
-    window.location.hash = "what-we-capture";
-    nichesPage.scrollTop = 0;
-    focusDialog(nichesPage);
-    initNichesSlideshow();
-  }
-}
+function openNiches(){ window.location.href = "/capture.html"; }
 
 function closeNiches(){
   if(nichesPage){
@@ -3137,82 +3582,44 @@ function exitOverlayToHome(){
   window.scrollTo({ top: 0, behavior: 'smooth' });
 }
 
+/* old links from when What We Capture was a pop-up on this page (/#what-we-capture, /#niche-Food)
+   now open the real What We Capture page, on the same category */
+function oldCaptureLink(hash){
+  if(hash.indexOf("#niche-") !== 0) return "/capture.html";
+  var name = hash.slice(7);
+  try { name = decodeURIComponent(name); } catch(e){}
+  return name ? "/capture.html?category=" + encodeURIComponent(name) : "/capture.html";
+}
+
 window.addEventListener("hashchange", function(){
   var hash = window.location.hash;
   if(hash === "#collective"){
     openCollective();
-  } else if(hash === "#what-we-capture"){
-    openNiches();
-  } else if(hash.startsWith("#niche-")){
-    openNiches();
-    var niche = decodeURIComponent(hash.replace("#niche-", ""));
-    openNicheView(niche);
+  } else if(hash === "#what-we-capture" || hash.indexOf("#niche-") === 0){
+    window.location.replace(oldCaptureLink(hash));
   } else {
     if(collectivePage && collectivePage.classList.contains("open")) closeCollective();
     if(nichesPage && nichesPage.classList.contains("open")) closeNiches();
   }
 });
 
-/* ROBUST ENQUIRY MODAL SYSTEM */
-function populateEnquirySelect() {
-  var enqSelect = document.getElementById("enq-niche");
-  if (!enqSelect) return;
-  var currentVal = enqSelect.value;
-  var cats = ["General Enquiry"];
-  (SITE.niches || []).forEach(function(n) {
-    if (n && n.name && cats.indexOf(n.name) === -1) {
-      cats.push(n.name);
-    }
-  });
-  enqSelect.innerHTML = cats.map(function(c) {
-    return '<option value="' + esc(c) + '">' + esc(c) + '</option>';
-  }).join("");
-  if (currentVal && cats.indexOf(currentVal) !== -1) {
-    enqSelect.value = currentVal;
+/* ENQUIRY - the window itself lives in /shared.js so every page shows the exact same form (it also
+   gives the form its own Back-button step: Back on a phone closes it instead of leaving the site).
+   These two names stay so every existing Enquire button keeps working. If shared.js ever fails to
+   load, Enquire opens the visitor's mail app instead of doing nothing. */
+function enquiryReady(){ return !!(window.LRL && window.LRL.enquiry); }
+function openEnquiryModal(preselectedCategory, eventType) {
+  if (enquiryReady()) {
+    window.LRL.enquiry.open({ category: preselectedCategory || "General Enquiry", eventType: eventType || "" });
+    return;
   }
+  window.location.href = "mailto:" + (SITE.email || "hello@livingroomlabs.in") +
+    "?subject=" + encodeURIComponent("Enquiry: " + (preselectedCategory || "General Enquiry"));
 }
-
-function openEnquiryModal(preselectedCategory) {
-  var modal = document.getElementById("enquiry-modal");
-  if (!modal) return;
-  
-  populateEnquirySelect();
-  var select = document.getElementById("enq-niche");
-  if (select && preselectedCategory) {
-    var cleanTarget = String(preselectedCategory).trim().toLowerCase();
-    var found = false;
-    for (var i = 0; i < select.options.length; i++) {
-      if (select.options[i] && select.options[i].value && select.options[i].value.trim().toLowerCase() === cleanTarget) {
-        select.selectedIndex = i;
-        found = true;
-        break;
-      }
-    }
-    if (!found) {
-      var opt = document.createElement("option");
-      opt.value = preselectedCategory;
-      opt.textContent = preselectedCategory;
-      opt.selected = true;
-      select.appendChild(opt);
-    }
-  }
-  
-  if (!modal.classList.contains("open")) rememberOpener("enquiry");
-  state.enqOpenedAt = Date.now();
-  state.enqWarned = false;
-  modal.classList.add("open");
-  var nameInput = document.getElementById("enq-name");
-  if (nameInput) {
-    setTimeout(function() { nameInput.focus(); }, 80);
-  }
-}
-
 function closeEnquiryModal() {
-  var modal = document.getElementById("enquiry-modal");
-  var wasOpen = !!(modal && modal.classList.contains("open"));
-  if (modal) modal.classList.remove("open");
-  if (wasOpen) restoreOpener("enquiry");
+  if (enquiryReady()) window.LRL.enquiry.close();
 }
+function enquiryIsOpen(){ return enquiryReady() && window.LRL.enquiry.isOpen(); }
 
 function initSlideshow(){
   var slides = [];
@@ -3255,7 +3662,9 @@ function initSlideshow(){
 
   var heroBox = $("#hero-slideshow");
   if(heroBox){
-    heroBox.addEventListener("click", function(){
+    heroBox.addEventListener("click", function(e){
+      var eye = e.target.closest ? e.target.closest(".band-eye") : null;
+      if(eye){ e.stopPropagation(); openHeroInViewer(eye); return; }
       resetSlideInterval();
       nextSlide();
     });
@@ -3284,7 +3693,7 @@ function resetSlideInterval(){
   if(state.slides && state.slides.length > 1){
     state.slideTimer = setInterval(function(){
       nextSlide();
-    }, 3000);
+    }, 3000);   /* was 2200 - a bit slower so each banner photo can be looked at */
   }
 }
 
@@ -3320,7 +3729,22 @@ function nextSlide(){
       newImg.style.zIndex = "2";
     }
     state.isTransitioning = false;
-  }, 1000);
+  }, 1400);
+}
+
+/* Eye button on the banner: opens the current banner photo in the photo viewer.
+   Uses the photo's own title/caption if the same image is also in the photo list. */
+function openHeroInViewer(opener){
+  if(!state.slides || !state.slides.length) return;
+  var photos = SITE.photos || [];
+  state.visible = state.slides.map(function(s){
+    var hit = null;
+    photos.forEach(function(p){ if(!hit && p && p.src === s.src) hit = p; });
+    return hit || { src: s.src, title: s.alt || "Living Room Labs", client: "Living Room Labs", category: "Featured", caption: "", alt: s.alt || "" };
+  });
+  if(state.slideTimer){ clearInterval(state.slideTimer); state.slideTimer = null; }
+  state.heroViewing = true;
+  openLB(state.currentSlide, opener);
 }
 
 /* LIGHTBOX */
@@ -3332,17 +3756,17 @@ function openLB(i, opener){
   lb.setAttribute("open", "");
   document.body.style.overflow = "hidden";
   paintLB();
-  var closeEl = $("#lb-close");
-  if (closeEl) closeEl.focus();
+  focusDialog(lb);
 }
 
 function closeLB(){
+  if(state.heroViewing){ state.heroViewing = false; resetSlideInterval(); }
   lb.classList.remove("on");
   lb.removeAttribute("open");
-  document.body.style.overflow = (collectivePage.classList.contains("open") || nichesPage.classList.contains("open")) ? "hidden" : "";
+  document.body.style.overflow = (collectivePage.classList.contains("open") || (nichesPage && nichesPage.classList.contains("open"))) ? "hidden" : "";
   if(state.opener) {
     state.opener.classList.remove("touch-focus");
-    state.opener.focus();
+    if(kbdNav){ try { state.opener.focus({ preventScroll: true }); } catch(err){ state.opener.focus(); } }
   }
 }
 
@@ -3392,79 +3816,312 @@ function paintLB(){
   $("#lb-desc").textContent = p.caption || "";
   $("#lb-i").textContent = String(state.index + 1).padStart(2,"0");
   $("#lb-n").textContent = String(state.visible.length).padStart(2,"0");
+  if(state.visible.length > 1) [1, -1].forEach(function(d){
+    var q = state.visible[(state.index + d + state.visible.length) % state.visible.length];
+    if(q){ var pre = new Image(); pre.decoding = "async"; pre.src = fullFor(q.src); }
+  });
 }
 
-/* ---------------- Lamplight: warm glow that follows the cursor, dark mode + desktop only.
-   Mirrors capture.html's effect exactly (dim base copy, bright copy masked to a circle
-   around the cursor, warm glow). Mobile never gets this here - it stays on capture.html. ---------------- */
-function initHomeLamp(){
-  var frame = document.querySelector(".lb-frame");
-  if(!lb || !frame) return;
+/* ---------------- Cover: shows once per session (see the early <head> script). Work dismisses
+   it for the rest of the session; Spotlight toggles a warm glow that follows the cursor/finger,
+   eased the same way the lightbox lamp is (a plain CSS custom-property change jumps instead of
+   gliding - browsers don't animate --custom-properties in a gradient without registering them
+   via @property, so this uses the same small rAF+lerp loop as initHomeLamp for the same reason,
+   just without that one's idle-drift wander, which isn't needed for a strip that's already
+   always moving on its own). Only two things are ever focusable while it's up - Tab is trapped
+   between them by hand, since there's no single wrapper around the rest of the page to mark
+   inert without a much larger, riskier restructure. ---------------- */
+function initCover(){
+  var overlay = $("#cover-overlay");
+  if(!overlay || document.documentElement.classList.contains("cover-seen")) return;
 
-  var active = false, lastMoveAt = 0;
-  var curX = 0, curY = 0, targetX = 0, targetY = 0, haveStageSize = false;
-  var idlePhase = Math.random() * 1000;
+  var spotlightBtn = $("#cover-spotlight-btn");
+  var workBtn = $("#cover-work-btn");
+  if(!spotlightBtn || !workBtn) return;
 
-  function isDark(){ return document.documentElement.getAttribute("data-theme") === "dark"; }
-  function isDesktop(){ return !window.matchMedia || window.matchMedia("(min-width:861px)").matches; }
-
-  function updateLampVisibility(){
-    var show = isDark() && lightboxIsOpen() && isDesktop();
-    frame.classList.toggle("lamp-on", show);
-    if (show && !active) centerTarget();
-  }
-
-  function centerTarget(){
-    var r = frame.getBoundingClientRect();
-    targetX = r.width / 2; targetY = r.height / 2;
-    curX = targetX; curY = targetY;
-    haveStageSize = r.width > 0;
-  }
+  var SEEN_KEY = "lrl_cover_seen";
+  var spotlightOn = false, rafRunning = false, haveTarget = false;
+  var curX = 0, curY = 0, targetX = 0, targetY = 0;
 
   function setTarget(clientX, clientY){
-    var r = frame.getBoundingClientRect();
-    targetX = Math.max(0, Math.min(r.width, clientX - r.left));
-    targetY = Math.max(0, Math.min(r.height, clientY - r.top));
-    haveStageSize = r.width > 0;
-    lastMoveAt = performance.now();
-    active = true;
+    targetX = clientX; targetY = clientY;
+    if(!haveTarget){ curX = targetX; curY = targetY; haveTarget = true; }
   }
-
-  /* tracked on the whole modal, not just the frame, so moving anywhere over the dark
-     surrounding area still aims the lamp - it just clamps to the photo's edges */
-  lb.addEventListener("mousemove", function(e){ setTarget(e.clientX, e.clientY); }, {passive:true});
-  lb.addEventListener("mouseleave", function(){ active = false; });
-
-  function loop(t){
-    requestAnimationFrame(loop);
-    if (!frame.classList.contains("lamp-on")) return;
-    if (!haveStageSize) centerTarget();
+  var lastPointerAt = 0, tilt = { x:.5, y:.5, at:0, bx:null, by:null, ang:null, asked:false };
+  function onMove(e){
+    var t = (e.touches && e.touches[0]) ? e.touches[0] : e;
+    if(typeof t.clientX !== "number") return;
+    lastPointerAt = performance.now();
+    setTarget(t.clientX, t.clientY);
+  }
+  /* phone tilt (gyro) steers the spotlight whenever the finger isn't on the screen */
+  function onTilt(e){
+    if(e.gamma == null || e.beta == null) return;
+    /* raw sensor angles -> screen left/right + up/down, in portrait or landscape */
+    var ang = (screen.orientation && typeof screen.orientation.angle === "number") ? screen.orientation.angle
+            : (typeof window.orientation === "number" ? window.orientation : 0);
+    var ax = e.gamma, ay = e.beta;
+    if(ang === 90){ ax = e.beta; ay = -e.gamma; }
+    else if(ang === -90 || ang === 270){ ax = -e.beta; ay = e.gamma; }
+    else if(ang === 180){ ax = -e.gamma; ay = -e.beta; }
+    /* however the phone is held when the light comes on is "centre", and that centre slowly follows you */
+    if(tilt.bx === null || tilt.ang !== ang){ tilt.bx = ax; tilt.by = ay; tilt.ang = ang; }
+    else { tilt.bx += (ax - tilt.bx) * 0.0015; tilt.by += (ay - tilt.by) * 0.0015; }
+    tilt.x = Math.max(0, Math.min(1, .5 + (ax - tilt.bx) / 32));
+    tilt.y = Math.max(0, Math.min(1, .5 + (ay - tilt.by) / 26));
+    tilt.at = performance.now();
+  }
+  function startTilt(){
+    if(tilt.asked || !window.DeviceOrientationEvent) return;
+    tilt.asked = true;
+    try {
+      if(typeof DeviceOrientationEvent.requestPermission === "function"){
+        DeviceOrientationEvent.requestPermission().then(function(r){
+          if(r === "granted") window.addEventListener("deviceorientation", onTilt, { passive: true });
+        }).catch(function(){});
+      } else window.addEventListener("deviceorientation", onTilt, { passive: true });
+    } catch(e){}
+  }
+  function loop(){
+    if(!spotlightOn){ rafRunning = false; return; }
+    rafRunning = true;
     var now = performance.now();
-    var recentlyActive = active || (now - lastMoveAt < 900);
-    var r = frame.getBoundingClientRect();
-    if (!recentlyActive) {
-      if (prefersReducedMotion()) { targetX = r.width/2; targetY = r.height/2; }
-      else {
-        targetX = r.width/2 + Math.sin((t + idlePhase) / 3800) * (r.width * 0.18);
-        targetY = r.height/2 + Math.cos((t + idlePhase) / 4600) * (r.height * 0.16);
-      }
+    if(now - lastPointerAt > 1200 && now - tilt.at < 600){
+      var rr = overlay.getBoundingClientRect();
+      setTarget(tilt.x * rr.width, tilt.y * rr.height);
     }
-    var ease = prefersReducedMotion() ? 1 : 0.08;
+    var ease = prefersReducedMotion() ? 1 : 0.16;
     curX += (targetX - curX) * ease;
     curY += (targetY - curY) * ease;
-    frame.style.setProperty("--lx", curX.toFixed(1) + "px");
-    frame.style.setProperty("--ly", curY.toFixed(1) + "px");
+    placeLight();
+    requestAnimationFrame(loop);
   }
-  requestAnimationFrame(loop);
+  /* slide the small light window to the light, and its colour copy the opposite way so the photos line up */
+  var colorWin = overlay.querySelector(".cover-color"), colorInner = overlay.querySelector(".cover-color-inner");
+  var lightR = 0, lastLX = null, lastLY = null;
+  function sizeLight(){
+    if(!colorWin || !colorInner) return;
+    lightR = colorWin.offsetWidth / 2;
+    colorInner.style.width = overlay.clientWidth + "px";
+    colorInner.style.height = overlay.clientHeight + "px";
+    lastLX = lastLY = null;
+  }
+  function placeLight(){
+    if(!colorWin || !colorInner) return;
+    if(!lightR) sizeLight();
+    var dx = Math.round((curX - lightR) * 10) / 10, dy = Math.round((curY - lightR) * 10) / 10;
+    if(dx === lastLX && dy === lastLY) return;            /* light hasn't moved: nothing to do this frame */
+    lastLX = dx; lastLY = dy;
+    colorWin.style.transform = "translate3d(" + dx + "px," + dy + "px,0)";
+    colorInner.style.transform = "translate3d(" + (-dx) + "px," + (-dy) + "px,0)";
+  }
+  window.addEventListener("resize", function(){ if(spotlightOn){ sizeLight(); placeLight(); } });
+  function setSpotlight(on){
+    spotlightOn = on;
+    overlay.classList.toggle("spotlight-on", on);
+    spotlightBtn.setAttribute("aria-pressed", String(on));
+    if(on){
+      if(!haveTarget){
+        var r = overlay.getBoundingClientRect();
+        setTarget(r.width / 2, r.height / 2);
+      }
+      sizeLight(); placeLight();
+      if(!rafRunning) requestAnimationFrame(loop);
+    }
+  }
 
-  updateLampVisibility();
-  if (window.MutationObserver) {
-    var mo = new MutationObserver(updateLampVisibility);
-    mo.observe(lb, { attributes: true, attributeFilter: ["class"] });
-    var htmlMo = new MutationObserver(updateLampVisibility);
-    htmlMo.observe(document.documentElement, { attributes: true, attributeFilter: ["data-theme"] });
+  function dismiss(){
+    if(overlay.classList.contains("cover-hide")) return;   /* double-tap / Escape+click guard */
+    spotlightOn = false;
+    try { sessionStorage.setItem(SEEN_KEY, "1"); } catch(e){}
+    if(typeof applyTheme === "function") applyTheme(false);   /* land on the home page in light, always */
+    try { window.scrollTo(0, 0); } catch(e){}
+    /* the homepage headline's rise-in already played unseen behind the cover - replay it now,
+       so it's the first thing visitors actually see as the cover fades away */
+    $$(".line-inner").forEach(function(el){
+      el.style.animationName = "none";   /* name only - the inline animation-delay stagger survives */
+      void el.offsetWidth;
+      el.style.animationName = "";
+    });
+    overlay.classList.add("cover-hide");
+    /* keep .cover-hide on screen for its fade; cover-seen (display:none + unlocks scroll) comes in finish() */
+    var finished = false;
+    function finish(){
+      if(finished) return;
+      finished = true;
+      overlay.hidden = true;
+      document.documentElement.classList.add("cover-seen");
+      var navBrand = document.querySelector(".nav .brand");
+      /* keyboard users continue from the logo; a tap or click shouldn't light up a focus ring */
+      if(navBrand && typeof navBrand.focus === "function" && (typeof kbdNav === "undefined" || kbdNav)){
+        try { navBrand.focus({ preventScroll: true }); } catch(e){ navBrand.focus(); }
+      }
+    }
+    /* transitionend bubbles up from children (e.g. the Work button's own hover fade), so only
+       the overlay's own opacity fade counts as "done" */
+    overlay.addEventListener("transitionend", function onEnd(e){
+      if(e.target !== overlay || e.propertyName !== "opacity") return;
+      overlay.removeEventListener("transitionend", onEnd);
+      finish();
+    });
+    setTimeout(finish, 700); /* safety net if transitionend never fires (e.g. tab was backgrounded) */
   }
-  window.addEventListener("resize", updateLampVisibility);
+
+  spotlightBtn.addEventListener("click", function(){ if(!spotlightOn) startTilt(); setSpotlight(!spotlightOn); });
+  workBtn.addEventListener("click", dismiss);
+  overlay.addEventListener("mousemove", onMove, { passive: true });
+  overlay.addEventListener("touchstart", onMove, { passive: true });
+  overlay.addEventListener("touchmove", onMove, { passive: true });
+
+  overlay.addEventListener("keydown", function(e){
+    if(e.key === "Escape"){ e.preventDefault(); dismiss(); return; }
+    if(e.key !== "Tab") return;
+    if(e.shiftKey && document.activeElement === spotlightBtn){
+      e.preventDefault(); workBtn.focus();
+    } else if(!e.shiftKey && document.activeElement === workBtn){
+      e.preventDefault(); spotlightBtn.focus();
+    }
+  });
+}
+
+/* ---------------- Spotlight (home page) ----------------
+   Its own on/off button on the "Featured photos" line - never tied to dark mode, and off on every visit.
+   If it's on and that button scrolls out of sight, a small copy of it waits in the bottom corner.
+   On: the page falls into a dim black & white and a warm pool of light that follows the mouse,
+   finger or the phone's tilt brings the photos back into colour. Open a photo with it on and the
+   same light moves over the photo instead. Every loop sleeps while it's off - no battery cost. */
+function initHomeLamp(){
+  var btn = $("#homeSpot");
+  var frame = document.querySelector(".lb-frame");
+  if(!btn) return;
+  var spot = false;
+  var floatBtn = $("#homeSpotFloat"), pillSeen = true;
+  function syncFloat(){
+    if(!floatBtn) return;
+    var show = pageMode() && !pillSeen;
+    if(floatBtn.classList.contains("on") !== show){
+      floatBtn.classList.toggle("on", show);
+      document.documentElement.classList.toggle("spot-float-on", show);
+    }
+  }
+  var root = document.documentElement;
+
+  /* ---- phone tilt (gyro), asked for only when the Spotlight is first switched on ---- */
+  var tilt = { x:.5, y:.5, at:0, bx:null, by:null, ang:null, asked:false };
+  function onTilt(e){
+    if(e.gamma == null || e.beta == null) return;
+    var ang = (screen.orientation && typeof screen.orientation.angle === "number") ? screen.orientation.angle
+            : (typeof window.orientation === "number" ? window.orientation : 0);
+    var ax = e.gamma, ay = e.beta;
+    if(ang === 90){ ax = e.beta; ay = -e.gamma; }
+    else if(ang === -90 || ang === 270){ ax = -e.beta; ay = e.gamma; }
+    else if(ang === 180){ ax = -e.gamma; ay = -e.beta; }
+    if(tilt.bx === null || tilt.ang !== ang){ tilt.bx = ax; tilt.by = ay; tilt.ang = ang; }
+    else { tilt.bx += (ax - tilt.bx) * 0.0015; tilt.by += (ay - tilt.by) * 0.0015; }
+    tilt.x = Math.max(0, Math.min(1, .5 + (ax - tilt.bx) / 32));
+    tilt.y = Math.max(0, Math.min(1, .5 + (ay - tilt.by) / 26));
+    tilt.at = performance.now();
+  }
+  function startTilt(){
+    if(tilt.asked || !window.DeviceOrientationEvent) return;
+    tilt.asked = true;
+    try {
+      if(typeof DeviceOrientationEvent.requestPermission === "function"){
+        DeviceOrientationEvent.requestPermission().then(function(r){
+          if(r === "granted") window.addEventListener("deviceorientation", onTilt, { passive:true });
+        }).catch(function(){});
+      } else window.addEventListener("deviceorientation", onTilt, { passive:true });
+    } catch(e){}
+  }
+  function tiltRecent(now){ return now - tilt.at < 600; }
+
+  /* ---- where the pointer is ---- */
+  var ptr = { x: innerWidth/2, y: innerHeight/2, at: 0 };
+  function aim(x, y){ ptr.x = x; ptr.y = y; ptr.at = performance.now(); }
+  window.addEventListener("mousemove", function(e){ aim(e.clientX, e.clientY); }, { passive:true });
+  ["touchstart","touchmove"].forEach(function(ev){
+    window.addEventListener(ev, function(e){ if(e.touches && e.touches[0]) aim(e.touches[0].clientX, e.touches[0].clientY); }, { passive:true });
+  });
+
+  function pageMode(){ return spot && !lightboxIsOpen() && !homeCovered() && root.classList.contains("cover-seen"); }
+  function photoMode(){ return spot && lightboxIsOpen() && !!frame; }
+
+  var cur = { x: innerWidth/2, y: innerHeight/2 }, fc = { x: 0, y: 0, ok: false }, running = false, idlePhase = Math.random() * 1000;
+  function loop(t){
+    var page = pageMode(), photo = photoMode();
+    if(root.classList.contains("page-lamp-on") !== page) root.classList.toggle("page-lamp-on", page);
+    if(frame && frame.classList.contains("lamp-on") !== photo) frame.classList.toggle("lamp-on", photo);
+    if(root.classList.contains("lb-spot") !== photo) root.classList.toggle("lb-spot", photo);
+    if(!page && !photo){ running = false; return; }      /* off: stop completely */
+    requestAnimationFrame(loop);
+    var now = performance.now(), ease = prefersReducedMotion() ? 1 : 0.14;
+    var useTilt = now - ptr.at > 1200 && tiltRecent(now);
+    if(page){
+      var tx = useTilt ? tilt.x * innerWidth : ptr.x, ty = useTilt ? tilt.y * innerHeight : ptr.y;
+      cur.x += (tx - cur.x) * ease; cur.y += (ty - cur.y) * ease;
+      root.style.setProperty("--px", cur.x.toFixed(1) + "px");
+      root.style.setProperty("--py", cur.y.toFixed(1) + "px");
+    } else {
+      var r = frame.getBoundingClientRect();
+      var fx, fy;
+      if(useTilt){ fx = tilt.x * r.width; fy = tilt.y * r.height; }
+      else if(now - ptr.at < 1500){ fx = Math.max(0, Math.min(r.width, ptr.x - r.left)); fy = Math.max(0, Math.min(r.height, ptr.y - r.top)); }
+      else if(prefersReducedMotion()){ fx = r.width/2; fy = r.height/2; }
+      else { fx = r.width/2 + Math.sin((t + idlePhase) / 3800) * r.width * .18; fy = r.height/2 + Math.cos((t + idlePhase) / 4600) * r.height * .16; }
+      if(!fc.ok){ fc.x = fx; fc.y = fy; fc.ok = true; }
+      var e2 = prefersReducedMotion() ? 1 : 0.08;
+      fc.x += (fx - fc.x) * e2; fc.y += (fy - fc.y) * e2;
+      frame.style.setProperty("--lx", fc.x.toFixed(1) + "px");
+      frame.style.setProperty("--ly", fc.y.toFixed(1) + "px");
+    }
+  }
+  function wake(){
+    syncFloat();
+    if(!pageMode() && !photoMode()){
+      /* only touch the class when it really changes - rewriting it would re-trigger the watcher below */
+      if(root.classList.contains("page-lamp-on")) root.classList.remove("page-lamp-on");
+      if(frame && frame.classList.contains("lamp-on")) frame.classList.remove("lamp-on");
+      if(root.classList.contains("lb-spot")) root.classList.remove("lb-spot");
+      return;
+    }
+    if(!running){ running = true; fc.ok = false; requestAnimationFrame(loop); }
+  }
+  window.__homeLampWake = wake;
+
+  function paint(){
+    btn.setAttribute("aria-pressed", String(spot));
+    btn.setAttribute("aria-label", spot ? "Turn the spotlight off" : "Turn the spotlight on");
+  }
+  btn.addEventListener("click", function(){
+    spot = !spot;
+    if(spot){ startTilt(); cur.x = ptr.at ? ptr.x : innerWidth/2; cur.y = ptr.at ? ptr.y : innerHeight/2; }
+    paint(); wake();
+  });
+  paint();
+  if(floatBtn){
+    floatBtn.addEventListener("click", function(){
+      var hadFocus = document.activeElement === floatBtn;
+      spot = false; paint(); wake();
+      if(hadFocus){ try { btn.focus({ preventScroll:true }); } catch(e){} }
+    });
+    /* is the real switch properly on screen? Half-hidden under the fixed top bar counts as out of sight */
+    if(window.IntersectionObserver){
+      var navEl = document.querySelector(".nav"), navH = navEl ? navEl.offsetHeight : 0;
+      new IntersectionObserver(function(entries){
+        var en = entries[entries.length - 1];
+        pillSeen = en.isIntersecting && en.intersectionRatio >= 0.9; syncFloat();
+      }, { rootMargin: "-" + navH + "px 0px 0px 0px", threshold: [0, 0.9, 1] }).observe(btn);
+    }
+  }
+
+  /* the photo viewer and the pop-up pages open/close by class - re-check whenever they change */
+  if(window.MutationObserver){
+    var mo = new MutationObserver(wake);
+    [lb, typeof collectivePage !== "undefined" ? collectivePage : null, typeof nichesPage !== "undefined" ? nichesPage : null].forEach(function(el){
+      if(el) mo.observe(el, { attributes:true, attributeFilter:["class"] });
+    });
+    mo.observe(root, { attributes:true, attributeFilter:["class"] });
+  }
 }
 
 var pull = $("#theme");
@@ -3475,6 +4132,8 @@ function applyTheme(isDark) {
     pull.setAttribute("aria-pressed", String(isDark));
     pull.setAttribute("aria-label", isDark ? "Turn the lamp on" : "Turn the lamp off");
   }
+  var tcm = document.getElementById("themeColorMeta");
+  if (tcm) tcm.setAttribute("content", isDark ? "#080808" : "#FFFFFF");
   try {
     localStorage.setItem("lrl_theme", isDark ? "dark" : "light");
   } catch(e) {}
@@ -3512,7 +4171,7 @@ document.addEventListener("keydown", function(e){
 
   if(e.key === "Escape" && top){
     /* close only the pop-up that is on top (a photo opened inside "What we capture" closes first) */
-    if(top.id === "enquiry-modal") closeEnquiryModal();
+    if(enquiryIsOpen()) closeEnquiryModal();
     else if(top === lb) closeLB();
     else if(top === collectivePage) closeCollective();
     else closeNiches();
@@ -3537,10 +4196,16 @@ document.addEventListener("keydown", function(e){
 
 var tx = 0, ty = 0;
 if(lb) {
-  lb.addEventListener("touchstart", function(e){ tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY; }, {passive:true});
+  var tSwipe = false, tAt = 0;
+  lb.addEventListener("touchstart", function(e){
+    tSwipe = e.touches.length === 1; tAt = Date.now();
+    tx = e.changedTouches[0].clientX; ty = e.changedTouches[0].clientY;
+  }, {passive:true});
+  lb.addEventListener("touchmove", function(e){ if(e.touches.length > 1) tSwipe = false; }, {passive:true});
   lb.addEventListener("touchend", function(e){
+    if(!tSwipe || Date.now() - tAt > 800) return; tSwipe = false;
     var dx = e.changedTouches[0].clientX - tx, dy = e.changedTouches[0].clientY - ty;
-    if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy)) stepLB(dx < 0 ? 1 : -1);
+    if(Math.abs(dx) > 46 && Math.abs(dx) > Math.abs(dy) * 1.3) stepLB(dx < 0 ? 1 : -1);
   }, {passive:true});
 }
 
@@ -3566,7 +4231,7 @@ function bindGlobalEvents() {
 
   document.addEventListener("click", function(e) {
     // Universal Enquire button trigger
-    var enqBtn = e.target.closest("#btn-enquire-overview, #btn-enquire-niche-view, [data-open-enquiry], .niche-enquire-trigger, #btn-foot-enquire");
+    var enqBtn = e.target.closest("#btn-enquire-overview, #btn-enquire-niche-view, [data-open-enquiry], .niche-enquire-trigger, #btn-foot-enquire, #btnContactEnquire");
     if (enqBtn) {
       e.preventDefault();
       e.stopPropagation();
@@ -3575,18 +4240,8 @@ function bindGlobalEvents() {
       return;
     }
 
-    // Modal Close triggers
-    var closeEnq = e.target.closest("#btn-close-enquiry-modal");
-    if (closeEnq) {
-      e.preventDefault();
-      closeEnquiryModal();
-      return;
-    }
-    var modal = document.getElementById("enquiry-modal");
-    if (e.target === modal) {
-      closeEnquiryModal();
-      return;
-    }
+    // clicks inside the enquiry window are handled by the window itself (shared.js)
+    if (e.target.closest && e.target.closest("#lrlEnq")) return;
 
     if (!e.target.closest("#grid .shot") && !e.target.closest(".niche-preview-grid")) {
       $$("#grid .shot.touch-focus, .btn-preview-shot.touch-focus").forEach(function(s) {
@@ -3598,6 +4253,11 @@ function bindGlobalEvents() {
       e.preventDefault(); closeCollective();
     } else if (e.target.closest(".btn-close-niches")) {
       e.preventDefault(); closeNiches();
+    } else if (e.target.closest(".nav > .brand, .foot-logo-btn") && !document.querySelector(".overlay-page.open, .overlay-page.active, .overlay-page[aria-hidden='false']")) {
+      /* logo on the home page itself: show the cover again */
+      e.preventDefault();
+      try { sessionStorage.removeItem("lrl_cover_seen"); } catch(err){}
+      window.location.href = "/";
     } else if (e.target.closest(".logo-exit-btn")) {
       e.preventDefault(); exitOverlayToHome();
     } else if (e.target.closest(".nav-collective-link, .nav-collective-link-mob")) {
@@ -3621,14 +4281,6 @@ function bindGlobalEvents() {
     }
   });
 
-  var enqMsg = document.getElementById("enq-msg");
-  var charCount = document.getElementById("char-count");
-  if (enqMsg && charCount) {
-    enqMsg.addEventListener("input", function() {
-      charCount.textContent = enqMsg.value.length;
-    });
-  }
-
   /* Events footer sub-links: Miss Universe, Performing Arts */
   var eventSubLinks = $$(".foot-event-sub");
   eventSubLinks.forEach(function(btn) {
@@ -3641,83 +4293,6 @@ function bindGlobalEvents() {
     });
   });
 
-  var enqForm = document.getElementById("enquiry-form");
-  if (enqForm) {
-    enqForm.addEventListener("submit", function(e) {
-      e.preventDefault();
-      if (state.isSubmitting) return;
-
-      /* --- spam checks (people never notice these) --- */
-      var enqStatusEl = document.getElementById("enquiry-status");
-      var hpEl = document.getElementById("enq-website");
-      if (hpEl && hpEl.value) {
-        /* a bot filled the hidden field: look successful, send nothing */
-        if (enqStatusEl) enqStatusEl.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
-        return;
-      }
-      var nowMs = Date.now();
-      if (state.enqOpenedAt && nowMs - state.enqOpenedAt < 4000 && !state.enqWarned) {
-        /* impossibly fast: ask once for a double-check (a real person just presses Send again) */
-        state.enqWarned = true;
-        if (enqStatusEl) enqStatusEl.textContent = "PLEASE DOUBLE-CHECK, THEN PRESS SEND AGAIN";
-        return;
-      }
-      if (state.lastEnqSentAt && nowMs - state.lastEnqSentAt < 30000) {
-        if (enqStatusEl) enqStatusEl.textContent = "ALREADY SENT // PLEASE WAIT A MOMENT";
-        return;
-      }
-
-      var btn = document.getElementById("btn-enquiry-send");
-      var enqStatus = document.getElementById("enquiry-status");
-      state.isSubmitting = true;
-      if (btn) btn.disabled = true;
-      if (enqStatus) enqStatus.textContent = "TRANSMITTING...";
-
-      var payload = {
-        name: $("#enq-name").value,
-        email: $("#enq-email").value,
-        category: $("#enq-niche").value,
-        message: $("#enq-msg").value,
-        _gotcha: hpEl ? hpEl.value : ""
-      };
-
-      var formId = SITE.formspreeId || "xjykvnoz";
-
-      fetch("https://formspree.io/f/" + formId, {
-        method: "POST",
-        headers: { 
-          "Content-Type": "application/json", 
-          "Accept": "application/json" 
-        },
-        body: JSON.stringify(payload)
-      })
-      .then(function(res) {
-        if (res.ok) {
-          state.lastEnqSentAt = Date.now();
-          if (enqStatus) enqStatus.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
-          setTimeout(function() {
-            enqForm.reset();
-            if (charCount) charCount.textContent = "0";
-            closeEnquiryModal();
-            state.isSubmitting = false;
-            if (btn) btn.disabled = false;
-            if (enqStatus) enqStatus.textContent = "READY";
-          }, 1800);
-        } else {
-          throw new Error("Submission failed");
-        }
-      })
-      .catch(function() {
-        if (enqStatus) enqStatus.textContent = "DISPATCHING VIA MAIL CLIENT...";
-        window.location.href = "mailto:" + (SITE.email || "hello@livingroomlabs.in") +
-          "?subject=" + encodeURIComponent("Enquiry: " + payload.category + " — " + payload.name) +
-          "&body=" + encodeURIComponent("Name: " + payload.name + "\nEmail: " + payload.email + "\nCategory: " + payload.category + "\n\nMessage:\n" + payload.message);
-        state.isSubmitting = false;
-        if (btn) btn.disabled = false;
-        setTimeout(closeEnquiryModal, 1500);
-      });
-    });
-  }
 }
 
 function toggleMemberPhoto(plate) {
@@ -3804,7 +4379,6 @@ function renderContent(){
   var idxList = $("[data-foot-index]");
   if(idxList){
     idxList.innerHTML =
-      '<li><a href="#work">Work</a></li>' +
       '<li><button type="button" class="nav-niches-link" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">What We Capture</button></li>' +
       '<li><button type="button" id="btn-foot-enquire" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">Enquire</button></li>';
   }
@@ -3869,7 +4443,7 @@ function renderContent(){
         imgTags += '<img loading="lazy" decoding="async" '+stripImgAttrs(m.photo2)+' alt="'+esc(m.name)+'" style="object-position: '+esc(mPos2)+';">';
       }
 
-      return '<div class="member-card">' +
+      return '<div class="member-card lrl-reveal">' +
                '<div class="member-plate" data-member-idx="'+mIdx+'">' +
                  imgTags +
                '</div>' +
@@ -3881,6 +4455,8 @@ function renderContent(){
                '</div>' +
              '</div>';
     }).join("");
+
+    observeReveals(collectiveGrid);
 
     window.collectiveTimers = window.collectiveTimers || [];
     window.collectiveTimers.forEach(clearInterval);
@@ -3904,17 +4480,23 @@ function renderContent(){
 
   buildFilters();
   renderHomeGrid();
-  renderNichesList();
-  populateEnquirySelect();
+  renderCoverFilmstrip();
+  renderCoverHeadline();
+
+  /* the enquiry window uses the live categories, email and form settings from the Content Editor */
+  if (enquiryReady()) {
+    var evTypes = [];
+    SITE.photos.forEach(function(p){ (p.eventTypes || []).forEach(function(et){ if (evTypes.indexOf(et) === -1) evTypes.push(et); }); });
+    window.LRL.enquiry.configure({
+      categories: SITE.niches.map(function(n){ return (n && n.name) || n; }),
+      formspreeId: SITE.formspreeId, email: SITE.email, eventTypes: evTypes
+    });
+  }
 
   if(window.location.hash === "#collective"){
     openCollective();
-  } else if(window.location.hash === "#what-we-capture"){
-    openNiches();
-  } else if(window.location.hash.startsWith("#niche-")){
-    openNiches();
-    var niche = decodeURIComponent(window.location.hash.replace("#niche-", ""));
-    openNicheView(niche);
+  } else if(window.location.hash === "#what-we-capture" || window.location.hash.indexOf("#niche-") === 0){
+    window.location.replace(oldCaptureLink(window.location.hash));
   }
 }
 
@@ -3954,7 +4536,76 @@ function showLoadProblem(){
   if(counter) counter.textContent = "";
 }
 
+/* ---------------- Colour placeholders ----------------
+   Every photo frame gets that photo's own average colour behind it, so while it loads you see its
+   tone rather than an empty box. Works for anything drawn now or later (grids, category previews,
+   the cover strip...) via one light observer that only reacts to new elements being added. */
+var PHOTO_COLORS = {};
+function photoNameOf(img){
+  var u = img.getAttribute("data-full") || img.getAttribute("src") || "";
+  var m = /\/images\/uploads\/([^\/?#]+)$/.exec(u);
+  if(m) return m[1];
+  m = /\/images\/(?:thumbs|full)\/([^\/?#]+)\.(?:webp|jpg)$/.exec(u) || /\/images\/hero\/([^\/?#]+)-\d+\.webp$/.exec(u);
+  return m ? m[1] : "";
+}
+function paintPlaceholders(root){
+  if(!root || !root.querySelectorAll) return;
+  var imgs = root.tagName === "IMG" ? [root] : root.querySelectorAll("img");
+  for(var i = 0; i < imgs.length; i++){
+    var img = imgs[i];
+    if(img.dataset.ph) continue;
+    var c = PHOTO_COLORS[photoNameOf(img)];
+    if(!c) continue;
+    img.dataset.ph = "1";
+    img.style.backgroundColor = c;
+    var frame = img.parentElement;
+    if(frame && frame.classList && (frame.classList.contains("plate") || frame.classList.contains("event-type-chip-img"))) frame.style.backgroundColor = c;
+  }
+}
+(function(){
+  var pending = [], queued = false;
+  function flush(){ queued = false; var list = pending; pending = []; list.forEach(paintPlaceholders); }
+  if(window.MutationObserver){
+    new MutationObserver(function(recs){
+      for(var i = 0; i < recs.length; i++) for(var j = 0; j < recs[i].addedNodes.length; j++){
+        var n = recs[i].addedNodes[j]; if(n.nodeType === 1) pending.push(n);
+      }
+      if(pending.length && !queued){ queued = true; requestAnimationFrame(flush); }
+    }).observe(document.documentElement, { childList: true, subtree: true });
+  }
+  (window.__lrlColors || Promise.resolve({})).then(function(c){
+    PHOTO_COLORS = (c && typeof c === "object") ? c : {};
+    paintPlaceholders(document.body);
+  });
+})();
+
+/* ---------------- "View" tag: follows a real mouse over photos you can open ---------------- */
+(function(){
+  if(!window.matchMedia || !window.matchMedia("(hover:hover) and (pointer:fine)").matches) return;
+  var SEL = "#grid .shot, .btn-preview-shot, .niche-preview-grid .shot";
+  var tag = null, x = 0, y = 0, on = false, raf = 0;
+  function place(){ raf = 0; tag.style.translate = (x + 16) + "px " + (y + 18) + "px"; }
+  function set(show){
+    if(show === on) return;
+    on = show;
+    if(show) place();            /* appear at the cursor, not fly in from its last spot */
+    tag.classList.toggle("on", show);
+  }
+  document.addEventListener("pointermove", function(e){
+    if(e.pointerType && e.pointerType !== "mouse") return;
+    if(!tag){ tag = document.createElement("div"); tag.className = "lrl-view-tag"; tag.setAttribute("aria-hidden", "true"); tag.textContent = "View"; document.body.appendChild(tag); }
+    x = e.clientX; y = e.clientY;
+    var t = e.target && e.target.closest ? e.target.closest(SEL) : null;
+    set(!!t && !(typeof lb !== "undefined" && lb && lb.classList.contains("on")));
+    if(on && !raf) raf = requestAnimationFrame(place);
+  }, { passive: true });
+  document.documentElement.addEventListener("mouseleave", function(){ if(tag) set(false); });
+  document.addEventListener("pointerdown", function(){ if(tag) set(false); }, { passive: true });
+})();
+
 function initApp(){
+  /* first, and isolated: the cover must always be dismissable even if anything else fails */
+  try { initCover(); } catch(e){ document.documentElement.classList.add("cover-seen"); }
   bindGlobalEvents();
   initCarouselControls();
   initHomeLamp();
@@ -3992,7 +4643,7 @@ function initApp(){
 }
 
 window.addEventListener('load', function() {
-  if (!autoScrollRaf) startAutoScroll();
+  if (!autoScrollRaf && HOME_AUTOSCROLL) startAutoScroll();
 });
 
 /* When the window changes size (or the screen scale changes) re-check the loops and re-measure the pace. */
@@ -4018,6 +4669,8 @@ window.addEventListener('load', function() {
 
 initApp();
 </script>
+<div id="pageLamp" aria-hidden="true"></div>
+<div id="pageLampGlow" aria-hidden="true"></div>
 <script src="/fotu.js" defer></script>
 </body>
 </html>
