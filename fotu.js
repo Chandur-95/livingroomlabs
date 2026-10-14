@@ -31,7 +31,8 @@
   var QUIPS = [
     "Shake it like a Polaroid picture? Please don't. It ruins the print.",
     "Bokeh is blur that went to art school.",
-    "I'm instant. Your photos are not. The humans edit properly.",
+    "Fun fact: the very first photograph needed hours of exposure. I need a blink.",
+    "Fun fact: 'camera' is Latin for 'room'. So I'm a room inside Living Room Labs.",
     "Say cheese. Or paneer. I'm flexible.",
     "Golden hour is just the sun showing off.",
     "Fun fact: my rainbow stripe is load-bearing."
@@ -68,6 +69,10 @@
     "#fotu-bot{position:fixed;left:0;top:0;width:72px;height:72px;z-index:65;cursor:pointer;background:none;border:0;padding:0;-webkit-tap-highlight-color:transparent;transition:opacity .3s}",
     "#fotu-bot:focus-visible{outline:2px solid #378ADD;outline-offset:4px;border-radius:12px}",
     "#fotu-bot .fb{width:100%;height:100%;transform-origin:50% 100%}",
+    "#fotu-bot .fb{animation:fotuIdle 2.2s ease-in-out infinite}",
+    "@keyframes fotuIdle{0%,100%{transform:translateY(0) rotate(0)}25%{transform:translateY(-3px) rotate(-2deg)}75%{transform:translateY(-1px) rotate(2deg)}}",
+    "#fotu-bot.sleep .fb{animation:fotuSnore 2.4s ease-in-out infinite}",
+    "@keyframes fotuSnore{0%,100%{transform:scale(1,1) rotate(-4deg)}45%{transform:scale(1.06,.94) translateY(2px) rotate(-4deg)}}",
     "#fotu-bot.walk .fb{animation:fotuBob .3s ease-in-out infinite alternate}",
     "@keyframes fotuBob{from{transform:translateY(0) rotate(-3deg)}to{transform:translateY(-4px) rotate(3deg)}}",
     "#fotu-bot .l1,#fotu-bot .l2{transform-box:fill-box;transform-origin:50% 0}",
@@ -77,9 +82,17 @@
     "@keyframes fotuHop{40%{transform:translateY(-22px) rotate(-6deg)}100%{transform:none}}",
     "#fotu-bot .ey{transform-box:fill-box;transform-origin:50% 50%;transition:transform .08s}#fotu-bot .ey.cl{transform:scaleY(.1)}",
     "#fotu-bot .pr{transform:translateY(-22px);transition:transform .6s cubic-bezier(.3,1.4,.6,1)}#fotu-bot .pr.out{transform:translateY(14px)}",
-    "#fotu-bot .zz{position:absolute;right:-6px;top:-14px;font-size:13px;color:var(--f-mute);display:none;pointer-events:none}",
-    "#fotu-bot.sleep .zz{display:block;animation:fotuZz 1.6s infinite}",
-    "@keyframes fotuZz{0%{opacity:0;transform:translateY(4px)}50%{opacity:1}100%{opacity:0;transform:translateY(-10px)}}",
+    "#fotu-bot .zz{position:absolute;z-index:2;right:-10px;top:-34px;width:40px;height:50px;display:none;pointer-events:none;font-weight:800;color:#378ADD;text-shadow:0 0 2px #fff}",
+    "#fotu-bot .zz i{position:absolute;left:0;bottom:0;font-style:normal;opacity:0;animation:fotuZz 2.4s ease-out infinite}",
+    "#fotu-bot .zz i:nth-child(1){font-size:11px}#fotu-bot .zz i:nth-child(2){font-size:15px;animation-delay:.8s}#fotu-bot .zz i:nth-child(3){font-size:20px;animation-delay:1.6s}",
+    "#fotu-bot.sleep .zz{display:block}",
+    "@keyframes fotuZz{0%{opacity:0;transform:translate(0,6px) rotate(-10deg)}20%{opacity:1}100%{opacity:0;transform:translate(22px,-40px) rotate(12deg)}}",
+    "#fotu-bot .snore{display:none;transform-box:fill-box;transform-origin:50% 50%}",
+    "#fotu-bot.sleep .snore{display:block;animation:fotuMouth 2.4s ease-in-out infinite}",
+    "#fotu-bot.sleep .smile{display:none}",
+    "@keyframes fotuMouth{0%,100%{transform:scale(.5)}45%{transform:scale(1.25)}}",
+    "#fotu-bot.sleep .ey{transform:scaleY(.08)!important}",
+    "#fotu-bot .lid{display:none}#fotu-bot.sleep .lid{display:block}",
     "#fotu-bub{position:fixed;z-index:66;max-width:230px;background:var(--f-paper);color:var(--f-ink);border:1px solid var(--f-line);border-radius:14px;padding:9px 12px;font-size:13.5px;line-height:1.45;box-shadow:0 6px 24px rgba(0,0,0,.12);display:none;pointer-events:none}",
     "#fotu-bub.on{display:block;animation:fotuPop .2s ease-out}",
     "@keyframes fotuPop{from{transform:scale(.7);opacity:0}to{transform:none;opacity:1}}",
@@ -123,14 +136,17 @@
     '<rect class="fbulb" x="66" y="32" width="14" height="9" rx="2" fill="#444441"/>' +
     '<g class="ey"><circle cx="30" cy="52" r="10" fill="#2C2C2A"/><circle class="p1" cx="33" cy="49" r="3" fill="#fff"/></g>' +
     '<g class="ey"><circle cx="70" cy="56" r="7" fill="#2C2C2A"/><circle class="p2" cx="72" cy="54" r="2" fill="#fff"/></g>' +
-    '<path d="M40 70 Q50 76 60 70" stroke="#444441" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
+    '<path class="smile" d="M40 70 Q50 76 60 70" stroke="#444441" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
+    '<ellipse class="snore" cx="50" cy="71" rx="4" ry="3.5" fill="#444441"/>' +
+    '<path class="lid" d="M21 52 Q30 57 39 52" stroke="#2C2C2A" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
+    '<path class="lid" d="M64 56 Q70 60 76 56" stroke="#2C2C2A" stroke-width="2.5" fill="none" stroke-linecap="round"/>' +
     '</svg>';
 
   var root = document.createElement("div");
   root.id = "fotu-root";
   root.innerHTML =
     '<div id="fotu-bub" role="status" aria-live="polite"></div>' +
-    '<button id="fotu-bot" type="button" aria-label="Chat with Fotu"><div class="fb"><span class="zz">z z</span>' + SVG + '</div></button>' +
+    '<button id="fotu-bot" type="button" aria-label="Chat with Fotu"><div class="fb"><span class="zz"><i>z</i><i>z</i><i>Z</i></span>' + SVG + '</div></button>' +
     '<button id="fotu-back" type="button" aria-label="Bring Fotu back" title="Bring Fotu back">' +
       '<svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" style="color:var(--f-ink)"><rect x="3" y="7" width="18" height="13" rx="3"/><circle cx="12" cy="13.5" r="3.5"/><path d="M8 7l1.5-2.5h5L16 7"/></svg></button>' +
     '<div id="fotu-panel" role="dialog" aria-label="Chat with Fotu">' +
@@ -173,10 +189,16 @@
     bot.style.transform = "translate(" + Math.round(pos.x) + "px," + Math.round(pos.y) + "px)";
     bot.querySelector(".fb").style.scale = dir < 0 ? "-1 1" : "";
   }
-  function startPos() {
-    var b = bounds();
-    pos.x = b.maxX - 10; pos.y = b.maxY; place();
+  /* Fotu lives in the bottom-right corner and paces a little within it */
+  var PACE = 110;
+  function home() { var b = bounds(); return { x: b.maxX - 8, y: b.maxY }; }
+  function startPos() { var h = home(); pos.x = h.x; pos.y = h.y; place(); }
+  function pace(cb) {
+    var h = home();
+    var x = h.x - Math.random() * PACE;
+    walkTo(x, h.y, cb);
   }
+  function goHome(cb) { var h = home(); walkTo(h.x, h.y, cb); }
   function look(dx, dy) {
     dx = clamp(dx, -4, 4); dy = clamp(dy, -3, 3);
     p1.setAttribute("cx", 30 + dx); p1.setAttribute("cy", 52 + dy);
@@ -190,7 +212,7 @@
   function walkTo(x, y, cb) {
     if (reduceMotion) { cb && cb(); return; }
     var b = bounds();
-    x = clamp(x, b.minX, b.maxX); y = clamp(y, b.minY, b.maxY);
+    x = clamp(x, Math.max(b.minX, b.maxX - PACE - 8), b.maxX); y = b.maxY;
     var d = Math.hypot(x - pos.x, y - pos.y), ms = Math.max(400, d * 8);
     dir = x < pos.x ? -1 : 1;
     bot.classList.remove("sleep"); bot.classList.add("walk");
@@ -255,7 +277,6 @@
   function shoot(img) {
     var r = img.getBoundingClientRect();
     if (r.width < 10) return;
-    look(0, -3);
     setTimeout(function () {
       if (isOpen || paused) return;
       fbulb.setAttribute("fill", "#FFF8D6");
@@ -278,13 +299,13 @@
     var list = img ? [img] : visiblePhotos();
     if (!list.length) { wanderQuip(); return; }
     var t = img || pick(list), r = t.getBoundingClientRect(), s = size();
-    var tx = r.left + r.width / 2 - s / 2;
-    var ty = r.bottom - s * 0.6;
-    walkTo(tx, ty, function () { shoot(t); });
+    var dx = (r.left + r.width / 2) - (pos.x + s / 2), dy = (r.top + r.height / 2) - (pos.y + s / 2);
+    dir = dx < 0 ? -1 : 1; place(); hop();
+    look(dx / 40 * dir, dy / 40);
+    shoot(t);
   }
   function wanderQuip() {
-    var b = bounds();
-    walkTo(b.minX + Math.random() * (b.maxX - b.minX), b.minY + Math.random() * (b.maxY - b.minY), function () { hop(); bubble(pick(QUIPS)); });
+    pace(function () { hop(); bubble(pick(QUIPS)); });
   }
 
   /* ================= behaviour loop ================= */
@@ -293,10 +314,12 @@
     idle++;
     var r = Math.random();
     if (idle > 6 && r < 0.3) { bot.classList.add("sleep"); bubble(SLEEP_LINE, 2600); idle = 0; return; }
-    if (bot.classList.contains("sleep") && r < 0.5) return; /* let it nap a little */
-    if (r < 0.55) visit();
-    else if (r < 0.75) wanderQuip();
-    else { blink(); hop(); }
+    if (bot.classList.contains("sleep") && r < 0.6) return; /* let it nap a little */
+    if (bot.classList.contains("sleep")) { bot.classList.remove("sleep"); hop(); bubble("Huh? I wasn't sleeping. I was... long exposure.", 2600); return; }
+    if (r < 0.35) visit();
+    else if (r < 0.5) wanderQuip();
+    else if (r < 0.85) pace(function () { if (Math.random() < 0.4) hop(); });
+    else goHome(function () { blink(); hop(); });
   }
   setInterval(function () { if (Math.random() < 0.5 && !hidden) blink(); }, 2200);
 
@@ -324,7 +347,7 @@
       if (d < 60 && !walking && Date.now() - lastScurry > 8000 && Math.random() < 0.05) {
         lastScurry = Date.now();
         bubble(PERSONAL_SPACE, 2000);
-        setTimeout(function () { walkTo(pos.x - Math.sign(dx || 1) * 150, pos.y - Math.sign(dy || 1) * 60); }, 300);
+        setTimeout(function () { var h = home(); walkTo(dx > 0 ? h.x - PACE : h.x, h.y, function () { setTimeout(function () { goHome(); }, 2500); }); }, 300);
       }
     }, { passive: true });
 
@@ -344,8 +367,7 @@
 
   window.addEventListener("resize", function () {
     var b = bounds();
-    pos.x = clamp(pos.x, b.minX, b.maxX); pos.y = clamp(pos.y, b.minY, b.maxY);
-    if (!walking) place();
+    var h = home(); if (!walking) { pos.x = clamp(pos.x, h.x - PACE, h.x); pos.y = h.y; place(); }
     if (isOpen) placePanel();
   });
 
@@ -368,7 +390,7 @@
   }
   var step = null, enq = {}, chatOpenedAt = 0, sending = false;
 
-  function home() {
+  function chatHome() {
     step = null;
     chips(FAQ.map(function (f) { return f[0]; }).concat(["Book a shoot"]), function (label) {
       say(label, "u");
@@ -414,8 +436,8 @@
   function send() {
     inForm.style.display = "none";
     var last = parseInt(read(SENT_KEY) || "0", 10);
-    if (Date.now() - last < 30000) { say("Easy, I'm still printing the last one. Try again in a few seconds."); home(); return; }
-    if (Date.now() - chatOpenedAt < 4000) { say("That was fast. Suspiciously fast. Try once more?"); home(); return; }
+    if (Date.now() - last < 30000) { say("Easy, I'm still printing the last one. Try again in a few seconds."); chatHome(); return; }
+    if (Date.now() - chatOpenedAt < 4000) { say("That was fast. Suspiciously fast. Try once more?"); chatHome(); return; }
     sending = true;
     say("Printing...");
     var formId = SITE.formspreeId || "xjykvnoz";
@@ -435,7 +457,7 @@
       store(SENT_KEY, String(Date.now()));
       sending = false;
       say("Printed and sent! " + enq.cat + " shoot for " + enq.name + ". Reply coming to " + enq.email + ".");
-      home();
+      chatHome();
     }).catch(function () {
       sending = false;
       say("My printer jammed. Opening your email app so nothing gets lost.");
@@ -443,20 +465,20 @@
       window.location.href = "mailto:" + to +
         "?subject=" + encodeURIComponent("Enquiry: " + enq.cat + " — " + enq.name) +
         "&body=" + encodeURIComponent("Name: " + enq.name + "\nEmail: " + enq.email + "\nCategory: " + enq.cat + "\n\nMessage:\n" + enq.msg);
-      home();
+      chatHome();
     });
   }
 
   function placePanel() {
     if (window.innerWidth <= 640) { panel.style.left = ""; panel.style.top = ""; return; }
     var s = size(), w = 310, h = Math.min(420, window.innerHeight - 24);
-    var left = pos.x + s + 10; if (left + w > window.innerWidth - 12) left = pos.x - w - 10;
-    left = clamp(left, 12, window.innerWidth - w - 12);
-    var top = clamp(pos.y + s - h, 12, window.innerHeight - h - 12);
+    var left = clamp(window.innerWidth - w - 16, 12, window.innerWidth - w - 12);
+    var top = clamp(pos.y - h - 10, 12, window.innerHeight - h - 12);
     panel.style.left = left + "px"; panel.style.top = top + "px";
   }
   function openChat() {
     if (walking) stopWalk();
+    startPos(); bot.style.transition = "none";
     isOpen = true; hideBubble();
     bot.classList.remove("sleep"); idle = 0;
     placePanel(); panel.classList.add("on");
@@ -465,7 +487,7 @@
     if (!logEl.children.length) {
       say(CLICK_HELLO[0]);
       setTimeout(function () { say(CLICK_HELLO[1]); }, 500);
-      home();
+      chatHome();
     }
     setTimeout(function () { var f = chipsEl.querySelector("button"); if (inForm.style.display === "flex") inp.focus(); else if (f) f.focus(); }, 60);
   }
@@ -500,8 +522,8 @@
   applyHidden();
   setTimeout(function () {
     if (hidden || paused) return;
-    var b = bounds();
-    walkTo(b.maxX - 120, b.maxY, function () {
+    var b = bounds(); pos.x = b.maxX; place();
+    walkTo(b.maxX - 60, b.maxY, function () {
       hop();
       printImg.setAttribute("fill", "#85B7EB");
       printEl.classList.add("out");
@@ -509,5 +531,5 @@
       setTimeout(function () { printEl.classList.remove("out"); }, 4200);
     });
   }, 1200);
-  setInterval(tick, 5500);
+  setInterval(tick, 4500);
 })();
