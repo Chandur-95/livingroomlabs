@@ -21,12 +21,6 @@
   var photos = [];              /* the batch being prepared */
   var seq = 0;
   var uploading = false;
-  /* Edits and deletes on already-uploaded photos are queued here instead of publishing right
-     away - keyed by the photo's CURRENT src (never changes pre-commit, even mid-queue), value is
-     { action: "edit", changes: {...}, replace: {file,url,ratio}|null } or { action: "delete" }.
-     Nothing reaches GitHub until "Commit changes" is pressed, and then every queued photo goes up
-     as ONE commit - same all-or-nothing pattern as the New Upload batch. */
-  var pendingEdits = {};
 
   function $(s, r){ return (r || document).querySelector(s); }
   function $all(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -229,9 +223,7 @@
       .then(function(tree){
         var contentEntry = null;
         state.uploadNames = [];
-        state.paths = {};
         (tree.tree || []).forEach(function(t){
-          if (t.type === "blob") state.paths[t.path] = true;
           if (t.path === "content.json") contentEntry = t;
           var m = /^images\/uploads\/([^\/]+)$/.exec(t.path);
           if (m && t.type === "blob") state.uploadNames.push(m[1]);
@@ -265,44 +257,23 @@
       }
       return true;
     });
-    $("#existingCountLabel").textContent = list.length + " of " + existingPhotos.length + " photos live" +
-      (Object.keys(pendingEdits).length ? " (" + Object.keys(pendingEdits).length + " change(s) queued)" : "");
+    $("#existingCountLabel").textContent = list.length + " of " + existingPhotos.length + " photos live";
     if (!list.length) {
       grid.innerHTML = '<div class="existing-empty">' + (existingPhotos.length ? "No photos match." : "No photos yet.") + '</div>';
-      renderPendingBar();
       return;
     }
     grid.innerHTML = list.map(function(p){
-      var pend = pendingEdits[p.src];
-      if (pend && pend.action === "delete") {
-        var src0 = p.__preview || thumbFor(p.src);
-        return '<div class="existing-card is-pending is-pending-delete">' +
-          '<img src="'+esc(src0)+'" data-full="'+esc(p.src)+'" alt="" loading="lazy">' +
-          '<div class="ec-body">' +
-            '<div class="ec-badge del">QUEUED FOR DELETE</div>' +
-            '<div class="ec-title">' + esc(p.title || "Untitled") + '</div>' +
-            '<button type="button" class="btn small" data-undo-src="' + esc(p.src) + '">Restore</button>' +
-          '</div>' +
-        '</div>';
-      }
-      /* a queued edit's changes (and, if chosen, its queued replacement image) take over the
-         card's display, so what you see here is what "Commit changes" will publish */
-      var d = pend ? Object.assign({}, p, pend.changes) : p;
-      var src = (pend && pend.replace) ? pend.replace.url : (p.__preview || thumbFor(p.src));
-      return '<div class="existing-card' + (pend ? " is-pending" : "") + '">' +
+      /* just-committed photos show from the local copy until the site finishes building them */
+      var src = p.__preview || thumbFor(p.src);
+      return '<div class="existing-card">' +
         '<img src="'+esc(src)+'" data-full="'+esc(p.src)+'" alt="" loading="lazy">' +
         '<div class="ec-body">' +
-          (pend ? '<div class="ec-badge">CHANGE QUEUED</div>' : '') +
-          '<div class="ec-title">' + (p.__justAdded ? '<span class="ec-new">NEW</span> ' : '') + esc(d.title || "Untitled") + '</div>' +
-          '<div class="ec-meta">' + esc(d.category || "") + ((d.eventTypes && d.eventTypes.length) ? " · " + esc(d.eventTypes.join(", ")) : "") + '</div>' +
-          (d.client ? '<div class="ec-meta">' + esc(d.client) + '</div>' : '') +
-          (d.featured ? '<div class="ec-meta">★ Featured</div>' : '') +
-          '<button type="button" class="btn small ec-edit" data-edit-src="' + esc(p.src) + '">Edit</button>' +
-          (pend ? '<button type="button" class="btn small ec-undo" data-undo-src="' + esc(p.src) + '">Undo</button>' : '') +
+          '<div class="ec-title">' + (p.__justAdded ? '<span class="ec-new">NEW</span> ' : '') + esc(p.title || "Untitled") + '</div>' +
+          '<div class="ec-meta">' + esc(p.category || "") + ((p.eventTypes && p.eventTypes.length) ? " · " + esc(p.eventTypes.join(", ")) : "") + '</div>' +
+          (p.client ? '<div class="ec-meta">' + esc(p.client) + '</div>' : '') +
         '</div>' +
       '</div>';
     }).join("");
-    renderPendingBar();
     /* no thumbnail yet (new or unprocessed photo)? fall back to the original file */
     $all("img[data-full]", grid).forEach(function(img){
       img.addEventListener("error", function onErr(){
@@ -313,448 +284,6 @@
   }
   $("#existingCategoryFilter").addEventListener("change", renderExistingGrid);
   $("#existingSearch").addEventListener("input", renderExistingGrid);
-
-  /* ================= Editing an already-uploaded photo =================
-     Changes the photo's details in content.json, and - only if you choose a new image - swaps the
-     image file too. Delete removes the photo from the site along with its files.
-     Saved with the same all-or-nothing commit as uploads: it re-reads the LATEST content.json
-     first (so an edit made elsewhere in the meantime is kept), changes just this one photo, and
-     publishes with force:false, so a simultaneous save is never overwritten. */
-  (function injectEditStyles(){
-    var css = [
-      "#bulkOverlay .ec-edit{margin-top:8px;width:100%;min-height:36px}",
-      "#bulkEdit{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;background:rgba(0,0,0,.55);padding:16px;overflow-y:auto;-webkit-overflow-scrolling:touch;overscroll-behavior:contain}",
-      "#bulkEdit.on{display:flex}",
-      "#bulkEdit .be-card{background:#fff;color:#0a0a0a;border-radius:10px;width:100%;max-width:560px;margin:auto;display:flex;flex-direction:column;max-height:calc(100vh - 32px);max-height:calc(100dvh - 32px);font-family:inherit}",
-      "#bulkEdit .be-head{display:flex;gap:14px;align-items:center;padding:16px 18px;border-bottom:1px solid #e2e2e2}",
-      "#bulkEdit .be-head img{width:64px;height:80px;object-fit:cover;border-radius:4px;background:#eee;flex:none}",
-      "#bulkEdit .be-head b{display:block;font-size:.95rem}",
-      "#bulkEdit .be-head span{font:.68rem 'JetBrains Mono',monospace;opacity:.55;word-break:break-all}",
-      "#bulkEdit .be-body{padding:14px 18px;overflow-y:auto;display:grid;gap:12px}",
-      "#bulkEdit label{font-size:.66rem;letter-spacing:.08em;text-transform:uppercase;opacity:.6;display:block;margin-bottom:3px}",
-      "#bulkEdit input[type=text],#bulkEdit textarea,#bulkEdit select{width:100%;box-sizing:border-box;border:1px solid #d6d6d6;border-radius:6px;padding:9px 10px;font-size:16px;font-family:inherit;background:#fff;color:#0a0a0a}",
-      "#bulkEdit textarea{min-height:64px;resize:vertical}",
-      "#bulkEdit .be-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}",
-      "#bulkEdit .be-toggles{display:flex;gap:18px;flex-wrap:wrap}",
-      "#bulkEdit .be-toggles label{display:flex;align-items:center;gap:8px;text-transform:none;letter-spacing:0;opacity:1;font-size:.9rem;margin:0;min-height:36px}",
-      "#bulkEdit .be-toggles input{width:20px;height:20px}",
-      "#bulkEdit .be-foot{display:flex;gap:10px;justify-content:flex-end;align-items:center;padding:14px 18px;border-top:1px solid #e2e2e2;flex-wrap:wrap}",
-      "#bulkEdit .be-msg{flex:1 1 100%;font-size:.8rem;min-height:1em}",
-      "#bulkEdit .be-msg.err{color:#b02a2a}",
-      "#bulkEdit .be-foot button{min-height:42px;padding:0 20px;border-radius:999px;border:1px solid #0a0a0a;font:600 .78rem/1 inherit;cursor:pointer;background:#fff;color:#0a0a0a}",
-      "#bulkEdit .be-foot .be-save{background:#0a0a0a;color:#fff}",
-      "#bulkEdit .be-foot button:disabled{opacity:.4;cursor:not-allowed}",
-      "#bulkEdit .be-replace{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}",
-      "#bulkEdit .be-replace button{min-height:32px;padding:0 12px;border-radius:999px;border:1px solid #0a0a0a;background:#fff;color:#0a0a0a;font:600 .72rem/1 inherit;cursor:pointer}",
-      "#bulkEdit .be-replace button:disabled{opacity:.4;cursor:not-allowed}",
-      "#bulkEdit .be-head .be-note{display:block;margin-top:6px;font:600 .72rem/1.35 inherit;opacity:1;color:#1f6f3a;word-break:normal}",
-      "#bulkEdit .be-foot .be-delete{margin-right:auto;border-color:#b02a2a;color:#b02a2a}",
-      "#bulkEdit .be-foot .be-delete:hover:not(:disabled){background:#b02a2a;color:#fff}",
-      "#bulkEdit .be-events{display:none}",
-      "#bulkEdit.is-events .be-events{display:block}",
-      "@media (max-width:560px){#bulkEdit{padding:0}#bulkEdit .be-card{max-width:none;min-height:100%;max-height:none;border-radius:0}#bulkEdit .be-row{grid-template-columns:1fr}}",
-      /* pending-changes bar (sits above the "Already Uploaded" grid) */
-      ".pending-bar{display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between;",
-      "  margin:0 0 14px;padding:10px 14px;border-radius:8px;border:1px solid #d8b34a;background:#fff8e6;color:#0a0a0a}",
-      ".pending-bar[hidden]{display:none}",
-      ".pending-bar .pb-msg{font-size:.82rem;flex:1 1 220px}",
-      ".pending-bar .pb-msg.err{color:#b02a2a;font-weight:600}",
-      ".pending-bar .pb-btns{display:flex;gap:8px;flex-wrap:wrap}",
-      ".pending-bar button{min-height:34px;padding:0 14px;border-radius:999px;border:1px solid #0a0a0a;font:600 .74rem/1 inherit;cursor:pointer;background:#fff;color:#0a0a0a}",
-      ".pending-bar .pb-commit{background:#0a0a0a;color:#fff}",
-      ".pending-bar button:disabled{opacity:.45;cursor:not-allowed}",
-      /* badges + dimming on cards that have a queued change */
-      ".existing-card.is-pending{outline:2px solid #d8b34a;outline-offset:-2px}",
-      ".existing-card.is-pending-delete{opacity:.5}",
-      ".existing-card .ec-badge{display:inline-block;font:600 .62rem/1 'JetBrains Mono',monospace;letter-spacing:.04em;",
-      "  padding:3px 6px;border-radius:4px;background:#d8b34a;color:#000;margin-bottom:4px}",
-      ".existing-card .ec-badge.del{background:#b02a2a;color:#fff}",
-      ".existing-card .ec-undo{margin-left:6px}"
-    ].join("\n");
-    var st = document.createElement("style"); st.textContent = css; document.head.appendChild(st);
-  })();
-
-  var editSrc = null, editSaving = false;
-  function editPanel(){
-    var el = document.getElementById("bulkEdit");
-    if (el) return el;
-    el = document.createElement("div");
-    el.id = "bulkEdit";
-    el.setAttribute("role", "dialog");
-    el.setAttribute("aria-modal", "true");
-    el.setAttribute("aria-label", "Edit photo");
-    el.innerHTML =
-      '<div class="be-card">' +
-        '<div class="be-head"><img id="beImg" alt=""><div><b>Edit photo</b><span id="beFile"></span>' +
-          '<div class="be-replace"><button type="button" id="beReplaceBtn">Replace image…</button>' +
-          '<button type="button" id="beReplaceUndo" hidden>Keep the old image</button>' +
-          '<input type="file" id="beReplaceInput" accept="image/*" hidden></div>' +
-          '<span class="be-note" id="beReplaceNote"></span>' +
-        '</div></div>' +
-        '<div class="be-body">' +
-          '<div><label for="beTitle">Title</label><input type="text" id="beTitle" maxlength="120"></div>' +
-          '<div class="be-row">' +
-            '<div><label for="beClient">Client</label><input type="text" id="beClient" maxlength="80"></div>' +
-            '<div><label for="beCategory">Category</label><select id="beCategory"></select></div>' +
-          '</div>' +
-          '<div class="be-events"><label for="beEvents">Event types (comma separated)</label><input type="text" id="beEvents" list="eventTypeSuggestions"></div>' +
-          '<div><label for="beCaption">Caption</label><textarea id="beCaption" maxlength="300"></textarea></div>' +
-          '<div class="be-row">' +
-            '<div><label for="beAlt">Description for screen readers</label><input type="text" id="beAlt" maxlength="200"></div>' +
-            '<div><label for="bePos">Crop position</label><select id="bePos"></select></div>' +
-          '</div>' +
-          '<div class="be-toggles">' +
-            '<label><input type="checkbox" id="beFeatured"> Featured</label>' +
-            '<label><input type="checkbox" id="beShowAll"> Show in "All"</label>' +
-          '</div>' +
-        '</div>' +
-        '<div class="be-foot">' +
-          '<div class="be-msg" id="beMsg" aria-live="polite"></div>' +
-          '<button type="button" class="be-delete" id="beDelete">Delete photo</button>' +
-          '<button type="button" id="beCancel">Cancel</button>' +
-          '<button type="button" class="be-save" id="beSave">Save changes</button>' +
-        '</div>' +
-      '</div>';
-    document.body.appendChild(el);
-    $("#beCategory", el).addEventListener("change", function(){ el.classList.toggle("is-events", this.value === "Events"); });
-    $("#beCancel", el).addEventListener("click", closeEdit);
-    $("#beSave", el).addEventListener("click", saveEdit);
-    $("#beDelete", el).addEventListener("click", deletePhoto);
-    $("#beReplaceBtn", el).addEventListener("click", function(){ $("#beReplaceInput", el).click(); });
-    $("#beReplaceInput", el).addEventListener("change", function(){ var f = this.files && this.files[0]; this.value = ""; pickReplacement(f); });
-    $("#beReplaceUndo", el).addEventListener("click", function(){ clearReplace(); setReplaceUI(); });
-    el.addEventListener("click", function(e){ if (e.target === el) closeEdit(); });
-    el.addEventListener("keydown", function(e){ if (e.key === "Escape") { e.stopPropagation(); closeEdit(); } });
-    return el;
-  }
-
-  function openEdit(src){
-    if (committingPending) return;
-    var p = null;
-    existingPhotos.forEach(function(x){ if (x.src === src) p = x; });
-    if (!p) return;
-    /* opening the editor on a photo queued for deletion means "keep it after all" */
-    if (pendingEdits[src] && pendingEdits[src].action === "delete") delete pendingEdits[src];
-    var queued = pendingEdits[src];               /* an already-queued edit, if any, wins over the live values */
-    var d = queued ? Object.assign({}, p, queued.changes) : p;
-    var el = editPanel();
-    editSrc = src;
-    var cats = CATEGORIES.slice(); if (d.category && cats.indexOf(d.category) === -1) cats.push(d.category);
-    $("#beCategory", el).innerHTML = optionList(cats, d.category);
-    $("#bePos", el).innerHTML = optionList(POSITIONS, d.imagePosition || "Center");
-    clearReplace();
-    editReplace = (queued && queued.replace) || null;   /* re-adopt an already-queued replacement, if any */
-    setReplaceUI();
-    $("#beFile", el).textContent = uploadName(p.src) || p.src;
-    $("#beTitle", el).value = d.title || "";
-    $("#beClient", el).value = d.client || "";
-    $("#beEvents", el).value = (d.eventTypes || []).join(", ");
-    $("#beCaption", el).value = d.caption || "";
-    $("#beAlt", el).value = d.alt || "";
-    $("#beFeatured", el).checked = !!d.featured;
-    $("#beShowAll", el).checked = d.showInAll !== false;
-    el.classList.toggle("is-events", d.category === "Events");
-    setEditMsg(queued ? "This photo already has a queued change - saving here updates it." : "", false);
-    setBusy(el, false);
-    el.classList.add("on");
-    setTimeout(function(){ try { $("#beTitle", el).focus({ preventScroll: true }); } catch(e){} }, 30);
-  }
-  function closeEdit(){
-    if (editSaving) return;
-    var el = document.getElementById("bulkEdit");
-    if (el) el.classList.remove("on");
-    clearReplace();
-    editSrc = null;
-  }
-  function editingPhoto(){
-    var p = null;
-    existingPhotos.forEach(function(x){ if (x.src === editSrc) p = x; });
-    return p;
-  }
-  function setBusy(el, busy){
-    ["#beSave", "#beDelete", "#beReplaceBtn", "#beReplaceUndo"].forEach(function(id){ var b = $(id, el); if (b) b.disabled = !!busy; });
-  }
-  function friendlyError(err){
-    var msg = String(err && err.message || err);
-    if (/GitHub 422/.test(msg) && /fast.?forward/i.test(msg)) msg = "Someone saved a change on the site at the same moment. Nothing was changed - just press the button again.";
-    return msg;
-  }
-
-  /* ---- replacing the image file: the new photo is only chosen here; it goes live with Save changes ---- */
-  var editReplace = null;   /* { file, url, ratio } */
-  function clearReplace(){
-    if (editReplace && editReplace.url && !editReplace.kept) URL.revokeObjectURL(editReplace.url);
-    editReplace = null;
-  }
-  function setReplaceUI(){
-    var el = editPanel(), p = editingPhoto();
-    $("#beReplaceUndo", el).hidden = !editReplace;
-    $("#beReplaceBtn", el).textContent = editReplace ? "Choose a different image…" : "Replace image…";
-    $("#beReplaceNote", el).textContent = editReplace ? "New image chosen - it replaces the old one when you press Save changes." : "";
-    $("#beImg", el).src = editReplace ? editReplace.url : (p ? (p.__preview || thumbFor(p.src)) : "");
-  }
-  function pickReplacement(file){
-    if (!file || editSaving) return;
-    var forSrc = editSrc;
-    var ready = (SUPPORTED_TYPE.test(file.type) || (!file.type && SUPPORTED_EXT.test(file.name))) ? Promise.resolve(file) : convertToJpeg(file);
-    setEditMsg("Reading the new image…", false);
-    ready.then(function(f){
-      if (editSrc !== forSrc) return;
-      if (!f) { setEditMsg("This browser couldn't open that file. Please export it as JPEG and choose it again.", true); return; }
-      var url = URL.createObjectURL(f), probe = new Image();
-      probe.onload = function(){
-        if (editSrc !== forSrc || !probe.naturalWidth) { URL.revokeObjectURL(url); return; }
-        clearReplace();
-        editReplace = { file: f, url: url, ratio: closestPresetRatio(probe.naturalWidth, probe.naturalHeight) };
-        setEditMsg("", false);
-        setReplaceUI();
-      };
-      probe.onerror = function(){ URL.revokeObjectURL(url); setEditMsg("That file doesn't look like a photo - please choose a JPEG, PNG or WebP.", true); };
-      probe.src = url;
-    });
-  }
-
-  /* ---- shared by delete + replace ---- */
-  /* the photo's own file plus the small copies the site made of it - but only if nothing else on the
-     site still uses that file (a banner slide or team photo can share it), and never the built-in
-     fallback banner. Only paths that really exist are listed, so GitHub never rejects the commit. */
-  var NEVER_DELETE = { "dsc05175.jpg": true };
-  function removalEntries(state, oldSrc){
-    var n = uploadName(oldSrc);
-    if (!n || NEVER_DELETE[n.toLowerCase()]) return [];
-    var json = JSON.stringify(state.content);
-    if (json.indexOf('"/images/uploads/' + n + '"') > -1 || json.indexOf('"images/uploads/' + n + '"') > -1) return [];
-    var paths = ["images/uploads/" + n, "images/thumbs/" + n + ".webp", "images/thumbs/" + n + ".jpg", "images/full/" + n + ".webp"];
-    [800, 1280, 1920, 2400].forEach(function(w){ paths.push("images/hero/" + n + "-" + w + ".webp"); });
-    return paths.filter(function(path){ return state.paths && state.paths[path]; })
-      .map(function(path){ return { path: path, mode: "100644", type: "blob", sha: null }; });
-  }
-  /* one all-or-nothing commit: the updated content.json plus any file changes; force:false, so a
-     save made elsewhere at the same moment is never overwritten (GitHub refuses; press again) */
-  function commitContent(base, entries, message){
-    return ghFetch("/repos/" + REPO + "/git/blobs", {
-      method: "POST",
-      body: JSON.stringify({ content: utf8ToBase64(JSON.stringify(base.content, null, 2) + "\n"), encoding: "base64" })
-    })
-      .then(function(blob){
-        var tree = (entries || []).concat([{ path: "content.json", mode: "100644", type: "blob", sha: blob.sha }]);
-        return ghFetch("/repos/" + REPO + "/git/trees", { method: "POST", body: JSON.stringify({ base_tree: base.treeSha, tree: tree }) });
-      })
-      .then(function(tree){
-        return ghFetch("/repos/" + REPO + "/git/commits", { method: "POST", body: JSON.stringify({ message: message, tree: tree.sha, parents: [base.commitSha] }) });
-      })
-      .then(function(commit){
-        return ghFetch("/repos/" + REPO + "/git/refs/heads/" + BRANCH, { method: "PATCH", body: JSON.stringify({ sha: commit.sha, force: false }) })
-          .then(function(){ return commit; });
-      });
-  }
-
-  /* ---- deleting a photo: queued, not published, until "Commit changes" ---- */
-  function deletePhoto(){
-    if (editSaving || !editSrc) return;
-    var src = editSrc, p = editingPhoto();
-    var label = (p && p.title) || uploadName(src) || "this photo";
-    if (!confirm('Queue "' + label + '" for deletion?\n\nNothing is removed from the live site yet - it happens when you press "Commit changes". You can Restore it any time before then.')) return;
-    var queued = pendingEdits[src];
-    if (queued && queued.replace && queued.replace.url) URL.revokeObjectURL(queued.replace.url);
-    pendingEdits[src] = { action: "delete" };
-    renderExistingGrid();
-    setEditMsg('✓ Queued for deletion. Press "Commit changes" above the grid to publish.', false);
-    setTimeout(function(){ if (editSrc === src) closeEdit(); }, 1100);
-  }
-  function setEditMsg(text, isErr){
-    var m = document.getElementById("beMsg");
-    if (m) { m.textContent = text; m.className = "be-msg" + (isErr ? " err" : ""); }
-  }
-
-  /* Queues the edit (and, if chosen, the replacement image) instead of publishing right away.
-     Nothing reaches GitHub here - press "Commit changes" above the grid when you're done editing. */
-  function saveEdit(){
-    if (editSaving || !editSrc) return;
-    var el = document.getElementById("bulkEdit");
-    var title = $("#beTitle", el).value.trim();
-    if (!title) { setEditMsg("Please give the photo a title.", true); $("#beTitle", el).focus(); return; }
-    var category = $("#beCategory", el).value;
-    var isEvents = category === "Events";
-    var changes = {
-      title: title,
-      client: $("#beClient", el).value.trim() || "Studio",
-      category: category,
-      eventTypes: isEvents ? uniq(splitList($("#beEvents", el).value)) : [],
-      caption: $("#beCaption", el).value.trim(),
-      alt: $("#beAlt", el).value.trim() || title,
-      imagePosition: $("#bePos", el).value || "Center",
-      featured: $("#beFeatured", el).checked,
-      showInAll: $("#beShowAll", el).checked
-    };
-    var src = editSrc, rep = editReplace;
-    pendingEdits[src] = { action: "edit", changes: changes, replace: rep };
-    editReplace = null;   /* ownership of the file + its object URL moves to the queue - don't revoke it */
-    changes.eventTypes.forEach(function(et){ if (knownEventTypes.indexOf(et) === -1) knownEventTypes.push(et); });
-    fillEventSuggestions();
-    renderExistingGrid();
-    setEditMsg(rep ? "✓ Queued with the new image. Press \"Commit changes\" above the grid to publish." : "✓ Queued. Press \"Commit changes\" above the grid to publish.", false);
-    setTimeout(function(){ if (editSrc === src) closeEdit(); }, 1100);
-  }
-
-  $("#existingGrid").addEventListener("click", function(e){
-    var u = e.target.closest ? e.target.closest("[data-undo-src]") : null;
-    if (u) { undoPending(u.getAttribute("data-undo-src")); return; }
-    var b = e.target.closest ? e.target.closest("[data-edit-src]") : null;
-    if (b) openEdit(b.getAttribute("data-edit-src"));
-  });
-
-  /* ---- the pending-changes queue: nothing here touches GitHub until commitPendingChanges() ---- */
-  var committingPending = false;
-  var pendingMsg = null;   /* { ok, text } - result of the last "Commit changes" attempt */
-
-  function undoPending(src){
-    if (committingPending) return;
-    var pend = pendingEdits[src];
-    if (!pend) return;
-    if (pend.replace && pend.replace.url) URL.revokeObjectURL(pend.replace.url);
-    delete pendingEdits[src];
-    pendingMsg = null;
-    renderExistingGrid();
-  }
-  function discardAllPending(){
-    if (committingPending) return;
-    var keys = Object.keys(pendingEdits);
-    if (!keys.length) return;
-    if (!confirm(keys.length + " queued change(s) will be discarded. Nothing was published, so this is safe. Continue?")) return;
-    keys.forEach(function(k){
-      var pend = pendingEdits[k];
-      if (pend.replace && pend.replace.url) URL.revokeObjectURL(pend.replace.url);
-    });
-    pendingEdits = {};
-    pendingMsg = null;
-    renderExistingGrid();
-  }
-  function renderPendingBar(){
-    var bar = $("#pendingBar");
-    if (!bar) return;
-    var n = Object.keys(pendingEdits).length;
-    if (!n && !pendingMsg) { bar.hidden = true; bar.innerHTML = ""; return; }
-    bar.hidden = false;
-    var msgHtml = pendingMsg
-      ? '<span class="pb-msg' + (pendingMsg.ok ? "" : " err") + '">' + esc(pendingMsg.text) + '</span>'
-      : '<span class="pb-msg">' + n + ' change' + (n === 1 ? "" : "s") + ' queued - nothing is live yet.</span>';
-    if (!n) {
-      bar.innerHTML = msgHtml + '<span class="pb-btns"><button type="button" id="btnDismissPending">Dismiss</button></span>';
-      $("#btnDismissPending", bar).addEventListener("click", function(){ pendingMsg = null; renderPendingBar(); });
-      return;
-    }
-    bar.innerHTML = msgHtml +
-      '<span class="pb-btns">' +
-        '<button type="button" id="btnDiscardPending"' + (committingPending ? " disabled" : "") + '>Discard all</button>' +
-        '<button type="button" class="pb-commit" id="btnCommitPending"' + (committingPending ? " disabled" : "") + '>' +
-          (committingPending ? "Committing…" : ("Commit " + n + " change" + (n === 1 ? "" : "s"))) +
-        '</button>' +
-      '</span>';
-    $("#btnDiscardPending", bar).addEventListener("click", discardAllPending);
-    $("#btnCommitPending", bar).addEventListener("click", function(){
-      if (committingPending) return;
-      if (!confirm("Publish " + n + " queued change(s) to livingroomlabs.in now? They go live in about a minute.")) return;
-      commitPendingChanges();
-    });
-  }
-
-  /* Applies every queued edit/delete to ONE freshly-read copy of content.json and publishes it as
-     ONE commit - same all-or-nothing pattern as the New Upload batch. A photo changed or removed
-     elsewhere in the meantime (e.g. in the Content Editor) is skipped rather than failing the
-     whole batch; everything else still goes through. */
-  function commitPendingChanges(){
-    var keys = Object.keys(pendingEdits);
-    if (!keys.length || committingPending) return;
-    committingPending = true;
-    pendingMsg = null;
-    renderPendingBar();
-    setProgress(4, "Reading the latest version of the site…");
-    var base, entries = [], applied = 0, skipped = [];
-    readRepoState()
-      .then(function(state){
-        base = state;
-        var chain = Promise.resolve();
-        keys.forEach(function(src, i){
-          chain = chain.then(function(){
-            setProgress(8 + Math.round((i / keys.length) * 70), "Applying change " + (i + 1) + " of " + keys.length + "…");
-            var pend = pendingEdits[src];
-            if (pend.action === "delete") {
-              var idx = -1;
-              state.content.photos.forEach(function(x, j){ if (x && x.src === src) idx = j; });
-              if (idx === -1) { skipped.push(src); return; }
-              state.content.photos.splice(idx, 1);
-              entries = entries.concat(removalEntries(state, src));
-              applied++;
-              return;
-            }
-            var hit = null;
-            state.content.photos.forEach(function(x){ if (x && x.src === src) hit = x; });
-            if (!hit) { skipped.push(src); return; }
-            Object.keys(pend.changes).forEach(function(k){ hit[k] = pend.changes[k]; });
-            applied++;
-            if (!pend.replace) return;
-            var newName = uniqueFilename(pend.replace.file.name, "__replace_" + i);
-            return fileToBase64(pend.replace.file)
-              .then(function(b64){
-                return ghFetch("/repos/" + REPO + "/git/blobs", { method: "POST", body: JSON.stringify({ content: b64, encoding: "base64" }) });
-              })
-              .then(function(blob){
-                var newSrc = "/images/uploads/" + newName;
-                entries.push({ path: "images/uploads/" + newName, mode: "100644", type: "blob", sha: blob.sha });
-                entries = entries.concat(removalEntries(state, src));
-                hit.src = newSrc;
-                hit.ratio = pend.replace.ratio;
-                pend.__newSrc = newSrc;
-              });
-          });
-        });
-        return chain;
-      })
-      .then(function(){
-        if (!applied) throw new Error("Nothing left to commit - every queued photo had already changed elsewhere. Close this and reopen the uploader to refresh the list.");
-        setProgress(82, "Saving the updated photo list…");
-        return commitContent(base, entries, "Bulk edit: " + applied + " change(s) via bulk uploader");
-      })
-      .then(function(commit){
-        setProgress(96, "Publishing to livingroomlabs.in…");
-        keys.forEach(function(src){
-          var pend = pendingEdits[src];
-          if (!pend || skipped.indexOf(src) > -1) return;
-          if (pend.action === "delete") {
-            existingPhotos = existingPhotos.filter(function(x){ return x.src !== src; });
-            return;
-          }
-          existingPhotos.forEach(function(x){
-            if (x.src !== src) return;
-            Object.keys(pend.changes).forEach(function(k){ x[k] = pend.changes[k]; });
-            if (pend.__newSrc) {
-              x.src = pend.__newSrc; x.ratio = pend.replace.ratio;
-              x.__preview = pend.replace.url; pend.replace.kept = true;   /* shown from this copy until the site finishes building */
-              x.__justAdded = true;
-              knownUploadNames[uploadName(pend.__newSrc).toLowerCase()] = true;
-            }
-          });
-          pend.changes.eventTypes.forEach(function(et){ if (knownEventTypes.indexOf(et) === -1) knownEventTypes.push(et); });
-        });
-        pendingEdits = {};
-        window.__bulkCommitted = true;   /* the Content Editor reloads when you return to it */
-        committingPending = false;
-        setProgress(100, "Done!");
-        var note = skipped.length ? (" " + skipped.length + " photo(s) had already changed elsewhere and were skipped - reopen the uploader to see their current state.") : "";
-        pendingMsg = { ok: true, text: "✓ " + applied + " change(s) committed (" + commit.sha.slice(0, 7) + "). The site updates in about a minute." + note };
-        fillEventSuggestions();
-        renderExistingGrid();
-        setTimeout(hideProgress, 1500);
-      })
-      .catch(function(err){
-        committingPending = false;
-        hideProgress();
-        pendingMsg = { ok: false, text: "Not committed - the site is unchanged. " + friendlyError(err) };
-        renderPendingBar();
-        console.error(err);
-      });
-  }
 
   /* ================= choosing photos ================= */
   var picker = $("#picker"), fileInput = $("#fileInput");
@@ -798,50 +327,9 @@
     return best;
   }
 
-  /* The website (and its photo-shrinking step) handles JPEG, PNG and WebP. Anything else the
-     browser can open - HEIC from a Mac or iPhone, TIFF, AVIF - is turned into a high-quality JPEG
-     here first, so it can never break the site. Very large ones are capped at 3600px on the long
-     side (plenty for the site, and phones can't convert bigger ones). */
-  var SUPPORTED_TYPE = /^image\/(jpeg|png|webp)$/i, SUPPORTED_EXT = /\.(jpe?g|png|webp)$/i;
-  function convertToJpeg(file){
-    return new Promise(function(resolve){
-      var url = URL.createObjectURL(file), img = new Image();
-      img.onload = function(){
-        try {
-          var w = img.naturalWidth, h = img.naturalHeight, k = Math.min(1, 3600 / Math.max(w, h));
-          if (!w || !h) { URL.revokeObjectURL(url); return resolve(null); }
-          var c = document.createElement("canvas");
-          c.width = Math.round(w * k); c.height = Math.round(h * k);
-          c.getContext("2d").drawImage(img, 0, 0, c.width, c.height);
-          c.toBlob(function(b){
-            URL.revokeObjectURL(url);
-            if (!b) return resolve(null);
-            var name = file.name.replace(/\.[^.]+$/, "") + ".jpg";
-            try { resolve(new File([b], name, { type: "image/jpeg", lastModified: file.lastModified })); }
-            catch (e) { b.name = name; resolve(b); }
-          }, "image/jpeg", 0.92);
-        } catch (e) { URL.revokeObjectURL(url); resolve(null); }
-      };
-      img.onerror = function(){ URL.revokeObjectURL(url); resolve(null); };
-      img.src = url;
-    });
-  }
-
   function addFiles(fileList){
     if (uploading) return;
-    var all = Array.prototype.slice.call(fileList || []);
-    var files = all.filter(function(f){ return SUPPORTED_TYPE.test(f.type) || (!f.type && SUPPORTED_EXT.test(f.name)); });
-    var others = all.filter(function(f){ return files.indexOf(f) === -1 && (/^image\//.test(f.type) || /\.(heic|heif|tiff?|avif|bmp|gif)$/i.test(f.name)); });
-    if (others.length) {
-      Promise.all(others.map(convertToJpeg)).then(function(conv){
-        var good = conv.filter(Boolean);
-        var bad = others.filter(function(f, i){ return !conv[i]; }).map(function(f){ return f.name; });
-        if (bad.length) alert("This browser couldn't open " + bad.length + " photo(s): " + bad.slice(0, 5).join(", ") + (bad.length > 5 ? "…" : "") +
-          "\n\nPlease export them as JPEG and add them again. (iPhone: Settings > Camera > Formats > Most Compatible.)");
-        if (good.length) addFiles(good);
-      });
-      if (!files.length) return;
-    }
+    var files = Array.prototype.filter.call(fileList || [], function(f){ return /^image\//.test(f.type); });
     var room = MAX_BATCH - photos.length;
     if (room <= 0) {
       alert("This batch already has " + MAX_BATCH + " photos. Commit these first, then add the rest in a new batch.");
@@ -923,6 +411,7 @@
     $("#countLabel").textContent = photos.length + (photos.length === 1 ? " photo" : " photos") + " (max " + MAX_BATCH + ")";
     $("#toolbar").style.display = photos.length ? "flex" : "none";
     bindCardEvents();
+    syncBulkEventVisibility();
     updateUploadButton();
   }
 
@@ -936,7 +425,10 @@
           if (key === "eventTypes") p.eventTypes = splitList(field.value);
           else if (field.type === "checkbox") p[key] = field.checked;
           else p[key] = field.value;
-          if (key === "category") card.classList.toggle("is-events", p.category === "Events");
+          if (key === "category") {
+            card.classList.toggle("is-events", p.category === "Events");
+            syncBulkEventVisibility();
+          }
         };
         field.addEventListener("input", handler);
         field.addEventListener("change", handler);
@@ -968,10 +460,14 @@
     });
   }
 
-  /* ================= "Apply to all" =================
-     Category, Event type (optional), Shoot / client, Image position, Show in All.
-     (Featured is set per photo on each card.) Event type only means something on photos in the Events
-     category - pick Events here in the same Apply, or on the photos themselves. */
+  /* ================= "Apply to all" ================= */
+  /* Event Type shows when you pick Events here, or when any photo in the batch is already Events */
+  function syncBulkEventVisibility(){
+    var show = $("#bulkCategory").value === "Events" || photos.some(function(p){ return p.category === "Events"; });
+    $("#bulkEventWrap").style.display = show ? "" : "none";
+  }
+  $("#bulkCategory").addEventListener("change", syncBulkEventVisibility);
+
   $("#btnApplyBulk").addEventListener("click", function(){
     if (uploading || !photos.length) return;
     var cat = $("#bulkCategory").value;
@@ -979,14 +475,9 @@
     var events = splitList($("#bulkEventType").value);
     var position = $("#bulkPosition").value;
     var showInAll = $("#bulkShowInAll").value;
-    if (!cat && !client && !events.length && !position && !showInAll) {
-      alert("Pick at least one thing to apply (category, event type, client, position or Show in All).");
-      return;
-    }
-    /* an event type on its own, with no Events photos in the batch: say so plainly instead of silently doing nothing */
-    var willBeEvents = photos.filter(function(p){ return (cat || p.category) === "Events"; }).length;
-    if (events.length && !willBeEvents && !client && !position && !showInAll && !cat) {
-      showResult(false, "Event type is only used on photos in the Events category. Choose \"Events\" in Category (next to it) and press Apply again.");
+    var featured = $("#bulkFeatured").value;
+    if (!cat && !client && !events.length && !position && !showInAll && !featured) {
+      alert("Pick at least one thing to apply (category, event type, client, position or a toggle).");
       return;
     }
     var skippedEvents = 0;
@@ -995,6 +486,7 @@
       if (client) p.client = client;
       if (position) p.imagePosition = position;
       if (showInAll) p.showInAll = showInAll === "yes";
+      if (featured) p.featured = featured === "yes";
       if (events.length) {
         /* event types only mean something on Events photos (the site ignores them elsewhere) */
         if (p.category === "Events") p.eventTypes = events.slice();
@@ -1003,7 +495,7 @@
     });
     renderGrid();
     if (events.length && skippedEvents) {
-      showResult(true, "Applied. Event type was added to the " + (photos.length - skippedEvents) + " Events photo(s) only - " + skippedEvents + " photo(s) in other categories were left without one.");
+      showResult(true, "Applied. Event type was added to the Events photos only - " + skippedEvents + " photo(s) in other categories were left without one.");
     } else {
       showResult(true, "Applied to all " + photos.length + " photo(s). You can still change any single photo below.");
     }
@@ -1036,10 +528,9 @@
   }
   function clearResult(){ var el = $("#resultBanner"); el.className = "result-banner"; el.textContent = ""; }
 
-  /* leaving mid-upload - or with edits/deletes still queued and not yet committed - would
-     silently abandon them */
+  /* leaving mid-upload would silently abandon it */
   window.addEventListener("beforeunload", function(e){
-    if (uploading || committingPending || Object.keys(pendingEdits).length) { e.preventDefault(); e.returnValue = ""; }
+    if (uploading) { e.preventDefault(); e.returnValue = ""; }
   });
 
   /* ================= commit ================= */

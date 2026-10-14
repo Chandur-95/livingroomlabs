@@ -3,48 +3,21 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#FFFFFF" id="themeColorMeta">
-<meta name="view-transition" content="same-origin">
 <title>What We Capture — Living Room Labs</title>
 <meta name="description" content="Browse Living Room Labs by category: food, pets, real estate, products, events, portraits and travel photography from Hyderabad.">
 <link rel="icon" type="image/png" href="/logo.png">
-<link rel="apple-touch-icon" href="/logo.png">
-<link rel="manifest" href="/manifest.json">
 <link rel="canonical" href="https://livingroomlabs.in/capture.html">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Living Room Labs">
-<meta property="og:title" content="What We Capture — Living Room Labs">
-<meta property="og:description" content="Browse Living Room Labs by category: food, pets, real estate, products, events, portraits and travel photography from Hyderabad.">
-<meta property="og:url" content="https://livingroomlabs.in/capture.html">
-<meta property="og:image" content="https://livingroomlabs.in/og-image.jpg">
-<meta property="og:image:width" content="1200">
-<meta property="og:image:height" content="630">
-<meta property="og:locale" content="en_IN">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://livingroomlabs.in/og-image.jpg">
-<!-- Light / dark follows whatever was chosen on the home page (the lamp cord), set before first
-     paint so nothing flashes. Spotlight is a separate switch and always starts off. -->
+<!-- Sync theme from home page localStorage - defaults to light unless the user explicitly picked dark before -->
 <script>
   (function(){
     try {
-      var dark = localStorage.getItem("lrl_theme") === "dark";
-      document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-      var tcm = document.getElementById("themeColorMeta");
-      if (tcm) tcm.setAttribute("content", dark ? "#080808" : "#FFFFFF");
+      var saved = localStorage.getItem("lrl_theme");
+      if(saved === "dark") {
+        document.documentElement.setAttribute("data-theme", "dark");
+      } else {
+        document.documentElement.setAttribute("data-theme", "light");
+      }
     } catch(e) {}
-  })();
-</script>
-<script>
-  /* Marks each grid/carousel photo "loaded" the instant it finishes downloading, so the CSS
-     above can settle it from a soft blur into focus. Capture phase, because "load" doesn't
-     bubble - catches every photo however and whenever it's created, cache included. */
-  (function () {
-    try {
-      document.addEventListener("load", function (e) {
-        var img = e.target;
-        if (img && img.tagName === "IMG") img.classList.add("lrl-loaded");
-      }, true);
-    } catch (e) {}
   })();
 </script>
 <style>
@@ -68,7 +41,6 @@
 }
 html[data-theme="dark"]{ --paper:#080808; --ink:#FFFFFF; --dim:rgba(255,255,255,.6); --line:rgba(255,255,255,.14); }
 *{box-sizing:border-box}
-html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:hidden;
   font-family:'Inter',system-ui,-apple-system,sans-serif;-webkit-font-smoothing:antialiased}
 .mono{font-family:'JetBrains Mono',monospace}
@@ -81,26 +53,7 @@ html,body{margin:0;padding:0;height:100%;background:#050505;color:#fff;overflow:
 }
 .cap-row1{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:12px}
 .cap-brand{display:flex;align-items:center;gap:12px;background:none;border:none;cursor:pointer;padding:0}
-/* logo: shown with its empty see-through margins trimmed (see shared.js), so the visible artwork IS the box */
-.lg-crop{display:block;overflow:hidden;aspect-ratio:var(--lg-ar,1.4649);line-height:0;flex:none}
-.lg-crop > img{display:block;max-width:none;width:var(--lg-w,106.383%);height:auto;margin:var(--lg-t,-20.035%) 0 0 var(--lg-l,-3.191%)}
-.cap-brand .lg-crop{height:44px;width:calc(44px * var(--lg-ar,1.4649));view-transition-name:lrl-logo}
-
-/* page-to-page: short cross-fade with the home page, logo glides into place (see index.html) */
-@view-transition{navigation:auto}
-@media (prefers-reduced-motion:reduce){ @view-transition{navigation:none} }
-::view-transition-old(root),::view-transition-new(root){animation-duration:.26s}
-::view-transition-group(lrl-logo){animation-duration:.34s;animation-timing-function:cubic-bezier(.16,1,.3,1)}
-
-/* "View" tag that follows the mouse over photos (desktop mouse only) */
-.lrl-view-tag{position:fixed;left:0;top:0;z-index:9500;pointer-events:none;
-  padding:7px 12px 6px;border-radius:999px;background:rgba(10,10,10,.84);color:#fff;
-  font:600 .6rem/1 'JetBrains Mono',monospace;letter-spacing:.18em;text-transform:uppercase;
-  opacity:0;scale:.8;translate:-200px -200px;transition:opacity .16s ease,scale .2s cubic-bezier(.16,1,.3,1);will-change:translate}
-.lrl-view-tag.on{opacity:1;scale:1}
-html[data-theme="dark"] .lrl-view-tag{background:rgba(255,255,255,.92);color:#0a0a0a}
-@media (prefers-reduced-motion:reduce){ .lrl-view-tag{transition:none} }
-.cap-brand img{filter:brightness(0) invert(1)}
+.cap-brand img{width:64px;height:64px;object-fit:contain;filter:brightness(0) invert(1)}
 .cap-brand-text{display:flex;flex-direction:column;align-items:flex-start;gap:2px}
 .cap-brand-text b{font-size:.82rem;letter-spacing:.16em;text-transform:uppercase;color:#fff;font-weight:600}
 .cap-brand-text span{font-size:.66rem;letter-spacing:.14em;text-transform:uppercase;color:rgba(255,255,255,.6)}
@@ -112,6 +65,13 @@ html[data-theme="dark"] .lrl-view-tag{background:rgba(255,255,255,.92);color:#0a
   text-transform:uppercase;cursor:pointer;text-decoration:none;padding:0;white-space:nowrap;
 }
 .cap-links a:hover,.cap-links button:hover{opacity:1;text-decoration:underline}
+/* ".cap-links .cap-enquire" (not just ".cap-enquire") - the generic ".cap-links button{background:none}"
+   rule above is more specific and was silently removing this pill, leaving black text on the black header */
+.cap-links .cap-enquire{
+  background:#fff;color:#000 !important;border-radius:999px;padding:7px 16px !important;
+  opacity:1 !important;text-decoration:none !important;font-weight:600;
+}
+.cap-links .cap-enquire:hover{background:#e8e8e8}
 
 /* While a category is open the page behind the header is white (light mode) or near-black (dark
    mode), so the see-through dark gradient no longer works - the header gets a solid backdrop
@@ -120,19 +80,21 @@ html.cat-open .cap-header{
   background:rgba(8,8,8,.96);border-bottom:1px solid rgba(255,255,255,.08);
   backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
 }
-html[data-theme="light"] .cap-header{background:rgba(255,255,255,.96);border-bottom-color:rgba(0,0,0,.08)}
-html[data-theme="light"] .cap-brand img{filter:none}
-html[data-theme="light"] .cap-brand-text b{color:#000}
-html[data-theme="light"] .cap-brand-text span{color:rgba(0,0,0,.55)}
-html[data-theme="light"] .cap-links a,
-html[data-theme="light"] .cap-links button{color:#000}
-html[data-theme="light"] #capLampToggle{border-color:rgba(0,0,0,.28) !important}
-html[data-theme="light"] .cap-cat-btn{border-color:rgba(0,0,0,.22);color:#000}
-html[data-theme="light"] .cap-cat-btn:hover,
-html[data-theme="light"] .cap-cat-btn:focus-visible{border-color:#000}
-html[data-theme="light"] .cap-cat-btn.active{background:#000;color:#fff;border-color:#000}
+html[data-theme="light"].cat-open .cap-header{background:rgba(255,255,255,.96);border-bottom-color:rgba(0,0,0,.08)}
+html[data-theme="light"].cat-open .cap-brand img{filter:none}
+html[data-theme="light"].cat-open .cap-brand-text b{color:#000}
+html[data-theme="light"].cat-open .cap-brand-text span{color:rgba(0,0,0,.55)}
+html[data-theme="light"].cat-open .cap-links a,
+html[data-theme="light"].cat-open .cap-links button{color:#000}
+html[data-theme="light"].cat-open #capLampToggle{border-color:rgba(0,0,0,.28) !important}
+html[data-theme="light"].cat-open .cap-links .cap-enquire{background:#000;color:#fff !important}
+html[data-theme="light"].cat-open .cap-links .cap-enquire:hover{background:#333}
+html[data-theme="light"].cat-open .cap-cat-btn{border-color:rgba(0,0,0,.22);color:#000}
+html[data-theme="light"].cat-open .cap-cat-btn:hover,
+html[data-theme="light"].cat-open .cap-cat-btn:focus-visible{border-color:#000}
+html[data-theme="light"].cat-open .cap-cat-btn.active{background:#000;color:#fff;border-color:#000}
 
-.cap-cats{display:flex;gap:6px;flex-wrap:wrap;position:relative}
+.cap-cats{display:flex;gap:6px;flex-wrap:wrap}
 .cap-cat-btn{
   background:none;border:1px solid rgba(255,255,255,.28);color:#fff;border-radius:999px;
   padding:6px 14px;font-size:.72rem;letter-spacing:.08em;text-transform:uppercase;cursor:pointer;
@@ -144,25 +106,11 @@ html[data-theme="light"] .cap-cat-btn.active{background:#000;color:#fff;border-c
 @media (max-width:860px){
   .cap-header{padding:calc(10px + var(--safe-top)) 14px 10px}
   .cap-row1{margin-bottom:8px}
+  .cap-brand img{width:52px;height:52px}
   .cap-brand-text{display:none}
   .cap-mobile-hide{display:none !important}
-  .cap-cats{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;-webkit-overflow-scrolling:touch;justify-content:flex-start;scrollbar-width:none}
+  .cap-cats{overflow-x:auto;flex-wrap:nowrap;padding-bottom:2px;-webkit-overflow-scrolling:touch;justify-content:flex-start}
   .cap-cats::-webkit-scrollbar{display:none}
-  .cap-cats.more-right:not(.more-left){-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
-  .cap-cats.more-left:not(.more-right){-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px);mask-image:linear-gradient(90deg,transparent,#000 44px)}
-  .cap-cats.more-left.more-right{-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent)}
-}
-/* Category rail scroll bar (phones and tablets): a thin track under the categories with a bar that
-   shows how much of the row is on screen and moves as you swipe - so it's obvious there are more
-   categories off to the right. Only shown when the row is wider than the screen. */
-.cap-cats-bar{display:none}
-@media (max-width:860px){
-  .cap-cats-bar.on{display:block;position:relative;height:3px;margin:9px 0 1px;border-radius:3px;overflow:hidden;
-    background:rgba(255,255,255,.2);pointer-events:none}
-  .cap-cats-thumb{position:absolute;left:0;top:0;bottom:0;width:40px;border-radius:3px;background:rgba(255,255,255,.92);
-    transform:translateX(0);will-change:transform}
-  html[data-theme="light"] .cap-cats-bar.on{background:rgba(0,0,0,.12)}
-  html[data-theme="light"] .cap-cats-thumb{background:#000}
 }
 
 /* ================= discover: continuous flowing carousel ================= */
@@ -186,19 +134,8 @@ html[data-theme="light"] .cap-cat-btn.active{background:#000;color:#fff;border-c
   transform:scale(.7);
   transform-origin:center center;will-change:transform,opacity;
 }
-.disc-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none;transition:opacity .55s ease, filter .6s ease;}
-.disc-card img:not(.lrl-loaded){opacity:0;filter:blur(14px)}
+.disc-card img{width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .disc-card.is-center{cursor:zoom-in}
-/* Desktop: photos are always in full colour (the Spotlight's own dimming comes from #pageLamp).
-   Phones and tablets/iPads (touch screens): only the centred photo is in colour - everything drifting
-   past it is black & white, so the one you're looking at reads clearly against the ones still moving. */
-.disc-card img.lrl-loaded{filter:none}
-@media (max-width:640px), (pointer:coarse){
-  .disc-card img.lrl-loaded{filter:grayscale(1)}
-  .disc-card.is-center img.lrl-loaded{filter:none}
-  html.page-lamp-on .disc-card img.lrl-loaded{filter:grayscale(1)}         /* the Spotlight already dims everything */
-  html.page-lamp-on .disc-card.is-center img.lrl-loaded{filter:none}
-}
 
 .disc-caption{
   position:absolute;left:0;right:0;bottom:var(--foot-h);z-index:2;padding:18px 24px 16px;
@@ -232,10 +169,6 @@ html[data-theme="light"] .cap-cat-btn.active{background:#000;color:#fff;border-c
   opacity:.9 !important;text-decoration:none !important;font-size:.7rem !important;
 }
 #capLampToggle[aria-pressed="true"]{background:rgba(255,196,75,.16);border-color:rgba(255,196,75,.55) !important;color:#ffe9c2 !important}
-#capLampToggle{display:inline-flex;align-items:center;gap:7px}
-.spot-dot{width:6px;height:6px;border-radius:999px;background:currentColor;opacity:.6;flex:none}
-#capLampToggle[aria-pressed="true"] .spot-dot{background:#FFC24B;box-shadow:0 0 6px #FFC24B;opacity:1}
-html[data-theme="light"] #capLampToggle[aria-pressed="true"]{color:#7a4d00 !important;background:rgba(255,196,75,.22)}
 
 /* ================= Lamplight: your cursor/finger is a lamp - the photo stays dim
    everywhere except a circle that follows you, matching the original concept board
@@ -247,7 +180,7 @@ html[data-theme="light"] #capLampToggle[aria-pressed="true"]{color:#7a4d00 !impo
 #lbStage img{display:block;max-width:92vw;max-height:86vh;object-fit:contain}
 #lbImgDim{
   position:absolute;inset:0;width:100%;height:100%;object-fit:contain;
-  filter:grayscale(1) brightness(.2);opacity:0;transition:opacity .5s ease;pointer-events:none;
+  filter:brightness(.16) saturate(.55);opacity:0;transition:opacity .5s ease;pointer-events:none;
 }
 #lbStage.lamp-on #lbImgDim{opacity:1}
 #lbStage.lamp-on #lbImg{
@@ -263,10 +196,7 @@ html[data-theme="light"] #capLampToggle[aria-pressed="true"]{color:#7a4d00 !impo
 @media (max-width:860px){
   #lbStage{ --lr:150px; }
 }
-@media (prefers-reduced-motion:reduce){
-  #lbImgDim,#lampLayer{transition:opacity .2s ease}
-  .cat-card img:not(.lrl-loaded),.disc-card img:not(.lrl-loaded){opacity:1;filter:none;transform:none}
-}
+@media (prefers-reduced-motion:reduce){ #lbImgDim,#lampLayer{transition:opacity .2s ease} }
 
 /* ================= category grid view ================= */
 #catview{position:fixed;inset:0;background:var(--paper);color:var(--ink);overflow-y:auto;display:none;
@@ -281,7 +211,7 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
 }
 .cat-head h1{font-size:clamp(1.6rem,4vw,2.4rem);margin:0 0 6px;font-weight:600}
 .cat-head p{margin:0;opacity:.6;font-size:.9rem;max-width:56ch}
-.cat-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px;position:relative}
+.cat-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .cat-chip{
   border:1px solid var(--line);background:none;color:var(--ink);border-radius:999px;
   padding:6px 14px;font-size:.74rem;letter-spacing:.05em;cursor:pointer;text-transform:uppercase;
@@ -304,18 +234,8 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
   }
 }
 .cat-card{position:relative;border-radius:2px;overflow:hidden;cursor:pointer;background:#111;aspect-ratio:4/5}
-.cat-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease, opacity .55s ease, filter .6s ease}
+.cat-card img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .5s ease}
 .cat-card:hover img{transform:scale(1.04)}
-.cat-card img:not(.lrl-loaded){opacity:0;filter:blur(14px);transform:scale(1.03)}
-/* category photos always in full colour */
-.cat-card img.lrl-loaded{filter:none}
-@media (pointer:coarse) and (prefers-reduced-motion: no-preference){
-  /* Touch devices: a lighter blur costs less to composite - matters most here, since the
-     Discover carousel eager-loads ~40 photos (20 featured, doubled for the seamless loop)
-     right away, and a phone's GPU shouldn't have to blur all of them at full strength at once. */
-  .cat-card img:not(.lrl-loaded){filter:blur(7px);transform:scale(1.02)}
-  .disc-card img:not(.lrl-loaded){filter:blur(6px)}
-}
 .cat-card .cc-cap{
   position:absolute;left:0;right:0;bottom:0;padding:10px 12px;
   background:linear-gradient(0deg,rgba(0,0,0,.75),rgba(0,0,0,0));color:#fff;
@@ -328,36 +248,20 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
     opacity:1;
   }
 }
-.cat-empty{grid-column:1/-1;padding:48px 24px;text-align:center;font-size:.8rem;letter-spacing:.08em;line-height:1.6}
-.cat-empty-enq{margin-top:18px;border:1px solid currentColor;background:none;color:inherit;padding:11px 20px;border-radius:2px;
-  font:inherit;font-size:.72rem;letter-spacing:.14em;text-transform:uppercase;cursor:pointer;transition:background .2s ease,color .2s ease}
-.cat-empty-enq:hover,.cat-empty-enq:focus-visible{background:var(--ink,#000);color:var(--paper,#fff)}
-/* the footer logo goes to the home page, same as the top logo. Only the logo itself is tappable -
-   the rest of the bar is not a link.
-   Why the sizes are spelled out: the logo file is a 600px square. iPhone Safari worked out the
-   button's width from that file instead of from the trimmed logo box, so the button stretched across
-   the whole bar - every tap on the bar went home, and the text next to it was squeezed to nothing.
-   The logo box now has a fixed width (its height x its shape), and the button can never be wider
-   than a third of the bar, whatever the browser does. */
-.cap-foot-home{-webkit-appearance:none;appearance:none;background:none;border:0;padding:0;margin:0;color:inherit;
-  display:block;flex:0 0 auto;width:auto;max-width:33%;overflow:hidden;align-self:center;line-height:0;border-radius:4px;cursor:pointer;
-  -webkit-tap-highlight-color:transparent;transition:opacity .2s ease,transform .2s ease}
-.cap-foot-home:hover{opacity:.75}
-.cap-foot-home:active{transform:scale(.97)}
-.cap-foot-home:focus-visible{outline:2px solid currentColor;outline-offset:4px}
+.cat-empty{opacity:.55;padding:40px 24px;text-align:center}
 .cap-foot{
   position:fixed;left:0;right:0;bottom:0;z-index:25;
-  display:flex;align-items:center;gap:18px;-webkit-tap-highlight-color:transparent;
+  display:flex;align-items:center;gap:18px;
   padding:14px 32px calc(14px + var(--safe-bottom));
   background:rgba(255,255,255,.92);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
   border-top:1px solid var(--line);color:var(--ink);
   transition:background .35s ease, border-color .35s ease, color .35s ease;
 }
 html[data-theme="dark"] .cap-foot{ background:rgba(8,8,8,.85); }
-.cap-foot-logo{height:48px;width:calc(48px * var(--lg-ar,1.4649));opacity:.9}
-.cap-foot-text{flex:1 1 0;min-width:0;text-align:left;-webkit-tap-highlight-color:transparent}
+.cap-foot-logo{width:76px;height:auto;object-fit:contain;opacity:.9;flex:none}
+.cap-foot-text{flex:1;min-width:0;text-align:left}
 .cap-foot-text b{display:block;font-size:.74rem;letter-spacing:.14em;text-transform:uppercase;opacity:.9;font-weight:600}
-.cap-foot-text p{margin:3px 0 0;font-size:.82rem;opacity:.72;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.cap-foot-text p{margin:3px 0 0;font-size:.82rem;opacity:.6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .btn-cap-foot-enquire{
   border:1px solid var(--ink);background:none;color:var(--ink);border-radius:999px;
   padding:9px 22px;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;flex:none;
@@ -368,6 +272,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 @media (max-width:640px){
   :root{ --foot-h:88px; }
   .cap-foot{ padding:16px 16px calc(16px + var(--safe-bottom)); gap:12px; }
+  .cap-foot-logo{width:40px;height:40px}
   .cap-foot-text b{font-size:.7rem;letter-spacing:.1em}
   .cap-foot-text p{font-size:.76rem;white-space:normal;overflow:visible;line-height:1.35}
   .btn-cap-foot-enquire{padding:9px 16px;font-size:.68rem}
@@ -383,7 +288,6 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 }
 
 /* ================= lightbox ================= */
-#capLb:focus{outline:none}
 #capLb{position:fixed;inset:0;background:rgba(0,0,0,.94);z-index:60;display:none;
   align-items:center;justify-content:center}
 #capLb.on{display:flex}
@@ -397,149 +301,47 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 .cap-lb-next{right:14px;top:50%;transform:translateY(-50%)}
 .cap-lb-cap{position:absolute;left:0;right:0;bottom:calc(18px + var(--safe-bottom));text-align:center;color:#fff;font-size:.85rem;opacity:.85}
 
-/* the enquiry window comes from /shared.js - one design for every page */
-
-/* ================= Phones: What We Capture, reworked =================
-   Header: logo | page title | lamp, balanced. Categories in one edge-to-edge rail that fades where
-   there's more to scroll. Photos sized to fit the screen with the next ones peeking in; the caption
-   and pause button get their own band UNDER the photos instead of covering them. Footer slimmer and
-   dark over the photo stream. Categories: back link above the title, event filters in one row, and
-   a full-width lead photo followed by the two-column grid. */
-.cap-title{display:none}
-.cat-back-inline{display:none}
-.cat-card .cc-c{opacity:.7}
-@media (max-width:860px){
-  .cap-row1{position:relative}
-  .cap-title{
-    display:block;position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);
-    margin:0;font-size:.64rem;letter-spacing:.22em;text-transform:uppercase;font-weight:600;
-    color:#fff;white-space:nowrap;pointer-events:none;
-  }
-  html[data-theme="light"] .cap-title{color:#000}
+/* ================= enquiry form - opens right here instead of sending you to the home page ================= */
+#capEnq{
+  position:fixed;inset:0;z-index:70;display:none;align-items:center;justify-content:center;
+  background:rgba(0,0,0,.6);padding:calc(16px + var(--safe-top)) 16px calc(16px + var(--safe-bottom));
+  overflow-y:auto;-webkit-overflow-scrolling:touch;
 }
-@media (max-width:640px){
-  :root{ --cap-h:66px; }
-  .cap-header{padding:calc(10px + var(--safe-top)) 16px 8px}
-  .cap-row1{margin-bottom:10px;min-height:40px}
-  .cap-brand .lg-crop{height:38px;width:calc(38px * var(--lg-ar,1.4649))}
-  #capLampToggle{padding:0 12px !important;font-size:.64rem !important;min-height:36px;display:inline-flex;align-items:center;letter-spacing:.06em}
-
-  .cap-cats{margin:0 -16px;padding:0 16px 2px;gap:6px}
-  .cap-cat-btn{flex:none;padding:10px 16px;font-size:.66rem;letter-spacing:.1em;min-height:40px;display:inline-flex;align-items:center}
-
-  .disc-stage{padding-bottom:calc(var(--foot-h) + var(--cap-h))}
-  .disc-track{gap:12px}
-  .disc-card{height:calc(100% - 20px);border-radius:4px;box-shadow:0 18px 40px rgba(0,0,0,.6)}
-  .disc-nav-btn{display:none}
-  .disc-caption{
-    bottom:var(--foot-h);height:var(--cap-h);padding:0 70px 0 16px;background:none;align-items:center;
-  }
-  .disc-caption > div:first-child{min-width:0;flex:1}
-  #discTitle{font-family:'Inter',system-ui,sans-serif;font-size:1rem;font-weight:600;letter-spacing:-.005em;
-    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  #discMeta{font-family:'JetBrains Mono',monospace;font-size:.6rem;letter-spacing:.12em;text-transform:uppercase;
-    opacity:.55;margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .disc-hint{display:none}
-  .disc-pause{right:16px;bottom:calc(var(--foot-h) + (var(--cap-h) - 38px) / 2);width:38px;height:38px;font-size:.8rem}
-
-  .cap-foot{padding:10px 16px calc(10px + var(--safe-bottom));gap:12px}
-  .cap-foot-logo{height:42px;width:calc(42px * var(--lg-ar,1.4649))}
-  .cap-foot-text b{font-size:.62rem;letter-spacing:.16em}
-  .cap-foot-text p{font-size:.66rem;line-height:1.35;margin-top:3px}
-  .btn-cap-foot-enquire{padding:9px 15px;font-size:.64rem}
-  html[data-theme="dark"]:not(.cat-open) .cap-foot{background:rgba(5,5,5,.94);color:#fff;border-top-color:rgba(255,255,255,.1)}
-  html[data-theme="dark"]:not(.cat-open) .cap-foot-logo{filter:brightness(0) invert(1);opacity:.85}
-  html[data-theme="dark"]:not(.cat-open) .btn-cap-foot-enquire{border-color:rgba(255,255,255,.85);color:#fff}
-  html[data-theme="dark"]:not(.cat-open) .btn-cap-foot-enquire:hover{background:#fff;color:#000}
-
-  .cat-back{display:none !important}
-  .cat-back-inline{
-    display:inline-flex;align-items:center;gap:6px;background:none;border:0;margin:0 0 8px;padding:6px 0;
-    color:inherit;opacity:.6;cursor:pointer;font:500 .62rem/1 'JetBrains Mono',monospace;letter-spacing:.14em;text-transform:uppercase;
-  }
-  .cat-back-inline:hover,.cat-back-inline:focus-visible{opacity:1}
-  .cat-head{padding:4px 16px 12px}
-  .cat-head h1{font-size:2rem;letter-spacing:-.02em;line-height:1.05;margin:0 0 8px}
-  .cat-head p{font-size:.86rem;line-height:1.45}
-  .cat-chips{flex-wrap:nowrap;overflow-x:auto;margin:14px -16px 0;padding:0 16px 2px;scrollbar-width:none;-webkit-overflow-scrolling:touch}
-  .cat-chips::-webkit-scrollbar{display:none}
-  .cat-chips.more-right:not(.more-left){-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 44px),transparent)}
-  .cat-chips.more-left:not(.more-right){-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px);mask-image:linear-gradient(90deg,transparent,#000 44px)}
-  .cat-chips.more-left.more-right{-webkit-mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent);mask-image:linear-gradient(90deg,transparent,#000 44px,#000 calc(100% - 44px),transparent)}
-  .cat-chip{flex:none;padding:10px 16px;font-size:.66rem;min-height:40px;display:inline-flex;align-items:center}
-  .cat-grid{gap:8px;padding:4px 16px calc(var(--foot-h) + 24px)}
-  .cat-card{border-radius:3px}
-  .cat-card.wide{grid-column:1 / -1;aspect-ratio:var(--r,4/5)}
-  .cat-card .cc-cap{padding:26px 10px 8px;font-size:.72rem;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .cat-card .cc-c{display:none}
-  .cat-card.wide .cc-cap{font-size:.84rem;padding:34px 14px 12px}
+#capEnq.on{display:flex}
+.enq-card{
+  width:100%;max-width:520px;margin:auto;background:var(--paper);color:var(--ink);
+  border:1px solid var(--line);border-radius:10px;padding:26px 26px 22px;
+  box-shadow:0 30px 80px rgba(0,0,0,.45);
 }
+.enq-head{display:flex;justify-content:space-between;align-items:flex-start;gap:16px;margin-bottom:18px}
+.enq-head h2{margin:0;font-size:1.25rem;font-weight:600}
+.enq-head p{margin:3px 0 0;font-size:.72rem;opacity:.6}
+.enq-close{background:none;border:none;color:var(--ink);opacity:.65;cursor:pointer;font-size:.74rem;padding:4px 0;white-space:nowrap}
+.enq-close:hover{opacity:1}
+.enq-field{margin-bottom:14px}
+.enq-field label{display:block;font-size:.66rem;letter-spacing:.12em;text-transform:uppercase;opacity:.6;margin-bottom:6px}
+.enq-field input,.enq-field select,.enq-field textarea{
+  width:100%;background:transparent;color:var(--ink);border:1px solid var(--line);border-radius:6px;
+  padding:10px 12px;font:inherit;font-size:.92rem;
+}
+.enq-field select option{color:#000}
+.enq-field textarea{min-height:110px;resize:vertical}
+.enq-field input:focus,.enq-field select:focus,.enq-field textarea:focus{outline:none;border-color:var(--ink)}
+.enq-count{font-size:.64rem;opacity:.5;text-align:right;margin-top:4px}
+.enq-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.enq-foot{display:flex;justify-content:space-between;align-items:center;gap:12px;flex-wrap:wrap;margin-top:6px}
+.enq-status{font-size:.68rem;letter-spacing:.08em;opacity:.7}
+.enq-send{
+  background:var(--ink);color:var(--paper);border:1px solid var(--ink);border-radius:999px;
+  padding:11px 24px;font:600 .76rem/1 'Inter',system-ui,sans-serif;letter-spacing:.06em;text-transform:uppercase;cursor:pointer;
+}
+.enq-send:disabled{opacity:.45;cursor:not-allowed}
+@media (max-width:640px){ .enq-card{padding:22px 18px 18px} }
 
 .skip-link{position:absolute;left:12px;top:-64px;z-index:100;background:#fff;color:#000;padding:10px 16px;
   font-weight:600;font-size:.85rem;text-decoration:none;transition:top .15s ease}
 .skip-link:focus{top:12px}
 .sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
-/* Phones: Spotlight leaves the crowded top bar. On Discover it sits under the photo slide, between
-   the photo's title and the pause button; on a category page it sits beside "← Discover". One
-   real button, moved between these spots by script as the screen changes. */
-.spot-slot{display:none}
-.cat-head-top{display:flex;align-items:center;justify-content:space-between;gap:12px}
-@media (max-width:860px){
-  .spot-slot{display:flex;align-items:center;flex:none;pointer-events:auto;margin-left:auto}
-  .cat-head-top{margin:0 0 8px}
-  .cat-head-top .cat-back-inline{margin:0}
-  .spot-slot #capLampToggle{
-    color:#fff;opacity:.9;font-size:.62rem !important;letter-spacing:.08em;text-transform:uppercase;
-    cursor:pointer;white-space:nowrap;min-height:40px;padding:0 13px !important;
-    display:inline-flex;align-items:center;gap:6px;
-  }
-  .spot-slot #capLampToggle:not([aria-pressed="true"]){background:rgba(0,0,0,.25)}
-  html[data-theme="light"] .spot-slot #capLampToggle{color:#000;background:transparent}
-}
-/* ================= Page spotlight (normal view): with Spotlight on, the page falls into a dim
-   black & white, and a warm circle that follows the cursor, finger or the phone's tilt brings the
-   photos back into colour. Fixed layers, pointer-events:none - never blocks clicks or swipes. */
-#pageLamp{position:fixed;inset:0;z-index:30;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s;
-  -webkit-backdrop-filter:grayscale(1) brightness(.34);backdrop-filter:grayscale(1) brightness(.34);
-  -webkit-mask-image:radial-gradient(circle var(--pr,260px) at var(--px,50%) var(--py,50%), transparent 0%, rgba(0,0,0,.25) 45%, #000 100%);
-  mask-image:radial-gradient(circle var(--pr,260px) at var(--px,50%) var(--py,50%), transparent 0%, rgba(0,0,0,.25) 45%, #000 100%);}
-#pageLampGlow{position:fixed;inset:0;z-index:31;pointer-events:none;opacity:0;visibility:hidden;transition:opacity .45s ease,visibility 0s linear .45s;
-  background:radial-gradient(circle calc(var(--pr,260px) * 1.1) at var(--px,50%) var(--py,50%), rgba(255,190,85,.18), rgba(255,190,85,0) 70%);}
-html.page-lamp-on #pageLamp,html.page-lamp-on #pageLampGlow{opacity:1;visibility:visible;transition:opacity .45s ease,visibility 0s}
-html.page-lamp-on .cat-card img.lrl-loaded{filter:none}   /* Discover's own colour/grayscale rule (above) covers .disc-card */
-@media (max-width:860px){ :root{--pr:170px} }
-/* ================= Footer bar: fixed colours per theme =================
-   Stated outright (not left to inherit) so no browser or phone setting can ever turn the text or the
-   Enquire button white-on-white or black-on-black. */
-html[data-theme="light"]{color-scheme:light}
-html[data-theme="dark"]{color-scheme:dark}
-html[data-theme="light"] .cap-foot{background:rgba(255,255,255,.96) !important;color:#000 !important;border-top-color:rgba(0,0,0,.1) !important}
-html[data-theme="light"] .cap-foot-text b,html[data-theme="light"] .cap-foot-text p{color:#000 !important;-webkit-text-fill-color:#000}
-html[data-theme="light"] .btn-cap-foot-enquire{color:#000 !important;-webkit-text-fill-color:#000;border-color:#000 !important;background:transparent !important}
-html[data-theme="light"] .btn-cap-foot-enquire:hover{background:#000 !important;color:#fff !important;-webkit-text-fill-color:#fff}
-html[data-theme="light"] .cap-foot-logo{filter:none !important;opacity:.95}
-html[data-theme="dark"] .cap-foot{background:rgba(6,6,6,.95) !important;color:#fff !important;border-top-color:rgba(255,255,255,.1) !important}
-html[data-theme="dark"] .cap-foot-text b,html[data-theme="dark"] .cap-foot-text p{color:#fff !important;-webkit-text-fill-color:#fff}
-html[data-theme="dark"] .btn-cap-foot-enquire{color:#fff !important;-webkit-text-fill-color:#fff;border-color:rgba(255,255,255,.85) !important;background:transparent !important}
-html[data-theme="dark"] .btn-cap-foot-enquire:hover{background:#fff !important;color:#000 !important;-webkit-text-fill-color:#000}
-html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1) !important;opacity:.9}
-
-/* ================= Light mode for the whole page =================
-   What We Capture follows the theme chosen on the home page everywhere - Discover included. In light
-   mode Discover is a clean white gallery; in dark mode it stays the black stage. Photos are always in
-   full colour either way. */
-html[data-theme="light"],html[data-theme="light"] body{background:#fff;color:#000}
-html[data-theme="light"] #discover{background:#fff}
-html[data-theme="light"] .cap-header{background:rgba(255,255,255,.96);border-bottom:1px solid rgba(0,0,0,.08);
-  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px)}
-html[data-theme="light"] .cap-cat-btn.active{background:#000;color:#fff;border-color:#000}
-html[data-theme="light"] .disc-card{background:#eee;box-shadow:0 18px 44px rgba(0,0,0,.16)}
-html[data-theme="light"] .disc-caption{background:linear-gradient(0deg,rgba(255,255,255,.94) 0%,rgba(255,255,255,0) 100%);color:#000}
-html[data-theme="light"] .disc-nav-btn{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.18);color:#000;box-shadow:0 4px 14px rgba(0,0,0,.12)}
-html[data-theme="light"] .disc-nav-btn:hover{background:#fff}
-html[data-theme="light"] .disc-pause{background:rgba(255,255,255,.9);border-color:rgba(0,0,0,.2);color:#000}
-html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !important}
-@media (max-width:860px){ html[data-theme="light"] .disc-card{box-shadow:0 12px 30px rgba(0,0,0,.16)} }
 </style>
 </head>
 <body>
@@ -547,24 +349,23 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
 
 <header class="cap-header" id="capHeader">
   <div class="cap-row1">
-    <button class="cap-brand" id="capBrand" aria-label="Living Room Labs - back to the home page">
-      <span class="lg-crop"><img src="/logo.png" width="600" height="600" alt="Living Room Labs"></span>
+    <button class="cap-brand" id="capBrand" aria-label="Back to Home">
+      <img src="/logo.png" alt="Living Room Labs">
       <span class="cap-brand-text">
         <b>Living Room Labs</b>
         <span id="capTagline" class="mono"></span>
       </span>
     </button>
-    <p class="cap-title">What We Capture</p>
     <div class="cap-row1-right">
       <div class="cap-links">
         <button type="button" id="capCollective" class="cap-mobile-hide">The Collective ↗</button>
         <a href="#" id="capElsewhere" class="cap-mobile-hide" target="_blank" rel="noopener">Elsewhere ↗</a>
-        <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the spotlight on"><span class="spot-dot" aria-hidden="true"></span>Spotlight</button>
+        <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the lamp on">☾ Lamp</button>
+        <button type="button" id="capEnquire" class="cap-enquire">Enquire ↗</button>
       </div>
     </div>
   </div>
   <nav class="cap-cats" id="capCats" aria-label="Categories"></nav>
-  <div class="cap-cats-bar" id="capCatsBar" aria-hidden="true"><span class="cap-cats-thumb" id="capCatsThumb"></span></div>
 </header>
 
 <div id="discover" role="region" aria-label="Featured photos">
@@ -580,27 +381,21 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
       <span id="discMeta"></span>
     </div>
     <div class="disc-hint mono">Click a category above, or swipe to browse</div>
-    <div class="spot-slot" id="discSpotSlot"></div>
   </div>
 </div>
 
 <section id="catview" aria-label="Category photos">
   <div class="cat-head">
-    <div class="cat-head-top">
-      <button type="button" class="cat-back-inline" id="catBackInline">← Discover</button>
-      <div class="spot-slot" id="catSpotSlot"></div>
-    </div>
     <h1 id="catTitle"></h1>
     <p id="catLine"></p>
     <div class="cat-chips" id="catChips"></div>
-    <div class="cap-cats-bar" id="catChipsBar" aria-hidden="true"><span class="cap-cats-thumb" id="catChipsThumb"></span></div>
   </div>
   <div class="cat-grid" id="catGrid"></div>
 </section>
 <button class="cat-back mono" id="catBack" style="display:none">← Discover</button>
 
 <footer class="cap-foot" id="capFoot">
-  <button type="button" class="cap-foot-home" id="capFootHome" aria-label="Living Room Labs - home page"><span class="lg-crop cap-foot-logo"><img src="/logo.png" width="600" height="600" alt=""></span></button>
+  <img src="/logo.png" alt="Living Room Labs" class="cap-foot-logo">
   <div class="cap-foot-text">
     <b class="mono" id="capFootHeading">Enquiry</b>
     <p class="mono" id="capFootTagline">Every frame begins with a conversation</p>
@@ -608,10 +403,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
   <button type="button" class="btn-cap-foot-enquire mono" id="capFootEnquire">Enquire ↗</button>
 </footer>
 
-<div id="pageLamp" aria-hidden="true"></div>
-<div id="pageLampGlow" aria-hidden="true"></div>
-
-<div id="capLb" role="dialog" aria-modal="true" aria-label="Photo viewer" tabindex="-1">
+<div id="capLb" role="dialog" aria-modal="true" aria-label="Photo viewer">
   <button class="cap-lb-close" id="lbClose" aria-label="Close">✕</button>
   <button class="cap-lb-nav cap-lb-prev" id="lbPrev" aria-label="Previous photo">‹</button>
   <div id="lbStage">
@@ -623,18 +415,60 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
   <div class="cap-lb-cap mono" id="lbCap"></div>
 </div>
 
-<script src="/shared.js" defer></script>
+<div id="capEnq" role="dialog" aria-modal="true" aria-labelledby="enqTitle">
+  <div class="enq-card">
+    <div class="enq-head">
+      <div>
+        <h2 id="enqTitle">Enquiry</h2>
+        <p class="mono">Every frame begins with a conversation.</p>
+      </div>
+      <button type="button" class="enq-close mono" id="enqClose" aria-label="Close enquiry">[ ESC / CLOSE ]</button>
+    </div>
+    <form id="enqForm" novalidate>
+      <div class="enq-field">
+        <label for="enqName">Your Name</label>
+        <input type="text" id="enqName" name="name" required maxlength="100" placeholder="Jane Doe" autocomplete="name">
+      </div>
+      <div class="enq-field">
+        <label for="enqEmail">Your Email</label>
+        <input type="email" id="enqEmail" name="email" required maxlength="254" placeholder="name@domain.com" autocomplete="email">
+      </div>
+      <div class="enq-field">
+        <label for="enqCat">Shoot Category</label>
+        <select id="enqCat" name="category"><option value="General Enquiry">General Enquiry</option></select>
+      </div>
+      <div class="enq-field" id="enqEventWrap" style="display:none">
+        <label for="enqEvent">Event Type</label>
+        <input type="text" id="enqEvent" name="eventType" maxlength="80" placeholder="e.g. Birthday, Wedding, Performing Arts">
+      </div>
+      <div class="enq-field">
+        <label for="enqMsg">Shoot Details &amp; Timeline</label>
+        <textarea id="enqMsg" name="message" required maxlength="500" placeholder="Tell us what you're shooting, roughly when, and the location."></textarea>
+        <div class="enq-count mono"><span id="enqCount">0</span> / 500</div>
+      </div>
+      <div class="enq-hp" aria-hidden="true">
+        <label for="enqWebsite">Leave this field empty</label>
+        <input type="text" id="enqWebsite" name="_gotcha" tabindex="-1" autocomplete="off">
+      </div>
+      <div class="enq-foot">
+        <span class="enq-status mono" id="enqStatus" role="status" aria-live="polite">READY</span>
+        <button type="submit" class="enq-send" id="enqSend">Send Enquiry &rarr;</button>
+      </div>
+    </form>
+  </div>
+</div>
+
 <script>
 (function(){
   "use strict";
   var DATA = null, PHOTOS = [], NICHES = [];
   var discoverOrder = [], discoverPaused = false;
   /* CSS px/second - same values the homepage uses: faster on phones, where 60px/s felt sluggish */
-  function scrollSpeed(){ return window.innerWidth <= 640 ? 72 : 60; }
+  function scrollSpeed(){ return window.innerWidth <= 640 ? 92 : 60; }
   var frameEst = 1000/60, scrollPlan = null, autoRaf = null;
   var track, trackLoopW = 0, trackPos = 0, isTouching = false, extAt = 0, manualPauseUntil = 0;
   var currentCat = null, currentEvent = null, lbList = [], lbIdx = 0;
-  var openOverlay = null; /* "lb" (photo viewer) | null  - the enquiry form manages itself (shared.js) */
+  var openOverlay = null; /* "lb" (photo viewer) | "enq" (enquiry form) | null */
   var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
   function $(s,r){ return (r||document).querySelector(s); }
@@ -645,103 +479,32 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     for(var i=a.length-1;i>0;i--){ var j=Math.floor(Math.random()*(i+1)); var t=a[i]; a[i]=a[j]; a[j]=t; }
     return a;
   }
-  /* A fresh, well-mixed order every visit: random, but weighted so no category bunches up -
-     neighbours almost never share a category, even when one category has most of the photos. */
-  function spreadMix(list){
-    var groups = {}, keys = [], out = [], prev = null;
-    shuffle(list).forEach(function(p){ var c = p.category || ""; if (!groups[c]) { groups[c] = []; keys.push(c); } groups[c].push(p); });
-    while (out.length < list.length) {
-      var cand = keys.filter(function(k){ return groups[k].length && k !== prev; });
-      if (!cand.length) cand = keys.filter(function(k){ return groups[k].length; });
-      var total = 0; cand.forEach(function(k){ total += groups[k].length * groups[k].length; });
-      var r = Math.random() * total, pick = cand[cand.length - 1];
-      for (var i = 0; i < cand.length; i++) { r -= groups[cand[i]].length * groups[cand[i]].length; if (r < 0) { pick = cand[i]; break; } }
-      out.push(groups[pick].pop()); prev = pick;
-    }
-    return out;
-  }
-  /* up to max photos, dealt evenly from every category (random photos each time) */
-  function pickBalanced(list, max){
-    if (list.length <= max) return list.slice();
-    var groups = {}, keys = [], out = [];
-    shuffle(list).forEach(function(p){ var c = p.category || ""; if (!groups[c]) { groups[c] = []; keys.push(c); } groups[c].push(p); });
-    while (out.length < max) {
-      shuffle(keys).forEach(function(k){ if (out.length < max && groups[k].length) out.push(groups[k].pop()); });
-    }
-    return out;
-  }
   /* Thumbnail generated by the site's own image pipeline: /images/uploads/<name> -> /images/thumbs/<name>.webp */
   function thumbFor(src){
     var m = /^\/images\/uploads\/([^\/?#]+)$/.exec(src || "");
     return m ? "/images/thumbs/" + m[1] + ".webp" : src;
   }
-  /* the lighter viewer copy (long side 2000px) for the full-screen photo, and the .jpg thumbnail
-     for browsers without WebP. Every one falls back to the original if the copy isn't made yet. */
-  function uploadName(src){ var m = /^\/images\/uploads\/([^\/?#]+)$/.exec(src || ""); return m ? m[1] : ""; }
-  function fullFor(src){ var n = uploadName(src); return n ? "/images/full/" + n + ".webp" : src; }
-  function thumbJpgFor(src){ var n = uploadName(src); return n ? "/images/thumbs/" + n + ".jpg" : ""; }
-  function imgFallback(img, p){
-    var tries = [thumbJpgFor(p.src), p.src].filter(function(u){ return u && u !== img.getAttribute("src"); });
-    img.addEventListener("error", function onErr(){
-      var next = tries.shift();
-      if (next) img.src = next; else { img.removeEventListener("error", onErr); img.style.opacity = "0.3"; }
-    });
-  }
 
-  /* theme: set in <head> from the home page's saved choice. If the theme is changed on another
-     tab, follow it here too. */
-  window.addEventListener("storage", function(e){
-    if (e.key !== "lrl_theme") return;
-    var dark = e.newValue === "dark";
-    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-    var tcm = document.getElementById("themeColorMeta");
-    if (tcm) tcm.setAttribute("content", dark ? "#080808" : "#FFFFFF");
-  });
+  /* theme: mirror whatever the homepage lamp is set to. Defaults to light (lamp off) unless
+     the user explicitly chose dark before - doesn't follow the device's OS dark-mode setting. */
+  try {
+    var savedTheme = localStorage.getItem("lrl_theme");
+    document.documentElement.setAttribute("data-theme", savedTheme === "dark" ? "dark" : "light");
+  } catch(e){}
 
   /* both bars are measured live (not guessed in CSS), so the photos, captions and buttons always
      clear them exactly - including the phone's home-indicator safe area inside the footer */
-  var lastBars = "";
   function syncHeaderHeight(){
     var h = document.getElementById("capHeader").offsetHeight;
     document.documentElement.style.setProperty("--header-h", h + "px");
     var f = document.getElementById("capFoot");
-    var fh = (f && f.offsetHeight) || 0;
-    if (fh) document.documentElement.style.setProperty("--foot-h", fh + "px");
-    /* bars changed size (fonts arriving, rotation...) -> the photo stage changed too: refit the cards */
-    var bars = h + "|" + fh;
-    if (lastBars && bars !== lastBars && track) {
-      requestAnimationFrame(function(){ $all(".disc-card", track).forEach(sizeCard); if (settleDiscover) settleDiscover(); });
-    }
-    lastBars = bars;
+    if (f && f.offsetHeight) document.documentElement.style.setProperty("--foot-h", f.offsetHeight + "px");
   }
   syncHeaderHeight();
-  if (window.ResizeObserver) {
-    var barsRO = new ResizeObserver(function(){ syncHeaderHeight(); });
-    barsRO.observe(document.getElementById("capHeader"));
-    barsRO.observe(document.getElementById("capFoot"));
-  }
   window.addEventListener("resize", syncHeaderHeight);
   window.addEventListener("orientationchange", function(){ setTimeout(syncHeaderHeight, 250); });
 
-  /* each photo's own colour, painted behind its card while it loads (made by the GitHub photo workflow) */
-  var PHOTO_COLORS = {};
-  var colorsReady = fetch("/images/colors.json", { cache: "no-cache" })
-    .then(function(r){ return r.ok ? r.json() : {}; }).catch(function(){ return {}; })
-    .then(function(c){ PHOTO_COLORS = (c && typeof c === "object") ? c : {}; paintCards(); });
-  function paintCards(){
-    $all(".disc-card[data-name], .cat-card[data-name]").forEach(function(card){
-      var c = PHOTO_COLORS[card.getAttribute("data-name")];
-      if (c && !card.style.backgroundColor) card.style.backgroundColor = c;
-    });
-  }
-  function tint(card, src){
-    var n = uploadName(src);
-    if (!n) return;
-    card.setAttribute("data-name", n);
-    if (PHOTO_COLORS[n]) card.style.backgroundColor = PHOTO_COLORS[n];
-  }
-
-  fetch("/content.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){
+  fetch("/content.json").then(function(r){ return r.json(); }).then(function(d){
     DATA = d;
     PHOTOS = (d.photos || []).filter(function(p){ return p && p.src; });
     NICHES = d.niches || [];
@@ -764,21 +527,6 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     var stage = $("#lbStage");
     var lb = $("#capLb");
     var toggle = $("#capLampToggle");
-    (function placeSpotlight(){
-      var home = toggle && toggle.parentNode;
-      var discSlot = document.getElementById("discSpotSlot"), catSlot = document.getElementById("catSpotSlot");
-      if (!toggle || !home || !discSlot || !catSlot || !window.matchMedia) return;
-      var mq = window.matchMedia("(max-width:860px)");
-      function place(){
-        var target = !mq.matches ? home
-          : (document.documentElement.classList.contains("cat-open") ? catSlot : discSlot);
-        if (toggle.parentNode !== target) { target.appendChild(toggle); syncHeaderHeight(); }
-      }
-      place();
-      if (mq.addEventListener) mq.addEventListener("change", place); else if (mq.addListener) mq.addListener(place);
-      /* follow Discover <-> category switches (they toggle .cat-open on <html>) */
-      if (window.MutationObserver) new MutationObserver(place).observe(document.documentElement, { attributes: true, attributeFilter: ["class"] });
-    })();
     if (!stage || !lb || !toggle) return;
 
     var active = false, lastMoveAt = 0;
@@ -788,18 +536,15 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     var curX = 0, curY = 0, targetX = 0, targetY = 0, haveStageSize = false;
     var idlePhase = Math.random() * 1000;
 
-    var spot = false;                       /* Spotlight: off on every visit, only the button turns it on */
-    function spotOn(){ return spot; }
+    function isDark(){ return document.documentElement.getAttribute("data-theme") === "dark"; }
     function lbOpen(){ return lb.classList.contains("on"); }
 
     function updateLampVisibility(){
       /* the spotlight only ever shows over a full, still photo - not the moving strip,
          not the grid. Turning the lamp on also parks the carousel (see startAutoScroll). */
-      var show = spotOn() && lbOpen();
+      var show = isDark() && lbOpen();
       stage.classList.toggle("lamp-on", show);
       if (show && !active) centerTarget();
-      if (show) lbWake();
-      plWake();
     }
 
     function centerTarget(){
@@ -818,60 +563,6 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
       active = true;
     }
 
-    /* ---- phone tilt (gyro): a 0..1 aim point, used whenever no finger/mouse moved recently ---- */
-    var tilt = { x: .5, y: .5, at: 0, bx: null, by: null, ang: null, asked: false };
-    function onTilt(e){
-      if (e.gamma == null || e.beta == null) return;
-      /* turn the raw sensor angles into screen left/right + up/down, whichever way the phone is turned */
-      var ang = (screen.orientation && typeof screen.orientation.angle === "number") ? screen.orientation.angle
-              : (typeof window.orientation === "number" ? window.orientation : 0);
-      var ax = e.gamma, ay = e.beta;
-      if (ang === 90) { ax = e.beta; ay = -e.gamma; }
-      else if (ang === -90 || ang === 270) { ax = -e.beta; ay = e.gamma; }
-      else if (ang === 180) { ax = -e.gamma; ay = -e.beta; }
-      /* however the phone is being held when the light comes on counts as "centre", and that
-         centre slowly follows you, so a relaxed grip never leaves the light stuck at an edge */
-      if (tilt.bx === null || tilt.ang !== ang) { tilt.bx = ax; tilt.by = ay; tilt.ang = ang; }
-      else { tilt.bx += (ax - tilt.bx) * 0.0015; tilt.by += (ay - tilt.by) * 0.0015; }
-      tilt.x = Math.max(0, Math.min(1, .5 + (ax - tilt.bx) / 32));
-      tilt.y = Math.max(0, Math.min(1, .5 + (ay - tilt.by) / 26));
-      tilt.at = performance.now();
-    }
-    function startTilt(){
-      if (tilt.asked || !window.DeviceOrientationEvent) return;
-      tilt.asked = true;
-      try {
-        if (typeof DeviceOrientationEvent.requestPermission === "function") {
-          DeviceOrientationEvent.requestPermission().then(function(r){
-            if (r === "granted") window.addEventListener("deviceorientation", onTilt, {passive:true});
-          }).catch(function(){});
-        } else window.addEventListener("deviceorientation", onTilt, {passive:true});
-      } catch(e){}
-    }
-    function tiltRecent(now){ return now - tilt.at < 600; }
-
-    var pl = { cx: innerWidth/2, cy: innerHeight/2, tx: innerWidth/2, ty: innerHeight/2, at: 0 };
-    function plAim(x, y){ pl.tx = x; pl.ty = y; pl.at = performance.now(); }
-    window.addEventListener("mousemove", function(e){ plAim(e.clientX, e.clientY); }, {passive:true});
-    ["touchstart","touchmove"].forEach(function(ev){
-      window.addEventListener(ev, function(e){ if (e.touches && e.touches[0]) plAim(e.touches[0].clientX, e.touches[0].clientY); }, {passive:true});
-    });
-    var plWasOn = false, plRunning = false;
-    function plLoop(){
-      var on = spotOn() && !lbOpen();
-      if (on !== plWasOn) { document.documentElement.classList.toggle("page-lamp-on", on); plWasOn = on; }
-      if (!on) { plRunning = false; return; }   /* sleeps while off - no work, no battery drain */
-      requestAnimationFrame(plLoop);
-      var now = performance.now();
-      if (now - pl.at > 1200 && tiltRecent(now)) { pl.tx = tilt.x * innerWidth; pl.ty = tilt.y * innerHeight; }
-      var k = reduceMotion ? 1 : 0.14;
-      pl.cx += (pl.tx - pl.cx) * k; pl.cy += (pl.ty - pl.cy) * k;
-      var rs = document.documentElement.style;
-      rs.setProperty("--px", pl.cx.toFixed(1) + "px");
-      rs.setProperty("--py", pl.cy.toFixed(1) + "px");
-    }
-    function plWake(){ if (!plRunning) { plRunning = true; requestAnimationFrame(plLoop); } }
-
     /* tracked on the whole modal (lb), not just the small photo, so moving anywhere over
        the dark surrounding area still aims the lamp - it just clamps to the photo's edges */
     lb.addEventListener("mousemove", function(e){ setTarget(e.clientX, e.clientY); }, {passive:true});
@@ -888,16 +579,14 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
       setTimeout(function(){ active = false; }, 1200);
     }, {passive:true});
 
-    var lbRunning = false;
     function loop(t){
-      if (!stage.classList.contains("lamp-on")) { lbRunning = false; return; }
       requestAnimationFrame(loop);
+      if (!stage.classList.contains("lamp-on")) return;
       if (!haveStageSize) centerTarget();
       var now = performance.now();
       var recentlyActive = active || (now - lastMoveAt < 900);
       var r = stage.getBoundingClientRect();
-      if (!recentlyActive && tiltRecent(now)) { targetX = tilt.x * r.width; targetY = tilt.y * r.height; }
-      else if (!recentlyActive) {
+      if (!recentlyActive) {
         if (reduceMotion) { targetX = r.width/2; targetY = r.height/2; }
         else {
           /* idle: gentle organic drift, so the effect still reads on mobile / mouse-less visits
@@ -912,21 +601,23 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
       stage.style.setProperty("--lx", curX.toFixed(1) + "px");
       stage.style.setProperty("--ly", curY.toFixed(1) + "px");
     }
-    function lbWake(){ if (!lbRunning) { lbRunning = true; requestAnimationFrame(loop); } }
+    requestAnimationFrame(loop);
 
-    function paintToggle(){
-      toggle.setAttribute("aria-pressed", String(spot));
-      toggle.setAttribute("aria-label", spot ? "Turn the spotlight off" : "Turn the spotlight on");
-      toggle.innerHTML = '<span class="spot-dot" aria-hidden="true"></span>Spotlight';
-    }
     toggle.addEventListener("click", function(){
-      spot = !spot;
-      if (spot) startTilt();
-      paintToggle();
+      var nowDark = !isDark();
+      document.documentElement.setAttribute("data-theme", nowDark ? "dark" : "light");
+      toggle.setAttribute("aria-pressed", String(nowDark));
+      toggle.setAttribute("aria-label", nowDark ? "Turn the lamp off" : "Turn the lamp on");
+      toggle.textContent = nowDark ? "☀ Lamp" : "☾ Lamp";
+      try { localStorage.setItem("lrl_theme", nowDark ? "dark" : "light"); } catch(e){}
       updateLampVisibility();
-      if (window.__spotChanged) window.__spotChanged(spot);
     });
-    paintToggle();
+
+    if (isDark()) {
+      toggle.setAttribute("aria-pressed", "true");
+      toggle.setAttribute("aria-label", "Turn the lamp off");
+      toggle.textContent = "☀ Lamp";
+    }
     updateLampVisibility();
 
     if (window.MutationObserver) {
@@ -934,19 +625,12 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
       mo.observe(lb, { attributes: true, attributeFilter: ["class"] });
     }
     window.__lampRecheck = updateLampVisibility;
-    window.__spotOn = spotOn;
+    window.__isDark = isDark;
   }
 
   function buildHeader(){
     var catsHost = $("#capCats");
     catsHost.innerHTML = "";
-    /* "All" = the Discover stream of every category; it's also the way back from a category */
-    var allBtn = document.createElement("button");
-    allBtn.className = "cap-cat-btn active"; allBtn.type = "button";
-    allBtn.textContent = "All";
-    allBtn.setAttribute("data-cat", "");
-    allBtn.addEventListener("click", function(){ if (currentCat) goDiscover(); });
-    catsHost.appendChild(allBtn);
     NICHES.forEach(function(n){
       var name = (n && n.name) || n;
       var btn = document.createElement("button");
@@ -956,32 +640,6 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
       btn.addEventListener("click", function(){ showCategory(name); });
       catsHost.appendChild(btn);
     });
-    catsHost.addEventListener("scroll", railEdges, {passive:true});
-    $("#catChips").addEventListener("scroll", railEdges, {passive:true});
-    window.addEventListener("resize", railEdges);
-    railEdges();
-    /* the chips change width once the site's fonts arrive - measure again then */
-    if (document.fonts && document.fonts.ready) document.fonts.ready.then(railEdges).catch(function(){});
-    railNudge();
-
-    /* same logo file as the home page (the one set in the Content Editor), trimmed to its artwork */
-    if (DATA.logo) {
-      $all(".lg-crop > img").forEach(function(img){
-        img.addEventListener("error", function onErr(){ img.removeEventListener("error", onErr); img.src = "/logo.png"; });
-        img.src = DATA.logo;
-      });
-    }
-    if (window.LRL && LRL.trimLogos) LRL.trimLogos();
-
-    /* the enquiry window uses the live categories, email and form settings */
-    if (window.LRL && LRL.enquiry) {
-      var evs = [];
-      PHOTOS.forEach(function(p){ (p.eventTypes||[]).forEach(function(et){ if (evs.indexOf(et) === -1) evs.push(et); }); });
-      LRL.enquiry.configure({
-        categories: NICHES.map(function(n){ return (n && n.name) || n; }),
-        formspreeId: DATA.formspreeId, email: DATA.email, eventTypes: evs
-      });
-    }
 
     $("#capTagline").textContent = DATA.tagline || "";
     $("#capFootTagline").textContent = "Every frame begins with a conversation";
@@ -995,74 +653,12 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     syncHeaderHeight();
   }
 
-  /* category rail: fade the edge(s) that still have more chips to scroll to, and move the bar under
-     it (phones and tablets) - the bar's length is the share of the row on screen, its position is
-     how far you've swiped */
-  function syncRail(r, bar, thumb){
-    if (!r) return;
-    var over = r.scrollWidth - r.clientWidth;
-    r.classList.toggle("more-left", r.scrollLeft > 4);
-    r.classList.toggle("more-right", r.scrollLeft + r.clientWidth < r.scrollWidth - 4);
-    if (!bar || !thumb) return;
-    var show = over > 4;
-    if (bar.classList.contains("on") !== show) { bar.classList.toggle("on", show); syncHeaderHeight(); }
-    if (!show) return;
-    var bw = bar.clientWidth;
-    if (!bw) return;
-    var tw = Math.max(32, Math.round(bw * r.clientWidth / r.scrollWidth));
-    var x = Math.round((bw - tw) * Math.min(1, Math.max(0, r.scrollLeft / over)));
-    thumb.style.width = tw + "px";
-    thumb.style.transform = "translateX(" + x + "px)";
-  }
-  function railEdges(){
-    syncRail($("#capCats"), $("#capCatsBar"), $("#capCatsThumb"));
-    if (currentCat) syncRail($("#catChips"), $("#catChipsBar"), $("#catChipsThumb"));   /* the event filters in a category */
-  }
-  /* first visit in a session: the category row slides a little to the left and back once, so it's
-     clear it can be swiped. Skipped if you're already touching it, if a category link already moved
-     it, or if you've asked your phone for less motion. */
-  function railNudge(){
-    var r = $("#capCats");
-    if (!r || reduceMotion) return;
-    try { if (sessionStorage.getItem("lrl_rail_hint") === "1") return; } catch(e){}
-    var touched = false;
-    function mark(){ touched = true; }
-    r.addEventListener("touchstart", mark, {passive:true});
-    r.addEventListener("wheel", mark, {passive:true});
-    setTimeout(function(){
-      var room = r.scrollWidth - r.clientWidth;
-      if (touched || r.scrollLeft > 4 || room < 24) return;
-      try { sessionStorage.setItem("lrl_rail_hint", "1"); } catch(e){}
-      r.scrollTo({ left: Math.min(84, room), behavior: "smooth" });
-      setTimeout(function(){ if (!touched) r.scrollTo({ left: 0, behavior: "smooth" }); }, 750);
-    }, 1500);
-  }
-  /* mark the chip for what's on screen and slide the rail so it's visible (it was off-screen on phones) */
-  function markActiveChip(name){
-    var rail = $("#capCats"), active = null;
-    $all(".cap-cat-btn", rail).forEach(function(b){
-      var on = b.getAttribute("data-cat") === (name || "");
-      b.classList.toggle("active", on);
-      if (on) { active = b; b.setAttribute("aria-current", "true"); } else b.removeAttribute("aria-current");
-    });
-    if (active && rail.scrollWidth > rail.clientWidth) {
-      var target = active.offsetLeft - (rail.clientWidth - active.offsetWidth) / 2;
-      rail.scrollTo({ left: Math.max(0, target), behavior: reduceMotion ? "auto" : "smooth" });
-    }
-    setTimeout(railEdges, 400);
-  }
-
   /* ---------------- discover: continuous flowing carousel with dock magnification ---------------- */
   function buildDiscover(){
     track = $("#discTrack");
     var pool = PHOTOS.filter(function(p){ return p.showInAll !== false; });
     if (!pool.length) pool = PHOTOS;
-    /* Discover is a taster, not the whole archive: every photo here downloads straight away
-       (twice, for the seamless loop), so at hundreds of photos showing all of them would cost a
-       phone tens of MB. Instead: up to 30 random photos, dealt evenly from every category and
-       mixed so neighbours differ - a different selection and order on every visit. */
-    var MAX_DISCOVER = 30;
-    discoverOrder = spreadMix(pickBalanced(pool, MAX_DISCOVER));
+    discoverOrder = shuffle(pool);
 
     /* build once, then an identical clone appended after it, so the loop point is invisible
        (the exact technique the homepage strips use). Cards start at a sensible placeholder
@@ -1088,22 +684,19 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
       }
       applyDockScale();
     }
-    settleDiscover = settle;
-    var placeholderW = Math.round(Math.min(512, (track.clientWidth || window.innerWidth) * maxCardShare()));
     [discoverOrder, discoverOrder].forEach(function(list, copyNum){
       list.forEach(function(p){
         var card = document.createElement("div");
         card.className = "disc-card";
         card.dataset.copy = copyNum;
-        card.style.width = placeholderW + "px"; /* placeholder until the real dimensions are known */
-        tint(card, p.src);
+        card.style.width = "512px"; /* placeholder until the real dimensions are known */
         var img = document.createElement("img");
         img.loading = "eager";
         img.alt = p.alt || p.title || "";
         img.addEventListener("load", function(){
           if (img.naturalWidth && img.naturalHeight) {
-            card.dataset.ratio = String(img.naturalWidth / img.naturalHeight);
-            sizeCard(card);
+            var h = card.offsetHeight;
+            card.style.width = Math.round(h * (img.naturalWidth / img.naturalHeight)) + "px";
           }
           loadedCount++;
           if (loadedCount === totalCount || loadedCount === 6) settle();
@@ -1142,35 +735,6 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     }, {passive:true});
   }
 
-  /* a photo card is as tall as the stage allows, at the photo's real shape - but never wider than
-     most of the screen, so on a phone the next photos still peek in from the sides */
-  var settleDiscover = null;
-  function maxCardShare(){ return window.innerWidth <= 640 ? 0.84 : 0.9; }
-  function sizeCard(card){
-    var r = parseFloat(card.dataset.ratio);
-    if (!r || !track) return;
-    card.style.height = "";                       /* back to the stylesheet height, then fit */
-    var h = card.offsetHeight;
-    var maxW = (track.clientWidth || window.innerWidth) * maxCardShare();
-    var w = h * r;
-    if (w > maxW) { w = maxW; card.style.height = Math.round(maxW / r) + "px"; }
-    card.style.width = Math.round(w) + "px";
-  }
-  /* turning the phone or resizing the window: refit every card and re-measure the loop */
-  (function(){
-    var t = null, lastW = window.innerWidth, lastH = window.innerHeight;
-    window.addEventListener("resize", function(){
-      if (window.innerWidth === lastW && Math.abs(window.innerHeight - lastH) < 120) return; /* phone address bar */
-      lastW = window.innerWidth; lastH = window.innerHeight;
-      clearTimeout(t);
-      t = setTimeout(function(){
-        if (!track) return;
-        $all(".disc-card", track).forEach(sizeCard);
-        if (settleDiscover) settleDiscover();
-      }, 180);
-    });
-  })();
-
   function nearestCardTo(x){
     var cards = $all(".disc-card", track);
     var best = null, bestD = Infinity;
@@ -1187,7 +751,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     var cardCenter = card.offsetLeft + card.offsetWidth/2;
     if (Math.abs(cardCenter - center) < track.clientWidth * 0.22) {
       lbList = discoverOrder; lbIdx = discoverOrder.indexOf(photo);
-      renderLb(); showOverlay("lb"); focusLb();
+      renderLb(); showOverlay("lb"); $("#lbClose").focus();
     } else {
       manualPauseUntil = performance.now() + 4000;
       track.scrollTo({ left: cardCenter - track.clientWidth/2, behavior: "smooth" });
@@ -1218,12 +782,11 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     var half = track.clientWidth/2;
     var cards = $all(".disc-card", track);
     var winner = null, winnerDist = Infinity;
-    var shrink = window.innerWidth <= 640 ? 0.22 : 0.32;  /* gentler on phones, so the peeking photos stay readable */
     cards.forEach(function(card){
       var cx = card.offsetLeft + card.offsetWidth/2;
       var dist = Math.abs(cx - centerX);
       var t = Math.min(1, dist / half);
-      var scale = 1 - t*shrink;
+      var scale = 1 - t*0.32;
       card.style.transform = "scale(" + scale.toFixed(3) + ")";
       if (dist < winnerDist) { winnerDist = dist; winner = card; }
     });
@@ -1273,8 +836,8 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
       lastFrameT = now;
       refreshScrollPlan();
       frameTick++;
-      if (discoverPaused || isTouching || currentCat || openOverlay || enqOpen()) return;
-      if (window.__spotOn && window.__spotOn()) return; /* lamp on -> the strip holds still, matching a calm, static room */
+      if (discoverPaused || isTouching || currentCat || openOverlay) return;
+      if (window.__isDark && window.__isDark()) return; /* lamp on -> the strip holds still, matching a calm, static room */
       if (manualPauseUntil && now < manualPauseUntil) return;
       if (extAt && now - extAt < 250) return;
       if (frameTick % scrollPlan.every !== 0) return;
@@ -1343,7 +906,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     $("#discover").style.display = "none";
     $("#catview").classList.add("on");
     $("#catBack").style.display = "block";
-    markActiveChip(name);
+    $all(".cap-cat-btn").forEach(function(b){ b.classList.toggle("active", b.getAttribute("data-cat") === name); });
 
     var nicheInfo = NICHES.find(function(n){ return (n.name||n) === name; }) || {};
     $("#catTitle").textContent = name;
@@ -1355,10 +918,6 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     chipsHost.innerHTML = "";
     var eventTypes = [];
     catPhotos.forEach(function(p){ (p.eventTypes||[]).forEach(function(et){ if (eventTypes.indexOf(et) === -1) eventTypes.push(et); }); });
-    /* an event name from a link that doesn't exist (any more) shows the whole category instead of nothing */
-    if (currentEvent && eventTypes.indexOf(currentEvent) === -1) {
-      currentEvent = eventTypes.filter(function(et){ return et.toLowerCase() === String(currentEvent).toLowerCase(); })[0] || null;
-    }
     if (eventTypes.length) {
       var allChip = document.createElement("button");
       allChip.type = "button";
@@ -1378,12 +937,6 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
 
     var visible = currentEvent ? catPhotos.filter(function(p){ return (p.eventTypes||[]).indexOf(currentEvent) > -1; }) : catPhotos;
     renderGrid(visible);
-    /* keep the chosen event chip in view (it could sit off-screen on a phone), then size the bar */
-    var activeChip = chipsHost.querySelector(".cat-chip.active");
-    if (activeChip && chipsHost.scrollWidth > chipsHost.clientWidth) {
-      chipsHost.scrollLeft = Math.max(0, activeChip.offsetLeft - (chipsHost.clientWidth - activeChip.offsetWidth) / 2);
-    } else chipsHost.scrollLeft = 0;
-    railEdges();
 
     if (mode !== "none") {
       var push = (mode !== "replace") && wasOnDiscover;
@@ -1399,37 +952,15 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     var grid = $("#catGrid");
     grid.innerHTML = "";
     if (!list.length) {
-      grid.innerHTML = '<div class="cat-empty mono">New work coming soon.<br><button type="button" class="cat-empty-enq">Enquire about ' + esc(currentCat || "a shoot") + ' ↗</button></div>';
-      var enq = grid.querySelector(".cat-empty-enq");
-      if (enq) enq.addEventListener("click", openEnquiry);
+      grid.innerHTML = '<div class="cat-empty mono">No photos here yet.</div>';
       return;
     }
-    /* phones: the first photo runs full width at its own shape (a lead frame), then two columns;
-       if that leaves one photo on its own at the end, it runs full width too instead of a half-empty row */
-    var lastWide = (list.length - 1) % 2 === 1;
     list.forEach(function(p, i){
       var card = document.createElement("div");
-      var wide = (i === 0 || (lastWide && i === list.length - 1));
-      card.className = "cat-card" + (wide ? " wide" : "");
-      /* a full-width photo on a phone gets the sharper viewer copy; everything else the small thumbnail */
-      var gridSrc = (wide && window.innerWidth < 768) ? fullFor(p.src) : thumbFor(p.src);
-      tint(card, p.src);
-      card.setAttribute("role", "button");
-      card.setAttribute("tabindex", "0");
-      card.setAttribute("aria-label", "Open photo: " + (p.title || "Untitled"));
-      var ratio = /^\s*(\d+(?:\.\d+)?)\s*\/\s*(\d+(?:\.\d+)?)\s*$/.exec(p.ratio || "");
-      if (ratio) card.style.setProperty("--r", ratio[1] + " / " + ratio[2]);
-      card.innerHTML = '<img loading="lazy" decoding="async" src="'+esc(gridSrc)+'" alt="'+esc(p.alt||p.title||"")+'" style="object-position:'+esc((p.imagePosition||"center").toLowerCase())+'">'+
-        '<div class="cc-cap"><span class="cc-t">'+esc(p.title||"")+'</span>'+(p.client?'<span class="cc-c"> — '+esc(p.client)+'</span>':'')+'</div>';
-      var img = card.querySelector("img");
-      imgFallback(img, p);
-      img.addEventListener("load", function(){
-        /* the Content Editor's ratio isn't always right - the photo's real shape wins */
-        if (img.naturalWidth && img.naturalHeight) card.style.setProperty("--r", img.naturalWidth + " / " + img.naturalHeight);
-      });
-      function openIt(){ lbList = list; lbIdx = i; renderLb(); showOverlay("lb"); focusLb(); }
-      card.addEventListener("click", openIt);
-      card.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openIt(); } });
+      card.className = "cat-card";
+      card.innerHTML = '<img loading="lazy" src="'+esc(p.src)+'" alt="'+esc(p.alt||p.title||"")+'" style="object-position:'+esc((p.imagePosition||"center").toLowerCase())+'">'+
+        '<div class="cc-cap">'+esc(p.title||"")+(p.client?' <span style="opacity:.7">— '+esc(p.client)+'</span>':'')+'</div>';
+      card.addEventListener("click", function(){ lbList = list; lbIdx = i; renderLb(); showOverlay("lb"); $("#lbClose").focus(); });
       grid.appendChild(card);
     });
   }
@@ -1440,7 +971,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     $("#catview").classList.remove("on");
     $("#catBack").style.display = "none";
     $("#discover").style.display = "";   /* back to the stylesheet's flex layout (was forced to "block") */
-    markActiveChip(null);
+    $all(".cap-cat-btn").forEach(function(b){ b.classList.remove("active"); });
     if (mode !== "none") updateUrl(null, null, false, false);
     syncHeaderHeight();
     applyDockScale();
@@ -1455,10 +986,9 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     else backToDiscover("replace");
   }
   $("#catBack").addEventListener("click", goDiscover);
-  $("#catBackInline").addEventListener("click", goDiscover);
 
   /* ---------------- overlays (photo viewer + enquiry form) ---------------- */
-  function overlayEl(name){ return $("#capLb"); }
+  function overlayEl(name){ return name === "lb" ? $("#capLb") : $("#capEnq"); }
   function showOverlay(name){
     if (openOverlay && openOverlay !== name) hideOverlayUI(openOverlay);
     var el = overlayEl(name);
@@ -1491,7 +1021,7 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     if (st && st.overlay && !openOverlay) { window.history.back(); return; }
 
     var params = new URLSearchParams(window.location.search);
-    var cat = resolveCat(params.get("category"));
+    var cat = params.get("category");
     var ev = params.get("event") || null;
     if (cat) {
       if (cat !== currentCat || ev !== currentEvent) showCategory(cat, ev, "none");
@@ -1500,30 +1030,13 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     }
   });
 
-  /* keyboard vs. mouse/touch: only keyboard users need focus moved onto a button (and its ring) */
-  var kbdNav = false;
-  document.addEventListener("keydown", function(e){ if (e.key === "Tab" || e.key === "Enter" || e.key === " ") kbdNav = true; }, true);
-  ["mousedown", "touchstart"].forEach(function(ev){ document.addEventListener(ev, function(){ kbdNav = false; }, { capture: true, passive: true }); });
-  function focusLb(){
-    var t = kbdNav ? $("#lbClose") : $("#capLb");
-    try { t.focus({ preventScroll: true }); } catch(e){ t.focus(); }
-  }
-
   /* ---------------- lightbox ---------------- */
   function renderLb(){
     var p = lbList[lbIdx];
     if (!p) return;
-    var full = fullFor(p.src);
-    [$("#lbImg"), $("#lbImgDim")].forEach(function(img){
-      img.onerror = (full !== p.src) ? function(){ img.onerror = null; img.src = p.src; } : null;
-      img.src = full;
-    });
+    $("#lbImg").src = p.src;
     $("#lbImg").alt = p.alt || p.title || "";
-    /* fetch the photos either side now, so Next/Previous (and swipes) show up instantly */
-    if (lbList.length > 1) [1, -1].forEach(function(d){
-      var q = lbList[(lbIdx + d + lbList.length) % lbList.length];
-      if (q) { var pre = new Image(); pre.decoding = "async"; pre.src = fullFor(q.src); }
-    });
+    $("#lbImgDim").src = p.src;
     $("#lbCap").textContent = [p.title, p.caption].filter(Boolean).join(" — ");
   }
   function closeLb(){ closeOverlay("lb"); }
@@ -1531,54 +1044,124 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
   $("#lbPrev").addEventListener("click", function(){ if (!lbList.length) return; lbIdx = (lbIdx - 1 + lbList.length) % lbList.length; renderLb(); });
   $("#lbNext").addEventListener("click", function(){ if (!lbList.length) return; lbIdx = (lbIdx + 1) % lbList.length; renderLb(); });
   $("#capLb").addEventListener("click", function(e){ if (e.target.id === "capLb") closeLb(); });
-  (function(){
-    var lbEl = $("#capLb"), sx = 0, sy = 0, st = 0, tracking = false;
-    lbEl.addEventListener("touchstart", function(e){
-      tracking = e.touches.length === 1;
-      if (tracking) { sx = e.touches[0].clientX; sy = e.touches[0].clientY; st = Date.now(); }
-    }, {passive:true});
-    lbEl.addEventListener("touchmove", function(e){ if (e.touches.length > 1) tracking = false; }, {passive:true});
-    lbEl.addEventListener("touchend", function(e){
-      if (!tracking) return; tracking = false;
-      if ($("#lbStage").classList.contains("lamp-on")) return;   /* with Spotlight on, the finger steers the light */
-      var t = e.changedTouches && e.changedTouches[0]; if (!t || Date.now() - st > 800) return;
-      var dx = t.clientX - sx, dy = t.clientY - sy;
-      if (Math.abs(dx) > 50 && Math.abs(dx) > Math.abs(dy) * 1.4) { $(dx < 0 ? "#lbNext" : "#lbPrev").click(); }
-      else if (dy > 100 && dy > Math.abs(dx) * 1.5) { closeLb(); }
-    }, {passive:true});
-  })();
 
-  /* ---------------- enquiry form ----------------
-     The window itself lives in /shared.js so it looks and behaves exactly the same on every page
-     (including its own Back-button step). If that file ever fails to load, Enquire still works by
-     opening the visitor's mail app instead of doing nothing. */
-  function enqOpen(){ return !!(window.LRL && LRL.enquiry && LRL.enquiry.isOpen()); }
-  function openEnquiry(){
-    var cat = currentCat || "General Enquiry";
-    if (window.LRL && LRL.enquiry) {
-      LRL.enquiry.open({ category: cat, eventType: currentEvent || "" });
-      return;
-    }
-    var to = (DATA && DATA.email) || "hello@livingroomlabs.in";
-    window.location.href = "mailto:" + to + "?subject=" + encodeURIComponent("Enquiry: " + cat + (currentEvent ? " (" + currentEvent + ")" : ""));
+  /* ---------------- enquiry form (opens right here - no trip to the home page) ---------------- */
+  var enqOpenedAt = 0, enqWarned = false, enqSentAt = 0, enqBusy = false, enqDownOnBackdrop = false;
+  var DEFAULT_CATS = ["Food", "Pets", "Real Estate", "Products", "Events", "Portraits", "Travel"];
+
+  function fillEnqCategories(){
+    var sel = $("#enqCat");
+    var keep = sel.value;
+    var cats = ["General Enquiry"];
+    var source = NICHES.length ? NICHES : DEFAULT_CATS;
+    source.forEach(function(n){
+      var nm = (n && n.name) || n;
+      if (nm && cats.indexOf(nm) === -1) cats.push(nm);
+    });
+    sel.innerHTML = cats.map(function(c){ return '<option value="'+esc(c)+'">'+esc(c)+'</option>'; }).join("");
+    if (cats.indexOf(keep) > -1) sel.value = keep;
   }
+  function syncEnqEvent(){
+    $("#enqEventWrap").style.display = $("#enqCat").value === "Events" ? "" : "none";
+  }
+  function openEnquiry(){
+    fillEnqCategories();
+    var sel = $("#enqCat");
+    var want = currentCat || "General Enquiry";
+    var has = Array.prototype.some.call(sel.options, function(o){ return o.value === want; });
+    if (!has) {
+      var opt = document.createElement("option");
+      opt.value = want; opt.textContent = want;
+      sel.appendChild(opt);
+    }
+    sel.value = want;
+    if (currentEvent) $("#enqEvent").value = currentEvent;
+    syncEnqEvent();
+    enqOpenedAt = Date.now(); enqWarned = false;
+    if (!enqBusy) $("#enqStatus").textContent = "READY";
+    showOverlay("enq");
+    setTimeout(function(){ $("#enqName").focus(); }, 80);
+  }
+
+  $("#capEnquire").addEventListener("click", openEnquiry);
   $("#capFootEnquire").addEventListener("click", openEnquiry);
   $("#capBrand").addEventListener("click", function(){ window.location.href = "/"; });
-  /* belt and braces for the footer logo: a finger or mouse press only counts if it lands on the logo
-     artwork (plus a few px), never on the empty bar around it. Keyboard Enter/Space always works. */
-  $("#capFootHome").addEventListener("click", function(e){
-    e.stopPropagation();
-    var art = this.querySelector(".lg-crop");
-    if (art && e.detail > 0 && (e.clientX || e.clientY)) {
-      var r = art.getBoundingClientRect(), pad = 6;
-      if (e.clientX < r.left - pad || e.clientX > r.right + pad || e.clientY < r.top - pad || e.clientY > r.bottom + pad) return;
+  $("#enqClose").addEventListener("click", function(){ closeOverlay("enq"); });
+  $("#enqCat").addEventListener("change", syncEnqEvent);
+  $("#enqMsg").addEventListener("input", function(){ $("#enqCount").textContent = String(this.value.length); });
+  /* only a click that STARTS and ends on the dark backdrop closes it - dragging to select text
+     inside a field and releasing outside the card won't throw away what you typed */
+  $("#capEnq").addEventListener("mousedown", function(e){ enqDownOnBackdrop = (e.target.id === "capEnq"); });
+  $("#capEnq").addEventListener("click", function(e){
+    if (e.target.id === "capEnq" && enqDownOnBackdrop) closeOverlay("enq");
+    enqDownOnBackdrop = false;
+  });
+
+  $("#enqForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    if (enqBusy) return;
+    var form = this, status = $("#enqStatus"), send = $("#enqSend");
+    if (form.reportValidity && !form.reportValidity()) return; /* browser's own "please fill this in" hints */
+
+    /* same quiet spam checks as the home page form */
+    if ($("#enqWebsite").value) { status.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H"; return; }
+    var now = Date.now();
+    if (now - enqOpenedAt < 4000 && !enqWarned) {
+      enqWarned = true;
+      status.textContent = "PLEASE DOUBLE-CHECK, THEN PRESS SEND AGAIN";
+      return;
     }
-    window.location.href = "/";
+    if (enqSentAt && now - enqSentAt < 30000) { status.textContent = "ALREADY SENT // PLEASE WAIT A MOMENT"; return; }
+
+    var cat = $("#enqCat").value;
+    var ev = cat === "Events" ? $("#enqEvent").value.trim() : "";
+    var payload = {
+      name: $("#enqName").value.trim(),
+      email: $("#enqEmail").value.trim(),
+      category: cat,
+      message: $("#enqMsg").value.trim(),
+      _gotcha: ""
+    };
+    if (ev) payload.eventType = ev;
+
+    enqBusy = true; send.disabled = true;
+    status.textContent = "TRANSMITTING...";
+    var formId = (DATA && DATA.formspreeId) || "xjykvnoz";
+
+    fetch("https://formspree.io/f/" + formId, {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
+      body: JSON.stringify(payload)
+    }).then(function(res){
+      if (!res.ok) throw new Error("Submission failed (" + res.status + ")");
+      enqSentAt = Date.now();
+      status.textContent = "ENQUIRY SENT // WE REPLY WITHIN 24H";
+      setTimeout(function(){
+        form.reset();
+        $("#enqCount").textContent = "0";
+        syncEnqEvent();
+        enqBusy = false; send.disabled = false;
+        status.textContent = "READY";
+        closeOverlay("enq");
+      }, 1800);
+    }).catch(function(){
+      /* keep the form open with everything typed, and hand off to the mail app as a backup */
+      status.textContent = "OPENING YOUR MAIL APP...";
+      enqBusy = false; send.disabled = false;
+      var to = (DATA && DATA.email) || "hello@livingroomlabs.in";
+      window.location.href = "mailto:" + to +
+        "?subject=" + encodeURIComponent("Enquiry: " + payload.category + (ev ? " (" + ev + ")" : "") + " — " + payload.name) +
+        "&body=" + encodeURIComponent("Name: " + payload.name + "\nEmail: " + payload.email + "\nCategory: " + payload.category +
+          (ev ? "\nEvent type: " + ev : "") + "\n\nMessage:\n" + payload.message);
+    });
   });
 
   /* ---------------- keyboard ---------------- */
   document.addEventListener("keydown", function(e){
-    if (enqOpen()) return; /* the enquiry window handles its own keys (Escape, Tab) */
+    if (openOverlay === "enq") {
+      if (e.key === "Escape") closeOverlay("enq");
+      return; /* arrows etc. belong to the form fields while it's open */
+    }
     if (openOverlay === "lb") {
       if (e.key === "Escape") closeLb();
       else if (e.key === "ArrowLeft") $("#lbPrev").click();
@@ -1592,49 +1175,15 @@ html[data-theme="light"] #capLampToggle:not([aria-pressed="true"]){color:#000 !i
     }
   });
 
-  /* ---------------- "View" tag: follows a real mouse over photos you can open ---------------- */
-  (function(){
-    if (!window.matchMedia || !window.matchMedia("(hover:hover) and (pointer:fine)").matches) return;
-    var tag = null, x = 0, y = 0, on = false, raf = 0;
-    function place(){ raf = 0; tag.style.translate = (x + 16) + "px " + (y + 18) + "px"; }
-    function set(show){
-      if (show === on) return;
-      on = show;
-      if (show) place();
-      tag.classList.toggle("on", show);
-    }
-    document.addEventListener("pointermove", function(e){
-      if (e.pointerType && e.pointerType !== "mouse") return;
-      if (!tag) { tag = document.createElement("div"); tag.className = "lrl-view-tag"; tag.setAttribute("aria-hidden", "true"); tag.textContent = "View"; document.body.appendChild(tag); }
-      x = e.clientX; y = e.clientY;
-      var t = e.target && e.target.closest ? e.target.closest(".cat-card, .disc-card.is-center") : null;
-      set(!!t && openOverlay !== "lb");
-      if (on && !raf) raf = requestAnimationFrame(place);
-    }, {passive:true});
-    document.documentElement.addEventListener("mouseleave", function(){ if (tag) set(false); });
-    document.addEventListener("pointerdown", function(){ if (tag) set(false); }, {passive:true});
-  })();
-
   /* ---------------- url params (footer Events links, shared links, reloads) ---------------- */
-  function resolveCat(name){
-    if (!name) return null;
-    var want = String(name).trim().toLowerCase(), all = NICHES.map(function(n){ return (n && n.name) || n; });
-    PHOTOS.forEach(function(p){ if (p.category && all.indexOf(p.category) === -1) all.push(p.category); });
-    for (var i = 0; i < all.length; i++) if (String(all[i]).toLowerCase() === want) return all[i];
-    return null;
-  }
   function applyParams(){
     var params = new URLSearchParams(window.location.search);
-    var raw = params.get("category"), cat = resolveCat(raw);
+    var cat = params.get("category");
     var ev = params.get("event");
-    if (cat) {
-      showCategory(cat, ev || null, "none");
-      /* tidy a mistyped link (wrong capitals, an event that no longer exists) to the real names */
-      if (raw !== cat || (ev || null) !== currentEvent) updateUrl(currentCat, currentEvent, false, false);
-    }
-    else if (raw) updateUrl(null, null, false, false);   /* old or mistyped link: just show Discover */
+    if (cat) showCategory(cat, ev || null, "none");
   }
 })();
 </script>
+<script src="/fotu.js" defer></script>
 </body>
 </html>
