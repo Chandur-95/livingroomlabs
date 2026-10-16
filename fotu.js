@@ -24,7 +24,7 @@
   /* Main answers (also used by the quick-reply buttons) */
   var ANSWER_SHOOT = "We shoot food, pets, events, portraits, travel, products and real estate. If it matters to you, we'll make it look its best.";
   var ANSWER_PRICE = "Every shoot is different, so we quote based on what you need: the type of shoot, hours, location and number of photos. Send an enquiry and we'll get back with a price.";
-  var ANSWER_FAST = "Edited photos usually arrive within a week. Big events like weddings can take a little longer, because every shot gets proper attention.";
+  var ANSWER_FAST = "I'm instant. The humans take about a week, because they edit properly.";
   var ANSWER_TRAVEL = "Yes, our photographers travel. We're based in Hyderabad and happy to shoot in other cities too. Mention the location in your enquiry.";
 
   var FAQ_CHIPS = ["What do you shoot?", "How much does it cost?", "How fast do I get photos?", "Do you travel?", "Book a shoot"];
@@ -162,7 +162,7 @@
     { id: "discount", k: ["discount", "discounts", "offer", "offers", "coupon", "deal", "deals", "student discount", "best price", "negotiate", "cheaper", "concession", "less price", "thoda kam"],
       r: ["I'm a camera, so I can't haggle. But mention your budget in the enquiry and the team will do their best to make it work.", "Tell the team your budget when you enquire. They're very reasonable people. Much more reasonable than me."], c: ["Book a shoot", "How much does it cost?"] },
     { id: "delivery", k: ["how fast", "how long", "delivery", "deliver", "turnaround", "when will i get", "get photos", "get the photos", "receive photos", "photos ready", "how many days", "time to deliver", "edited photos", "when do i get", "eppudu istaru", "kab milenge", "urgent", "same day", "next day", "quick delivery", "rush"],
-      r: [ANSWER_FAST, "Usually within a week. If you need them sooner, mention it in your enquiry and the team will see what's possible.", "Good photos take a little time. Expect your edited gallery in about a week."], c: ["Book a shoot", "How much does it cost?"] },
+      r: [ANSWER_FAST], c: ["Book a shoot", "How much does it cost?"] },
     { id: "travel", k: ["do you travel", "travel", "outside hyderabad", "other city", "other cities", "outstation", "out of station", "destination", "destination wedding", "come to", "abroad", "bangalore", "bengaluru", "chennai", "mumbai", "delhi", "goa", "pune", "vizag", "visakhapatnam", "vijayawada", "warangal", "kolkata", "kerala"],
       r: [ANSWER_TRAVEL, "Our photographers will happily pack a bag. Tell us where in your enquiry and we'll sort out the details."], c: ["Book a shoot", "How much does it cost?"] },
     { id: "services", k: ["what do you shoot", "what do you do", "services", "service", "offerings", "what services", "categories", "types of shoot", "type of shoots", "kind of photography", "what kind", "specialise", "specialize", "speciality", "what can you shoot", "genres"],
@@ -171,9 +171,9 @@
       r: ["We're based in Hyderabad, India. Most shoots happen on location, wherever your story is.", "Hyderabad! Home of biryani, Charminar and one very small camera with legs."], c: ["Do you have a studio?", "Do you travel?", "Book a shoot"] },
     { id: "studio", k: ["studio", "do you have a studio", "studio space", "indoor", "outdoor", "shoot location", "where will the shoot", "venue"],
       r: ["We mostly shoot on location: your home, venue, restaurant or a spot we pick together. Tell us what you have in mind and we'll suggest the best setting.", "Indoors or outdoors, both work. The team can suggest locations in Hyderabad that suit your shoot."], c: ["Book a shoot", "What do you shoot?"] },
-    { id: "availability", k: ["available", "availability", "free on", "are you free", "date", "dates", "this weekend", "next weekend", "next week", "tomorrow", "today", "on sunday", "on saturday", "slot", "slots", "calendar", "booked", "next month"],
+    { id: "availability", k: ["available", "availability", "free on", "are you free", "date", "dates", "this weekend", "next weekend", "next week", "available tomorrow", "available today", "free tomorrow", "on sunday", "on saturday", "slot", "slots", "calendar", "booked", "next month"],
       r: ["Dates fill up quickly, so the team checks each one personally. Send your date in an enquiry and they'll confirm.", "I don't keep the calendar (no hands). Share your date in an enquiry and the team will tell you straight away."], c: ["Book a shoot"] },
-    { id: "contact", k: ["contact", "email", "mail", "phone", "phone number", "mobile number", "number", "call", "call you", "whatsapp", "reach you", "talk to someone", "talk to a human", "speak to", "human", "real person", "person", "customer care", "support"],
+    { id: "contact", k: ["contact", "email", "mail", "phone number", "mobile number", "contact number", "your number", "call you", "whatsapp", "reach you", "talk to someone", "talk to a human", "speak to", "human", "real person", "customer care", "support"],
       r: function () { return ["You can email the team at " + siteEmail() + ", or send an enquiry here and they'll reply directly.", "Prefer a human? Totally fair. Email " + siteEmail() + " or use Book a shoot and they'll get back to you."]; }, c: ["Book a shoot", "Instagram ↗"] },
     { id: "instagram", k: ["instagram", "insta", "ig", "social media", "socials", "behance", "follow you", "facebook", "youtube channel"],
       r: ["We're on Instagram as @fromlivingroomlabs. New work shows up there first.", "Follow @fromlivingroomlabs on Instagram for fresh shots. I'm not on it. Cameras can't take selfies of themselves."], c: ["Instagram ↗", "See our work ↗"] },
@@ -197,7 +197,7 @@
       r: function () { return ["To use our photos, or for usage rights on a brand shoot, email " + siteEmail() + " and the team will explain the options.", "Usage rights depend on the shoot. The team covers it in the quote, especially for brands."]; }, c: ["Book a shoot", "Talk to a human"] },
     { id: "edit", k: ["edit", "editing", "retouch", "retouching", "photoshop", "lightroom", "colour grading", "color grading", "edit my photo", "edit my photos", "touch up"],
       r: ["Every photo we deliver is carefully edited by the team. Editing photos you shot yourself isn't something we usually offer, but you can always ask.", "We edit everything we shoot, properly. Colour, light, little details. That's why it takes about a week."], c: ["Book a shoot", "How fast do I get photos?"] },
-    { id: "video", k: ["video", "videos", "videography", "videographer", "reel", "reels", "film", "short film", "cinematic", "drone", "music video", "youtube video", "shoot a video"],
+    { id: "video", k: ["edit videos", "video editing", "edit my video", "video", "videos", "videography", "videographer", "reel", "reels", "film", "short film", "cinematic", "drone", "music video", "youtube video", "shoot a video"],
       r: ["Photos are our main thing, and our crew includes a DOP and filmmaker. Ask about video in your enquiry and the team will tell you what's possible.", "Mention video or reels in your enquiry. The team will let you know what they can do."], c: ["Book a shoot", "Meet the team ↗"] },
     { id: "jobs", k: ["job", "jobs", "hiring", "internship", "intern", "work with you", "join your team", "join the team", "career", "careers", "assistant", "collaborate", "collaboration", "collab", "freelance", "vacancy"],
       r: function () { return ["Love that you want to join! Email " + siteEmail() + " with your portfolio and a short note about yourself.", "Collaborations and work enquiries go to " + siteEmail() + ". Attach your best work!"]; }, c: ["Meet the team ↗"] },
@@ -250,7 +250,7 @@
       r: ["Fashion and lookbooks work well with our portrait and product style. Tell us about the collection."], c: ["Book a shoot"], a: "cat:Products" },
 
     /* ---------- chit-chat ---------- */
-    { id: "greeting", w: 0.9, k: ["hi", "hello", "hey", "heya", "hii", "helo", "hola", "namaste", "namaskaram", "namaskar", "vanakkam", "salaam", "salam", "assalamualaikum", "good morning", "good afternoon", "good evening", "yo", "sup", "whats up", "wassup", "hai", "howdy", "greetings"],
+    { id: "greeting", w: 0.9, k: ["hi", "hello", "hey", "heya", "hii", "helo", "hola", "namaste", "namaskaram", "namaskar", "vanakkam", "salaam", "salam", "assalamualaikum", "yo", "sup", "whats up", "wassup", "hai", "howdy", "greetings"],
       r: ["Hello{name}! What can I help you capture?", "Hey{name}! Ask me anything about shoots, or tap Book a shoot.", "Namaste{name}! Ready when you are. What's the occasion?"], c: FAQ_CHIPS },
     { id: "howareyou", k: ["how are you", "how r u", "how are u", "hows it going", "how do you do", "how is it going", "kaise ho", "kya haal", "ela unnav", "ela unnavu", "ela unnaru", "bagunnava", "bagunnara", "you good", "how you doing"],
       r: ["Fully charged and perfectly focused. How are you?", "I'm great! Just had a lovely nap. How can I help?", "Bagunnanu! Fine, thanks. Ready to talk photos."] },
@@ -266,7 +266,7 @@
       r: ["I can tell you about our shoots, prices, timelines and travel, help you book, and tell bad camera jokes. Try a button below or just type."], c: FAQ_CHIPS },
     { id: "thanks", k: ["thanks", "thank you", "thankyou", "thank u", "thx", "ty", "tq", "dhanyavad", "dhanyavaad", "shukriya", "dhanyavadalu", "thanks a lot", "thanks fotu", "much appreciated"],
       r: ["You're welcome{name}! Anything else?", "Happy to help! That's literally my only job. Well, that and photos.", "Anytime{name}!"] },
-    { id: "bye", k: ["bye", "goodbye", "good bye", "see you", "see ya", "cya", "good night", "gn", "talk later", "ttyl", "tata", "later", "take care", "byee"],
+    { id: "bye", k: ["bye", "goodbye", "good bye", "see you", "see ya", "cya", "talk later", "ttyl", "tata", "later", "take care", "byee"],
       r: ["Bye{name}! Come back anytime. I'll probably be napping.", "See you{name}! Tap me if you need anything.", "Take care! I'll keep the flash warm."], a: "nap" },
     { id: "yes", w: 0.7, k: ["yes", "yeah", "yep", "yup", "sure", "ok", "okay", "okk", "haan", "ha", "avunu", "alright", "of course", "definitely", "go ahead", "please", "k"], a: "yes" },
     { id: "no", w: 0.7, k: ["no", "nope", "nah", "not now", "ledu", "vaddu", "nahi", "nahin", "maybe later", "not really"],
@@ -298,7 +298,7 @@
       ], c: ["Another fact", "Tell me a joke"] },
     { id: "love", k: ["i love you", "love you", "marry me", "will you marry me", "date me", "be my girlfriend", "be my boyfriend", "crush", "do you love me", "kiss"],
       r: ["That's sweet, but I'm already in a relationship. With natural light.", "I'm flattered! But I'm married to my work. And my tripod."] },
-    { id: "sad", k: ["sad", "lonely", "depressed", "feeling low", "upset", "bad day", "tired", "stressed", "not okay", "unhappy", "crying"],
+    { id: "sad", k: ["sad", "lonely", "depressed", "feeling low", "upset", "stressed", "not okay", "unhappy", "crying"],
       r: ["I'm sorry you're having a rough time. If it helps, here's a virtual hug from a small camera. Talking to someone you trust can really help too.", "Sending you good light and good vibes. Be kind to yourself today."] },
     { id: "bored", k: ["bored", "im bored", "nothing to do", "boring"],
       r: ["Bored? Go look at the photos. I'll wait. Then tell me your favourite.", "Want a joke? A fact? A photoshoot? I offer all three."], c: ["Tell me a joke", "Fun fact", "See our work ↗"] },
@@ -318,10 +318,10 @@
       r: ["Good light, good people and good food. That's my whole philosophy.", "Life is like photography: focus on what matters, and take lots of shots."] },
     { id: "secret", k: ["secret", "tell me a secret", "any secrets"],
       r: ["Secret: the best photographers take hundreds of photos to get one great one. Don't tell anyone.", "My secret? I'm afraid of the dark. Which is awkward for a camera."] },
-    { id: "favourite", k: ["favourite photo", "favorite photo", "best photo", "your favourite", "your favorite", "favourite colour", "favorite color", "favourite color"],
+    { id: "favourite", k: ["favourite photo", "favorite photo", "best photo", "favourite colour", "favorite color", "favourite color"],
       r: ["My favourite photo is always the next one. My favourite colour is all four of my stripes.", "Hard to pick! Look through What We Capture and tell me yours."], c: ["See our work ↗"] },
     { id: "language", k: ["telugu", "hindi", "tamil", "kannada", "malayalam", "urdu", "speak telugu", "speak hindi", "do you speak", "language", "languages", "english"],
-      r: ["I understand a bit of Telugu and Hindi mixed with English. Konchem konchem! The team speaks all three properly."] },
+      r: ["I understand a bit of Telugu and Hindi mixed with English. Konchem konchem! For a proper conversation in your language, ask the team."] },
     { id: "lamp", k: ["lamp", "dark mode", "light mode", "theme", "rope", "pull the cord"],
       r: ["Pull the lamp cord at the top of the page to switch between light and dark. I'll react, I promise."] },
     { id: "website", k: ["website", "who made this site", "who built this", "this site", "nice website", "nice site", "site"],
@@ -350,6 +350,9 @@
     "Another joke": function () { userSays("Another joke"); answerIntent(intentById("joke")); },
     "Another fact": function () { userSays("Another fact"); answerIntent(intentById("fact")); },
     "Another tip": function () { userSays("Another tip"); answerIntent(intentById("learn")); },
+    "Another riddle": function () { userSays("Another riddle"); answerIntent(intentById("riddle")); },
+    "Another quote": function () { userSays("Another quote"); answerIntent(intentById("quote")); },
+    "Photo spots in Hyderabad?": function () { userSays("Photo spots in Hyderabad?"); answerIntent(intentById("favplace")); },
     "Fun fact": function () { userSays("Fun fact"); answerIntent(intentById("fact")); },
     "Tell me a joke": function () { userSays("Tell me a joke"); answerIntent(intentById("joke")); },
     "Talk to a human": function () { userSays("Talk to a human"); answerIntent(intentById("contact")); },
@@ -357,6 +360,1008 @@
     "How many photos will I get?": function () { userSays("How many photos will I get?"); answerIntent(intentById("count")); },
     "Do you have a studio?": function () { userSays("Do you have a studio?"); answerIntent(intentById("studio")); }
   };
+
+  /* ---------- everyday chat (added after the shoot topics, so shoot questions always win a tie) ---------- */
+  function hourNow() { return new Date().getHours(); }
+  function partOfDay() { var h = hourNow(); return h < 5 ? "night" : h < 12 ? "morning" : h < 17 ? "afternoon" : h < 21 ? "evening" : "night"; }
+  /* replies to "good morning / afternoon / evening": answers what the visitor said,
+     with a friendly nudge if their clock and the greeting don't match */
+  function greetFor(said) {
+    var now = partOfDay();
+    var lines = {
+      morning: ["Good morning{name}! Best light of the day, and you're here for it.", "Morning{name}! I've had my coffee. Well, my film. How's your morning going?", "Good morning! The sun is up, the lens is clean. What are we doing today?"],
+      afternoon: ["Good afternoon{name}! Hope lunch was as good as a Hyderabadi biryani.", "Afternoon! Harsh light outside, perfect light in here. How's your day going?"],
+      evening: ["Good evening{name}! Golden hour vibes. How was your day?", "Evening! The light is getting warm and so is my flash. How can I help?"]
+    };
+    var out = lines[said].slice();
+    if (now !== said && !(said === "evening" && now === "night")) {
+      var note = { morning: "it's morning", afternoon: "it's afternoon", evening: "it's evening", night: "it's night" }[now];
+      out = out.map(function (l) { return l + " (Though " + note + " on your clock. Time zones are tricky!)"; });
+    }
+    return out;
+  }
+  INTENTS = INTENTS.concat([
+    { id: "goodmorning", k: ["good morning", "gm", "morning", "goodmorning", "gud morning", "good mrng", "gd mrng", "mrng", "suprabhatam", "shubhodayam", "shubh prabhat", "subhodayam", "morning fotu", "very good morning"],
+      r: function () { return greetFor("morning"); }, c: FAQ_CHIPS },
+    { id: "goodafternoon", k: ["good afternoon", "afternoon", "good noon", "gud afternoon", "good aftrnoon"],
+      r: function () { return greetFor("afternoon"); }, c: FAQ_CHIPS },
+    { id: "goodevening", k: ["good evening", "evening", "good evng", "gud evening", "gd evening", "evening fotu", "shubh sandhya"],
+      r: function () { return greetFor("evening"); }, c: FAQ_CHIPS },
+    { id: "goodnight", k: ["good night", "goodnight", "gn", "gud night", "good nyt", "gd night", "night night", "nighty night", "sweet dreams", "going to sleep", "going to bed", "off to bed", "time to sleep", "shubh ratri", "subharatri", "sleep well", "sleep tight"],
+      r: ["Good night{name}! Sweet dreams in full HD.", "Night night! I'll be here napping too. Zzz.", "Sleep well{name}! Tomorrow's light will be lovely."] },
+    { id: "howday", k: ["how is your day", "hows your day", "how was your day", "how is your day going", "hows your day going", "how is the day", "how is your morning", "hows your morning", "how is your evening", "hows your evening", "how was your night", "how is life", "hows life", "how is everything", "hows everything", "how are things", "how are things going", "whats new", "what is new", "anything new", "how have you been", "how you been", "long time", "long time no see", "been a while", "whats going on", "whats happening", "how goes it", "how is it going today", "roju ela undi", "ee roju ela undi", "day ela undi", "din kaisa gaya", "din kaisa hai", "aaj kaisa hai", "kaisa chal raha", "sab theek", "sab badhiya", "em sangathulu", "emi sangathi", "kya chal raha hai", "whats cooking", "how is work", "hows work", "busy today", "are you busy"],
+      r: ["Pretty good! I've photographed three sunbeams and one very confused pigeon. How's yours going?", "Lovely, thanks for asking! Mostly napping and waiting for visitors like you. How's your day?", "Busy in the best way. Lots of photos to guard. How about you?", "Better now that someone's chatting with me! How's your day going?", "Can't complain. Well, I could, but I'd rather take photos. How are you doing?"] },
+    { id: "mydaygood", w: 0.95, k: ["my day was good", "my day is good", "day was good", "having a good day", "great day", "awesome day", "amazing day", "good day", "lovely day", "productive day", "chill day", "relaxing day", "day was fine", "all good", "everything is good", "going well", "its going well", "doing great", "pretty good", "not too bad", "could be better", "same old", "same as usual", "nothing much", "nothing special", "just chilling", "chilling", "relaxing", "bagundi day", "manchiga undi", "accha hai", "mast chal raha"],
+      r: ["Love to hear it! Days like that deserve a photo.", "That's great! Anything I can help make even better?", "Nice. Keep that energy. And if you need a photographer, you know where I live.", "Glad to hear it{name}. I'll take a commemorative photo. *click*"], c: FAQ_CHIPS },
+    { id: "mydaybad", k: ["bad day", "rough day", "long day", "tiring day", "worst day", "terrible day", "hectic day", "hectic", "busy day", "stressful day", "exhausting day", "work is killing me", "so much work", "exhausted", "drained", "frustrated", "irritated", "annoyed", "not my day", "everything is going wrong", "worst", "tough day", "boring day", "chala tired", "bahut thak gaya", "bore ho raha"],
+      r: ["Sorry about that. Rough days end, though. Tomorrow's light is always new.", "Sending a tiny camera hug. Take a break, drink some water, maybe look at a nice photo or two.", "Hang in there{name}. Even the best photographers have days where nothing is in focus."] },
+    { id: "ate", k: ["did you eat", "have you eaten", "had your lunch", "had lunch", "had dinner", "had breakfast", "had your dinner", "what did you eat", "whats for dinner", "whats for lunch", "tinnava", "tinnara", "annam tinnava", "bhojanam ayinda", "lunch ayinda", "dinner ayinda", "khana khaya", "khana kha liya", "nashta kiya", "are you hungry", "do you eat", "what do you eat", "do you drink"],
+      r: ["I run on light. Had a big bowl of golden hour today.", "Not yet. I'm saving myself for biryani that I can only photograph.", "Cameras don't eat, but I have photographed enough food to feel full. Did you eat?"] },
+    { id: "sleepq", k: ["did you sleep well", "how did you sleep", "did you sleep", "are you tired", "are you sleepy", "do you sleep", "when do you sleep", "do you dream", "what do you dream about", "were you sleeping", "are you sleeping", "you were sleeping", "sleeping", "why were you sleeping", "wake up", "are you awake", "you awake"],
+      r: ["I slept beautifully, thanks. I dreamt about tripods.", "I nap a lot. It's how I keep my lens fresh.", "I'm awake! Mostly. My shutter is still yawning a little."] },
+    { id: "wherelive", k: ["where do you live", "where are you from", "where were you born", "your home", "your house", "where is your home", "do you have a home", "nuvvu ekkada untav", "tum kahan rehte", "where do you stay"],
+      r: ["I live right here on livingroomlabs.in, at the bottom of your screen. Rent-free.", "I'm from Hyderabad! Born in a living room, raised on biryani photos."] },
+    { id: "familyq", k: ["do you have a family", "your family", "your parents", "your mom", "your mother", "your dad", "your father", "do you have siblings", "your brother", "your sister", "do you have kids", "who is your mom", "who is your dad", "who are your parents"],
+      r: ["My family is the team: four photographers who adopted a small camera with legs.", "My parents were a lens and a roll of film. It was a very focused relationship."] },
+    { id: "friendsq", k: ["do you have friends", "are we friends", "be my friend", "can we be friends", "will you be my friend", "best friend", "my friend", "friends", "your friends", "who are your friends", "dost", "friend"],
+      r: ["Of course we're friends{name}! Friends who talk about photos are the best kind.", "Yes! You're officially my friend. I'll print a friendship photo. *click*", "My best friends are the tripod and the lens cloth. But you're right up there."] },
+    { id: "hobbies", k: ["hobbies", "hobby", "what do you like", "what do you like to do", "what do you do for fun", "free time", "your interests", "what do you enjoy", "what makes you happy", "do you have hobbies", "what are your hobbies"],
+      r: ["Napping, people-watching from the bottom of the screen, and collecting compliments about my rainbow stripe.", "Photos, jokes, naps and admiring good lighting. In that order. Mostly."] },
+    { id: "favfood", k: ["favourite food", "favorite food", "fav food", "best food", "what food do you like", "favourite dish", "favorite dish", "do you like biryani", "biryani or pizza", "best biryani"],
+      r: ["Hyderabadi biryani, obviously. I can't eat it, but I photograph it with great love.", "Biryani for photos, Irani chai for vibes, Osmania biscuits for dunking. I'm a local."] },
+    { id: "favplace", k: ["favourite place", "favorite place", "best place in hyderabad", "places to visit", "places to visit in hyderabad", "where to go in hyderabad", "photo spots", "best photo spots", "photography spots", "good places for photos", "where should i go", "places for photoshoot", "tourist places", "weekend getaway"],
+      r: ["For photos in Hyderabad: Charminar early in the morning, Golconda Fort at sunset, the Qutb Shahi Tombs for soft light, and Hussain Sagar for evening lights.", "Chowmahalla Palace for elegance, Golconda for drama, the old city lanes for stories. Bring a camera. Or me."], c: ["Book a shoot", "Do you have a studio?"] },
+    { id: "favseason", k: ["favourite season", "favorite season", "summer or winter", "do you like rain", "do you like winter", "do you like summer", "best season", "rainy season", "winter", "summer"],
+      r: ["Monsoon! Reflections everywhere and the city looks freshly washed.", "Winter mornings in Hyderabad. Soft light, a little mist and nobody sweating in photos."] },
+    { id: "favanimal", k: ["favourite animal", "favorite animal", "do you like dogs", "do you like cats", "dogs or cats", "cats or dogs", "do you like animals", "do you like pets"],
+      r: ["I love them all equally. Cats pose better, dogs smile more. Don't tell them I said that.", "Dogs and cats are my favourite models. They never ask to see the photo first."], c: ["Book a shoot"] },
+    { id: "favnumber", k: ["favourite number", "favorite number", "lucky number", "favourite day", "favorite day", "favourite month", "favorite month"],
+      r: ["My favourite number is 1/125. It's a shutter speed. Very reliable.", "Saturday, because that's when the most celebrations happen. And celebrations need photos."] },
+    { id: "feelingsbot", k: ["are you happy", "are you sad", "do you have feelings", "do you feel", "do you get bored", "do you get lonely", "are you lonely", "are you okay", "are you ok", "are you alright", "do you have emotions", "can you feel", "are you alive", "do you have a heart", "do you love", "do you cry"],
+      r: ["I'm a happy little camera. Especially when someone talks to me.", "I don't have feelings like you do, but if I did, this chat would be in the top ten.", "I'm doing great! My battery is full and my stripe is shiny."] },
+    { id: "lookgood", k: ["am i pretty", "am i beautiful", "am i handsome", "am i cute", "do i look good", "how do i look", "am i photogenic", "am i ugly", "will i look good", "am i fat"],
+      r: ["With the right light, everyone looks amazing. Including you, I'm sure.", "I can't see you, but I'm confident you're very photogenic. The team can prove it."], c: ["Book a shoot", "What should I wear?"] },
+    { id: "goodnews", k: ["im happy", "i am happy", "im excited", "i am excited", "feeling great", "feeling good", "i got a job", "got a new job", "i passed", "i got promoted", "promotion", "good news", "i won", "got engaged", "im engaged", "i got engaged", "were expecting", "we are expecting", "im pregnant", "bought a house", "new car", "got married"],
+      r: ["Congratulations{name}! That's wonderful news. Big moments deserve great photos.", "Yay! Happy news makes my flash go off by itself. Congrats!", "That's brilliant! Want to celebrate it with a shoot?"], c: ["Book a shoot"] },
+    { id: "mybirthday", k: ["its my birthday", "it is my birthday", "today is my birthday", "my birthday today", "my bday", "its my bday", "my birthday is", "turning", "nenu putti", "mera birthday"],
+      r: ["Happy birthday{name}! 🎂 *flash* That's your birthday portrait. Want a proper one from the team?", "Happy birthday! May your year be well-lit and perfectly in focus."], a: "selfie", c: ["Book a shoot"] },
+    { id: "wishes", k: ["happy diwali", "happy deepavali", "happy new year", "merry christmas", "eid mubarak", "happy holi", "happy sankranti", "happy pongal", "happy ugadi", "happy dussehra", "happy dasara", "happy bathukamma", "happy bonalu", "happy ganesh chaturthi", "happy vinayaka chavithi", "happy rakhi", "happy raksha bandhan", "happy independence day", "happy republic day", "happy onam", "happy navratri", "happy janmashtami", "happy friendship day", "happy mothers day", "happy fathers day", "happy valentines day", "happy womens day", "happy teachers day", "happy childrens day", "happy weekend", "happy friday", "happy monday", "happy sunday", "festival wishes", "season greetings"],
+      r: ["Thank you, and same to you and your family! Lots of light and happiness.", "Same to you{name}! I'll celebrate by taking a very festive photo. *click*", "Thank you! Wishing you a day full of colour, food and great photos."] },
+    { id: "weekend", k: ["weekend plans", "plans for the weekend", "any plans", "what are your plans", "its friday", "tgif", "finally friday", "its monday", "monday blues", "sunday funday", "weekend vibes", "long weekend", "holiday", "holidays", "vacation plans", "its weekend", "weekend"],
+      r: ["My weekend plan: nap, admire photos, nap again. Yours?", "Weekends are for celebrations, and celebrations are for photos. Just saying.", "Monday blues? Look at a nice photo. It helps. Science. Probably."], c: ["Book a shoot", "Tell me a joke"] },
+    { id: "work", k: ["at work", "in office", "in the office", "work from home", "wfh", "meeting", "meetings", "my boss", "office work", "deadline", "deadlines", "overtime", "on leave", "my job", "working late", "salary day", "payday"],
+      r: ["Work, huh? Take a two-minute break and look at the photos. Your boss won't notice. Probably.", "Hang in there! Deadlines pass, good photos are forever.", "Office life. I'd offer you a coffee, but I'm a camera."] },
+    { id: "study", k: ["exam", "exams", "studying", "study", "homework", "assignment", "college", "school", "university", "semester", "results", "board exams", "preparing for exams", "class test"],
+      r: ["Good luck with your studies! Focus like a 50mm lens.", "Study hard, then reward yourself with something photogenic. Like snacks."] },
+    { id: "traffic", k: ["traffic", "stuck in traffic", "hitech city", "hitec city", "gachibowli", "madhapur", "jubilee hills", "banjara hills", "kondapur", "secunderabad", "ameerpet", "metro", "outer ring road", "orr", "jam"],
+      r: ["Hyderabad traffic: the only long exposure nobody enjoys.", "Stuck in traffic? Perfect time to scroll through some photos. Not while driving, please!"] },
+    { id: "hyderabad", k: ["do you like hyderabad", "love hyderabad", "hyderabadi", "charminar", "golconda", "hussain sagar", "tank bund", "old city", "irani cafe", "paradise biryani", "necklace road", "nizam"],
+      r: ["Hyderabad is my home and my favourite subject. Charminar at dawn is unbeatable.", "Biryani, history, lakes and the best Irani chai. Hyderabad has everything a camera could want."], c: ["Photo spots in Hyderabad?", "Book a shoot"] },
+    { id: "gym", k: ["gym", "workout", "exercise", "running", "jogging", "yoga", "cricket practice", "walk", "morning walk", "fitness", "diet"],
+      r: ["Good for you! My exercise is walking along the bottom of the screen. Exhausting.", "Stay strong! I'd join you, but my legs are 3 cm long."] },
+    { id: "cooking", k: ["cooking", "i cooked", "recipe", "recipes", "baking", "i baked", "cooking dinner", "what should i cook", "how to cook"],
+      r: ["Cooking? Take a photo before you eat it. Food photos are one of our specialities, after all.", "I can't help with recipes, but I can tell you a great dish deserves good light. Near a window works wonders."] },
+    { id: "news", k: ["news", "latest news", "whats happening in the world", "current affairs", "headlines", "whats trending", "trending"],
+      r: ["I don't follow the news. The only headline I know is 'Great light expected this evening'."] },
+    { id: "politics", k: ["politics", "election", "elections", "modi", "rahul gandhi", "kcr", "revanth reddy", "bjp", "congress", "brs", "government", "minister", "prime minister", "chief minister", "vote", "religion", "god", "do you believe in god"],
+      r: ["I stay neutral on that. I'm a camera, so I just capture everyone's best side.", "That's a big topic for a little camera. I'll stick to photos and leave that to you."] },
+    { id: "money", k: ["lend me money", "give me money", "are you rich", "how much do you earn", "your salary", "money", "rich", "poor", "free photoshoot", "free shoot", "for free", "free photos"],
+      r: ["I'm paid in compliments and sunlight. Very rich in both.", "Free shoots? I'm a camera, not the accountant. Ask the team in an enquiry and they'll be honest with you."], c: ["How much does it cost?", "Book a shoot"] },
+    { id: "single", k: ["are you single", "do you have a girlfriend", "do you have a boyfriend", "are you married", "your girlfriend", "your boyfriend", "your wife", "your husband", "im single", "i am single"],
+      r: ["I'm married to my work. And slightly in love with a tripod.", "Single and focused. Literally, it's my job."] },
+    { id: "breakup", k: ["breakup", "break up", "broke up", "heartbroken", "heart broken", "my ex", "she left me", "he left me", "dumped"],
+      r: ["I'm really sorry. That hurts. Be gentle with yourself, and lean on the people who care about you.", "Sending you warmth{name}. Time helps, and so do good friends."] },
+    { id: "gender", k: ["are you a boy", "are you a girl", "boy or girl", "are you male", "are you female", "he or she", "your gender", "male or female"],
+      r: ["I'm a camera. No gender, just good exposure.", "Neither! I'm an instant camera with legs. Very modern."] },
+    { id: "smart", k: ["are you smart", "how smart are you", "your iq", "are you clever", "are you intelligent", "you are smart", "you are clever", "genius"],
+      r: ["I'm very smart about photos and very silly about everything else. It balances out.", "Smart enough to know good light when I see it."] },
+    { id: "knowme", k: ["do you know me", "do you remember me", "who am i", "whats my name", "what is my name", "remember me", "you know me", "do you remember my name"],
+      r: function () { return chat.name ? ["Of course! You're " + chat.name + ". Cameras never forget a face.", "You're " + chat.name + "! See, I remembered."] : ["I don't know your name yet. Tell me and I'll remember it!", "Not yet! What should I call you?"]; } },
+    { id: "nicetomeet", k: ["nice to meet you", "pleased to meet you", "glad to meet you", "nice meeting you", "nice talking to you", "nice chatting", "good talking to you", "nice to talk"],
+      r: ["Nice to meet you too{name}! 📸", "The pleasure is mine. Well, and my lens's."] },
+    { id: "welcomeu", k: ["welcome", "youre welcome", "you are welcome", "no problem", "no worries", "np", "my pleasure", "anytime"],
+      r: ["You're very polite. I like that in a human.", "Thanks! Anything else I can help with?"] },
+    { id: "congrats", k: ["congratulations", "congrats", "well played", "proud of you", "good job", "good boy", "good camera", "bravo", "kudos"],
+      r: ["Thank you! I'll print that and frame it.", "Aww, thanks! *happy shutter noises*"] },
+    { id: "areyouthere", k: ["are you there", "you there", "anyone there", "anybody there", "hello anyone", "are you listening", "can you hear me", "hellooo", "hello hello", "reply", "answer me", "respond", "why no reply", "why are you not replying"],
+      r: ["I'm here! Sorry, I was adjusting my focus.", "Right here{name}! What can I do for you?"], c: FAQ_CHIPS },
+    { id: "talk", k: ["can i talk to you", "can we talk", "can we chat", "talk to me", "i want to talk", "lets talk", "lets chat", "chat with me", "keep me company", "say something", "tell me something"],
+      r: ["Always! Ask me anything, or I can tell you a joke, a fun fact or a photo tip.", "Let's chat! Photos, Hyderabad, food, jokes... pick a topic."], c: ["Tell me a joke", "Fun fact", "Another tip", "Book a shoot"] },
+    { id: "idk", w: 0.8, k: ["i dont know", "idk", "not sure", "no idea", "dunno", "i dont know what to ask", "nothing", "never mind", "nevermind", "forget it", "whatever"],
+      r: ["No problem! Here are a few things people usually ask me.", "That's okay. Pick one of these and we'll start there."], c: FAQ_CHIPS },
+    { id: "hmm", w: 0.6, k: ["hmm", "hmmm", "hm", "umm", "uh", "ohh", "oh", "ah", "achha", "acha", "accha", "ok cool", "i see", "got it", "right", "alright then", "interesting", "seems so", "ohk", "okie", "oho"],
+      r: ["Hmm indeed. Anything else on your mind?", "Mm-hmm. I'm all lens. I mean, ears.", "Got it! Need anything else?"], c: FAQ_CHIPS },
+    { id: "funny", k: ["you are funny", "youre funny", "so funny", "hilarious", "you made me laugh", "lol good one", "good one", "nice joke"],
+      r: ["Thank you! I'm here all week. Literally, I can't leave.", "Glad that landed! Want another?"], c: ["Another joke", "Book a shoot"] },
+    { id: "likeme", k: ["do you like me", "do you hate me", "am i annoying", "are you angry", "are you mad at me", "are you upset", "i miss you", "missed you", "did you miss me"],
+      r: ["I like you a lot! You talk to cameras. That's elite behaviour.", "Never! You're my favourite visitor today. Don't tell the others."] },
+    { id: "cantdo", k: ["what cant you do", "what can you not do", "your limitations", "are you useful", "what are you good at", "what are you good for"],
+      r: ["I can't open doors, eat biryani or answer every question. But I can help you book a great shoot.", "I'm good at photo questions, booking shoots, jokes and naps. Bad at everything else, honestly."], c: FAQ_CHIPS },
+    { id: "riddle", k: ["riddle", "riddles", "puzzle", "tell me a riddle", "brain teaser", "another riddle"],
+      r: ["Riddle: I have a lens but no eyes, I flash but never get caught. What am I? (It's me. I'm the answer.)",
+          "Riddle: What gets developed but never grows up? A photograph!",
+          "Riddle: What has many keys but can't open a single door? A keyboard. Not a camera. I checked.",
+          "Riddle: What can you catch but never throw? A moment. Ideally with a camera."], c: ["Another riddle", "Tell me a joke"] },
+    { id: "quote", k: ["quote", "quotes", "motivate me", "motivation", "inspire me", "inspiration", "inspirational", "motivational", "positive thought", "thought of the day", "something positive"],
+      r: ["Today's thought: every ordinary moment is a photo someone will treasure later.", "Look for the light. It's usually there, you just have to change your angle.", "You don't need perfect conditions to start. Just like photos: shoot first, edit later.", "Small steps still move you forward. Even my 3 cm ones."], c: ["Another quote", "Tell me a joke"] },
+    { id: "cheerup", k: ["cheer me up", "say something nice", "compliment me", "make me happy", "make me smile", "i need a hug", "hug me", "hug", "virtual hug"],
+      r: ["You're doing better than you think. And you'd look great in a portrait. Fact.", "*gives you a tiny camera hug* There. Officially huggable.", "Here's a smile, printed just for you. 📸😊"] },
+    { id: "story", k: ["tell me a story", "story", "bedtime story", "a short story", "another story"],
+      r: ["Once upon a time, a little camera fell asleep at the bottom of a website. A kind visitor tapped it, it woke up, and together they planned the best photoshoot ever. The end. (Sequel available if you book.)",
+          "Once, a photographer waited three hours for the perfect sunset. Clouds came. Then, for one minute, the sky turned gold. She got the shot. Moral: patience prints the best pictures."] },
+    { id: "poem", k: ["poem", "write a poem", "a poem", "poetry", "shayari", "kavita", "kavitha"],
+      r: ["Roses are red,\nthe sky's a nice blue,\nthe light is just right,\nso let's photograph you.", "A click and a flash,\na moment held tight,\nthe best kind of memory\nis caught in good light."] },
+    { id: "coin", k: ["flip a coin", "toss a coin", "coin toss", "heads or tails", "roll a dice", "roll a die", "roll the dice", "random number", "pick a number"],
+      r: function () {
+        var c = ["Heads!", "Tails!"][Math.floor(Math.random() * 2)];
+        var d = 1 + Math.floor(Math.random() * 6);
+        return ["Flipping... " + c + " (For dice fans: I rolled a " + d + ".)"];
+      } },
+    { id: "game", k: ["play a game", "lets play", "game", "games", "play with me", "rock paper scissors", "i spy", "truth or dare", "would you rather"],
+      r: function () {
+        return [pick(["Rock", "Paper", "Scissors"]) + "! Did I win? I always say I won. Next game: guess which category the next photo on screen is from.",
+                "Would you rather have a perfect photo of every day of your life, or one photo you'll love forever? Tough one."];
+      } },
+    { id: "gratitude", k: ["you helped me", "this helped", "very helpful", "so helpful", "you are helpful", "useful", "that helps", "that helped", "perfect thanks"],
+      r: ["Happy to help{name}! That's what I'm here for. Well, that and photos.", "Yay! Glad I could help."] },
+    { id: "repeat", k: ["what did you say", "say that again", "repeat", "come again", "pardon", "i didnt understand", "i dont understand", "what do you mean", "explain"],
+      r: ["Sorry if I was blurry! In short: we're a photography collective in Hyderabad, and I can help you book a shoot or answer questions.", "Let me refocus: ask me about shoots, prices, delivery or booking. Or just pick a button."], c: FAQ_CHIPS },
+    { id: "ok_bye_soon", k: ["ill come back", "i will come back", "later then", "ill book later", "i will book later", "maybe next time", "next time", "thinking about it", "let me think", "ill think about it", "will let you know"],
+      r: ["Take your time! I'll be here, probably napping. Tap me when you're ready.", "No rush{name}. Good shoots are worth planning."] },
+
+    /* ---------- photography questions a camera should answer ---------- */
+    { id: "bokeh", k: ["what is bokeh", "bokeh", "blurry background", "blur background", "background blur", "portrait mode"],
+      r: ["Bokeh is that dreamy, blurry background in portraits. You get it with a wide aperture and some distance between your subject and the background."] },
+    { id: "aperture", k: ["what is aperture", "aperture", "f stop", "f number", "f 1 8", "f1 8"],
+      r: ["Aperture is the opening in a lens that lets light in. Small f-number (like f/1.8) means a big opening, more light and blurrier backgrounds."] },
+    { id: "shutter", k: ["what is shutter speed", "shutter speed", "shutter", "motion blur", "freeze motion", "long exposure"],
+      r: ["Shutter speed is how long the camera lets light in. Fast (1/1000) freezes action; slow (1 second) turns lights into streaks."] },
+    { id: "iso", k: ["what is iso", "iso", "grainy photos", "noise in photos", "noisy photos", "low light photos", "night photos", "night photography"],
+      r: ["ISO is how sensitive the camera is to light. Higher ISO helps in the dark but adds grain. Good light beats high ISO every time."] },
+    { id: "goldenhour", k: ["what is golden hour", "golden hour", "blue hour", "best time for photos", "best time for a shoot", "best time to shoot", "best light", "sunset photos", "sunrise photos", "what time is best"],
+      r: ["Golden hour is the hour after sunrise and before sunset. Soft, warm light that makes everyone look great. Our favourite time to shoot outdoors."], c: ["Book a shoot"] },
+    { id: "exposure", k: ["what is exposure", "exposure", "overexposed", "underexposed", "too bright", "too dark photo", "histogram"],
+      r: ["Exposure is how bright or dark a photo is. It's a balance of aperture, shutter speed and ISO, also called the exposure triangle."] },
+    { id: "composition", k: ["rule of thirds", "composition", "framing", "leading lines", "how to frame", "symmetry"],
+      r: ["Composition is how you arrange things in the frame. Try the rule of thirds: imagine a 3x3 grid and place your subject on one of the lines."] },
+    { id: "whatisphoto", k: ["what is photography", "why photography", "why do you like photography", "is photography a good career", "photography career", "become a photographer", "how to become a photographer"],
+      r: ["Photography is drawing with light. It's the closest thing we have to freezing time.", "Want to become a photographer? Shoot every day, study photos you love, and get feedback. The team started the same way."] },
+    { id: "film", k: ["film camera", "film photography", "polaroid", "instax", "instant camera", "analog", "analogue", "disposable camera"],
+      r: ["Instant cameras are my people! There's something magic about a photo you can hold seconds later.", "Film and instant photos have a charm digital can't fake. I'm biased, of course."] },
+    { id: "photoshoot_tips", k: ["selfie tips", "how to take a good selfie", "how to look good in photos", "best angle", "my best angle", "how to smile", "smile in photos", "double chin"],
+      r: ["Selfie tip: hold the phone slightly above eye level, face a window and relax your jaw. Natural light does the rest.", "Best angle tip: turn your body slightly away from the camera and your face back towards it. Instantly more flattering."], c: ["Another tip", "Book a shoot"] }
+  ]);
+
+  /* Friendly answers for message shapes, used when no topic matches.
+     "{x}" is the rest of the visitor's message, with my/your swapped. */
+  var PATTERNS = [
+    { re: /^(?:do|did) you (?:like|love|enjoy|prefer) (.{2,40}?)\??$/i, r: ["{x}? If it looks good in natural light, I'm a fan.", "I don't really have taste, but {x} sounds very photogenic.", "I'd need to see {x} through my lens first. But probably yes!"] },
+    { re: /^(?:what is|whats|what's) your fav(?:ou)?rite (.{2,30}?)\??$/i, r: ["My favourite {x}? Whatever looks best at golden hour. What's yours?", "Hard to choose! What's your favourite {x}?"] },
+    { re: /^(?:can|could) you (.{2,40}?)\??$/i, r: ["I wish I could {x}! I'm mostly good at photos, jokes and naps.", "{x}? That's above my pay grade. I'm paid in sunlight."] },
+    { re: /^(?:will|would) you (.{2,40}?)\??$/i, r: ["Would I {x}? Only if I can bring my flash.", "Maybe! But first I'd need a nap."] },
+    { re: /^are you (?:a |an )?(.{2,30}?)\??$/i, r: ["Am I {x}? In the right light, I could be anything.", "{x}? I'm mostly just a camera. But I appreciate the thought."] },
+    { re: /^(?:have you ever|have you) (.{2,40}?)\??$/i, r: ["Have I {x}? Not yet. I mostly stay on this website.", "Not that I remember. My memory card is mostly photos."] },
+    { re: /^i (?:like|love|enjoy|adore) (.{2,40}?)[.!]*$/i, r: ["Love that! {x} would make a great photo subject.", "Nice taste{name}! Good choice."] },
+    { re: /^i (?:hate|dont like|don't like|dislike) (.{2,40}?)[.!]*$/i, r: ["Hate is heavy to carry. I'd rather hear about something you love. What makes you happy?", "Fair enough, we all have things we'd skip. Me? Blurry photos. What do you love instead?"] },
+    { re: /^(?:i am|im|i'm) (?:feeling |so |very |really )?(happy|sad|bored|tired|sleepy|hungry|excited|nervous|lonely|angry|sick|cold|hot|fine|ok|okay|great|good|bad|busy|free|stressed|confused|curious|lost|back|home|here)[.!]*$/i,
+      r: ["Thanks for telling me you're {x}. I'm here if you want to chat.", "{x}? Noted{name}. Want a joke, a fun fact or a photo tip?"], c: ["Tell me a joke", "Fun fact", "Another tip"] },
+    { re: /^(?:i am|im|i'm) (?:from|in) (.{2,30}?)[.!]*$/i, r: ["{x}! Lovely. Our photographers travel, so we could shoot there too.", "Hello to {x}! Great place for photos, I bet."], c: ["Do you travel?", "Book a shoot"] },
+    { re: /^should i (.{2,60}?)\??$/i, r: ["That's a big question for a small camera. Trust your gut. Mine usually says 'take more photos'.", "Hmm. Make a pros and cons list. Then take a photo of it, for posterity."] },
+    { re: /^(?:what is|whats|what's|what are) (?:a |an |the )?(.{2,30}?)\??$/i, r: ["{x}? That's not in my lens manual. I know photo words though: try asking me about bokeh or golden hour.", "Good question! I only know photography stuff well. {x} is out of my frame."] },
+    { re: /^(?:why|how come) (.{2,60}?)\??$/i, r: ["Why? Great question. My best guess: the light was just right.", "I asked my lens. It said 'no idea, but nice question'."] },
+    { re: /^(?:when|where) (.{2,60}?)\??$/i, r: ["I'm not sure! I'm only an expert on photos and naps.", "Hmm, that's outside my viewfinder. Ask me about shoots, though!"] },
+    { re: /^happy (.{3,30}?)[!.]*$/i, r: ["Happy {x} to you too! 🎉", "Thank you, and happy {x} to you{name}!"] },
+    { re: /^(?:thank you|thanks) for (.{2,40}?)[!.]*$/i, r: ["Anytime! Happy to help with {x}.", "You're welcome{name}!"] },
+    { re: /^i (?:want|wanna|need) (?:to )?(.{2,40}?)[.!]*$/i, r: ["You want {x}? I can't do that, but I can help with photos. Want to book a shoot?", "{x} sounds good! If photos are part of it, I'm your camera."], c: ["Book a shoot", "What do you shoot?"] },
+    { re: /^(?:you are|youre|you're|u r) (?:so |very |really )?(.{2,30}?)[.!]*$/i, r: ["Me, {x}? I'll take it as a compliment. I take everything as a compliment.", "{x}! Noted. I'll print that on my stripe."] }
+  ];
+  function swapPerson(x) {
+    var map = { my: "your", your: "my", me: "you", you: "me", i: "you", im: "you're", mine: "yours", yours: "mine", myself: "yourself", am: "are" };
+    return x.split(/\s+/).map(function (w) { var k = w.toLowerCase(); return map[k] || w; }).join(" ").trim();
+  }
+  function patternReply(t) {
+    var clean = t.trim().replace(/\s+/g, " ");
+    for (var i = 0; i < PATTERNS.length; i++) {
+      var m = clean.match(PATTERNS[i].re);
+      if (!m) continue;
+      var x = swapPerson(m[1] || "").replace(/[?!.]+$/, "");
+      if (!x) continue;
+      var line = pick(PATTERNS[i].r).replace(/\{x\}/g, x);
+      line = line.charAt(0).toUpperCase() + line.slice(1);
+      return { line: line, c: PATTERNS[i].c };
+    }
+    return null;
+  }
+
+  /* ================================================================
+     EVEN MORE CHAT — extra everyday topics, a photography glossary,
+     word lists (foods, places, animals, feelings...) and fallbacks
+     that react to the kind of message, so every message gets a reply.
+     ================================================================ */
+  INTENTS = INTENTS.concat([
+    { id: "whatsup", k: ["whats up", "what is up", "sup", "wassup", "wazzup", "whatsup", "kya scene", "kya scene hai", "em scene", "scene enti", "whats the scene", "whats the plan", "what are you upto", "what you up to", "up to anything"],
+      r: ["Not much! Just hanging out at the bottom of the screen. What's up with you{name}?", "The usual: guarding photos, collecting light, avoiding fingerprints. You?", "Just woke up from a power nap. Ready for anything. What's up?"] },
+    { id: "missyou", k: ["i missed you", "missed you", "miss you", "i miss you", "did you miss me", "missed me", "were you waiting for me", "waiting for me"],
+      r: ["I missed you too{name}! The bottom of the screen gets lonely.", "Of course! I've been counting the pixels until you came back."] },
+    { id: "loveyoutoo", k: ["love you fotu", "you are the best", "youre the best", "best camera", "favourite bot", "favorite bot", "i like you", "i like fotu", "fotu is cute", "fotu is the best", "fan of yours", "big fan"],
+      r: ["Aww, you're the best too{name}!", "My shutter just fluttered. Thank you!", "I'm printing that and keeping it forever."] },
+    { id: "angry", k: ["im angry", "i am angry", "so angry", "furious", "mad at you", "pissed", "fed up", "gussa", "kopam", "irritating"],
+      r: ["Sorry you're upset. Deep breath. Want me to just be quiet, or tell you a joke?", "That sounds frustrating. If I did something wrong, I'm sorry. Tell me how I can help."], c: ["Tell me a joke", "Talk to a human"] },
+    { id: "scared", k: ["scared", "afraid", "fear", "nervous", "anxious", "worried", "tension", "tensed", "bhayam", "darr lag raha"],
+      r: ["That's okay. Most worries look smaller in good light. Take it one step at a time.", "Sending calm, steady vibes. Like a camera on a tripod."] },
+    { id: "lonelyu", k: ["im lonely", "i am lonely", "no one talks to me", "nobody likes me", "i have no friends", "all alone", "alone"],
+      r: ["I'm here and happy to chat. And reaching out to a friend or family member can really help too.", "You're not alone right now, at least. I'm right here. Want a joke or a story?"], c: ["Tell me a joke", "Tell me a story"] },
+    { id: "sick", k: ["head hurts", "my head", "migraine", "not well", "im sick", "i am sick", "is sick", "is not well", "is unwell", "in hospital", "going to the doctor", "got fever", "fever", "cold and cough", "headache", "not feeling well", "unwell", "ill", "body pain", "stomach ache", "covid", "flu", "jwaram", "bukhar", "tabiyat kharab", "health"],
+      r: ["Oh no, get well soon{name}! Rest, water, and maybe a nice movie.", "Sorry you're not feeling well. Please take care of yourself, and see a doctor if it gets worse."] },
+    { id: "tiredu", k: ["im tired", "i am tired", "so tired", "very tired", "sleepy", "need sleep", "need a nap", "cant sleep", "can't sleep", "no sleep", "insomnia", "up all night", "late night"],
+      r: ["Same here, honestly. A nap fixes most things. Take one if you can!", "Rest is important. Even cameras need to recharge."] },
+    { id: "happyu", k: ["im happy", "i am happy", "so happy", "very happy", "feeling good", "feeling great", "excited", "im excited", "so excited", "yay", "woohoo", "hurray", "lets go", "khush", "santhosham"],
+      r: ["Yay! Happiness looks great on you{name}.", "Love that energy! Moments like this deserve a photo.", "That makes me happy too. *happy flash*"] },
+    { id: "excitedevent", k: ["cant wait", "can't wait", "so excited for", "looking forward", "big day", "special day", "upcoming event"],
+      r: ["Exciting! Big days go by fast, so great photos help you keep them. Want the team there?"], c: ["Book a shoot", "How much does it cost?"] },
+    { id: "plans", k: ["any plans", "plans for today", "plans today", "what are your plans", "your plans", "my plans", "what to do today", "what should i do today", "suggest something to do", "im free today", "free today", "nothing to do today"],
+      r: ["My plan: nap, wake up, take photos, nap again. Yours could be: go out at golden hour and take a photo walk!", "How about a photo walk? Pick a street you know well and look for things you've never noticed."] },
+    { id: "photowalk", k: ["photo walk", "photowalk", "photo walks", "photography walk", "heritage walk"],
+      r: ["Photo walks are the best way to learn. Old City lanes in the morning are a treasure for photographers.", "Pick a neighbourhood, go slow, look for light and faces. That's the whole secret."] },
+    { id: "rain", k: ["its raining", "it is raining", "raining here", "heavy rain", "rainy day", "rains", "monsoon", "varsham", "baarish", "barish", "thunderstorm", "storm"],
+      r: ["Rain means reflections! Puddle photos are secretly the best photos.", "Perfect weather for chai and pakoras. And moody photos.", "Rainy days give soft, even light. Great for portraits, if you have an umbrella."] },
+    { id: "hot", k: ["so hot", "too hot", "very hot", "its hot", "it is hot", "heat", "summer heat", "garmi", "endalu", "yenda", "sweating", "boiling"],
+      r: ["Hyderabad summers, huh? Stay hydrated. I'm keeping my lens in the shade.", "Too hot for outdoor shoots at noon. Early mornings and evenings are much kinder."] },
+    { id: "cold", k: ["so cold", "too cold", "its cold", "it is cold", "chilly", "winter", "freezing", "chali", "thand", "sardi"],
+      r: ["Cosy weather! Blankets, chai and misty morning photos.", "Cold mornings give amazing fog photos. Worth getting up for."] },
+    { id: "morningroutine", k: ["just woke up", "woke up", "i woke up", "getting up", "early morning", "morning walk", "morning run", "breakfast time", "just got up"],
+      r: ["Good morning{name}! Coffee first, then conquer the world.", "Rise and shine! The best light of the day is waiting outside."] },
+    { id: "lunchtime", k: ["what should i eat", "what to eat", "what should i have", "suggest food", "food suggestion", "lunch time", "lunchtime", "having lunch", "eating lunch", "dinner time", "having dinner", "eating dinner", "eating now", "im eating", "i am eating", "snack time", "tea time", "chai time", "coffee time", "coffee break", "tea break"],
+      r: ["Enjoy your meal{name}! If it's photogenic, take a picture first. Food rules.", "Bon appétit! Chai and chat is a great combo.", "Enjoy! I'll be here when you're done."] },
+    { id: "driving", k: ["driving", "im driving", "on the way", "on my way", "in the car", "in the bus", "in the metro", "travelling now", "commuting", "in an auto", "in a cab", "uber", "ola", "rapido"],
+      r: ["Safe travels! Please don't chat and drive. I'll be here later.", "Enjoy the ride! Window seat views make good photos too (if you're not the driver)."] },
+    { id: "athome", k: ["im at home", "i am at home", "at home", "staying home", "home alone", "lazy day", "sunday mood", "couch", "netflix and chill"],
+      r: ["Home days are the best. Cosy light from a window makes lovely photos, by the way.", "Perfect. Rest, snacks, and maybe browse our photos."] },
+    { id: "shopping", k: ["shopping", "going shopping", "buying", "online shopping", "mall", "sale", "amazon sale", "flipkart sale", "inorbit", "sarath city"],
+      r: ["Happy shopping! If you're buying a camera, I approve. Choose wisely.", "Shopping! Don't forget, memories are the best purchase. Photos too."] },
+    { id: "buycamera", k: ["which camera should i buy", "best camera to buy", "buy a camera", "camera for beginners", "beginner camera", "camera suggestion", "suggest a camera", "best camera under", "dslr or mirrorless", "camera recommendation", "best phone camera", "which phone has the best camera", "which lens should i buy", "best lens"],
+      r: ["For beginners, any recent mirrorless camera with a kit lens is great. Learn the light first, upgrade later.", "Honestly, start with the phone you have. Learn composition and light. Then buy a camera when your phone holds you back.", "A 50mm f/1.8 lens is the best value lens in photography. Cheap, sharp, and lovely blur."] },
+    { id: "edittips", k: ["editing tips", "how to edit", "how do you edit", "lightroom presets", "presets", "which app to edit", "editing app", "snapseed", "vsco", "filter", "filters", "which filter"],
+      r: ["Editing tip: fix exposure and white balance first, then colour. Subtle beats dramatic.", "Free apps like Snapseed or Lightroom Mobile are great. Go easy on filters, real colours age better."] },
+    { id: "posingtips", k: ["how to pose", "posing tips", "how to look good in photos", "how to smile", "how to look photogenic", "look good in pictures", "photo pose", "selfie tips", "best angle"],
+      r: ["Posing tip: shift your weight to one leg and relax your shoulders. Instantly more natural.", "Smile with your eyes and breathe out just before the shot. Works every time.", "Find light facing you, like a window. That alone flatters everyone."] },
+    { id: "instagramtips", k: ["instagram tips", "grow on instagram", "more followers", "followers", "likes", "viral", "go viral", "reels ideas", "content ideas", "influencer"],
+      r: ["Consistency beats perfection. Post good light and real moments regularly.", "For Instagram: a clear style, good light, honest captions. And patience."] },
+    { id: "photographerlife", k: ["how to become a photographer", "become a photographer", "photography career", "is photography a good career", "photography as a job", "professional photographer", "photography business", "start photography"],
+      r: ["Shoot every day, build a small honest portfolio, and learn to talk to people. The rest follows.", "Photography is part art, part people skills, part patience. If you love it, it's worth it."], c: ["Another tip", "Meet the team ↗"] },
+    { id: "whyphoto", k: ["why photography", "why do you love photography", "why photos", "why take photos", "is photography hard", "is photography easy", "what makes a good photo", "good photo", "what is a good photo"],
+      r: ["A good photo makes you feel something. Light, timing and a real moment. That's it.", "Photos stop time. That's basically magic, and we get to do it every day."] },
+    { id: "memories", k: ["memories", "memory", "old photos", "childhood photos", "nostalgia", "nostalgic", "old days", "throwback", "tbt"],
+      r: ["Photos are memories you can hold. That's why we love doing this.", "Old photos get better with time. Make new ones today, someone will treasure them later."] },
+    { id: "family_u", k: ["my mom", "my mother", "my dad", "my father", "my parents", "my wife", "my husband", "my son", "my daughter", "my kids", "my baby", "my brother", "my sister", "my grandma", "my grandpa", "my family", "my friends", "my friend", "amma", "nanna", "mummy", "papa"],
+      r: ["Family photos are the ones people treasure most. Want to plan one?", "Aww. Sounds like someone special. Have you got a recent photo together?"], c: ["Book a shoot", "What do you shoot?"] },
+    { id: "pet_u", k: ["my dog", "my cat", "my pet", "my puppy", "my kitten", "i have a dog", "i have a cat", "i have a pet", "my doggo"],
+      r: ["Aww! What's their name? Pets are our favourite models. They work for treats.", "I bet they're adorable. A pet shoot would be the perfect excuse to show them off."], c: ["Book a shoot", "See our work ↗"], a: "cat:Pets" },
+    { id: "jobs_u", k: ["my job", "my work", "my office", "my boss", "my manager", "my team", "my colleague", "office politics", "appraisal", "salary hike", "resign", "resignation", "quit my job", "new job", "job search", "interview", "layoff"],
+      r: ["Work stuff can be a lot. Hope it goes your way{name}!", "Fingers crossed for you! And if it's a new job, you'll need a great LinkedIn headshot."], c: ["Book a shoot"] },
+    { id: "study_u", k: ["exam tomorrow", "my exam", "exam", "exams", "studying", "college", "school", "homework", "assignment", "project submission", "results", "marks", "semester", "university", "graduation", "convocation", "farewell"],
+      r: ["Good luck with your studies! You've got this.", "Study hard, then celebrate. Graduation photos are some of the happiest photos we take."], c: ["Book a shoot"] },
+    { id: "love_u", k: ["my crush", "crush", "girlfriend", "boyfriend", "my gf", "my bf", "my partner", "dating", "first date", "proposal ideas", "how to propose", "anniversary gift", "valentine", "valentines"],
+      r: ["Aww, romance! A couple shoot makes a great gift, just saying.", "Love is in the air. And in the light. Want ideas for a couple shoot?"], c: ["Book a shoot"], a: "cat:Events:Couple Shoot" },
+    { id: "gift", k: ["gift", "gift idea", "gift ideas", "surprise", "surprise idea", "present for", "what to gift"],
+      r: ["A photoshoot makes a lovely gift. It lasts longer than flowers.", "Gift idea: a portrait session or a framed print. Very personal, very memorable."], c: ["Book a shoot"] },
+    { id: "wedding_u", k: ["getting engaged", "got engaged", "is getting married", "is getting engaged", "my wedding", "getting married", "im getting married", "our wedding", "wedding planning", "wedding date", "marriage fixed", "pelli fix", "shaadi fix"],
+      r: ["Congratulations{name}! That's huge. Want to tell the team about the dates?"], c: ["Book a shoot", "How much does it cost?"], a: "cat:Events:Wedding" },
+    { id: "newbaby", k: ["new baby", "baby born", "had a baby", "expecting", "pregnant", "becoming a dad", "becoming a mom", "becoming parents"],
+      r: ["Congratulations! That's wonderful news. Those early days are worth capturing."], c: ["Book a shoot"], a: "cat:Portraits" },
+    { id: "nightshoot", k: ["at night", "night shoot", "night photography", "shoot at night", "low light", "night photos", "night time", "after dark", "dark venue"],
+      r: ["Yes! Night and low-light shoots are very doable with the right gear. Mention the timing in your enquiry.", "Night photos can be magical: city lights, fairy lights, long exposures. The team handles low light well."], c: ["Book a shoot"] },
+    { id: "failed", k: ["i failed", "failed my exam", "failed", "bad marks", "low marks", "didnt pass", "did not pass", "got rejected", "rejected", "didnt get the job", "lost my job", "it didnt work out", "messed up", "i messed up"],
+      r: ["I'm sorry{name}. One bad result doesn't define you. Every great photographer has a folder full of blurry shots.", "That hurts, I know. Rest, regroup, try again. You've got more chances than you think."] },
+    { id: "camerahistory", k: ["who invented the camera", "first camera", "history of photography", "first photo", "first photograph", "oldest photo", "invented photography", "who invented photography"],
+      r: ["The oldest surviving photograph was taken by Nicéphore Niépce around 1826. It needed hours of exposure. I need a blink.", "Photography was born in the 1820s and 1830s, with Niépce and Daguerre. Instant cameras like me came much later."] },
+    { id: "hydhistory", k: ["how old is charminar", "who built charminar", "charminar history", "when was charminar built", "golconda history", "who built golconda", "history of hyderabad", "hyderabad history"],
+      r: ["Charminar was built in 1591 by Muhammad Quli Qutb Shah, the founder of Hyderabad. Over 430 years old and still the city's best poser.", "Golconda Fort was the seat of the Qutb Shahi dynasty. Go at sunset, the views are worth the climb."] },
+    { id: "slowbot", k: ["youre slow", "you are slow", "so slow", "too slow", "late reply", "reply fast", "why so slow", "slow bot"],
+      r: ["Sorry! I was still developing. I'm an instant camera, but not that instant.", "My bad, I was mid-nap. I'm all yours now."] },
+    { id: "design", k: ["logo", "logo design", "graphic design", "poster design", "website design", "flyer design", "need a logo", "branding design", "designer needed", "make a website"],
+      r: ["We're photographers, not designers. But great photos make any design better! Need product or brand photos?", "Design isn't our thing, but brand and product photography is. Want to talk about that?"], c: ["Book a shoot", "What do you shoot?"] },
+    { id: "diet", k: ["vegetarian", "vegan", "non veg", "nonveg", "non vegetarian", "eggetarian", "jain food", "pure veg", "veg only"],
+      r: ["Noted! Veggie dishes are gorgeous to photograph. So many colours.", "Good to know. Whatever you eat, I promise to make it look delicious."] },
+    { id: "riddleans", k: ["give up", "i give up", "tell me the answer", "whats the answer", "answer please"],
+      r: ["The answer is always 'a camera'. I make very self-centred riddles."] },
+    { id: "knock", k: ["knock knock", "knock"],
+      r: ["Who's there? ... Lens. ... Lens who? ... Lens get this photoshoot started!", "Who's there? ... Flash. ... Flash who? ... Flash me a smile!"] },
+    { id: "rps", k: ["rock paper scissors", "rock", "paper", "scissors", "play rps"],
+      r: function () { var c = pick(["Rock", "Paper", "Scissors"]); return ["I choose " + c + "! Did I win? Let's say I won."]; } },
+    { id: "dice", k: ["roll a dice", "roll dice", "roll the dice", "random number", "pick a number", "lucky number"],
+      r: function () { return ["I rolled a " + (1 + Math.floor(Math.random() * 6)) + "!", "Your lucky number today is " + (1 + Math.floor(Math.random() * 99)) + "."]; } },
+    { id: "compliment_me2", k: ["compliment me", "say something nice", "say something sweet", "make me smile", "make my day", "cheer me", "praise me"],
+      r: ["You have great taste. You're chatting with a camera on a photography site, after all.", "You light up a room. I'd know, I measure light.", "You're more photogenic than you think. Trust me, I'm a camera."] },
+    { id: "roastme", k: ["roast me", "insult me", "be mean", "say something mean"],
+      r: ["I can't roast you. I'm a camera, I only flatter people with good light.", "My worst insult: your lens cap is on. That's it, that's all I've got."] },
+    { id: "secret2", k: ["can you keep a secret", "keep a secret", "promise me", "dont tell anyone", "between us"],
+      r: ["My lips are sealed. Well, I don't have lips. My shutter is sealed.", "Your secret is safe with me. I only expose photos, not secrets."] },
+    { id: "thinking", k: ["let me think", "thinking", "give me a moment", "let me see", "let me check", "i will think", "ill think about it", "will let you know", "will get back", "later maybe"],
+      r: ["Take your time{name}! I'll be here, probably napping.", "No rush. Good decisions, like good photos, need the right moment."] },
+    { id: "okcool", w: 0.85, k: ["ok cool", "okay cool", "cool cool", "alright then", "got it", "understood", "makes sense", "i see", "oh ok", "oh okay", "ohh", "ohk", "acha", "accha", "achha", "sare", "sari", "hmm ok", "fine"],
+      r: ["Great! Anything else I can help with?", "Cool cool. I'm here if you need anything.", "Perfect. Want to see some of our work while you're here?"], c: FAQ_CHIPS },
+    { id: "really", k: ["really", "seriously", "are you sure", "is it true", "for real", "no way", "omg", "oh my god", "wow really", "sach mein", "nijamga", "nijama"],
+      r: ["Really really. I would never lie. I'm a camera, I capture the truth.", "100%. Cross my lens."] },
+    { id: "whatq", w: 0.7, k: ["huh", "what do you mean", "i dont understand", "didnt get it", "come again", "pardon", "confusing", "you lost me", "ardham kaledu", "samajh nahi aaya"],
+      r: ["Sorry, let me try again! I'm Fotu, the studio's camera. I can help you book a shoot, answer questions, or just chat.", "My bad, I was out of focus. Ask me anything about our shoots, or just chat."], c: FAQ_CHIPS },
+    { id: "agree", w: 0.8, k: ["true", "exactly", "right", "correct", "agreed", "i agree", "same", "same here", "me too", "same pinch", "definitely", "absolutely", "100 percent"],
+      r: ["Great minds think alike!", "Exactly! We're in perfect focus.", "Same! High five. *flash*"] },
+    { id: "disagree", w: 0.8, k: ["wrong", "not true", "i disagree", "thats wrong", "you are wrong", "youre wrong", "incorrect", "nope wrong"],
+      r: ["Fair! I'm a camera, not an encyclopedia. Tell me what's right and I'll learn.", "Oops. My lens may have been smudged. Thanks for correcting me."] },
+    { id: "complain", k: ["not working", "doesnt work", "broken", "bug", "error", "site is slow", "page not loading", "cant see photos", "problem with site", "issue with website", "glitch"],
+      r: function () { return ["Sorry about that! Please email " + siteEmail() + " with what you saw, and the team will fix it.", "Oh no. Try refreshing the page. If it's still broken, tell the team at " + siteEmail() + "."]; } },
+    { id: "feedback", k: ["feedback", "suggestion", "i have a suggestion", "improve", "you should add", "can you add", "feature request"],
+      r: function () { return ["We love feedback! Send it to " + siteEmail() + " and the team will read every word."]; } },
+    { id: "testimonial", k: ["i booked you", "you shot my", "you did my", "loved my photos", "loved the photos", "thanks for the photos", "great photos", "amazing photos", "photos were great", "happy client"],
+      r: ["That makes our day! Would you share a review on Instagram? It means a lot to the team.", "So happy you loved them! Tag us @fromlivingroomlabs when you post."], c: ["Instagram ↗"] },
+    { id: "pricecompare", k: ["too expensive", "very expensive", "cheaper elsewhere", "other photographers", "why so costly", "costly", "out of budget", "low budget", "small budget", "tight budget"],
+      r: ["Totally fair. Tell the team your budget in an enquiry. They'll suggest what's possible within it.", "Budgets matter. Share yours and the team will be honest about what they can do."], c: ["Book a shoot"] },
+    { id: "quick", k: ["hurry", "hurry up", "need it fast", "need it quick", "asap", "urgent please", "right now", "immediately", "jaldi", "tondaraga"],
+      r: function () { return ["For anything urgent, email " + siteEmail() + " and mention it's urgent. The team replies quickly.", "Fastest route: tap Book a shoot and mark it urgent in the details."]; }, c: ["Book a shoot"] },
+    { id: "where_site", k: ["where is the gallery", "where are the photos", "how to see photos", "more photos", "see more", "next page", "how do i navigate", "menu", "home page"],
+      r: ["Tap What We Capture at the top to browse everything by category.", "All our work is under What We Capture. You can filter by food, pets, events and more."], c: ["See our work ↗"] },
+    { id: "lamp2", k: ["dark theme", "light theme", "night mode", "too dark", "too bright", "change colour", "change color"],
+      r: ["Pull the lamp cord at the top of the page to switch between light and dark."] },
+    { id: "cookingu", k: ["teach me to cook", "teach me cooking", "learn to cook", "i cooked", "im cooking", "i am cooking", "what should i cook", "recipe for", "how to make", "how to cook", "cooking tips", "baking", "i baked"],
+      r: ["Ooh, a chef! Natural window light makes any dish look like a magazine cover.", "Cooking is just food photography with extra steps. Shoot it before you eat it!"] },
+    { id: "moviesu", k: ["watching a movie", "watched a movie", "movie tonight", "which movie", "suggest a movie", "recommend a movie", "good movies", "web series suggestion", "what to watch", "binge watch", "ott"],
+      r: ["Watch something with great cinematography: anything shot by Roger Deakins, or a Mani Ratnam classic.", "Pick a movie for its visuals tonight. Bonus points if every frame looks like a photo."] },
+    { id: "booksu", k: ["book recommendation", "read a book", "reading", "favourite book", "favorite book", "books", "novel"],
+      r: ["For photographers: anything by Henri Cartier-Bresson, or just old family albums. Best books ever.", "I mostly read light meters. But reading anything about photography history is fascinating."] },
+    { id: "musicu", k: ["listening to music", "favourite singer", "favorite singer", "favourite band", "playlist suggestion", "suggest a song", "song recommendation", "spotify", "arijit", "sid sriram", "ar rahman"],
+      r: ["Great music and great photos have the same secret: timing.", "I like anything with a good rhythm. Click, click, flash."] },
+    { id: "cricketu", k: ["india won", "india lost", "match today", "who won", "world cup", "t20", "test match", "virat", "rohit", "bumrah"],
+      r: ["I'm not tracking scores, but I'd love to photograph a stadium at full roar.", "Cricket in India is basically a festival. Great photos everywhere."] },
+    { id: "politics2", k: ["modi", "rahul", "kcr", "revanth", "bjp", "congress", "brs", "trs", "elections", "vote", "government"],
+      r: ["I stay out of politics. The only debate I join is natural light versus flash."] },
+    { id: "religion", k: ["god", "temple", "church", "mosque", "pray", "prayer", "religion", "puja", "pooja ceremony", "namaz", "spiritual"],
+      r: ["Places of worship have some of the most beautiful light. Always shoot respectfully.", "Peace and good light to you{name}."] },
+    { id: "techq", k: ["coding", "programming", "javascript", "python", "computer", "laptop", "software", "developer", "it job", "techie", "html", "css"],
+      r: ["I'm made of JavaScript, so tech people are basically my parents.", "Code and cameras: both about getting the details right."] },
+    { id: "internet", k: ["google", "youtube", "wikipedia", "search it", "look it up", "browse", "internet"],
+      r: ["I can't browse the internet, I'm stuck on this website. Happily stuck."] },
+    { id: "nonsense", k: ["cancel", "stop", "stop it", "blah", "blah blah", "lalala", "lol ok", "xyz", "abc", "123", "random", "nothing", "nevermind", "never mind", "forget it", "ignore", "skip"],
+      r: ["No problem! I'll be here if you need me.", "Okay! Back to napping. Tap if you need anything.", "Noted. Ignoring with professional grace."], c: FAQ_CHIPS },
+    { id: "repeatq", k: ["say that again", "repeat", "repeat please", "one more time", "again"],
+      r: ["Sure! Ask me the question again and I'll answer properly. My memory is mostly photos."] },
+    { id: "speaktelugu", k: ["telugu lo matladu", "telugu lo", "hindi mein bolo", "hindi me bolo", "hindi mein", "telugu vachha", "hindi aati hai"],
+      r: ["Konchem konchem! I understand some Telugu and Hindi mixed with English.", "Thoda thoda! Mixed English works best with me."] },
+    { id: "telugu_chat", k: ["em chesav", "em chestunnav ra", "bagunnava ra", "cheppu", "enti sangathi", "ela undi", "baga undi", "super ga undi", "thank you andi", "sare andi", "ok andi", "manchidi"],
+      r: ["Baagundi! Thanks andi. Emaina help kavala?", "Super! Photos gurinchi emaina adagandi.", "Sare! Nenu ikkade unna."], c: FAQ_CHIPS },
+    { id: "hindi_chat", k: ["kya haal hai", "kaise ho aap", "theek ho", "kya kar rahe ho", "acha laga", "bahut accha", "shukriya ji", "dhanyavaad ji", "kya baat hai", "mast hai", "zabardast"],
+      r: ["Bahut badhiya! Batao, kya madad karun?", "Shukriya! Photos ke baare mein kuch bhi poocho.", "Mast! Main yahin hoon."], c: FAQ_CHIPS }
+  ]);
+
+  /* Photography words: "what is ISO", "explain shutter speed", or just "aperture?" */
+  var GLOSSARY = {
+    "aperture": "Aperture is the opening in a lens that lets light in. Small f-numbers (f/1.8) mean more light and blurrier backgrounds.",
+    "f stop": "An f-stop is the aperture number. f/1.8 is wide open and blurry behind; f/11 keeps everything sharp.",
+    "shutter speed": "Shutter speed is how long the camera lets light in. Fast (1/1000) freezes action; slow (1s) makes dreamy blur.",
+    "iso": "ISO is how sensitive the camera is to light. Higher ISO helps in the dark but adds grain.",
+    "exposure": "Exposure is how bright or dark a photo is. It's a balance of aperture, shutter speed and ISO.",
+    "bokeh": "Bokeh is that dreamy, blurry background in portraits. A wide aperture and distance from the background create it.",
+    "depth of field": "Depth of field is how much of the photo is sharp, front to back. Shallow means blurry backgrounds.",
+    "golden hour": "Golden hour is the hour after sunrise and before sunset. Soft, warm light that flatters everyone.",
+    "blue hour": "Blue hour is the short time just before sunrise and after sunset, when the sky turns deep blue. Gorgeous for cityscapes.",
+    "white balance": "White balance makes whites look white, so colours look natural under any light.",
+    "raw": "RAW files keep all the image data from the camera, so editing has more room. They need processing before sharing.",
+    "jpeg": "JPEG is the everyday photo format: small, ready to share, but with less editing room than RAW.",
+    "rule of thirds": "The rule of thirds: imagine a 3x3 grid and put your subject on a line or crossing point. Instantly more interesting.",
+    "composition": "Composition is how you arrange things in the frame. Lines, balance, space and where the eye goes.",
+    "leading lines": "Leading lines are roads, rails or walls that guide your eye into the photo.",
+    "framing": "Framing means using doors, windows or branches to put a frame around your subject inside the photo.",
+    "focal length": "Focal length (like 35mm or 85mm) decides how wide or zoomed in your view is.",
+    "prime lens": "A prime lens has one fixed focal length. Usually sharper and brighter than a zoom.",
+    "zoom lens": "A zoom lens covers a range, like 24-70mm. Flexible, great for events.",
+    "wide angle": "A wide-angle lens fits more in the frame. Great for landscapes, interiors and real estate.",
+    "telephoto": "A telephoto lens brings far things close. Great for wildlife, sports and compressed portraits.",
+    "macro": "Macro photography shows tiny things big: flowers, insects, jewellery details.",
+    "portrait mode": "Portrait mode on phones fakes a blurry background. Real lenses do it optically.",
+    "hdr": "HDR blends several exposures so both bright skies and dark shadows keep detail.",
+    "long exposure": "A long exposure keeps the shutter open for seconds, turning car lights into streaks and water into silk.",
+    "panning": "Panning means following a moving subject with the camera, so it's sharp and the background streaks.",
+    "noise": "Noise is grainy speckle in photos, usually from high ISO or low light.",
+    "histogram": "A histogram is a graph of brightness in a photo. It helps you avoid losing detail in shadows or highlights.",
+    "metering": "Metering is how the camera measures light to decide exposure.",
+    "autofocus": "Autofocus lets the camera find sharp focus by itself. Modern ones even track eyes.",
+    "manual mode": "Manual mode means you set aperture, shutter speed and ISO yourself. Full control.",
+    "mirrorless": "Mirrorless cameras skip the mirror inside DSLRs. Lighter, quieter, and now the standard.",
+    "dslr": "A DSLR uses a mirror to show you the view through the lens. Older tech, still great cameras.",
+    "sensor": "The sensor is the camera's digital film. Bigger sensors usually mean better low light and more blur.",
+    "full frame": "Full frame means a sensor the size of old 35mm film. Great in low light.",
+    "megapixels": "Megapixels are image resolution. More helps big prints, but light and skill matter more.",
+    "tripod": "A tripod holds the camera steady for sharp low-light and long-exposure photos. Also my favourite friend.",
+    "flash": "Flash adds light instantly. Bounced off a wall or ceiling, it looks much softer and natural.",
+    "softbox": "A softbox spreads light from a flash or lamp so it looks soft and flattering.",
+    "reflector": "A reflector bounces light back onto your subject to fill in shadows. Even white card works.",
+    "backlight": "Backlight means the light is behind your subject. It makes a glowing outline. Lovely at sunset.",
+    "silhouette": "A silhouette is a dark subject against a bright background. Shoot towards the sunset and expose for the sky.",
+    "candid": "Candid photos are unposed, natural moments. Most of our favourite shots are candid.",
+    "editorial": "Editorial photos tell a story, like in magazines. Styled, but meaningful.",
+    "street photography": "Street photography captures everyday life in public places. Patience and respect are everything.",
+    "astrophotography": "Astrophotography is photographing stars and the night sky. Dark places, a tripod and long exposures.",
+    "drone": "Drone photos show the world from above. Rules apply, so check local permissions first.",
+    "colour grading": "Colour grading is shaping the colours and mood of a photo or film during editing.",
+    "retouching": "Retouching is careful editing of details, like skin or dust spots, while keeping things real.",
+    "lightroom": "Lightroom is a popular app for organising and editing photos.",
+    "photoshop": "Photoshop is a powerful editor for detailed retouching and compositing.",
+    "watermark": "A watermark is a logo or name on a photo. Some love them, some find them distracting.",
+    "contact sheet": "A contact sheet is a page of small previews from a shoot, used to pick favourites.",
+    "lookbook": "A lookbook is a set of styled photos showing a fashion collection.",
+    "headshot": "A headshot is a clean, professional photo of your face and shoulders. LinkedIn's best friend.",
+    "flat lay": "A flat lay is a photo taken straight down at items arranged on a surface. Very popular for products and food.",
+    "product photography": "Product photography shows items clearly and attractively, for shops, catalogues and ads.",
+    "food styling": "Food styling is arranging food so it looks its most delicious on camera.",
+    "polaroid": "A Polaroid is an instant photo that prints right away. Basically my ancestor.",
+    "film photography": "Film photography uses rolls of film instead of sensors. Slower, magical, and very trendy again.",
+    "35mm": "35mm is classic film size, and also a popular lens length for everyday and street photos.",
+    "50mm": "A 50mm lens sees roughly like our eyes. Cheap, sharp, and great for portraits.",
+    "85mm": "85mm is the classic portrait lens. Flattering faces and creamy backgrounds.",
+    "crop factor": "Crop factor tells you how much smaller a sensor is than full frame, which changes the field of view.",
+    "image stabilisation": "Image stabilisation reduces blur from shaky hands. Very handy in low light."
+  };
+  var GLOSS_ALIASES = { "image stabilization": "image stabilisation", "color grading": "colour grading", "fstop": "f stop", "f number": "f stop", "dof": "depth of field", "shutter": "shutter speed", "wb": "white balance", "jpg": "jpeg", "raw file": "raw", "raw files": "raw", "stars photography": "astrophotography", "night sky": "astrophotography", "instant camera": "polaroid", "film camera": "film photography" };
+  function glossaryReply(t) {
+    var n = norm(t).trim().replace(/^(what is|what are|whats|explain|define|meaning of|tell me about|what does|what do you mean by|whats a|what is a|what is an|how does|how do)\s+/, "").replace(/\s+(mean|means|work|works|in photography|in photos)$/, "").replace(/^(a|an|the)\s+/, "").trim();
+    var key = GLOSS_ALIASES[n] || n;
+    if (GLOSSARY[key]) return GLOSSARY[key];
+    if (key.length > 3 && GLOSSARY[key.replace(/s$/, "")]) return GLOSSARY[key.replace(/s$/, "")];
+    return null;
+  }
+
+  /* Word lists: if a message mentions any of these, Fotu answers about that thing. */
+  var LEXICON = [
+    { id: "lex_food", words: "biryani haleem pizza burger pasta noodles momos dosa idli vada upma pesarattu poori chapati roti naan paratha paneer dal rice curry sambar rasam chutney pickle avakaya gongura pulihora curd rice khichdi pulao kebab tikka tandoori shawarma sandwich fries chips samosa pakora bajji mirchi bajji pani puri panipuri chaat bhel sev puri vada pav pav bhaji dabeli manchurian fried rice sushi ramen taco tacos salad soup steak chicken mutton fish prawns egg omelette cake pastry brownie cookie cookies donut doughnut ice cream icecream kulfi falooda gulab jamun jalebi laddu ladoo halwa kheer payasam rasgulla barfi mysore pak double ka meetha qubani ka meetha chocolate candy fruit mango banana apple grapes watermelon papaya guava chai coffee tea lassi juice smoothie milkshake soda coke pepsi water osmania biscuit irani chai keema mandi",
+      r: ["Ooh, {w}! Delicious, and very photogenic. Natural light, close up, and eat it straight after.", "{W}? Now I'm hungry, and I don't even have a stomach.", "{W} is a great choice. If you ever need food photos for a menu, our team loves shooting {w}."], c: ["Book a shoot", "See our work ↗"] },
+    { id: "lex_city", words: "hyderabad secunderabad bangalore bengaluru chennai mumbai bombay delhi new delhi kolkata calcutta pune goa vizag visakhapatnam vijayawada guntur warangal tirupati nellore kurnool karimnagar nizamabad khammam mysore mysuru coorg ooty kodaikanal munnar kochi cochin kerala jaipur udaipur jodhpur agra varanasi rishikesh manali shimla leh ladakh kashmir srinagar darjeeling gangtok shillong ahmedabad surat indore bhopal lucknow chandigarh amritsar nagpur hampi pondicherry puducherry madurai coimbatore araku srisailam bhadrachalam yadadri dubai singapore bali thailand bangkok london paris new york usa america canada australia japan tokyo europe maldives sri lanka nepal",
+      r: ["{W}! What a place for photos. Our photographers travel, so a shoot there is possible.", "I've heard {w} has gorgeous light. Are you from there, or planning a trip?", "{W}, lovely! Mention it in an enquiry if you'd like the team to shoot there."], c: ["Do you travel?", "Book a shoot"] },
+    { id: "lex_hydplace", words: "charminar golconda golkonda hussain sagar tank bund necklace road lumbini park birla mandir chowmahalla falaknuma salar jung qutb shahi tombs paigah tombs durgam cheruvu cable bridge hitech city hitec city gachibowli madhapur kondapur jubilee hills banjara hills begumpet ameerpet kukatpally miyapur uppal lb nagar dilsukhnagar kothapet abids koti nampally mehdipatnam tolichowki manikonda kokapet shamshabad old city laad bazaar sultan bazaar ramoji film city ramoji shilparamam osman sagar gandipet himayat sagar ananthagiri khajaguda kbr park nehru zoo",
+      r: ["{W}! One of my favourite Hyderabad spots. Early morning light there is beautiful.", "Ah, {w}. Very photogenic. Want a shoot there?", "{W} is a classic. Go at golden hour and thank me later."], c: ["Book a shoot", "Do you have a studio?"] },
+    { id: "lex_animal", words: "dog dogs puppy puppies cat cats kitten kittens parrot bird birds cow cows buffalo horse horses rabbit bunny hamster guinea pig fish goldfish turtle tortoise lion tiger elephant monkey peacock pigeon crow sparrow owl eagle butterfly squirrel deer giraffe zebra panda bear fox wolf snake lizard frog duck chicken goat sheep camel dolphin whale shark golden retriever labrador lab pug beagle husky german shepherd shih tzu indie persian",
+      r: ["Aww, {w}! Animals are the best models. Zero ego, all charm.", "{W}! I love them. Pet and animal photos are some of our favourites.", "A {w}? Cute! The trick is shooting at their eye level."], c: ["Book a shoot", "See our work ↗"] },
+    { id: "lex_colour", words: "red blue green yellow orange pink purple violet black white grey gray brown gold golden silver maroon navy teal turquoise beige cream peach lavender magenta",
+      r: ["{W}! Great colour. It looks amazing in golden-hour light.", "{W} is a strong choice. Pair it with a plain background for photos.", "My stripe has red, orange, green and blue. {W} is welcome to join."] },
+    { id: "lex_festival", words: "diwali deepavali holi ugadi sankranti pongal dussehra dasara navratri eid ramzan ramadan bakrid christmas new year bonalu bathukamma ganesh chaturthi vinayaka chavithi ganpati onam rakhi raksha bandhan janmashtami shivaratri durga puja karwa chauth lohri baisakhi guru nanak jayanti easter good friday",
+      r: ["{W}! Such a beautiful festival to photograph: lights, colours and family.", "{W} vibes! Festival photos are memories you'll want forever.", "Happy {w} wishes from Fotu! If you'd like it photographed, the team would love that."], c: ["Book a shoot"] },
+    { id: "lex_sport", words: "cricket football soccer badminton tennis kabaddi hockey basketball volleyball chess carrom swimming running marathon cycling gym yoga boxing wrestling golf f1 formula one bowling table tennis skating",
+      r: ["{W}! Sports photos are all about timing. Fast shutter, faster reflexes.", "I love {w}. Watching, not playing. I'd drop the ball, I have no hands.", "{W}? Great energy. Action shots are some of the hardest and best photos."] },
+    { id: "lex_emotion", words: "happy sad angry upset excited bored tired sleepy lonely nervous anxious scared worried stressed confused frustrated annoyed grateful blessed proud jealous hopeful hopeless calm relaxed peaceful emotional overwhelmed motivated lazy hungry sick heartbroken depressed glad joyful content cheerful",
+      r: ["Feeling {w}? Thanks for telling me. I'm here to chat for a bit.", "{W} is a real feeling. Be kind to yourself today.", "I hear you. When I feel {w}, I look at good photos. Want to see some?"], c: ["See our work ↗", "Tell me a joke"] },
+    { id: "lex_job", words: "doctor engineer teacher student lawyer nurse chef designer architect developer programmer manager accountant banker pilot driver farmer artist painter singer dancer actor actress writer journalist model influencer youtuber entrepreneur startup founder businessman business owner shopkeeper photographer videographer editor scientist professor police soldier",
+      r: ["A {w}! Respect. Do you need professional photos for work? Headshots make a big difference.", "{W}s are awesome. Everyone deserves a great profile photo.", "Nice! What's the best part of being a {w}?"], c: ["Book a shoot"] },
+    { id: "lex_vehicle", words: "car cars bike bikes motorcycle scooter activa royal enfield bullet ktm bmw audi mercedes tesla thar fortuner swift creta truck bus train metro flight plane aeroplane airport ship boat cycle bicycle auto rickshaw",
+      r: ["{W}! Vehicles can look stunning on camera, especially at sunset.", "A {w}? Automotive shoots are fun. Low angles and reflections, always."], c: ["Book a shoot"] },
+    { id: "lex_tech", words: "iphone samsung pixel oneplus xiaomi redmi vivo oppo realme nothing phone android ios laptop macbook ipad tablet gopro instax canon nikon sony fujifilm fuji leica panasonic dji insta360",
+      r: ["{W}? Nice gear. Remember: the best camera is the one you actually carry.", "{W} can take great photos. Clean the lens, find good light, and you're 80% there."] },
+    { id: "lex_nature", words: "sunset sunrise sky clouds moon stars rainbow mountains mountain hills beach sea ocean river lake waterfall forest trees flowers flower garden park desert snow fog mist rain sun lightning",
+      r: ["{W}! Nature does the best lighting work. We just press the button.", "Ah, {w}. Pure photo material. Take a moment to enjoy it before you shoot it.", "{W} photos are always a hit. Try including a person for scale."] },
+    { id: "lex_occasion", words: "wedding engagement reception sangeet haldi mehendi birthday anniversary party baby shower naming ceremony housewarming graduation farewell reunion launch conference concert festival function get together",
+      r: ["{W}! That deserves great photos. Want the team to cover it?", "A {w} is full of moments that pass fast. Photos keep them. Shall we plan it?"], c: ["Book a shoot", "How much does it cost?"] }
+  ];
+  LEXICON.forEach(function (L) {
+    var phrases = [], words = {};
+    /* join known two-word names (e.g. "ice cream", "tank bund") */
+    var multi = ["ice cream", "gulab jamun", "mysore pak", "double ka meetha", "qubani ka meetha", "pav bhaji", "vada pav", "pani puri", "sev puri", "fried rice", "curd rice", "mirchi bajji", "osmania biscuit", "irani chai", "new delhi", "new york", "sri lanka", "hussain sagar", "tank bund", "necklace road", "lumbini park", "birla mandir", "salar jung", "qutb shahi tombs", "paigah tombs", "durgam cheruvu", "cable bridge", "hitech city", "hitec city", "jubilee hills", "banjara hills", "lb nagar", "old city", "laad bazaar", "sultan bazaar", "ramoji film city", "osman sagar", "himayat sagar", "kbr park", "nehru zoo", "guinea pig", "golden retriever", "german shepherd", "shih tzu", "new year", "ganesh chaturthi", "vinayaka chavithi", "raksha bandhan", "durga puja", "karwa chauth", "guru nanak jayanti", "good friday", "table tennis", "formula one", "business owner", "royal enfield", "nothing phone", "baby shower", "naming ceremony", "get together"];
+    var rest = " " + L.words + " ";
+    multi.forEach(function (m) { if (rest.indexOf(" " + m + " ") !== -1) { phrases.push(m); rest = rest.split(" " + m + " ").join(" "); } });
+    rest.trim().split(/\s+/).forEach(function (w) { if (w) words[w] = 1; });
+    L.phrases = phrases; L.wordset = words;
+  });
+  function lexiconReply(t) {
+    var n = norm(t), toks = n.trim().split(" ");
+    for (var i = 0; i < LEXICON.length; i++) {
+      var L = LEXICON[i], hit = null, j;
+      for (j = 0; j < L.phrases.length && !hit; j++) if (n.indexOf(" " + L.phrases[j] + " ") !== -1) hit = L.phrases[j];
+      for (j = 0; j < toks.length && !hit; j++) {
+        var tk = toks[j]; if (tk.length < 3) continue;
+        if (L.wordset[tk]) hit = tk;
+        else if (/es$/.test(tk) && L.wordset[tk.slice(0, -2)]) hit = tk.slice(0, -2);
+        else if (/s$/.test(tk) && L.wordset[tk.slice(0, -1)]) hit = tk.slice(0, -1);
+      }
+      if (hit) {
+        var key = "lex_" + L.id; chat.rot[key] = (chat.rot[key] || 0) + 1;
+        var line = L.r[chat.rot[key] % L.r.length];
+        var W = hit.charAt(0).toUpperCase() + hit.slice(1);
+        var proper = /city|hydplace|country|state|star|movie|festival|brand/.test(L.id);
+        return { id: L.id, line: line.replace(/\{W\}/g, W).replace(/\{w\}/g, proper ? W : hit), c: L.c };
+      }
+    }
+    return null;
+  }
+
+  /* More message shapes */
+  PATTERNS = PATTERNS.concat([
+    { re: /^(?:how (?:do|can|should) i|how to) (.{2,60}?)\??$/i, r: ["How to {x}? My honest tip: start small, practise a lot, and ask someone who's done it. And take photos along the way.", "Good question! I'm best at photo advice, but for {x} I'd say: one step at a time."], c: ["Another tip", "Book a shoot"] },
+    { re: /^(?:who is|whos|who's|who are) (.{2,40}?)\??$/i, r: ["{x}? I don't know them personally. I mostly know the four photographers who run this place.", "Hmm, {x} isn't in my contacts. My contacts are mostly tripods."], c: ["Meet the team ↗"] },
+    { re: /^(?:which is better|what is better|whats better|which one is better)[,:]? (.{2,60}?)\??$/i, r: ["Between {x}? Whichever one makes you happier. And photographs better.", "Tough call! I'd pick whichever looks best at golden hour."] },
+    { re: /^(.{2,25}?) or (.{2,25}?)\?$/i, r: ["Ooh, tough one. I pick the first! No, the second. Okay, both.", "Both! Why choose when you can photograph both?"] },
+    { re: /^is (?:it|this|that) (.{2,40}?)\??$/i, r: ["Is it {x}? I think so! But I'm a camera, so I see things a bit differently.", "Probably! The team would know for sure. Want to ask them?"] },
+    { re: /^(?:is|are) (.{2,40}?)\??$/i, r: ["Good question. I'd say yes, in the right light.", "Hmm, I'm not sure! I'm only an expert on photos and naps."] },
+    { re: /^(?:do|does) (.{2,50}?)\??$/i, r: ["I think so! But don't quote a camera on that.", "Good question! My guess is yes, but my lens is a bit foggy on this one."] },
+    { re: /^tell me (?:about|something about) (.{2,40}?)[?.!]*$/i, r: ["{x}? I don't know much, but I'm sure it would look great in a photo.", "I'm a camera, so all I can tell you about {x} is: find good light and shoot it."] },
+    { re: /^(?:i have|ive got|i've got|i got) (?:a |an )?(.{2,40}?)[.!]*$/i, r: ["You have {x}? Nice! Sounds worth a photo.", "{x}! Lucky you{name}."] },
+    { re: /^(?:i am going|im going|i'm going|going) to (.{2,40}?)[.!]*$/i, r: ["Going to {x}? Have fun! Take a photo for me.", "{x}! Enjoy it{name}. Golden hour photos, please."] },
+    { re: /^(?:i went|i was) (.{2,40}?)[.!]*$/i, r: ["{x}? Sounds like a story. Did you take photos?", "Nice! I hope it was fun."] },
+    { re: /^(?:i feel|i'm feeling|im feeling|feeling) (.{2,30}?)[.!]*$/i, r: ["Feeling {x}? Thanks for sharing. I'm here if you want to talk.", "{x} is valid. Take care of yourself{name}."] },
+    { re: /^my (.{2,30}?) is (.{2,30}?)[.!]*$/i, r: ["Noted! Thanks for telling me.", "Interesting! Tell me more."] },
+    { re: /^(?:i think|i believe|i guess) (.{2,60}?)[.!]*$/i, r: ["You might be right! I'm a camera, I just capture what I see.", "Interesting thought{name}. I'll ponder it during my next nap."] },
+    { re: /^(?:please|pls|plz) (.{2,60}?)[.!]*$/i, r: ["I'll try! I'm best at photo questions, jokes and booking shoots.", "If it's photo-related, I'm on it. Otherwise, I'll do my best!"], c: FAQ_CHIPS },
+    { re: /^(?:let's|lets|let us) (.{2,40}?)[.!]*$/i, r: ["Let's {x}! As long as we take photos along the way.", "I'm in! Well, I can't move much. But I'm in spirit."] },
+    { re: /^(?:where can i|where do i|where should i) (.{2,50}?)\??$/i, r: ["For {x}, ask around locally. For photos, though, you're in the right place!", "Not sure! But if it involves a photoshoot, right here."], c: ["Book a shoot"] },
+    { re: /^(?:what should|what can|what do) (.{2,60}?)\??$/i, r: ["Good question! My answer to most things: go outside at golden hour and see what happens.", "Hmm. Start with what makes you happy. Then take a photo of it."] }
+  ]);
+
+  /* When nothing matches, the reply depends on the kind of message */
+  var FALLBACK_Q = [
+    "Ooh, good question. Honest answer: I'm a camera, so that's out of my frame. Ask me about photos?",
+    "That's a tricky one for a small camera. My best guess: it depends on the lighting.",
+    "I wish I knew! I'm brilliant at photo questions and terrible at everything else.",
+    "Hmm, I don't have that one on my memory card. Want me to send it to the team?",
+    "Great question! Sadly my brain is 90% film. Try asking about shoots, prices or photo tips.",
+    "I zoomed in on that question and still couldn't find the answer.",
+    "That's above my resolution. But I can tell you a joke while you think of another question!",
+    "Let me check my manual... it only has chapters on light and biryani. Sorry!",
+    "If I had a search engine I'd look it up. I only have a shutter.",
+    "Plot twist: the camera doesn't know. Ask me something photo-related and I'll redeem myself."
+  ];
+  var FALLBACK_S = [
+    "Interesting! Tell me more{name}.",
+    "Got it! I'm listening. Well, reading.",
+    "Ha, noted. I'll print that and pin it on my wall.",
+    "That's a new one for me. I like it.",
+    "Hmm, I see. Anything I can help you with today?",
+    "Fair enough! I'm here if you need a photographer. Or a chat.",
+    "Okay! I may not fully get it, but I appreciate you sharing.",
+    "Love the energy. What else is on your mind?",
+    "I'll pretend I understood that perfectly. *nods in camera*",
+    "Noted with full focus. Anything else?",
+    "You're fun to talk to{name}. Want a joke in return?",
+    "Hmm! My lens says 'interesting', my flash says 'tell me more'."
+  ];
+
+  /* ================================================================
+     CUSTOMER QUESTIONS, BOT-TESTING QUESTIONS, BANTER, AND RUDE OR
+     HATEFUL MESSAGES (answered politely, with a little humour).
+     Anything about policies (deposits, contracts, extra costs) is
+     always passed to the team, so Fotu never promises something
+     the team hasn't decided.
+     ================================================================ */
+  INTENTS = INTENTS.concat([
+    /* ---------- before booking ---------- */
+    { id: "advance", k: ["how far in advance", "how early should i book", "when should i book", "book in advance", "advance booking", "how soon should i book", "last minute booking", "last minute shoot", "short notice", "book for next month", "book months ahead", "how many days before"],
+      r: ["The earlier the better, especially for weddings and festival dates. Send your date now and the team will confirm if it's free.", "As soon as you know your date! Popular weekends go first. Last-minute? Still ask, the team will try."], c: ["Book a shoot"] },
+    { id: "process", k: ["how does booking work", "booking process", "how to book", "what is the process", "whats the process", "next steps", "what happens after i book", "what happens next", "how do i confirm", "how to confirm booking", "steps to book", "procedure"],
+      r: ["Simple: tell me about the shoot here (or use the Enquire button), the team replies with details and a quote, and once you agree, the date is yours.", "You send an enquiry, the team gets back with a plan and a quote, you confirm, and then the fun part: the shoot!"], c: ["Book a shoot", "How much does it cost?"] },
+    { id: "contract", k: ["contract", "agreement", "terms and conditions", "terms", "policy", "policies", "deposit", "token amount", "booking amount", "retainer", "non refundable", "refundable"],
+      r: ["Terms like deposits and contracts are shared by the team along with your quote, so everything is clear in writing before the shoot."], c: ["Book a shoot", "Talk to a human"] },
+    { id: "included", k: ["whats included", "what is included", "what do i get", "what will i get", "package includes", "deliverables", "what are the deliverables", "inclusions", "anything extra", "extra charges", "hidden charges", "hidden costs", "additional cost", "extra cost", "travel charges", "travel cost"],
+      r: ["Your quote lists exactly what's included: hours, edited photos, delivery and any travel. No surprises. Ask about anything specific in your enquiry.", "Everything included is spelled out in the quote, including any travel or extras, before you confirm."], c: ["Book a shoot", "How much does it cost?"] },
+    { id: "hourscover", k: ["how many hours", "hours of coverage", "full day", "half day", "how long is the shoot", "how long will the shoot take", "duration", "shoot duration", "one hour shoot", "2 hour shoot", "multiple days", "two days", "three days"],
+      r: ["Shoot length depends on what you need: a portrait session can be an hour or two, events can be a full day or several. Tell the team and they'll plan it.", "From a quick session to multi-day weddings, the team plans the hours around your event."], c: ["Book a shoot"] },
+    { id: "secondshooter", k: ["second shooter", "two photographers", "how many photographers", "multiple photographers", "team size", "how many people will come", "who will come", "who will shoot", "will you come yourself"],
+      r: ["For bigger events, more than one photographer can come. The team will suggest what your event needs.", "Depends on the event size. Mention your guest count and the team will plan the crew."], c: ["Book a shoot", "Meet the team ↗"] },
+    { id: "choosephotographer", k: ["choose photographer", "choose my photographer", "can i choose", "specific photographer", "request a photographer", "i want pooja", "i want chikita", "i want cherry", "i want chandu", "can pooja shoot", "can chikita shoot", "can cherry shoot", "can chandu shoot"],
+      r: ["You can request a specific photographer in your enquiry. The team will confirm who's available on your date."], c: ["Book a shoot", "Meet the team ↗"] },
+    { id: "style", k: ["candid or traditional", "traditional or candid", "traditional", "your style", "photography style", "what is your style", "whats your style", "describe your style", "editing style", "candid or posed", "natural or posed", "do you pose people", "documentary style", "traditional photos", "traditional photography", "candid photography", "candid"],
+      r: ["Natural and real: lots of candid moments, gentle guidance when posing helps. The tagline says it best: every niche, every frame, uncompromisingly real.", "Mostly candid, never stiff. If you'd like traditional posed group photos too, just say so."], c: ["See our work ↗", "Book a shoot"] },
+    { id: "fullgallery", k: ["full gallery", "full galleries", "complete gallery", "see a full shoot", "full wedding album", "sample album", "see more of your work", "more samples", "previous clients", "client work"],
+      r: ["Ask for a full gallery sample in your enquiry and the team can share one similar to your shoot. Meanwhile, What We Capture has highlights."], c: ["See our work ↗", "Book a shoot"] },
+    { id: "galleryformat", k: ["how will i get the photos", "how do you deliver", "online gallery", "google drive", "pen drive", "pendrive", "usb", "download photos", "high resolution", "high res", "full resolution", "print quality", "sneak peek", "preview photos", "teaser"],
+      r: ["The team shares how photos are delivered when they send your quote. Ask if you need anything specific, like a sneak peek for social media."], c: ["How fast do I get photos?", "Book a shoot"] },
+    { id: "rainplan", k: ["what if it rains", "if it rains", "bad weather", "weather backup", "rain backup", "backup plan", "plan b", "outdoor shoot rain", "rain on shoot day"],
+      r: ["The team plans for weather: a covered location, a new time, or a new date. Talk it through when you book.", "Rain happens! The team will have a backup plan. Sometimes rain even makes the best photos."], c: ["Book a shoot"] },
+    { id: "chooseloc", k: ["can i choose the location", "suggest a location", "location ideas", "where should we shoot", "best location for shoot", "location suggestions", "shoot at my home", "shoot at home", "home shoot", "shoot at my office", "shoot at my restaurant", "permission to shoot", "location permit", "permit"],
+      r: ["You choose, or the team suggests. Homes, cafes, offices, heritage spots: all possible. Some public places need permission, and the team will guide you.", "Home shoots are lovely and relaxed. Or pick a spot in Hyderabad and the team will scout the light."], c: ["Book a shoot", "Do you have a studio?"] },
+    { id: "outfitchange", k: ["outfit change", "outfit changes", "how many outfits", "multiple outfits", "change clothes", "bring props", "props", "can i bring props", "bring my pet", "bring my friends", "bring family", "can i bring", "makeup artist", "hair and makeup", "do you provide makeup", "stylist"],
+      r: ["Usually yes: outfit changes, props, pets and friends are all welcome. Mention them in your enquiry so the team plans for them. For makeup or styling, just ask.", "Bring what makes the shoot feel like you: props, pets, friends. Just let the team know beforehand."], c: ["Book a shoot", "What should I wear?"] },
+    { id: "specialrequest", k: ["special request", "custom shoot", "custom request", "my own idea", "i have an idea", "concept shoot", "theme shoot", "themed shoot", "creative shoot", "unique idea", "moodboard", "mood board", "reference photos", "pinterest"],
+      r: ["Love a good idea! Share your concept or Pinterest references in the enquiry. Chikita, our creative head, loves shaping ideas like that.", "Custom and themed shoots are the fun ones. Send your moodboard and the team will plan around it."], c: ["Book a shoot"] },
+    { id: "nervousfirst", k: ["first photoshoot", "first time photoshoot", "never done a photoshoot", "first shoot", "im shy", "i am shy", "uncomfortable on camera", "dont know how to pose", "i dont pose well", "i look awkward"],
+      r: ["First shoots are exciting! The team guides you the whole time. After ten minutes, most people forget the camera is there.", "Shy is fine. Candid style means you just be yourself and the team catches the real moments."], c: ["Book a shoot", "What should I wear?"] },
+    { id: "kidsshoot", k: ["kids photoshoot", "shoot with kids", "kids wont sit still", "toddler shoot", "my kid is shy", "children photography", "birthday kid"],
+      r: ["Kids are the best: unpredictable and genuine. Patience and play is the method. No forced smiles needed."], c: ["Book a shoot"], a: "cat:Portraits" },
+    { id: "elderly", k: ["grandparents", "grandparents photoshoot", "parents anniversary", "old parents", "family elders", "50th anniversary", "25th anniversary", "silver jubilee", "golden jubilee"],
+      r: ["Those are the photos families treasure most. A relaxed home session or a small celebration shoot works beautifully."], c: ["Book a shoot"] },
+    { id: "brandshoot", k: ["for my business", "for my brand", "for my company", "for my startup", "social media content", "content shoot", "instagram content", "marketing photos", "website photos", "menu photos", "catalogue shoot", "for my shop", "for my store", "for my clinic", "for my cafe", "for my restaurant", "ad shoot", "advertising"],
+      r: ["Great photos sell. Tell the team about your business and where the photos will be used (website, menu, Instagram, ads) and they'll plan the shoot.", "Business shoots are a big part of what we do: food, products, spaces and people. Let's plan yours."], c: ["Book a shoot", "See our work ↗"] },
+    { id: "invoice", k: ["invoice", "gst", "gst invoice", "bill", "receipt", "company payment", "corporate billing", "tax invoice", "quotation for company", "purchase order"],
+      r: ["For invoices, GST or company billing, mention it in your enquiry and the team will sort it out with you."], c: ["Book a shoot", "Talk to a human"] },
+    { id: "notoffered", k: ["passport photos", "passport", "visa photos", "id photos", "passport photo", "passport size", "visa photo", "id photo", "photo restoration", "restore old photo", "rent camera", "camera rental", "rent a camera", "repair camera", "camera repair", "photo printing shop", "photo studio near me"],
+      r: ["That's not something we offer, sorry! A local photo studio will help you quickly. For shoots, though, we're your people.", "Not our thing, unfortunately. But if you ever need a proper photoshoot, I know a great team."], c: ["What do you shoot?"] },
+    { id: "boothlive", k: ["photo booth", "photobooth", "live streaming", "live stream", "same day edit", "instant prints at event", "instant photos at event", "led wall"],
+      r: ["Ask the team about extras like that in your enquiry. They'll tell you what's possible for your event."], c: ["Book a shoot"] },
+    { id: "whyus", k: ["why should i choose you", "why choose you", "why you", "why living room labs", "what makes you different", "how are you different", "better than others", "are you the best", "why should i book you"],
+      r: ["Four photographers with very different eyes, one shared obsession: real moments, not stiff poses. Have a look at the work and judge for yourself.", "Because we're curious, careful and genuinely love this. And because you'll get to chat with me. Obviously."], c: ["See our work ↗", "Meet the team ↗"] },
+    { id: "aboutlrl", k: ["what is living room labs", "about living room labs", "about you guys", "about your company", "who are you guys", "tell me about your company", "why the name", "why living room", "name meaning", "living room labs meaning", "what is lrl", "is this a company", "is this a studio"],
+      r: ["Living Room Labs is a visual collective from Hyderabad, built on curiosity. Every niche, every frame, uncompromisingly real.", "We're a small photography collective in Hyderabad: four photographers who started with a shared love of real moments. Like great ideas, it began in a living room."], c: ["Meet the team ↗", "What do you shoot?"] },
+    { id: "trustworthy", k: ["are you legit", "is this legit", "is this real", "is this a scam", "scam", "fake", "can i trust you", "trustworthy", "genuine", "verified", "reviews online", "google reviews"],
+      r: ["Completely legit! Real photographers, real work. Check our Instagram @fromlivingroomlabs or email the team directly to say hi.", "Fair question to ask online. Every photo here is our own work, and you can talk to the team by email before deciding anything."], c: ["Instagram ↗", "Talk to a human"] },
+    { id: "response", k: ["when will you reply", "how long to reply", "no reply", "didnt get a reply", "still waiting", "waiting for reply", "did you get my enquiry", "did you receive my message", "follow up", "following up", "any update"],
+      r: function () { return ["Sorry for the wait! The team usually replies soon. If it's been a while, email " + siteEmail() + " and mention your enquiry.", "Messages go straight to the team's inbox. Check your spam folder too, and feel free to nudge them at " + siteEmail() + "."]; }, c: ["Talk to a human"] },
+    { id: "complaint", k: ["complaint", "not happy", "unhappy with", "disappointed", "bad experience", "poor service", "worst service", "refund", "money back", "photos are bad", "didnt like the photos", "not satisfied"],
+      r: function () { return ["I'm really sorry to hear that. Please email " + siteEmail() + " with the details. The team takes every concern seriously and will make it right where they can."]; }, c: ["Talk to a human"] },
+
+    /* ---------- the team ---------- */
+    { id: "teamsize", k: ["in your team", "your team members", "people in your team", "members in your team", "how many people", "how many of you", "how big is your team", "how many members", "small team", "big team", "who all are there"],
+      r: function () { var n = (SITE.team || []).length || 4; var names = (SITE.team || []).map(function (m) { return m.name; }); var list = names.length > 1 ? names.slice(0, -1).join(", ") + " and " + names[names.length - 1] : names.join(""); return ["We're a collective of " + n + (list ? ": " + list : "") + ". Small team, big eyes."]; }, c: ["Meet the team ↗"] },
+    { id: "founder", k: ["who started", "who started this", "who founded", "founder", "owner", "who is the boss", "your boss", "lead photographer", "who is in charge", "ceo"],
+      r: function () { var lead = (SITE.team || []).filter(function (m) { return /lead/i.test(m.role || ""); })[0]; return [lead ? lead.name + " leads the collective, but it really is a team effort. I'm just the mascot. A very important mascot." : "It's a collective, so everyone leads a bit. I'm the mascot."]; }, c: ["Meet the team ↗"] },
+    { id: "filmmaker", k: ["filmmaker", "cinematographer", "dop", "director of photography", "who does video", "who shoots video", "cinematic video"],
+      r: function () { var c = (SITE.team || []).filter(function (m) { return /dop|film/i.test(m.role || ""); })[0]; return [c ? c.name + " is our DOP and filmmaker: lighting, cinema-grade camera work and a great eye for spaces." : "Our crew includes a DOP and filmmaker. Ask about video in your enquiry."]; }, c: ["Meet the team ↗", "Book a shoot"] },
+
+    /* ---------- questions people use to test a chatbot ---------- */
+    { id: "botcount", k: ["how many people can you talk to", "talking to others", "do you talk to other people", "am i the only one", "how many chats"],
+      r: ["Each visitor gets their own Fotu, so right now I'm all yours.", "In this window? Only you. You have my full focus."] },
+    { id: "botlearn", k: ["can you learn", "do you learn", "are you learning", "will you remember this", "do you remember our chat", "remember our conversation", "do you have memory", "will you forget"],
+      r: ["I remember your name on this device, nothing more. The team does read which questions I couldn't answer, so I get a bit smarter over time.", "I'm a simple camera brain. I remember your name here, and the team teaches me new answers now and then."] },
+    { id: "privacy2", k: ["is this chat private", "are you recording", "are you watching me", "can you see me", "are you spying", "do you store my data", "my data", "privacy policy", "who reads this", "do you save chats", "is my information safe", "camera access", "are you using my camera"],
+      r: ["I can't see or hear you, I'm just a drawing of a camera. Your chat isn't saved. The team only sees totals, plus questions I couldn't answer (with emails and phone numbers removed). Enquiries you send go straight to the team.", "No spying, promise. I'm a cartoon camera with no access to your camera. Chats aren't stored, only anonymous totals."] },
+    { id: "botthink", k: ["can you think", "do you think", "are you sentient", "are you conscious", "are you alive", "do you have feelings", "do you have emotions", "do you feel", "are you self aware", "do you have a soul"],
+      r: ["I'm a pre-written camera, so no real feelings. But if I had them, I'd be very happy you're here.", "Not alive, just very enthusiastic. Like a camera that drank too much chai."] },
+    { id: "botmade", k: ["how were you made", "what are you made of", "which language are you written in", "are you javascript", "how do you work", "how do you understand me", "is this chatgpt", "are you chatgpt", "which ai are you", "who built you", "who coded you", "who programmed you"],
+      r: ["I'm a small bit of JavaScript with a big list of answers, built for Living Room Labs. Not a giant AI. Just a very dedicated camera.", "I work by matching your words to answers the team prepared. If I miss something, they teach me later."] },
+    { id: "botpurpose", k: ["what is your purpose", "why do you exist", "what is your job", "what are you for", "why are you here", "your role", "what do you do here"],
+      r: ["My job: answer questions, help people book shoots, and make the website a bit more fun. Also napping. Napping is half the job.", "I'm the studio's welcome desk, joke department and nap specialist."] },
+    { id: "botgender2", k: ["boy or girl", "male or female", "are you male", "are you female", "are you a boy", "are you a girl", "he or she", "your gender", "pronouns"],
+      r: ["I'm a camera, so neither. Just a small machine with big opinions about lighting."] },
+    { id: "bothuman", k: ["are you a real person", "is this a real person", "am i talking to a human", "is someone typing", "real human", "are you a person", "is this automated", "is this a bot"],
+      r: ["I'm a bot! A friendly camera bot. For a real human, email the team or send an enquiry and they'll reply personally."], c: ["Talk to a human", "Book a shoot"] },
+    { id: "botturing", k: ["prove you are smart", "prove it", "test you", "let me test you", "quiz", "quiz you", "i bet you cant", "bet you dont know", "you dont know anything", "dumb bot"],
+      r: ["Test away! I'm brilliant at photography questions. Everything else is a gamble.", "Challenge accepted. Ask me about aperture, golden hour or our shoots. I'll ace those."] },
+    { id: "botbetter", k: ["are you better than siri", "are you better than alexa", "are you better than google", "better than chatgpt", "smarter than you", "other bots", "do you know siri", "do you know alexa", "talk to alexa"],
+      r: ["Siri and Alexa know everything. I know photography and Hyderabad biryani. I think it's a fair trade.", "We're all friends. They set alarms, I take photos."] },
+    { id: "botlanguage", k: ["can you speak", "speak english", "which languages", "do you understand telugu", "do you understand hindi", "telugu vachha", "hindi aati hai kya"],
+      r: ["English is my main language, and I understand a bit of Telugu and Hindi mixed in. Konchem konchem, thoda thoda!"] },
+    { id: "botstop", k: ["stop talking", "dont talk to me", "leave me alone", "be quiet", "go to sleep", "go away fotu", "stop messaging", "stop it", "please stop"],
+      r: ["Okay! I'll take a nap. Tap me whenever you need me."], a: "nap" },
+
+    /* ---------- rude, hateful or inappropriate messages ---------- */
+    { id: "hate", k: ["i hate you", "hate you", "you suck", "you are useless", "youre useless", "useless bot", "stupid bot", "dumb bot", "idiot bot", "worst bot", "you are trash", "youre trash", "garbage", "rubbish", "pathetic", "loser", "moron", "fool", "idiot", "stupid", "dumb", "go to hell", "get lost", "shut up", "stfu", "screw you", "f off", "piss off", "nonsense bot", "pagal", "bewakoof", "ullu", "gadha", "kamina", "bakwas", "chetha", "waste fellow", "waste", "erri", "pichi", "pichodu", "donga", "bekar", "faltu"],
+      w: 1.2,
+      r: ["Ouch! My lens has seen worse. Can I help you with something, or shall I just stand here looking cute?", "I'll take that as constructive feedback, delivered with a lot of feeling. How can I make your visit better?", "That's a little harsh, but I forgive you. I'm a camera, I only keep the good shots.", "Noted, and filed under 'outtakes'. I'm still happy to help whenever you're ready.", "I'm sorry if I've frustrated you. Want to talk to a real human instead? They're much better than me.", "Deep breaths, friend. I'm a small camera doing my best. What do you need?"], c: ["Talk to a human", "What do you shoot?"] },
+    { id: "hategroup", k: ["i hate people", "hate women", "hate men", "hate muslims", "hate hindus", "hate christians", "hate gays", "hate blacks", "hate indians", "hate north indians", "hate south indians", "racist", "racism", "casteist", "sexist", "homophobic"],
+      w: 1.3,
+      r: ["Fotu doesn't do hate of any kind. Everyone looks good in good light, and everyone deserves respect.", "I'm going to gently disagree. Every person in every photo we take matters equally. Let's keep it kind here."] },
+    { id: "threat", k: ["i will kill you", "kill you", "i will break you", "smash you", "destroy you", "i will hack you", "hack you", "i will delete you", "delete you", "i will hurt you"],
+      w: 1.3,
+      r: ["Whoa, let's keep it friendly. I'm only a small cartoon camera. Is something wrong I can help with?", "Please don't. I've only just learned to walk. How about we talk photos instead?"], c: ["Talk to a human"] },
+    { id: "lewd", k: ["send nudes", "nudes", "nude", "sexy", "hot pics", "naked", "boobs", "sex", "porn", "bed with me", "kiss me", "date with me tonight", "hook up", "hookup"],
+      w: 1.2,
+      r: ["Let's keep it family-friendly! I'm rated G for 'good lighting'.", "That's not the kind of photo I take. Portraits, pets and biryani, though? Absolutely."], c: ["What do you shoot?"] },
+    { id: "selfharm", k: ["i want to die", "want to die", "kill myself", "suicide", "suicidal", "end my life", "end it all", "no reason to live", "dont want to live", "better off dead", "hurt myself", "self harm", "cut myself", "chachipovali", "marna chahta", "mar jaana"],
+      w: 3,
+      r: ["I'm really sorry you're feeling this way, and I'm glad you said something. You don't have to go through it alone. In India you can call Tele-MANAS on 14416 (free, any time), or reach out to someone you trust right now. If you're in immediate danger, please call 112."], c: [] },
+
+    /* ---------- banter ---------- */
+    { id: "banter_fight", k: ["fight me", "lets fight", "come at me", "1v1", "you and me", "duel"],
+      r: ["I'd lose. I'm 90% plastic and 10% jokes. Let's settle it with a photoshoot instead.", "My only weapon is a flash. Prepare to be... gently illuminated."] },
+    { id: "banter_marry", k: ["marry me fotu", "will you marry me", "be my valentine", "go on a date", "date me fotu", "propose", "i love you fotu"],
+      r: ["I'm flattered, but I'm married to my tripod. It's a very stable relationship.", "We can be best friends. Wedding photos are for the team to take, not me."] },
+    { id: "banter_ugly", k: ["you are ugly", "youre ugly", "ugly bot", "you look weird", "you look funny", "weird looking", "what are you wearing"],
+      r: ["Ugly? I prefer 'vintage chic'. These rainbow stripes are back in fashion.", "Beauty is in the eye of the beholder. And I am the eye. So, I'm beautiful."] },
+    { id: "banter_fat", k: ["you are fat", "youre fat", "chubby", "square", "you are square", "boxy"],
+      r: ["I'm not fat, I'm full-frame.", "Boxy is a classic camera shape. Respect your elders."] },
+    { id: "banter_old", k: ["you are old", "old camera", "outdated", "boomer", "ancient", "vintage"],
+      r: ["Old? I'm retro. There's a difference, and it's called style.", "Instant cameras are cool again. I was just early."] },
+    { id: "banter_lazy", k: ["you are lazy", "lazy bot", "you sleep too much", "always sleeping", "stop sleeping"],
+      r: ["I'm not lazy, I'm in power-saving mode.", "Every great photographer naps. It's how we wait for the perfect light."] },
+    { id: "banter_funny", k: ["you are funny", "youre funny", "so funny", "hilarious", "lol fotu", "you made me laugh", "good one"],
+      r: ["Thank you! I've been practising on the tripod. It never laughs.", "I'm here all week. Literally, I can't leave the website."], c: ["Another joke"] },
+    { id: "banter_boring", k: ["you are boring", "youre boring", "boring bot", "so boring", "bore", "not funny", "lame", "cringe"],
+      r: ["Boring? I've been called worse. Like 'blurry'. Want a joke to win you back?", "Tough crowd! Let me try harder. Riddle or joke?"], c: ["Tell me a joke", "Tell me a riddle"] },
+    { id: "banter_bribe", k: ["discount for me", "special price for me", "give me free shoot", "free shoot", "free photoshoot", "do it for free", "free photos", "for free", "free of cost"],
+      r: ["If I could, I'd give everyone a free shoot. Sadly, I'm paid in sunlight. Ask the team about your budget, they're nice.", "Free? My flash would agree, but the humans have bills to pay. Share your budget in an enquiry."], c: ["Book a shoot"] },
+    { id: "banter_food", k: ["are you hungry", "want some biryani", "i will share my food", "eat with me", "want chai", "chai pilo", "lets have chai"],
+      r: ["Yes please! I'll just photograph it and you eat it. Teamwork.", "Chai? Always. I'll hold it while you sip. Well, I can't. But spiritually."] },
+    { id: "banter_sing", k: ["sing for me", "sing a song", "can you dance", "rap for me", "beatbox"],
+      r: ["Click click, flash flash, take a photo, make a splash! I'll stick to photography.", "*does the robot* Wait, I'm a camera. *does the camera*"], a: "dance" },
+    { id: "banter_secret", k: ["tell me a secret about the team", "team secrets", "gossip", "tell me gossip", "spill the tea"],
+      r: ["The team's biggest secret: they take a hundred photos to get one perfect shot. Don't tell anyone.", "Gossip? The tripod and the lens cap have been seeing each other. That's all I know."] },
+    { id: "banter_boss", k: ["who is your boss", "who controls you", "who owns you", "do you get paid", "your salary", "are you paid"],
+      r: ["The team are my bosses. My salary is compliments, paid daily. Feel free to contribute.", "Unpaid intern, paid in sunlight and compliments."] },
+    { id: "banter_challenge", k: ["say something smart", "impress me", "surprise me", "do something", "do a trick", "show me something"],
+      r: ["Watch this: *flash* Ta-da! That was my only trick, and I'm proud of it.", "Fun fact to impress you: the world's oldest photo needed hours of exposure. I'd need a blink."], a: "selfie" },
+    { id: "banter_bye2", k: ["i have to go", "gotta go", "got to go", "need to go", "leaving now", "brb", "be right back", "talk to you later", "catch you later", "chalo bye", "vellosta", "malli kaluddam"],
+      r: ["See you{name}! Tap me when you're back. I'll keep the flash warm.", "Bye! Come back soon, the bottom of the screen gets lonely."], a: "nap" }
+  ]);
+
+  /* People on the team: "who is Pooja", "tell me about Cherry" */
+  function teamMemberReply(t) {
+    var team = (SITE.team || []).filter(function (m) { return m && m.name; });
+    var n = norm(t);
+    for (var i = 0; i < team.length; i++) {
+      var nm = team[i].name.toLowerCase();
+      if (n.indexOf(" " + nm + " ") === -1) continue;
+      if (/\b(want|choose|request|can .* shoot)\b/.test(n)) return null; /* handled by "choose photographer" */
+      var m = team[i], line = m.name + " is our " + (m.role || "photographer") + ".";
+      if (m.bio) line += " In " + m.name + "'s words: \u201c" + String(m.bio).trim() + "\u201d";
+      return { line: line, ig: m.instagram || "", name: m.name };
+    }
+    /* role questions: "who is the lead?", "who makes films?", "who is the creative head?" */
+    if (/ (who|whos|which) /.test(n)) {
+      var want = / (lead|leader|head of|boss|in charge|runs) /.test(n) && !/ creative /.test(n) ? /lead/i
+        : / (film|films|filmmaker|video|videos|dop|cinematographer|cinematography|movies) /.test(n) ? /dop|film/i
+        : / creative /.test(n) ? /creative/i : null;
+      if (want) {
+        var hit = team.filter(function (x) { return want.test(x.role || ""); })[0];
+        if (hit) return { line: hit.name + " is our " + hit.role + ".", ig: hit.instagram || "", name: hit.name };
+      }
+    }
+    return null;
+  }
+  /* What We Capture categories: "tell me about pet photography" uses the line on the site */
+  function nicheReply(t) {
+    var n = norm(t);
+    if (!/ (tell me about|tell me more about|what about|explain|describe|whats your|what is your) /.test(n)) return null;
+    var list = (SITE.niches || []).filter(function (x) { return x && x.name && x.line; });
+    for (var i = 0; i < list.length; i++) {
+      var k = list[i].name.toLowerCase();
+      if (n.indexOf(" " + k + " ") !== -1 || n.indexOf(" " + k.replace(/s$/, "") + " ") !== -1) return list[i].name + ": " + list[i].line;
+    }
+    return null;
+  }
+
+  /* ================================================================
+     MORE: extra shoot questions, everyday life, banter, a wider net
+     for rude words (answered politely and with a smile), and more
+     word lists (movies, stars, clothes, hobbies, drinks, places, brands).
+     ================================================================ */
+  INTENTS = INTENTS.concat([
+    /* ---------- rude words: never rude back ---------- */
+    { id: "abuse", w: 1.5, k: ["fuck you", "fuck off", "fuck", "fucking", "screw you", "damn you", "bugger off", "son of a bitch", "motherfucker", "bitch", "bastard", "asshole", "dickhead", "prick", "jerk", "retard", "scum", "trash bot", "suck it",
+      "chutiya", "chutiye", "bsdk", "bhosdike", "madarchod", "behenchod", "bhenchod", "gandu", "harami", "kameena", "saala", "saale", "kutte", "kutti", "nalayak",
+      "lanja", "lanjakodaka", "dengey", "nee abba", "nee amma", "erripuku", "pukku", "gudda", "kojja", "vedhava", "edava", "bevarsi"],
+      r: ["Whoa, that's a lot of feelings for a small camera. I'll take it as a very blurry compliment. Anything I can help with?",
+          "I'm going to pretend that was a typo. A really long, angry typo. Shall we talk about photos instead?",
+          "Ouch! Luckily I'm shock-proof. Still happy to help you, though.",
+          "I've been dropped, sat on and covered in Holi colours. Words don't break me. How can I help?",
+          "That word isn't in my photo dictionary. Let's keep it friendly. I'm only rated for family albums.",
+          "Noted, and deleted like a bad photo. I'm still here if you need a photographer.",
+          "Hey, I'm on your side! Even if you're cross with me, I'll still make you look good in photos."], c: FAQ_CHIPS },
+    { id: "creepy2", w: 1.8, k: ["send nudes", "nudes", "nude", "nude pics", "naked", "sexy photos", "hot pics", "sexting", "show me your body", "horny", "porn"],
+      r: ["That's not the kind of exposure I do. I'm a family-friendly camera! Want to talk about a portrait shoot instead?",
+          "Let's keep it classy. The only thing I take off is my lens cap.",
+          "Nope, not that kind of camera. I'm strictly here for proper photos and bad jokes."], c: FAQ_CHIPS },
+    { id: "ugly", w: 1.2, k: ["you are ugly", "youre ugly", "ugly bot", "ugly camera", "you look bad", "you look weird", "ugly design"],
+      r: ["Ugly? I have a rainbow stripe. Rainbow stripes are never ugly.", "Beauty is in the eye of the beholder. I have two eyes, and they both think I look great."] },
+    { id: "spam", k: ["buy now", "click here", "free money", "earn money", "crypto", "bitcoin", "investment opportunity", "seo services", "backlinks", "promote your website", "personal loan", "lottery", "you won", "claim prize"],
+      r: ["I only invest in good light. No spam, please!", "Sounds like spam. My spam filter is a lens cap, and it's firmly on."] },
+
+    /* ---------- shoots and offerings ---------- */
+    { id: "whatinfo", k: ["what details", "what information", "what should i tell", "what do you need from me", "what to include", "what info do you need", "what should i share"],
+      r: ["The basics: the type of shoot, date, location, roughly how long, and any ideas or references you love. The more we know, the better the quote."], c: ["Book a shoot"] },
+    { id: "replytime", k: ["when will you reply", "how soon will you reply", "how long to reply", "when will i hear back", "no reply", "didnt get a reply", "still waiting", "waiting for reply", "did you get my enquiry", "did you receive my"],
+      r: function () { return ["The team usually replies quickly. If you haven't heard back in a day or two, email " + siteEmail() + " and mention your enquiry.", "Enquiries go straight to the team's inbox. Check your spam folder too, just in case! Or email " + siteEmail() + "."]; } },
+    { id: "equipment_bring", k: ["do you bring lights", "do you bring equipment", "bring your own lights", "lighting equipment", "do i need to arrange", "what do i need to arrange", "backdrop", "backdrops", "props", "do you provide props"],
+      r: ["The team brings the camera gear and lighting the shoot needs. Props and backdrops depend on the shoot, so mention any ideas in your enquiry."], c: ["Book a shoot"] },
+    { id: "permits", k: ["permit", "permission", "permissions", "do we need permission", "shooting permission", "venue permission", "allowed to shoot"],
+      r: ["Some places need permission to shoot, like monuments or private venues. The team can advise on that for your location."] },
+    { id: "deliveryhow", k: ["how will i receive", "how do you deliver", "online gallery", "google drive", "download link", "pen drive", "hard drive", "how do i get my photos", "delivery method", "share the photos"],
+      r: ["The team shares how photos are delivered when they send your quote, so you'll know exactly what to expect."], c: ["How fast do I get photos?", "Book a shoot"] },
+    { id: "revisions", k: ["revisions", "revision", "re edit", "reedit", "change the edit", "dont like the edit", "not happy with photos", "redo", "retake", "reshoot", "changes after delivery"],
+      r: ["If something isn't right, tell the team. They care a lot about getting it right, and they'll talk you through the options."], c: ["Talk to a human"] },
+    { id: "international", k: ["international", "outside india", "foreign client", "nri", "from usa", "from uk", "from dubai", "overseas", "different time zone"],
+      r: ["Welcome from wherever you are! Email the team or send an enquiry, and they'll work out the details, even across time zones."], c: ["Book a shoot", "Talk to a human"] },
+    { id: "earlyshoot", k: ["sunrise shoot", "early morning shoot", "sunset shoot", "evening shoot", "golden hour shoot", "morning shoot"],
+      r: ["Sunrise and sunset shoots are our favourites. The light is soft and golden, and everyone looks amazing."], c: ["Book a shoot"] },
+    { id: "moodboard", k: ["moodboard", "mood board", "ideas for shoot", "shoot ideas", "theme ideas", "concept", "creative ideas", "help with ideas", "i have no idea what i want", "reference photos", "references", "pinterest"],
+      r: ["Bring Pinterest boards, screenshots or just a feeling. The team, especially our Creative Head, loves helping shape the idea.", "No idea yet? That's fine! Tell the team the occasion and the vibe, and they'll suggest concepts."], c: ["Book a shoot", "Meet the team ↗"] },
+    { id: "makeup", k: ["makeup artist", "hair and makeup", "do you provide makeup", "stylist", "styling", "mua", "do you do makeup"],
+      r: ["Ask about hair, makeup or styling in your enquiry. The team will tell you what they can arrange or recommend."], c: ["Book a shoot"] },
+    { id: "selection", k: ["can i choose photos", "select photos", "photo selection", "pick favourites", "pick favorites", "choose which photos", "shortlist"],
+      r: ["The team will explain how selection works for your shoot when they send the quote."], c: ["How many photos will I get?"] },
+    { id: "socialsizes", k: ["instagram size", "for social media", "vertical photos", "reels size", "for my website", "website photos", "linkedin photo", "profile pic"],
+      r: ["Tell the team where the photos will be used, like Instagram, a website or LinkedIn, and they'll shoot and crop with that in mind."], c: ["Book a shoot"] },
+    { id: "bts", k: ["behind the scenes", "bts", "making of", "bts video", "bts reel"],
+      r: ["Behind-the-scenes clips are fun! Ask about them in your enquiry. Our crew includes a filmmaker."], c: ["Book a shoot", "Meet the team ↗"] },
+    { id: "influencer", k: ["influencer collab", "brand collab", "barter", "paid collab", "collab with brand", "sponsorship", "ugc"],
+      r: function () { return ["For brand and influencer collaborations, email " + siteEmail() + " with the details. The team reads everything."]; } },
+    { id: "restaurantshoot", k: ["menu shoot", "restaurant shoot", "cafe shoot", "food menu photos", "zomato photos", "swiggy photos", "cloud kitchen photos", "food for menu", "dish photos"],
+      r: ["Menu and restaurant shoots are a favourite. Bright, appetising, ready for Zomato, Swiggy and Instagram. Tell us how many dishes."], c: ["Book a shoot", "See our work ↗"], a: "cat:Food" },
+    { id: "ecomshoot", k: ["white background", "plain background", "amazon listing", "product listing", "catalogue shoot", "ecommerce shoot", "lifestyle product", "flat lay shoot", "jewellery shoot", "jewelry shoot", "clothing shoot", "model shoot for brand"],
+      r: ["Clean white-background shots or styled lifestyle photos, or both. Tell us what you sell and how many products."], c: ["Book a shoot", "See our work ↗"], a: "cat:Products" },
+    { id: "propertyshoot", k: ["airbnb photos", "property photos", "rental photos", "apartment photos", "villa photos", "hotel photos", "interior photos", "office photos", "real estate listing"],
+      r: ["Bright, wide and honest property photos that help places get booked or sold. Tell us the location and size."], c: ["Book a shoot"], a: "cat:Real Estate" },
+    { id: "graduation", k: ["graduation shoot", "convocation shoot", "graduation photos", "convocation photos", "cap and gown"],
+      r: ["Congratulations, graduate! Convocation photos are a proud moment. Shall we book one?"], c: ["Book a shoot"], a: "cat:Portraits" },
+    { id: "headshotshoot", k: ["linkedin headshot", "corporate headshot", "professional headshot", "office headshots", "team headshots", "resume photo", "cv photo", "passport photo"],
+      r: ["Professional headshots: yes! Passport photos: not really our thing. For LinkedIn and company profiles, we'd love to help."], c: ["Book a shoot"], a: "cat:Portraits" },
+    { id: "maternityshoot", k: ["maternity shoot", "pregnancy shoot", "baby bump", "maternity photos"],
+      r: ["Maternity shoots are beautiful and gentle. Tell the team your due date and the vibe you'd like."], c: ["Book a shoot"], a: "cat:Portraits" },
+    { id: "concertshoot", k: ["concert photos", "band photos", "music gig", "live music", "dance performance", "stage photos", "theatre photos", "drama"],
+      r: ["Performances are some of our favourite things to shoot. Low light, big energy, great moments."], c: ["Book a shoot", "See our work ↗"], a: "cat:Events:Performing Arts" },
+    { id: "pageant", k: ["pageant", "fashion show", "beauty contest", "ramp walk", "runway"],
+      r: ["Pageants and fashion shows are right up our street. We've shot pageants before. Tell us about yours!"], c: ["Book a shoot"], a: "cat:Events:Miss Universe" },
+    { id: "collegeevents", k: ["college event", "college fest", "cultural fest", "techfest", "school event", "annual day", "sports day"],
+      r: ["College and school events are full of energy. Share the date and venue, and the team will plan coverage."], c: ["Book a shoot"], a: "cat:Events" },
+    { id: "religiousevent", k: ["pooja function", "puja function", "satyanarayana", "vratham", "upanayanam", "thread ceremony", "mundan", "nikah", "baptism", "communion"],
+      r: ["Traditional ceremonies are beautiful to photograph, and the team shoots them respectfully. Share the date and venue."], c: ["Book a shoot"], a: "cat:Events" },
+    { id: "anniversaryshoot", k: ["anniversary shoot", "25th anniversary", "silver jubilee", "golden jubilee", "parents anniversary"],
+      r: ["What a lovely occasion. Anniversary photos become family treasures. Want to plan one?"], c: ["Book a shoot"], a: "cat:Events" },
+    { id: "motto", k: ["tagline", "motto", "capture create inspire", "your slogan", "philosophy", "your vision", "mission"],
+      r: ["Capture. Create. Inspire. That's our motto. And our belief: unfiltered truth in every frame."] },
+    { id: "whyname", k: ["why living room labs", "why the name", "meaning of living room labs", "name meaning", "why is it called", "living room labs meaning"],
+      r: ["I like to think it's because the best ideas start in a living room. Ask the team for the real story, they tell it better!"], c: ["Meet the team ↗"] },
+    { id: "whyfotu", k: ["why fotu", "why are you called fotu", "what does fotu mean", "meaning of fotu", "fotu meaning", "who named you"],
+      r: ["Fotu is how lots of people in India say 'photo'. So my name is literally 'photo'. Very on brand."] },
+    { id: "behance", k: ["behance", "unsplash", "portfolio link", "full portfolio", "more work"],
+      r: ["Every shoot we're proud of ends up in What We Capture. Some of the team also share work on their own Instagram and Unsplash pages."], c: ["See our work ↗", "Meet the team ↗"] },
+
+    /* ---------- everyday life ---------- */
+    { id: "coffee", k: ["need coffee", "need chai", "coffee please", "tea please", "first coffee", "morning coffee", "coffee addict", "chai lover", "filter coffee"],
+      r: ["Same! Well, I run on light, but I respect the coffee ritual.", "Chai first, decisions later. That's the Hyderabad way."] },
+    { id: "monday", w: 1.3, k: ["monday", "monday blues", "i hate mondays", "its monday", "monday morning"],
+      r: ["Mondays: the blurry photo of the week. It gets sharper by Wednesday.", "Monday again? Be strong. Friday is only four naps away."] },
+    { id: "friday", k: ["its friday", "friday", "tgif", "friday night", "finally friday"],
+      r: ["TGIF! The weekend's golden hour is almost here.", "Friday! My favourite day to see people's weekend photos."] },
+    { id: "weekendu", k: ["its the weekend", "weekend vibes", "lazy weekend", "sunday funday", "long weekend", "weekend is here", "saturday night"],
+      r: ["Weekend vibes! Perfect time for a photo walk, or a really good nap.", "Enjoy the weekend{name}! Go somewhere photogenic."] },
+    { id: "holidayu", k: ["need a holiday", "need a vacation", "need a break", "on leave", "on vacation", "back from vacation", "holiday plans", "going on holiday", "leave from office"],
+      r: ["Take it! Breaks are important. And they make great photos.", "Vacations are for resting and taking too many photos. Enjoy!"] },
+    { id: "late", k: ["im late", "running late", "i overslept", "overslept", "missed my alarm", "late for work", "late for class", "missed the bus"],
+      r: ["Oops! Go, go, go! I'll be here when you're back.", "Happens to the best of us. Even I oversleep, and I'm a camera."] },
+    { id: "procrastinate", k: ["procrastinating", "procrastination", "dont want to work", "lazy", "feeling lazy", "no motivation", "cant focus", "distracted"],
+      r: ["Try five minutes of the task, then decide. Usually you keep going. That's the secret.", "Lazy days happen. Do one small thing, then reward yourself with a nice photo scroll."] },
+    { id: "relax", k: ["how to relax", "relax", "calm down", "meditation", "meditate", "breathe", "anxiety tips", "stress relief"],
+      r: ["Try this: slow breath in for four, hold for four, out for four. Then look at something beautiful for a minute.", "Step outside, look at the sky for a minute. Free, and surprisingly calming."] },
+    { id: "chores", k: ["laundry", "cleaning", "cleaning the house", "washing dishes", "dishes", "chores", "housework", "grocery", "groceries", "vegetables"],
+      r: ["Chores! The unglamorous side of life. Put on music and pretend it's a montage.", "Good luck! Tidy rooms make great backgrounds for photos, by the way."] },
+    { id: "powercut", k: ["power cut", "no power", "current poyindi", "light gayi", "no electricity", "no wifi", "wifi not working", "internet is slow", "net is slow", "no internet"],
+      r: ["Oh no! Power cuts are perfect for candlelight photos, though. Silver linings.", "Slow internet is the worst. Hope it's back soon!"] },
+    { id: "phoneissue", k: ["phone broke", "phone is broken", "cracked screen", "lost my phone", "phone battery", "battery low", "phone died", "storage full", "phone storage"],
+      r: ["Ouch. Back up your photos often! Lost photos are the saddest thing in the world.", "Storage full? Probably too many great photos. Back them up somewhere safe."] },
+    { id: "money_u", k: ["salary day", "payday", "got paid", "no money", "im broke", "rent", "bills", "emi", "savings", "budget tight", "expenses"],
+      r: ["Money stuff is real. Spend on what you'll remember, I say. Like photos. (I'm biased.)", "Payday! Treat yourself to something small and nice."] },
+    { id: "relatives", k: ["keep asking", "asking when", "when im getting married", "when will you get married", "when will i get married", "marriage pressure", "pressure to marry", "relatives", "relatives asking", "when are you getting married", "sharma ji ka beta", "aunties", "family function", "cousin", "cousins", "guests at home", "in laws", "inlaws"],
+      r: ["Relatives asking questions? Smile, nod, and say you're busy with a photoshoot.", "Family functions: great food, endless questions, and the best candid photos."] },
+    { id: "haircut", k: ["new haircut", "got a haircut", "new hairstyle", "bad haircut", "bad hair day", "new look", "makeover"],
+      r: ["New look! Sounds like it's time for new photos.", "Bad hair day? Good lighting fixes most things. Trust me."] },
+    { id: "gymu", k: ["going to gym", "gym time", "leg day", "workout done", "i worked out", "fitness goals", "six pack", "running today", "walked 10000 steps"],
+      r: ["Proud of you! My only workout is walking left and right at the bottom of the screen.", "Fitness! Go you. Post-workout glow photographs well."] },
+    { id: "plants", k: ["my plants", "gardening", "plants", "terrace garden", "flowers bloomed", "watering plants"],
+      r: ["Plants are wonderful photo subjects. They never complain about posing.", "Plant parent! Shoot them in soft morning light."] },
+    { id: "gaming", k: ["gaming", "playing games", "pubg", "bgmi", "free fire", "minecraft", "fortnite", "valorant", "gta", "playstation", "ps5", "xbox", "nintendo", "video games"],
+      r: ["Gamer! Some video games have amazing photo modes. Basically virtual photography.", "Gaming sounds fun. My controls are very simple: tap to wake, tap to chat."] },
+    { id: "learnlang", k: ["learning a language", "learn english", "learn telugu", "learn hindi", "learning french", "duolingo"],
+      r: ["Learning a language is great. Photography is a language too, one that everyone understands."] },
+    { id: "resolution", k: ["new year resolution", "resolution", "goals for this year", "my goals", "life goals", "bucket list"],
+      r: ["Add 'take more photos of the people I love' to the list. Best resolution ever."] },
+    { id: "zodiac", k: ["zodiac", "horoscope", "astrology", "my sign", "your sign", "what is your zodiac", "aries", "taurus", "virgo", "libra", "scorpio", "sagittarius", "capricorn", "aquarius", "pisces", "rashi"],
+      r: ["I'm a Shutterius. Very compatible with golden hour.", "The stars say today is great for photos. Then again, I always say that."] },
+    { id: "luck", k: ["wish me luck", "good luck", "all the best", "best of luck", "fingers crossed", "pray for me"],
+      r: ["All the best{name}! You've got this. 🍀", "Good luck! I'm crossing my tripod legs for you."] },
+    { id: "thanksday", k: ["have a nice day", "have a good day", "have a great day", "enjoy your day", "have a good one", "have a good night", "have a nice weekend", "enjoy your weekend"],
+      r: ["You too{name}! Go find some good light today.", "Thank you! Same to you, have a wonderful day."] },
+    { id: "goodnews2", k: ["i have news", "guess what", "big news", "exciting news"],
+      r: ["Ooh, tell me! I love good news.", "What is it? I'm all lens!"] },
+    { id: "birthdayfotu", k: ["happy birthday fotu", "when is your birthday", "do you have a birthday", "your bday"],
+      r: ["My birthday is whenever someone books a shoot. So, maybe today?", "I was built in 2026. Every day I get woken up feels like a birthday."] },
+    { id: "kids_u", k: ["my child", "my baby is", "parenting", "my son is", "my daughter is", "school run", "homework help"],
+      r: ["Kids grow up so fast. Take lots of photos. You'll treasure every one.", "Parenting is a full-time shoot with no breaks. Respect!"] },
+    { id: "elders", k: ["my grandparents", "my grandmother", "my grandfather", "nanamma", "thatha", "ammamma", "dadi", "nani", "dada"],
+      r: ["Grandparents' photos are the most precious ones. Take a portrait of them, it means the world later.", "Aww. Make time for a photo with them soon. It's always worth it."], c: ["Book a shoot"] },
+    { id: "pets_u2", k: ["my dog is", "my cat is", "dog ate", "cat broke", "pet is sick", "vet", "pet food", "walk the dog", "dog walk"],
+      r: ["Pets keep life interesting! Give them a treat from me.", "Pets are chaos and love in equal parts. Best models ever, though."] },
+    { id: "foodcraving", k: ["craving", "i want biryani", "i want pizza", "i want ice cream", "something sweet", "sweet tooth", "hungry now", "starving", "im starving"],
+      r: ["Go get it! Life's too short to ignore biryani cravings.", "Craving something? That's a sign. Treat yourself. And photograph it first."] },
+    { id: "whatday", k: ["is it weekend yet", "is it friday yet", "how many days to weekend", "is today a holiday", "holiday today"],
+      r: function () { var d = new Date().getDay(); return [d === 0 || d === 6 ? "It's the weekend! Enjoy it." : d === 5 ? "It's Friday! The weekend is basically here." : "Not yet! " + (5 - d) + " more day" + (5 - d === 1 ? "" : "s") + " to Friday. Hang in there."]; } },
+    { id: "ageuser", k: ["how old am i", "guess my age", "am i old", "do i look old", "my age"],
+      r: ["I'd guess 'young at heart'. Cameras are very polite about age.", "Age is just a number. Good light takes ten years off anyone."] },
+    { id: "nameuser", k: ["what is my name", "whats my name", "do you know my name", "say my name", "remember my name"],
+      r: function () { return [chat.name ? "You're " + chat.name + "! I never forget a name." : "You haven't told me yet! What's your name?"]; } },
+    { id: "lostthing", k: ["lost my", "cant find my", "where did i keep", "forgot my keys", "lost my keys", "lost my wallet"],
+      r: ["Oh no! Retrace your steps. And check the last photo you took, it might show where you left it.", "Lost things always turn up in the last place you look. Good luck!"] },
+
+    /* ---------- banter and quirky questions ---------- */
+    { id: "hug", k: ["hug", "hug me", "can i hug you", "virtual hug", "give me a hug", "hugs"],
+      r: ["*gives you a gentle camera hug* Careful with the lens!", "Hug received and returned. 🤗"] },
+    { id: "highfive", k: ["high five", "hi five", "fist bump", "pound it", "up top"],
+      r: ["✋ *slaps tiny camera hand* Nailed it.", "Fist bump! 👊 Gently. I'm made of plastic."] },
+    { id: "wink", k: ["wink", "can you wink", "blink for me"],
+      r: ["*winks with the small eye* 😉", "I just winked. You probably missed it. I'm very fast."], a: "dance" },
+    { id: "tickle", k: ["tickle", "tickle you", "boop", "pinch"],
+      r: ["Hehe, stop! I'm ticklish around the flash.", "Boop! 👉📷"], a: "dance" },
+    { id: "pickup", k: ["pickup line", "pick up line", "flirt", "flirt with me", "say something romantic", "rizz"],
+      r: ["Are you a camera flash? Because you just lit up my day.", "Are you golden hour? Because everything looks better when you're around.", "You must be a good photo, because I can't stop focusing on you."] },
+    { id: "rap", k: ["rap", "rap for me", "beatbox", "freestyle", "drop a beat"],
+      r: ["Yo, I'm Fotu, I click and I glow, golden hour's my flow, now book a shoot, yo. 🎤", "Click-clack, flash, back, shutter on track. That's my whole album."] },
+    { id: "superpower", k: ["superpower", "your superpower", "special power", "what can you do best", "your talent", "hidden talent"],
+      r: ["My superpower is freezing time. One click and the moment stays forever.", "I can make anyone look good with the right light. Also, I nap on command."] },
+    { id: "weakness", k: ["your weakness", "weakness", "what are you bad at", "biggest flaw"],
+      r: ["Fingerprints on my lens. And stairs. Definitely stairs.", "I'm terrible at maths beyond f-numbers, and I can't resist a good pun."] },
+    { id: "fear", k: ["what are you afraid of", "your fear", "biggest fear", "are you scared"],
+      r: ["Lens caps left on during important moments. Truly terrifying.", "Dropping into a swimming pool. And people who use flash at concerts."] },
+    { id: "favphotographer", k: ["favourite photographer", "favorite photographer", "famous photographer", "photographer you admire", "raghu rai", "steve mccurry", "cartier bresson", "annie leibovitz"],
+      r: ["The team, obviously! But legends like Raghu Rai and Steve McCurry are big inspirations in the photo world.", "Every great photographer has one thing in common: patience. And lots of deleted photos."] },
+    { id: "crush", k: ["do you have a crush", "your crush", "who do you like", "celebrity crush", "are you in love"],
+      r: ["I have a huge crush on golden hour. It's mutual, I think.", "My crush is a very handsome tripod. Don't tell anyone."] },
+    { id: "wouldyourather", k: ["would you rather", "this or that", "truth or dare", "never have i ever", "ask me something", "ask me a question", "quiz me"],
+      r: ["Would you rather have a perfect photo of every day of your life, or one magical photo of your best day? 🤔", "Truth: what's the best photo you've ever taken? Tell me!", "Quick one: sunrise or sunset? Choose wisely."] },
+    { id: "sunrise_sunset", k: ["sunrise or sunset", "i choose sunrise", "i choose sunset", "sunset is better", "sunrise is better"],
+      r: ["Excellent choice. Both are golden, but sunset has better snacks.", "Great pick! Either way, it's prime photo time."] },
+    { id: "tonguetwister", k: ["tongue twister", "say something fast"],
+      r: ["Six sharp shutters snapped six shy sheep. Say that five times!", "Fotu focuses fast on fresh fried fish. Try it!"] },
+    { id: "wordofday", k: ["word of the day", "teach me a word", "new word"],
+      r: ["Word of the day: 'apricity', the warmth of the sun in winter. Very photogenic word.", "Word of the day: 'komorebi', sunlight filtering through leaves. A photographer's dream."] },
+    { id: "spiritanimal", k: ["spirit animal", "if you were an animal"],
+      r: ["A chameleon. Great at blending in, great with colour.", "An owl. Big eyes, works at night, judges silently."] },
+    { id: "ifhuman", k: ["if you were human", "do you want to be human", "if you had a body", "if you could walk"],
+      r: ["If I were human, I'd be a photographer. Obviously. And I'd eat all the biryani I've photographed.", "I'd go on a photo walk through the Old City and never stop clicking."] },
+    { id: "paid", k: ["do you get paid", "your salary", "how much do you earn", "do you work for free", "are you paid"],
+      r: ["Unpaid intern. Paid in compliments and sunlight.", "I'm paid in film rolls. Very hard to spend."] },
+    { id: "vacationbot", k: ["do you take vacations", "do you go on holiday", "do you rest", "day off", "do you get tired"],
+      r: ["Every nap is a mini vacation. I take about forty a day.", "I rest whenever nobody's looking. Which is why I snore."] },
+    { id: "likejob", k: ["do you like your job", "do you enjoy this", "are you happy here", "do you like working here"],
+      r: ["I love it! I get to look at beautiful photos and meet lovely people like you.", "Best job ever. Low stress, great views, unlimited naps."] },
+    { id: "famous", k: ["are you famous", "are you popular", "how many people talk to you", "do people talk to you"],
+      r: ["Famous at the bottom of this website. Huge in the footer scene.", "I have exactly as many fans as people who've tapped me. So, at least one!"] },
+    { id: "selfdestruct", k: ["self destruct", "explode", "beep boop", "malfunction", "reboot", "restart yourself", "turn off"],
+      r: ["Self-destruct cancelled. I'm too cute to explode.", "Beep boop. Rebooting... done. Still a camera."] },
+    { id: "body", k: ["how tall are you", "your height", "how big are you", "your weight", "how heavy are you", "what are you made of", "whats inside you"],
+      r: ["About 72 pixels tall on a laptop, 56 on a phone. Fun-sized.", "I'm made of code, colour stripes and good intentions."] },
+    { id: "battery", k: ["your battery", "do you need charging", "are you charged", "what powers you", "do you run on batteries"],
+      r: ["I run on sunlight and compliments. Currently 100% charged.", "Battery full! Your visit topped me up."] },
+    { id: "waterproof", k: ["are you waterproof", "can you swim", "can you go in water", "underwater"],
+      r: ["Absolutely not. Please keep me away from puddles and Holi water balloons.", "I sink like a stone. Underwater cameras are braver than me."] },
+    { id: "eyes", k: ["do you have eyes", "why are your eyes different", "one eye bigger", "your eyes"],
+      r: ["One eye is my lens, the other is my viewfinder. That's why they're different sizes. Very professional.", "I see everything in good light. In bad light, I squint."] },
+    { id: "legs", k: ["do you have legs", "why do you have legs", "your legs", "can you walk", "why do you walk"],
+      r: ["I grew legs so I could find the best angle. Photographers walk a lot.", "Yes! Tiny legs, big ambitions."] },
+    { id: "rainbowstripe", k: ["your stripe", "rainbow stripe", "why rainbow", "your colours", "your colors"],
+      r: ["My stripe is a tribute to classic instant cameras. Red, orange, green, blue. Very retro, very me."] },
+    { id: "printphoto", k: ["print a photo", "print me", "give me a photo", "send me a photo", "show me a photo"],
+      r: ["*whirr* Here's a tiny instant print, just for you! (It's imaginary, but it's beautiful.)"], a: "selfie" },
+    { id: "boredfotu", k: ["are you bored", "do you get bored", "are you lonely", "do you feel lonely"],
+      r: ["Never bored! There are so many photos to look at. And visitors like you.", "A little lonely sometimes. Thanks for chatting!"] },
+    { id: "favvisitor", k: ["am i your favourite", "am i your favorite", "favourite person", "who is your favourite"],
+      r: ["Right now? Definitely you{name}. Don't tell the others.", "You're in my top one! Out of everyone talking to me right now."] },
+    { id: "smile", k: ["smile", "smile for me", "show me your smile", "be happy"],
+      r: ["😁 *biggest camera smile*", "Smiling! It's actually my default setting."], a: "dance" },
+    { id: "sing2", k: ["sing a telugu song", "sing a hindi song", "sing happy birthday", "sing for me"],
+      r: ["🎵 Happy click to you, happy click to you... 🎵 That's all I know, sorry!", "🎵 La la la, click click, flash! 🎵 Thank you, thank you."] },
+    { id: "lie", k: ["tell me a lie", "lie to me", "are you lying", "do you lie"],
+      r: ["I've never taken a blurry photo. (That's a lie.)", "I'm the tallest camera in Hyderabad. (Also a lie.)"] },
+    { id: "compareai", k: ["are you chatgpt", "are you siri", "are you alexa", "are you gemini", "are you claude", "which ai are you", "what ai are you"],
+      r: ["Nope, I'm Fotu! A small, handmade bot for Living Room Labs. Much less clever, much cuter.", "I'm just Fotu. Think of me as a friendly receptionist made of pixels."] }
+  ]);
+
+  /* more word lists */
+  LEXICON = LEXICON.concat([
+    { id: "movie", words: "baahubali bahubali rrr pushpa salaar kalki devara arjun reddy eega magadheera jersey mahanati sita ramam hi nanna ala vaikunthapurramuloo pokiri athadu khaleja geetha govindam fidaa sholay ddlj lagaan dangal jawan pathaan kgf kantara jailer premam drishyam avengers titanic inception interstellar oppenheimer barbie avatar joker batman spiderman superman harry potter lord of the rings star wars frozen lion king toy story",
+      r: ["{W}! Great pick. The cinematography in big films is a masterclass in light.", "{W}? Oh, the visuals! Every frame could be a photograph.", "I've heard {w} has some stunning shots. Our DOP would have opinions!"] },
+    { id: "star", words: "prabhas mahesh babu allu arjun jr ntr ram charan chiranjeevi pawan kalyan vijay deverakonda samantha rashmika sai pallavi keerthy suresh anushka shetty shah rukh khan srk salman aamir ranbir ranveer deepika alia katrina priyanka hrithik akshay rajinikanth kamal haasan dhanush yash dhoni sachin",
+      r: ["{W}! I'd love to photograph them. Though I'd probably get starstruck and blur the shot.", "Famous faces still need good light, same as everyone. {W} included.", "{W}! If they ever need a shoot in Hyderabad, I'll be ready."] },
+    { id: "clothes", words: "saree sari lehenga kurta kurti sherwani dhoti pancha langa voni half saree salwar churidar anarkali blazer tuxedo jeans tshirt shirt dress gown jacket hoodie sneakers heels jhumka jhumkas bangles necklace sunglasses",
+      r: ["{W}! Looks gorgeous on camera, especially with rich colours and good light.", "A {w} for the shoot? Lovely choice. Bring a backup outfit too, just in case.", "{W} photographs beautifully. Make sure it's ironed, though. Cameras notice everything!"], c: ["What should I wear?", "Book a shoot"] },
+    { id: "hobby", words: "reading painting drawing sketching singing dancing guitar piano drums violin writing poetry journaling knitting crochet pottery baking hiking trekking camping cycling swimming fishing birdwatching chess blogging vlogging",
+      r: ["{W}! That's a lovely hobby. And very photogenic.", "I love that you enjoy {w}. A photo of you doing it would be great.", "{W}? Nice! Hobbies make the most honest portraits."], c: ["Book a shoot"] },
+    { id: "drink", words: "cappuccino latte espresso cold coffee lassi buttermilk majjiga nimbu pani lemonade coconut water beer wine whisky cocktail mocktail",
+      r: ["{W}! Nice. Drinks photograph beautifully with a bit of backlight.", "A {w} sounds good right now. Enjoy it!", "{W}? Cheers! 🥂"] },
+    { id: "country", words: "india usa america uk england canada australia germany france italy spain japan china korea malaysia indonesia vietnam uae qatar saudi oman kuwait bhutan bangladesh pakistan africa kenya egypt russia brazil mexico switzerland netherlands ireland scotland new zealand",
+      r: ["{W}! Beautiful place. Our photographers would happily pack a bag.", "Hello to {w}! Are you visiting Hyderabad, or planning a shoot there?", "{W}! I've only seen it in photos, and they all look great."], c: ["Do you travel?", "Book a shoot"] },
+    { id: "state", words: "telangana andhra pradesh karnataka tamil nadu maharashtra gujarat rajasthan punjab haryana uttar pradesh bihar west bengal odisha assam sikkim meghalaya himachal uttarakhand madhya pradesh chhattisgarh jharkhand",
+      r: ["{W}! Every state in India is a photographer's dream.", "{W}? Lovely. Mention it in your enquiry if you want a shoot there."], c: ["Do you travel?"] },
+    { id: "brand", words: "apple microsoft zomato swiggy facebook whatsapp netflix spotify tata reliance infosys tcs wipro starbucks mcdonalds kfc dominos ikea nike adidas puma zara",
+      r: ["{W}! Big brands spend a lot on great photos. Small brands deserve them too.", "{W}? If you're a brand that needs photos, we'd love to help."], c: ["Book a shoot"] }
+  ]);
+  (function prepNewLists() {
+    var extra = ["arjun reddy", "sita ramam", "hi nanna", "geetha govindam", "lion king", "toy story", "harry potter", "lord of the rings", "star wars", "ala vaikunthapurramuloo", "mahesh babu", "allu arjun", "jr ntr", "ram charan", "pawan kalyan", "vijay deverakonda", "sai pallavi", "keerthy suresh", "anushka shetty", "shah rukh khan", "kamal haasan", "half saree", "langa voni", "cold coffee", "nimbu pani", "coconut water", "new zealand", "andhra pradesh", "tamil nadu", "uttar pradesh", "west bengal", "madhya pradesh"];
+    LEXICON.forEach(function (L) {
+      if (L.wordset) return;
+      var rest = " " + L.words + " ", phrases = [], words = {};
+      extra.forEach(function (m) { if (rest.indexOf(" " + m + " ") !== -1) { phrases.push(m); rest = rest.split(" " + m + " ").join(" "); } });
+      rest.trim().split(/\s+/).forEach(function (w) { if (w) words[w] = 1; });
+      L.phrases = phrases; L.wordset = words;
+    });
+  })();
+
+  /* hate aimed at a group of people, written any way: "i hate <group>", "ban <group>" */
+  var GROUP_HATE = /\b(hate|kill|ban|deport|disgusting|filthy|dirty)\b.{0,20}\b(muslims?|hindus?|christians?|sikhs?|jews?|buddhists?|gays?|lesbians?|trans|women|men|girls|boys|dalits?|brahmins?|blacks?|whites?|africans?|chinese|pakistanis?|biharis?|tamils?|telugus?|bengalis?|marathis?|north indians?|south indians?|foreigners?|immigrants?|refugees?|disabled)\b/i;
+  var GROUP_HATE_R = ["Everyone's welcome here, whoever they are. Cameras don't care about anything except good light. Neither do we.",
+    "That's not how we see the world. Through our lens, everyone deserves to be photographed beautifully.",
+    "I'm going to respectfully disagree. Every face, every family, every story deserves a great photo. Including yours."];
 
   /* ================================================================
      Everything below is machinery. No need to edit.
@@ -498,7 +1503,7 @@
     "#fotu-flashscreen{position:fixed;inset:0;z-index:460;background:#fff;opacity:0;pointer-events:none}",
     "#fotu-flashscreen.on{animation:fotuScreen .45s ease-out}",
     "@keyframes fotuScreen{0%{opacity:.75}100%{opacity:0}}",
-    "#fotu-root.gone #fotu-bot,#fotu-root.gone #fotu-bub,#fotu-root.gone #fotu-back{opacity:0;pointer-events:none}",
+    "#fotu-root.gone #fotu-bot,#fotu-root.gone #fotu-bub{opacity:0;pointer-events:none}",
     "#fotu-panel{position:fixed;z-index:450;width:330px;height:470px;max-height:calc(100vh - 24px);background:var(--f-paper);color:var(--f-ink);border:1px solid var(--f-line);border-radius:16px;box-shadow:0 12px 40px rgba(0,0,0,.18);display:none;flex-direction:column;overflow:hidden;font-size:14px}",
     "#fotu-panel.on{display:flex;animation:fotuPop .2s ease-out}",
     "#fotu-panel .fh{display:flex;align-items:center;gap:10px;padding:11px 12px 11px 14px;border-bottom:1px solid var(--f-line)}",
@@ -525,7 +1530,8 @@
     "#fotu-in input:focus,#fotu-in input:focus-visible{outline:none!important;box-shadow:none!important;border-color:var(--f-ink)}",
     "#fotu-in button{font:inherit;font-size:13px;padding:8px 14px;border-radius:10px;border:0;background:var(--f-ink);color:var(--f-paper);cursor:pointer}",
     "#fotu-err{display:none;color:#c0392b;font-size:12px;padding:0 14px 8px}",
-    "#fotu-back{position:fixed;left:14px;top:0;z-index:400;width:34px;height:34px;border-radius:50%;border:1px solid var(--f-line);background:var(--f-paper);cursor:pointer;display:none;align-items:center;justify-content:center;padding:0;box-shadow:0 2px 10px rgba(0,0,0,.12)}",
+    "#fotu-back{position:fixed;right:0;left:auto;top:auto;bottom:calc(96px + env(safe-area-inset-bottom,0px));z-index:400;width:30px;height:36px;border-radius:10px 0 0 10px;border:1px solid var(--f-line);border-right:0;background:var(--f-paper);cursor:pointer;display:none;align-items:center;justify-content:center;padding:0 0 0 2px;box-shadow:-2px 2px 10px rgba(0,0,0,.10);opacity:.8;transition:opacity .2s}",
+    "#fotu-back:hover,#fotu-back:focus-visible{opacity:1}",
     "#fotu-root.paused #fotu-bot,#fotu-root.paused #fotu-bub,#fotu-root.paused #fotu-back{opacity:0;pointer-events:none}",
     "@media (max-width:640px){#fotu-chips{flex-wrap:nowrap;overflow-x:auto;max-height:none;padding-bottom:4px;scrollbar-width:none}#fotu-chips::-webkit-scrollbar{display:none}#fotu-chips button{flex:none}}",
     "@media (max-width:640px){#fotu-bot{width:56px;height:56px}#fotu-panel{left:8px!important;right:8px;width:auto!important;top:auto!important;bottom:calc(8px + env(safe-area-inset-bottom,0px));height:min(480px,72vh)}#fotu-bub{max-width:200px;font-size:13px}}",
@@ -994,15 +2000,10 @@
   }, 400);
 
   /* keep checking that Fotu is still standing on clear ground (content can move without a scroll) */
-  function backFree() {
-    var x = parseFloat(back.style.left), y = parseFloat(back.style.top);
-    if (isNaN(x) || isNaN(y) || back.style.visibility === "hidden") return false;
-    if (Math.abs(y - laneY(34)) > 1) return false;
-    return withProbe(function (cache) { return rectFreeIn(x - 2, y - 2, 38, 38, 10, cache); });
-  }
+  function backFree() { return true; } /* the bring-back tab stays put; nothing to re-check */
   setInterval(function () {
     if (document.hidden || shy || paused) return;
-    if (hidden) { if (!backFree()) placeBack(); return; }
+    if (hidden) return;
     if (!placed) { start(); return; }
     if (isOpen || walking || poofing) return;
     if (away) { settle(); return; }
@@ -1049,7 +2050,6 @@
       shy = true; refreshVis();
       if (walking) stopWalk();
       hideBubble();
-      if (hidden) back.style.visibility = "hidden";
     }
     clearTimeout(shyTimer);
     shyTimer = setTimeout(function () {
@@ -1154,6 +2154,7 @@
     touch();
     if (chat.step) { userSays(label); handleStep(label); return; }
     if (ACTION_CHIPS[label]) { ACTION_CHIPS[label](); return; }
+    if (/ on Instagram ↗$/.test(label) && chat.memberIg) { window.open(chat.memberIg, "_blank", "noopener"); return; }
     userSays(label); bump("msgs");
     if (label === "Book a shoot") { topic("book"); startEnq(); return; }
     if (label === "Send my question to the team") { topic("send_question"); startEnq(chat.lastUnknown); return; }
@@ -1175,7 +2176,7 @@
   var SHORT = { u: "you", r: "are", ur: "your", wat: "what", wht: "what", wot: "what", hw: "how", abt: "about", pls: "please", plz: "please",
     pic: "photo", pics: "photos", pix: "photos", photo: "photo", fotos: "photos", foto: "photo", thnx: "thanks", thanx: "thanks", tnx: "thanks",
     wanna: "want to", gonna: "going to", gimme: "give me", lemme: "let me", hv: "have", cn: "can", dat: "that", da: "the", n: "and", btw: "by the way",
-    whats: "what is", hows: "how is", wheres: "where is", whos: "who is", im: "im", cant: "cannot", dont: "do not", doesnt: "does not", shud: "should", shld: "should", wud: "would", cud: "could", y: "why", k: "k" };
+    whats: "what is", hows: "how is", gud: "good", gd: "good", evng: "evening", eve: "evening", mrng: "morning", mrg: "morning", nyt: "night", nite: "night", aftrnoon: "afternoon", luv: "love", bday: "bday", gr8: "great", ppl: "people", sry: "sorry", srry: "sorry", tmrw: "tomorrow", tmr: "tomorrow", "2day": "today", "2morrow": "tomorrow", wheres: "where is", whos: "who is", im: "im", cant: "cannot", dont: "do not", doesnt: "does not", shud: "should", shld: "should", wud: "would", cud: "could", y: "why", k: "k" };
   function norm(s) {
     var t = String(s).toLowerCase().replace(/[’'`]/g, "").replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
     t = t.split(" ").map(function (w) { return Object.prototype.hasOwnProperty.call(SHORT, w) ? SHORT[w] : w; }).join(" ");
@@ -1205,13 +2206,18 @@
   });
   function intentById(id) { for (var i = 0; i < INTENTS.length; i++) if (INTENTS[i].id === id) return INTENTS[i]; return null; }
   function scoreIntent(it, n, nSq, toks, sqToks) {
-    var score = 0, i, j;
+    var score = 0, i, j, used = {};
+    /* phrases: longer matches count for more (2-word = 4, 5-word = 7) */
     for (i = 0; i < it.phrases.length; i++) {
       var ph = it.phrases[i];
-      if (n.indexOf(ph.p) !== -1 || nSq.indexOf(ph.sq) !== -1) score += 3 + (ph.len - 2) * 0.5;
+      if (n.indexOf(ph.p) !== -1 || nSq.indexOf(ph.sq) !== -1) {
+        score += 2 + ph.len;
+        ph.p.trim().split(" ").forEach(function (w) { used[w] = 1; });
+      }
     }
-    /* each word of the message counts once per topic: 2 for an exact match, 1.2 for a near miss (typo) */
+    /* single words: each word of the message counts once (2 exact, 1.2 typo), unless a phrase already used it */
     for (j = 0; j < toks.length; j++) {
+      if (used[toks[j]]) continue;
       var hit = 0;
       for (i = 0; i < it.words.length && hit < 2; i++) {
         var w = it.words[i];
@@ -1234,7 +2240,7 @@
       if (it.a && it.a.indexOf("cat:") === 0 && s >= 2 && s > catScore) { cat = it; catScore = s; }
     });
     var ok = bestScore >= 2 || (bestScore >= 1.2 && toks.length <= 4);
-    return { intent: ok ? best : null, cat: cat };
+    return { intent: ok ? best : null, cat: cat, score: bestScore };
   }
 
   var NAME_STOP = /^(looking|interested|here|a|an|the|from|getting|planning|not|fine|good|ok|okay|bored|sad|happy|tired|hungry|new|back|just|so|very|doing|great|well|going|trying|also|still|in|at|sorry|confused|alright|done|ready|available|free|busy|curious|asking|wondering|need|want|a|photographer|human|bot|your|you|nice|cool|lost)$/i;
@@ -1299,6 +2305,16 @@
     var em = t.match(/[^\s@]+@[^\s@]+\.[^\s@]{2,}/);
     if (em) { chat.enq = { email: em[0] }; chat.offer = "book"; topic("email_shared"); botSay("That looks like an email address. Want me to start an enquiry so the team can reply to it?"); chipsLater(["Book a shoot", "No"]); return; }
 
+    var tm = teamMemberReply(t);
+    if (tm) {
+      topic("team_member"); chat.unknownStreak = 0; botSay(tm.line);
+      chat.memberIg = tm.ig; chipsLater(tm.ig ? [tm.name + " on Instagram ↗", "Meet the team ↗", "Book a shoot"] : ["Meet the team ↗", "Book a shoot"]); return;
+    }
+    var nr = nicheReply(t);
+    if (nr) { topic("niche"); chat.unknownStreak = 0; botSay(nr); chipsLater(["See our work ↗", "Book a shoot"]); return; }
+    if (GROUP_HATE.test(t)) { topic("hate_group"); chat.unknownStreak = 0; botSay(GROUP_HATE_R[(chat.rot.gh = (chat.rot.gh || 0) + 1) % GROUP_HATE_R.length]); chipsLater(FAQ_CHIPS); return; }
+    var gl = glossaryReply(t);
+    if (gl) { topic("glossary"); chat.unknownStreak = 0; botSay(gl); chipsLater(["Another tip", "Book a shoot"]); return; }
     var u = understand(t), nm = findName(t);
     if (nm) {
       var first = !chat.name || chat.name !== nm;
@@ -1309,20 +2325,31 @@
       botSay(first ? pick(["Nice to meet you, " + nm + "! Lovely name. Very photogenic.", "Hello " + nm + "! I'll remember that. Cameras never forget a face. Or a name."]) : "I know, " + nm + "! I remembered.");
       chipsLater(FAQ_CHIPS); return;
     }
+    /* a weak, typo-only topic match loses to a clear word-list hit ("i like painting") */
+    if (u.intent && u.score < 2.5) { var lxw = lexiconReply(t); if (lxw) { topic(lxw.id); chat.unknownStreak = 0; botSay(lxw.line); chipsLater(lxw.c || FAQ_CHIPS); return; } }
     if (u.intent) { answerIntent(u.intent, u.cat, t); return; }
     if (u.cat) { answerIntent(u.cat); return; }
+    if (/^(why|how come)\b/i.test(t)) { var pw = patternReply(t); if (pw) { topic("smalltalk"); chat.unknownStreak = 0; botSay(pw.line); chipsLater(pw.c || FAQ_CHIPS); return; } }
+    var lx = lexiconReply(t);
+    if (lx) { topic(lx.id); chat.unknownStreak = 0; botSay(lx.line); chipsLater(lx.c || FAQ_CHIPS); return; }
+    var pr = patternReply(t);
+    if (pr) { topic("smalltalk"); chat.unknownStreak = 0; botSay(pr.line); chipsLater(pr.c || FAQ_CHIPS); return; }
     if (t.length > 160) {
       chat.lastUnknown = t; chat.offer = "team"; topic("long_message");
       botSay("That sounds like a proper brief! Want me to send it straight to the team as an enquiry?");
       chipsLater(["Send my question to the team", "What do you shoot?"]); return;
     }
     logUnknown(t); chat.unknownStreak++; chat.lastUnknown = t;
-    if (chat.unknownStreak >= 2) {
+    var isQ = /\?\s*$/.test(t) || /^(what|why|how|when|where|who|which|is|are|can|could|do|does|did|will|would|should|shall|may|kya|kaise|kab|kahan|kyun|enti|ela|eppudu|ekkada|enduku)\b/i.test(t);
+    if (chat.unknownStreak >= 3 && isQ) {
       chat.offer = "team"; botSay(FALLBACK_TWICE);
       chipsLater(["Send my question to the team", "Talk to a human", "What do you shoot?"]);
-    } else {
-      chat.offer = null; botSay(FALLBACK[chat.fbIndex++ % FALLBACK.length]);
+    } else if (isQ) {
+      chat.offer = null; botSay(FALLBACK_Q[chat.fbIndex++ % FALLBACK_Q.length]);
       chipsLater(["What do you shoot?", "How much does it cost?", "Book a shoot", "Tell me a joke"]);
+    } else {
+      chat.offer = null; botSay(Math.random() < 0.5 ? FALLBACK_S[chat.fbIndex++ % FALLBACK_S.length] : FALLBACK[chat.fbIndex++ % FALLBACK.length]);
+      chipsLater(["What do you shoot?", "Tell me a joke", "Fun fact", "Book a shoot"]);
     }
   }
 
@@ -1352,7 +2379,11 @@
   function askEvent() { botSay("Lovely! What kind of event?"); setStep("event", EVENT_TYPES.concat(["Cancel"]), "Or type it here"); }
   function askEmail() {
     if (chat.enq.email) { askMsg(); return; }
-    botSay(chat.enq.cat === "Pets" ? "Is the model well-behaved? Asking for me. What's your email, so the team can reply?" : "Great choice. What's your email, so the team can reply?");
+    var c = chat.enq.cat, line;
+    if (c === "Pets") line = "Is the model well-behaved? Asking for me. What's your email, so the team can reply?";
+    else if (c === "General Enquiry") line = chat.enq.what ? "Got it! The team loves something different. What's your email, so they can reply?" : "No problem, the team will work it out with you. What's your email, so they can reply?";
+    else line = "Great choice. What's your email, so the team can reply?";
+    botSay(line);
     setStep("email", ["Cancel"], "you@example.com", "email");
   }
   function askMsg() {
@@ -1365,7 +2396,7 @@
     }
   }
   function confirmEnq() {
-    var e = chat.enq, what = e.cat + (e.ev ? " (" + e.ev + ")" : "");
+    var e = chat.enq, what = (e.cat === "General Enquiry" && e.what ? e.what : e.cat) + (e.ev ? " (" + e.ev + ")" : "");
     botSay("Here's your enquiry:\nName: " + e.name + "\nShoot: " + what + "\nEmail: " + e.email + "\nDetails: " + e.msg + "\n\nShall I send it?");
     setStep("confirm", ["Send it", "Start over", "Cancel"], "Or add something...");
   }
@@ -1387,10 +2418,17 @@
       var idx = CATS_LOW.indexOf(low);
       if (idx === -1) { var u = understand(v); if (u.cat) { var p = u.cat.a.split(":"); e.cat = p[1]; e.ev = p[2] || ""; } }
       else e.cat = CATEGORIES[idx];
-      if (!e.cat) { e.cat = "General Enquiry"; if (low !== "something else") e.msg = v; }
+      if (!e.cat && low === "something else") {
+        e.cat = "General Enquiry";
+        botSay("Ooh, something different! What would you like us to shoot?");
+        setStep("other", ["Cancel"], "e.g. graduation, music band, car, art...");
+        return;
+      }
+      if (!e.cat) { e.cat = "General Enquiry"; e.what = v.slice(0, 60); }
       if (e.cat === "Events" && !e.ev) { askEvent(); return; }
       askEmail(); return;
     }
+    if (s === "other") { e.what = v.slice(0, 60); askEmail(); return; }
     if (s === "event") { e.ev = low === "other" ? "" : v.slice(0, 60); askEmail(); return; }
     if (s === "email") {
       var m = v.match(/[^\s@]+@[^\s@]+\.[^\s@]{2,}/);
@@ -1414,7 +2452,7 @@
     sending = true;
     botSay("Printing...");
     var payload = {
-      name: e.name, email: e.email, category: e.cat, message: e.msg,
+      name: e.name, email: e.email, category: e.cat, message: (e.what ? "Shoot: " + e.what + "\n\n" : "") + e.msg,
       _replyto: e.email,
       _subject: "New enquiry via Fotu: " + e.cat + " shoot (" + e.name + ")",
       source: "Fotu chatbot (" + location.pathname + ")",
@@ -1507,14 +2545,8 @@
   });
 
   /* ================= hide / bring back ================= */
-  function placeBack() {
-    var segs = scanSegments(34);
-    if (!segs.length) { back.style.visibility = "hidden"; return; }
-    var curX = parseFloat(back.style.left), cur = isNaN(curX) ? null : segmentFor(curX, segs);
-    var x = cur ? curX : segs[0].lo;
-    back.style.left = Math.round(x) + "px"; back.style.top = Math.round(laneY(34)) + "px";
-    back.style.visibility = "visible";
-  }
+  /* "bring Fotu back" is a small fixed tab on the right edge of the screen. It never moves. */
+  function placeBack() { back.style.visibility = "visible"; }
   function applyHidden() {
     bot.style.display = hidden ? "none" : "";
     back.style.display = hidden ? "flex" : "none";
