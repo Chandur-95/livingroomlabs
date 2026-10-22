@@ -176,4 +176,7 @@
     <image:image><image:loc>https://livingroomlabs.in/images/uploads/new-york-city.jpeg</image:loc></image:image>
     <image:image><image:loc>https://livingroomlabs.in/images/uploads/people.jpeg</image:loc></image:image>
   </url>
+  <url>
+    <loc>https://livingroomlabs.in/privacy</loc>
+  </url>
 </urlset>

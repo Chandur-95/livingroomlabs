@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Privacy Policy | Living Room Labs</title>
+<meta name="description" content="How Living Room Labs handles your information: enquiries, our chat helper Fotu, and the small settings saved in your browser.">
+<link rel="canonical" href="https://livingroomlabs.in/privacy">
+<link rel="icon" type="image/png" href="/logo.png">
+<link rel="apple-touch-icon" href="/logo.png">
+<link rel="manifest" href="/manifest.json">
+<meta name="theme-color" content="#FFFFFF" id="themeColorMeta">
+<script>
+  (function(){ try { var t = localStorage.getItem("lrl_theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    if (t === "dark") document.getElementById("themeColorMeta").setAttribute("content", "#080808");
+  } catch(e){} })();
+</script>
+<style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:400 800;font-display:swap;src:url(/fonts/inter-latin-normal.woff2) format('woff2')}
+@font-face{font-family:'Playfair Display';font-style:normal;font-weight:400 700;font-display:swap;src:url(/fonts/playfair-display-latin-normal.woff2) format('woff2')}
+@font-face{font-family:'Playfair Display';font-style:italic;font-weight:400 700;font-display:swap;src:url(/fonts/playfair-display-latin-italic.woff2) format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400 500;font-display:swap;src:url(/fonts/jetbrains-mono-latin-normal.woff2) format('woff2')}
+:root{
+  --paper:#FFFFFF; --ink:#000000; --rule:rgba(0,0,0,.15); --glow:#FFC24B;
+  --pad:clamp(18px, 4vw, 56px);
+}
+html[data-theme="dark"]{ --paper:#080808; --ink:#FFFFFF; --rule:rgba(255,255,255,.22); }
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth}
+@media (prefers-reduced-motion:reduce){ html{scroll-behavior:auto} }
+body{margin:0;background:var(--paper);color:var(--ink);font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  line-height:1.55;-webkit-font-smoothing:antialiased;padding-bottom:env(safe-area-inset-bottom,0px)}
+a{color:inherit;text-decoration:none}
+button{font:inherit;color:inherit}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;box-shadow:0 0 0 5px var(--glow)}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;letter-spacing:.08em}
+.label{font-size:.7rem;letter-spacing:.24em;text-transform:uppercase;font-weight:600;margin:0}
+.skip{position:absolute;left:-9999px;top:8px;z-index:50;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:999px}
+.skip:focus{left:12px}
+
+/* ---- header (same pieces as the rest of the site) ---- */
+.top{display:flex;align-items:center;justify-content:space-between;gap:16px;
+  padding:calc(env(safe-area-inset-top,0px) + 12px) var(--pad) 12px;border-bottom:1px solid var(--rule)}
+.brand{display:inline-flex;align-items:center;gap:12px;min-width:0}
+.lg-crop{display:block;overflow:hidden;aspect-ratio:var(--lg-ar,1.4649);line-height:0;flex:none;height:46px}
+.lg-crop > img{display:block;max-width:none;width:var(--lg-w,106.383%);height:auto;margin:var(--lg-t,-20.035%) 0 0 var(--lg-l,-3.191%)}
+html[data-theme="dark"] .lg-crop img{filter:brightness(0) invert(1)}
+.brand b{font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;white-space:nowrap}
+.links{display:flex;align-items:center;gap:clamp(12px,2.2vw,28px)}
+.links a,.links .lamp{font-size:.68rem;letter-spacing:.2em;text-transform:uppercase;font-weight:600;background:none;border:0;padding:6px 0;cursor:pointer;white-space:nowrap}
+.links a:hover,.links .lamp:hover{text-decoration:underline;text-underline-offset:4px}
+.pill{display:inline-flex;align-items:center;min-height:38px;padding:0 18px;border-radius:999px;background:var(--ink);color:var(--paper);
+  border:1px solid var(--ink);font-size:.68rem;letter-spacing:.18em;text-transform:uppercase;font-weight:600;cursor:pointer;white-space:nowrap}
+.pill:hover{opacity:.85}
+
+main{max-width:760px;margin:0 auto;padding:clamp(40px,6vw,90px) var(--pad) clamp(56px,7vw,100px)}
+h1{margin:0 0 10px;font-family:"Playfair Display",Georgia,serif;font-weight:400;font-size:clamp(2.4rem,6vw,4.4rem);line-height:1;letter-spacing:-.03em}
+.updated{margin:0 0 clamp(28px,4vw,48px);font-size:.72rem;opacity:.55}
+h2{margin:clamp(30px,4vw,44px) 0 10px;font-size:1.15rem;font-weight:700;letter-spacing:-.01em}
+p,li{font-size:clamp(.96rem,.25vw + .9rem,1.04rem);opacity:.82;max-width:64ch}
+ul{padding-left:1.2em}
+li{margin-bottom:8px}
+main a{background-image:linear-gradient(var(--glow),var(--glow));background-repeat:no-repeat;background-position:0 100%;background-size:100% 2px}
+/* ---- footer ---- */
+.foot{border-top:1px solid var(--rule);padding:22px var(--pad) calc(22px + env(safe-area-inset-bottom,0px));
+  display:flex;flex-wrap:wrap;gap:10px 24px;justify-content:space-between;font-size:.78rem}
+.foot nav{display:flex;flex-wrap:wrap;gap:8px 20px}
+.foot a:hover{text-decoration:underline;text-underline-offset:3px}
+.foot .c{opacity:.6}
+
+@media (max-width:820px){ .hide-sm{display:none} }
+@media (max-width:420px){ .brand b{display:none} .lg-crop{height:40px} }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to the policy</a>
+<header class="top">
+  <a class="brand" href="/" aria-label="Living Room Labs home">
+    <span class="lg-crop"><img src="/logo.png" width="600" height="600" alt=""></span>
+    <b>Living Room Labs</b>
+  </a>
+  <nav class="links" aria-label="Site">
+    <a href="/capture" class="hide-sm">What We Capture</a>
+    <a href="/#collective" class="hide-sm">The Collective</a>
+    <a href="/testimonials" class="hide-sm">Stories</a>
+    <button type="button" class="lamp mono" id="lamp" aria-pressed="false">☾ Lamp</button>
+    <button type="button" class="pill" id="enq">Enquire ↗</button>
+  </nav>
+</header>
+
+<main id="main">
+  <h1>Privacy Policy</h1>
+  <p class="updated mono">Last updated: 22 October 2026</p>
+
+  <p>Living Room Labs is a photography and film collective based in Hyderabad, India. This page explains what information this website collects, why, and what you can ask us to do with it. If anything here is unclear, write to us at <a class="mail" href="mailto:hello@livingroomlabs.in">hello@livingroomlabs.in</a>.</p>
+
+  <h2>When you send us an enquiry</h2>
+  <p>The enquiry form (and booking through our chat helper, Fotu) asks for your name, your email address, the kind of shoot and the details you choose to write. This reaches our inbox through Formspree, the service that delivers our website forms. We use it only to reply to you and to plan your shoot. We don't sell it, and we don't add you to mailing lists.</p>
+
+  <h2>When you chat with Fotu</h2>
+  <p>Fotu answers your questions inside your browser. To improve its answers, the site keeps anonymous counts: how often Fotu is opened, which topics come up, which page it was on and whether you were on a phone or a computer. It also keeps the text of questions Fotu couldn't answer, with email addresses and phone numbers removed automatically. None of this is linked to your name or to who you are.</p>
+
+  <h2>Settings saved in your browser</h2>
+  <p>The site remembers a few small choices on your own device, such as light or dark mode, whether you've already seen the opening screen, and whether you've hidden Fotu. They stay on your device and are never sent to us. We don't use advertising or tracking cookies.</p>
+
+  <h2>Visit statistics</h2>
+  <p>We may use Cloudflare Web Analytics to count visits to pages. It works without cookies and doesn't follow you across other websites.</p>
+
+  <h2>Who else is involved</h2>
+  <ul>
+    <li><b>Cloudflare</b> hosts and protects this website.</li>
+    <li><b>Formspree</b> delivers enquiry forms to our inbox.</li>
+    <li>Links to <b>Instagram</b> take you to Instagram, where their own privacy policy applies.</li>
+  </ul>
+
+  <h2>How long we keep things</h2>
+  <p>We keep enquiry emails for as long as we need them to deal with your enquiry and any booking that follows, and for any records we have to keep. Fotu's daily counts are deleted automatically after about 400 days, and only the most recent unanswered questions are kept.</p>
+
+  <h2>Photos of people on this site</h2>
+  <p>If you appear in a photo on this site and would like it taken down, email us and we'll remove it.</p>
+
+  <h2>Your choices and rights</h2>
+  <p>You can ask us to show you the personal information we hold about you, to correct it, or to delete it, and you can withdraw your consent at any time, as provided for under India's Digital Personal Data Protection Act, 2023. Email <a class="mail" href="mailto:hello@livingroomlabs.in">hello@livingroomlabs.in</a> and we'll respond as soon as we can.</p>
+
+  <h2>Children</h2>
+  <p>Our enquiry form is meant for adults. If a shoot involves children, a parent or guardian should get in touch with us.</p>
+
+  <h2>Changes to this policy</h2>
+  <p>If we change how we handle information, we'll update this page and the date at the top.</p>
+</main>
+
+<footer class="foot">
+  <span class="c">© <span id="yr">2026</span> Living Room Labs, Hyderabad. All photos are our own work.</span>
+  <nav aria-label="Footer">
+    <a href="/">Home</a>
+    <a href="/capture">What We Capture</a>
+    <a href="/testimonials">Stories</a>
+    <a href="/privacy">Privacy</a>
+    <a href="#" id="insta" target="_blank" rel="noopener" hidden>Instagram</a>
+  </nav>
+</footer>
+
+<script>
+(function(){
+  "use strict";
+  var $ = function(id){ return document.getElementById(id); };
+  $("yr").textContent = new Date().getFullYear();
+  /* ---- lamp (light / dark), remembered like the rest of the site ---- */
+  function syncLamp(){
+    var dark = document.documentElement.getAttribute("data-theme") === "dark";
+    $("lamp").setAttribute("aria-pressed", dark ? "true" : "false");
+    $("lamp").textContent = dark ? "☀ Lamp" : "☾ Lamp";
+    $("lamp").setAttribute("aria-label", dark ? "Turn the lamp on (light mode)" : "Turn the lamp off (dark mode)");
+  }
+  $("lamp").addEventListener("click", function(){
+    var dark = document.documentElement.getAttribute("data-theme") !== "dark";
+    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
+    try { localStorage.setItem("lrl_theme", dark ? "dark" : "light"); } catch(e){}
+    var m = $("themeColorMeta"); if (m) m.setAttribute("content", dark ? "#080808" : "#FFFFFF");
+    syncLamp();
+  });
+  syncLamp();
+
+  $("enq").addEventListener("click", function(){
+    if (window.LRL && window.LRL.enquiry) window.LRL.enquiry.open({ category: "General Enquiry" });
+    else window.location.href = "mailto:hello@livingroomlabs.in";
+  });
+  fetch("/content.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){
+    if (d.email) Array.prototype.forEach.call(document.querySelectorAll("a.mail"), function(a){ a.textContent = d.email; a.href = "mailto:" + d.email; });
+    if (window.LRL && window.LRL.enquiry && d.niches) window.LRL.enquiry.configure({ categories: d.niches.map(function(n){ return (n && n.name) || n; }), formspreeId: d.formspreeId, email: d.email });
+    var ig = (d.socials || []).filter(function(s){ return /instagram/i.test((s && s.name) || ""); })[0];
+    if (ig && ig.url) { $("insta").href = ig.url; $("insta").hidden = false; }
+  }).catch(function(){});
+})();
+</script>
+<script src="/shared.js" defer></script>
+<script>
+  /* Fotu loads about 2 seconds after the page, same as the rest of the site */
+  (function(){
+    function go(){ var s = document.createElement("script"); s.src = "/fotu.js"; s.async = true; document.body.appendChild(s); }
+    function later(){ setTimeout(function(){ if ("requestIdleCallback" in window) requestIdleCallback(go, { timeout: 1500 }); else go(); }, 2000); }
+    if (document.readyState === "complete") later(); else window.addEventListener("load", later, { once: true });
+  })();
+</script>
+</body>
+</html>

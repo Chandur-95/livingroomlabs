@@ -3,7 +3,7 @@
    GitHub login. Everything is prepared locally; nothing reaches the live site until you press
    "Commit all photos", and then every photo + the updated photo list go up as ONE commit.
    "Already Uploaded" works the same way: edits, replaced images and deletes wait in a queue
-   and go live together as ONE commit when you press "Commit changes". */
+   and go live together as ONE commit when you press "Commit all changes". */
 (function(){
   "use strict";
   var REPO = "Chandur-95/livingroomlabs";
@@ -23,11 +23,13 @@
   var photos = [];              /* the batch being prepared */
   var seq = 0;
   var uploading = false;
-  /* Changes to already-uploaded photos wait here until "Commit changes". Keyed by the photo's
+  /* Changes to already-uploaded photos wait here until "Commit all changes". Keyed by the photo's
      current src. { action:"edit", changes:{only the fields you changed}, replace:{file,url,ratio}|null }
      or { action:"delete" }. */
   var pendingEdits = {};
   var committingEdits = false;
+  var selected = {};            /* photos ticked for a change-them-all-at-once action, keyed by src */
+  var shownList = [];           /* the photos the grid shows right now (after filter + search) */
   /* never deleted, whatever happens: the fallback banner photo */
   var PROTECTED_FILES = ["dsc05175.jpg"];
 
@@ -269,8 +271,10 @@
       }
       return true;
     });
+    shownList = list;
     $("#existingCountLabel").textContent = list.length + " of " + existingPhotos.length + " photos live";
     renderPendingBar();
+    renderSelectBar();
     if (!list.length) {
       grid.innerHTML = '<div class="existing-empty">' + (existingPhotos.length ? "No photos match." : "No photos yet.") + '</div>';
       return;
@@ -282,25 +286,47 @@
       var src = (q && q.replace && q.replace.url) || p.__preview || thumbFor(p.src);
       var badge = !q ? "" : q.action === "delete" ? '<span class="ec-badge del">Will delete</span>'
         : '<span class="ec-badge">' + (q.replace ? "New image" : "Edited") + '</span>';
-      return '<div class="existing-card' + (q ? " is-queued" : "") + (q && q.action === "delete" ? " is-deleting" : "") +
-          '" role="button" tabindex="0" data-edit-src="'+esc(p.src)+'" aria-label="Edit '+esc(v.title || "photo")+'">' +
+      var isSel = !!selected[p.src], del = q && q.action === "delete";
+      return '<div class="existing-card' + (q ? " is-queued" : "") + (del ? " is-deleting" : "") + (isSel ? " is-selected" : "") +
+          '" data-edit-src="'+esc(p.src)+'">' +
         badge +
+        '<label class="ec-check" title="Select for changing several at once"><input type="checkbox" data-sel-src="'+esc(p.src)+'"' + (isSel ? " checked" : "") +
+          ' aria-label="Select '+esc(v.title || "photo")+'"><span></span></label>' +
         '<img src="'+esc(src)+'" data-full="'+esc(p.src)+'" alt="" loading="lazy">' +
         '<div class="ec-body">' +
           '<div class="ec-title">' + (p.__justAdded ? '<span class="ec-new">NEW</span> ' : '') + esc(v.title || "Untitled") + '</div>' +
           '<div class="ec-meta">' + esc(v.category || "") + ((v.eventTypes && v.eventTypes.length) ? " · " + esc(v.eventTypes.join(", ")) : "") + '</div>' +
           (v.client ? '<div class="ec-meta">' + esc(v.client) + '</div>' : '') +
-          (q && q.action === "delete" ? '<button type="button" class="btn small ec-restore" data-restore-src="'+esc(p.src)+'">Restore</button>' : '') +
+          (del
+            ? '<div class="ec-actions"><button type="button" class="ec-btn" data-restore-src="'+esc(p.src)+'">Restore</button></div>'
+            : '<div class="ec-actions">' +
+                '<button type="button" class="ec-btn" data-act="edit" data-src="'+esc(p.src)+'">Edit</button>' +
+                '<button type="button" class="ec-btn" data-act="replace" data-src="'+esc(p.src)+'">Replace</button>' +
+                '<button type="button" class="ec-btn danger" data-act="delete" data-src="'+esc(p.src)+'">Delete</button>' +
+              '</div>') +
         '</div>' +
       '</div>';
     }).join("");
     $all("[data-edit-src]", grid).forEach(function(card){
-      function open(e){
-        if (e.target.closest("[data-restore-src]")) return;
-        openEdit(card.getAttribute("data-edit-src"));
-      }
-      card.addEventListener("click", open);
-      card.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(e); } });
+      var img = card.querySelector("img");
+      if (img) img.addEventListener("click", function(){ openEdit(card.getAttribute("data-edit-src")); });
+    });
+    $all("[data-sel-src]", grid).forEach(function(box){
+      box.addEventListener("change", function(){
+        var src = box.getAttribute("data-sel-src");
+        if (box.checked) selected[src] = true; else delete selected[src];
+        box.closest(".existing-card").classList.toggle("is-selected", box.checked);
+        renderSelectBar();
+      });
+    });
+    $all("[data-act]", grid).forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        var src = btn.getAttribute("data-src"), act = btn.getAttribute("data-act");
+        if (act === "edit") openEdit(src);
+        else if (act === "replace") pickReplacement(src);
+        else if (act === "delete") queueDelete([src]);
+      });
     });
     $all("[data-restore-src]", grid).forEach(function(btn){
       btn.addEventListener("click", function(e){
@@ -998,10 +1024,171 @@
     var src = editSrc, q = pendingEdits[src];
     if (q && q.action === "delete") { delete pendingEdits[src]; openEdit(src); renderExistingGrid(); return; }
     var label = (editOriginal && editOriginal.title) || uploadName(src) || "this photo";
-    if (!confirm('Delete "' + label + '"?\n\nNothing is removed yet - it happens when you press "Commit changes". You can Restore it until then.')) return;
+    if (!confirm('Delete "' + label + '"?\n\nNothing is removed yet - it happens when you press "Commit all changes". You can Restore it until then.')) return;
     if (q && q.replace && q.replace.url) URL.revokeObjectURL(q.replace.url);
     pendingEdits[src] = { action: "delete" };
     closeEdit();
+    renderExistingGrid();
+  }
+
+  /* ================= quick actions + change many photos at once ================= */
+  /* Every change made here (one photo or fifty) goes into the same waiting list as the edit panel,
+     and they all go live together in ONE commit when you press "Commit all changes". */
+  function baseValue(p, k){
+    if (k === "showInAll") return p.showInAll !== false;
+    if (k === "featured") return !!p.featured;
+    if (k === "eventTypes") return p.eventTypes || [];
+    if (k === "client") return p.client || "Studio";
+    if (k === "imagePosition") return p.imagePosition || "Center";
+    return p[k];
+  }
+  function effectiveOf(p){
+    var q = pendingEdits[p.src];
+    return q && q.action === "edit" ? Object.assign({}, p, q.changes) : p;
+  }
+  /* queue one field change for one photo; a change back to the live value simply drops out */
+  function setField(src, k, val){
+    var p = photoBySrc(src);
+    if (!p) return false;
+    var q = pendingEdits[src];
+    if (q && q.action === "delete") return false;
+    if (!q) q = { action: "edit", changes: {}, replace: null };
+    if (sameValue(baseValue(p, k), val)) delete q.changes[k]; else q.changes[k] = val;
+    if (!Object.keys(q.changes).length && !q.replace) delete pendingEdits[src]; else pendingEdits[src] = q;
+    return true;
+  }
+  function selectedSrcs(){ return Object.keys(selected).filter(function(s){ return !!photoBySrc(s); }); }
+
+  function queueDelete(srcs){
+    srcs = srcs.filter(function(s){ var q = pendingEdits[s]; return photoBySrc(s) && !(q && q.action === "delete"); });
+    if (!srcs.length) return;
+    var label = srcs.length === 1 ? '"' + (photoBySrc(srcs[0]).title || "this photo") + '"' : srcs.length + " photos";
+    if (!confirm("Delete " + label + "?\n\nNothing is removed yet - it happens when you press \"Commit all changes\". You can Restore until then.")) return;
+    srcs.forEach(function(s){
+      var q = pendingEdits[s];
+      if (q && q.replace && q.replace.url) URL.revokeObjectURL(q.replace.url);
+      pendingEdits[s] = { action: "delete" };
+      delete selected[s];
+    });
+    renderExistingGrid();
+  }
+
+  var quickInput = null, quickFor = null;
+  function pickReplacement(src){
+    if (!quickInput) {
+      quickInput = document.createElement("input");
+      quickInput.type = "file";
+      quickInput.accept = "image/*,.heic,.heif,.tif,.tiff";
+      quickInput.hidden = true;
+      document.body.appendChild(quickInput);
+      quickInput.addEventListener("change", function(){
+        var f = this.files && this.files[0];
+        this.value = "";
+        if (f && quickFor) quickReplace(quickFor, f);
+      });
+    }
+    quickFor = src;
+    quickInput.click();
+  }
+  function quickReplace(src, file){
+    var p = photoBySrc(src);
+    if (!p) return;
+    showExistingResult(true, "Checking the new image…");
+    prepareImage(file).then(function(ready){
+      var url = URL.createObjectURL(ready), probe = new Image();
+      probe.onload = function(){
+        var q = pendingEdits[src];
+        if (!q || q.action !== "edit") q = { action: "edit", changes: {}, replace: null };
+        if (q.replace && q.replace.url) URL.revokeObjectURL(q.replace.url);
+        q.replace = { file: ready, url: url, ratio: closestPresetRatio(probe.naturalWidth, probe.naturalHeight) };
+        pendingEdits[src] = q;
+        showExistingResult(true, "New image ready for \"" + (p.title || "photo") + "\". It goes live when you press Commit all changes.");
+        renderExistingGrid();
+      };
+      probe.onerror = function(){ URL.revokeObjectURL(url); showExistingResult(false, "That image couldn't be opened."); };
+      probe.src = url;
+    }, function(err){ showExistingResult(false, err.message + ". Export it as JPEG and try again."); });
+  }
+
+  function buildSelectBar(){
+    var bar = $("#selectBar");
+    if (bar) return bar;
+    var grid = $("#existingGrid");
+    if (!grid) return null;
+    bar = document.createElement("div");
+    bar.id = "selectBar";
+    bar.className = "select-bar";
+    bar.innerHTML =
+      '<div class="sb-row">' +
+        '<b id="selCount">Change several photos at once</b>' +
+        '<span class="sb-help" id="selHelp">Tick the box on each photo you want to change, or</span>' +
+        '<button type="button" class="btn small" id="selAll">Select all shown</button>' +
+        '<button type="button" class="btn small" id="selNone" hidden>Clear selection</button>' +
+      '</div>' +
+      '<div class="sb-actions" id="selActions" hidden>' +
+        '<div class="sb-group"><label for="bkCategory">Category</label><select id="bkCategory"></select><button type="button" class="btn small" data-bulk="category">Apply</button></div>' +
+        '<div class="sb-group"><label for="bkClient">Shoot / Client</label><input type="text" id="bkClient" placeholder="e.g. Vikings PC"><button type="button" class="btn small" data-bulk="client">Apply</button></div>' +
+        '<div class="sb-group"><label for="bkEvents">Event type <span class="opt">(Events only)</span></label><input type="text" id="bkEvents" list="eventTypeSuggestions" placeholder="e.g. Birthday"><button type="button" class="btn small" data-bulk="events">Apply</button></div>' +
+        '<div class="sb-group"><label for="bkPos">Image position</label><select id="bkPos"></select><button type="button" class="btn small" data-bulk="pos">Apply</button></div>' +
+        '<div class="sb-group"><span class="sb-lab">Featured</span><button type="button" class="btn small" data-bulk="feat-on">On</button><button type="button" class="btn small" data-bulk="feat-off">Off</button></div>' +
+        '<div class="sb-group"><span class="sb-lab">Show in All</span><button type="button" class="btn small" data-bulk="all-on">On</button><button type="button" class="btn small" data-bulk="all-off">Off</button></div>' +
+        '<div class="sb-group"><button type="button" class="btn danger small" data-bulk="delete">Delete selected</button></div>' +
+      '</div>' +
+      '<p class="sb-note" id="selNote" role="status"></p>';
+    grid.parentNode.insertBefore(bar, grid);
+    $("#bkCategory", bar).innerHTML = optionList(CATEGORIES, CATEGORIES[0]);
+    $("#bkPos", bar).innerHTML = optionList(POSITIONS, "Center");
+    $("#selAll", bar).addEventListener("click", function(){
+      shownList.forEach(function(p){ var q = pendingEdits[p.src]; if (!(q && q.action === "delete")) selected[p.src] = true; });
+      setNote(""); renderExistingGrid();
+    });
+    $("#selNone", bar).addEventListener("click", function(){ selected = {}; setNote(""); renderExistingGrid(); });
+    $all("[data-bulk]", bar).forEach(function(b){ b.addEventListener("click", function(){ bulkApply(b.getAttribute("data-bulk")); }); });
+    return bar;
+  }
+  function setNote(t, bad){ var n = $("#selNote"); if (n) { n.textContent = t || ""; n.className = "sb-note" + (bad ? " err" : ""); } }
+  function renderSelectBar(){
+    var bar = buildSelectBar();
+    if (!bar) return;
+    var n = selectedSrcs().length;
+    $("#selCount").textContent = n ? n + (n === 1 ? " photo selected" : " photos selected") : "Change several photos at once";
+    $("#selHelp").hidden = !!n;
+    $("#selNone").hidden = !n;
+    $("#selActions").hidden = !n;
+    bar.classList.toggle("has-sel", !!n);
+  }
+
+  function bulkApply(kind){
+    var srcs = selectedSrcs();
+    if (!srcs.length || committingEdits) return;
+    if (kind === "delete") { queueDelete(srcs); setNote(""); return; }
+    var done = 0, skipped = 0, what = "";
+    function each(fn){ srcs.forEach(function(s){ if (fn(s)) done++; else skipped++; }); }
+    if (kind === "category") {
+      var c = $("#bkCategory").value; what = "Category set to " + c;
+      each(function(s){
+        if (!setField(s, "category", c)) return false;
+        if (c !== "Events") setField(s, "eventTypes", []);
+        return true;
+      });
+    } else if (kind === "client") {
+      var cl = $("#bkClient").value.trim();
+      if (!cl) { setNote("Type the shoot / client name first.", true); $("#bkClient").focus(); return; }
+      what = "Shoot / Client set to \"" + cl + "\""; each(function(s){ return setField(s, "client", cl); });
+    } else if (kind === "events") {
+      var ev = uniq(splitList($("#bkEvents").value));
+      what = ev.length ? "Event type set to " + ev.join(", ") : "Event type cleared";
+      each(function(s){ var p = photoBySrc(s); return effectiveOf(p).category === "Events" && setField(s, "eventTypes", ev); });
+    } else if (kind === "pos") {
+      var pos = $("#bkPos").value; what = "Image position set to " + pos; each(function(s){ return setField(s, "imagePosition", pos); });
+    } else if (kind === "feat-on" || kind === "feat-off") {
+      var f = kind === "feat-on"; what = "Featured turned " + (f ? "on" : "off"); each(function(s){ return setField(s, "featured", f); });
+    } else if (kind === "all-on" || kind === "all-off") {
+      var a = kind === "all-on"; what = "Show in All turned " + (a ? "on" : "off"); each(function(s){ return setField(s, "showInAll", a); });
+    }
+    setNote(what + " for " + done + (done === 1 ? " photo" : " photos") +
+      (skipped ? " (" + skipped + " skipped" + (kind === "events" ? ": not in Events" : ": waiting to be deleted") + ")" : "") +
+      ". It goes live when you press Commit all changes.", false);
     renderExistingGrid();
   }
 
@@ -1045,7 +1232,7 @@
   if (commitBtn) commitBtn.addEventListener("click", function(){
     var n = pendingCount();
     if (!n || committingEdits || !token) return;
-    if (!confirm("Publish " + n + " change(s) to livingroomlabs.in now? They go live in about a minute.")) return;
+    if (!confirm("Publish all " + n + " change(s) to livingroomlabs.in in one go? They go live in about a minute.")) return;
     commitPending();
   });
 
@@ -1169,6 +1356,7 @@
         });
         Object.keys(newSrcFor).forEach(function(k){ knownUploadNames[(uploadName(newSrcFor[k]) || "").toLowerCase()] = true; });
         pendingEdits = {};
+        selected = {};
         committingEdits = false;
         window.__bulkCommitted = true;
         renderExistingGrid();
@@ -1181,7 +1369,7 @@
         renderPendingBar();
         var msg = String(err && err.message || err);
         if (/GitHub 422/.test(msg) && /fast.?forward/i.test(msg)) {
-          msg = "Someone saved a change on the site at the same moment. Nothing was published - just press \"Commit changes\" again.";
+          msg = "Someone saved a change on the site at the same moment. Nothing was published - just press \"Commit all changes\" again.";
         }
         showExistingResult(false, "Nothing went live - the site is unchanged and your changes are still waiting. " + msg);
         console.error(err);

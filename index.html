@@ -922,7 +922,7 @@ html[data-theme="dark"] .home-work-grid .shot.touch-focus .plate {
 }
 .mobile-shoot-sec .contact-note { margin-top: 8px !important; opacity: .7; }
 
-/* ---------- How it works / Kind words (shown only when filled in the Content Editor) ---------- */
+/* ---------- How it works / Stories (shown only when filled in the Content Editor) ---------- */
 #work ~ #contact{padding-top:clamp(28px,3.5vw,56px)}
 .trust-sec[hidden]{display:none}
 .trust-sec .sec-head h2.label{margin:0}
@@ -952,6 +952,11 @@ html[data-theme="dark"] .home-work-grid .shot.touch-focus .plate {
   font-size:clamp(1.12rem,.8vw + .95rem,1.45rem);line-height:1.38;letter-spacing:-.005em;max-width:42ch;
 }
 .quote figcaption{font-size:.84rem;opacity:.65}
+.kw-more{margin:clamp(22px,2.6vw,34px) 0 0;font-size:clamp(1rem,.4vw + .9rem,1.15rem)}
+.kw-more[hidden]{display:none}
+.foot-legal{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px 20px;margin:clamp(28px,4vw,48px) 0 0;padding-top:16px;
+  border-top:1px solid var(--rule);font-size:.68rem;letter-spacing:.06em;opacity:.65}
+.foot-legal a{text-decoration:underline;text-underline-offset:3px}
 .quote figcaption b{font-weight:600;opacity:1}
 .worked-with{
   margin-top:clamp(26px,3.5vw,48px);padding-top:14px;border-top:1px solid var(--rule);
@@ -2248,6 +2253,7 @@ footer.wrap{overflow-x:clip}
     <div class="nav-links label">
       <button type="button" class="nav-niches-link nav-desktop-only">What We Capture</button>
       <button type="button" class="nav-collective-link nav-desktop-only">The Collective</button>
+      <a href="/testimonials" class="nav-desktop-only">Stories</a>
       <button type="button" class="nav-collective-link-mob nav-mobile-only" style="display:none;">The Collective</button>
     </div>
     <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
@@ -2307,10 +2313,11 @@ footer.wrap{overflow-x:clip}
 
   <section class="sec wrap trust-sec" id="kind-words" hidden aria-labelledby="kwHead">
     <div class="sec-head">
-      <h2 class="label" id="kwHead">Kind words</h2>
+      <h2 class="label" id="kwHead">Stories</h2>
       <span class="fill"></span>
     </div>
     <div class="quotes" data-testimonials></div>
+    <p class="kw-more" data-kw-more hidden><a class="link-enquire" href="/testimonials">Read all stories ↗</a></p>
     <div class="worked-with" data-worked-wrap hidden>
       <span class="label ww-label">Worked with</span>
       <ul class="ww-list" data-worked-with></ul>
@@ -2358,6 +2365,7 @@ footer.wrap{overflow-x:clip}
         </div>
       </div>
     </div>
+    <p class="foot-legal mono"><span>© <span data-year>2026</span> Living Room Labs, Hyderabad. All photos are our own work.</span><a href="/privacy">Privacy</a></p>
   </footer>
 </main>
 
@@ -4458,7 +4466,9 @@ function renderContent(){
   if(idxList){
     idxList.innerHTML =
       '<li><button type="button" class="nav-niches-link" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">What We Capture</button></li>' +
-      '<li><button type="button" id="btn-foot-enquire" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">Enquire</button></li>';
+      '<li><button type="button" id="btn-foot-enquire" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">Enquire</button></li>' +
+      '<li><a href="/testimonials">Stories</a></li>' +
+      '<li><a href="/privacy">Privacy</a></li>';
   }
 
   var socList = $("[data-foot-social]");
@@ -4586,7 +4596,14 @@ function waLink(text){
   return "https://wa.me/" + n + "?text=" + encodeURIComponent(text || "Hi Living Room Labs! I'd like to enquire about a shoot.");
 }
 
-/* How it works, Kind words and Worked with: each appears only once it has content */
+function hasStories(){
+  return (Array.isArray(SITE.testimonials) ? SITE.testimonials : []).some(function(t){ return t && String(t.quote || "").trim(); });
+}
+function firstSentenceOf(t){
+  var m = /^[\s\S]{12,240}?[.!?](?=["”’)]?(\s|$))/.exec(t);
+  return m ? m[0].trim() : (t.length > 200 ? t.slice(0, 197).replace(/\s+\S*$/, "") + "…" : t);
+}
+/* How it works, Stories and Worked with: each appears only once it has content */
 function renderTrust(){
   var how = document.getElementById("how");
   var steps = (Array.isArray(SITE.howItWorks) ? SITE.howItWorks : []).filter(function(st){ return st && (st.title || st.text); });
@@ -4606,9 +4623,10 @@ function renderTrust(){
     return String((w && typeof w === "object") ? (w.name || "") : (w || "")).trim();
   }).filter(Boolean);
   if(kw){
-    $("[data-testimonials]").innerHTML = quotes.map(function(t){
+    $("[data-testimonials]").innerHTML = quotes.slice(0, 3).map(function(t){
       var who = String(t.name || "").trim(), ctx = String(t.context || "").trim();
-      return '<figure class="quote"><blockquote>“' + esc(String(t.quote).trim().replace(/^["“]|["”]$/g, "")) + '”</blockquote>' +
+      var line = String(t.highlight || "").trim() || firstSentenceOf(String(t.quote).trim());
+      return '<figure class="quote"><blockquote>“' + esc(line.replace(/^["“]|["”]$/g, "")) + '”</blockquote>' +
         ((who || ctx) ? '<figcaption>' + (who ? '<b>' + esc(who) + '</b>' : '') + (who && ctx ? ', ' : '') + esc(ctx) + '</figcaption>' : '') +
         '</figure>';
     }).join("");
@@ -4616,9 +4634,12 @@ function renderTrust(){
     $("[data-worked-with]").innerHTML = names.map(function(n){ return '<li>' + esc(n) + '</li>'; }).join("");
     ww.hidden = !names.length;
     ww.classList.toggle("solo", !quotes.length);
-    $("#kwHead").textContent = quotes.length ? "Kind words" : "Worked with";
+    $("#kwHead").textContent = quotes.length ? "Stories" : "Worked with";
+    $("[data-kw-more]").hidden = !quotes.length;
     kw.hidden = !quotes.length && !names.length;
   }
+
+  var yr = $("[data-year]"); if(yr) yr.textContent = new Date().getFullYear();
 
   var wa = waLink(), waWrap = $("[data-wa-wrap]");
   if(waWrap){

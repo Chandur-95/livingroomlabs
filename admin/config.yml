@@ -75,16 +75,19 @@ collections:
               - { label: "Step title", name: "title", widget: "string" }
               - { label: "Step text", name: "text", widget: "text", required: false }
 
-          - label: "Testimonials (Kind words)"
+          - label: "Testimonials (Stories)"
             name: "testimonials"
             widget: "list"
             required: false
-            summary: "{{fields.name}}"
-            hint: "Only real quotes from real clients, with their permission. The section stays hidden until you add one."
+            summary: "{{fields.name}}: {{fields.context}}"
+            hint: "Only real words from real clients, with their permission. Each one becomes a story on the Stories page (livingroomlabs.in/testimonials), and the first three show on the home page. Everything stays hidden until you add the first one."
             fields:
-              - { label: "Quote", name: "quote", widget: "text" }
-              - { label: "Client name", name: "name", widget: "string", required: false }
-              - { label: "Context", name: "context", widget: "string", required: false, hint: "e.g. Birthday shoot, Jubilee Hills or Restaurant owner" }
+              - { label: "Client name", name: "name", widget: "string", hint: "e.g. Sneha & Karthik, or Rahul M." }
+              - { label: "Shoot and place", name: "context", widget: "string", required: false, hint: "e.g. Housewarming, Kondapur" }
+              - { label: "Their words", name: "quote", widget: "text", hint: "Paste what they said. Leave an empty line between paragraphs." }
+              - { label: "Standout line", name: "highlight", widget: "string", required: false, hint: "Optional. One short line from their words, shown big. Leave empty to use their first sentence." }
+              - { label: "Photo from their shoot", name: "photo", widget: "image", required: false, choose_url: false, hint: "Optional. Pick one of the photos already on the site from their shoot." }
+              - { label: "Category to link to", name: "category", widget: "string", required: false, hint: "Optional. e.g. Food or Events. Leave empty and it uses the photo's category." }
 
           - label: "Worked With (client names)"
             name: "workedWith"

@@ -41,6 +41,9 @@ export async function onRequestGet(context) {
       const inCat = photos.filter((p) => String(p.category || "").trim().toLowerCase() === name.toLowerCase());
       xml += urlBlock(SITE + "/capture?category=" + encodeURIComponent(name), inCat.map((p) => p.src));
     });
+    const stories = (d.testimonials || []).filter((t) => t && String(t.quote || "").trim());
+    if (stories.length) xml += urlBlock(SITE + "/testimonials", stories.map((t) => t.photo).filter(Boolean));
+    xml += urlBlock(SITE + "/privacy", []);
     xml += "</urlset>\n";
     return new Response(xml, { headers: { "content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600" } });
   } catch (e) {

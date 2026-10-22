@@ -182,7 +182,10 @@
     { id: "portfolio", k: ["portfolio", "your work", "see photos", "show me photos", "show photos", "samples", "sample", "gallery", "examples", "previous work", "past work", "show me your work"],
       r: ["The best way to judge us is by our work. Take a look at What We Capture.", "Every photo on this site was shot by us. Have a look around, I'll wait here."], c: ["See our work ↗", "Book a shoot"] },
     { id: "experience", k: ["how long have you been", "since when", "when did you start", "how old is the studio", "experience", "how many years", "reviews", "review", "testimonials", "trust", "how good", "are you good", "clients", "professional", "professionals", "reliable"],
-      r: ["We're a collective of four photographers with very different styles. The portfolio speaks for us better than I can.", "Don't take my word for it. I'm biased, I live here. Have a look at the work."], c: ["See our work ↗", "Meet the team ↗"] },
+      r: function () { return hasStories()
+        ? ["Don't take my word for it. Our clients tell it better on the Stories page.", "I'm biased, I live here. Read what clients say on our Stories page."]
+        : ["We're a collective of four photographers with very different styles. The portfolio speaks for us better than I can.", "Don't take my word for it. I'm biased, I live here. Have a look at the work."]; },
+      get c() { return hasStories() ? ["Client stories ↗", "See our work ↗"] : ["See our work ↗", "Meet the team ↗"]; } },
     { id: "hours", k: ["working hours", "hours", "timing", "timings", "office hours", "when are you open", "open now", "are you open", "closed"],
       r: ["The team replies to enquiries every day, usually quickly. Shoots happen whenever the light (or your event) needs them.", "Enquiries are open 24/7. I never sleep. Well, I do. A lot. But the inbox doesn't."], c: ["Book a shoot"] },
     { id: "payment", k: ["payment", "pay", "advance", "deposit", "upi", "gpay", "google pay", "phonepe", "paytm", "cash", "card", "refund", "cancel booking", "cancellation", "reschedule", "postpone"],
@@ -344,6 +347,7 @@
 
   var ACTION_CHIPS = {
     "See our work ↗": function () { go("/capture.html"); },
+    "Client stories ↗": function () { go("/testimonials"); },
     "Meet the team ↗": function () { go("/#collective"); },
     "Instagram ↗": function () { window.open(instaUrl(), "_blank", "noopener"); },
     "Use the full form ↗": function () { closeChat(true); try { window.LRL.enquiry.open({ category: (chat.enq && chat.enq.cat) || "General Enquiry" }); } catch (e) { go("/?enquire=1"); } },
@@ -694,7 +698,7 @@
     { id: "feedback", k: ["feedback", "suggestion", "i have a suggestion", "improve", "you should add", "can you add", "feature request"],
       r: function () { return ["We love feedback! Send it to " + siteEmail() + " and the team will read every word."]; } },
     { id: "testimonial", k: ["i booked you", "you shot my", "you did my", "loved my photos", "loved the photos", "thanks for the photos", "great photos", "amazing photos", "photos were great", "happy client"],
-      r: ["That makes our day! Would you share a review on Instagram? It means a lot to the team.", "So happy you loved them! Tag us @fromlivingroomlabs when you post."], c: ["Instagram ↗"] },
+      r: function () { return ["That makes our day! Would you write us a few lines for our Stories page? Just email " + siteEmail() + ". It means a lot to the team.", "So happy you loved them! A few words for our Stories page would mean the world. Email " + siteEmail() + ", or tag us @fromlivingroomlabs when you post."]; }, c: ["Instagram ↗"] },
     { id: "pricecompare", k: ["too expensive", "very expensive", "cheaper elsewhere", "other photographers", "why so costly", "costly", "out of budget", "low budget", "small budget", "tight budget"],
       r: ["Totally fair. Tell the team your budget in an enquiry. They'll suggest what's possible within it.", "Budgets matter. Share yours and the team will be honest about what they can do."], c: ["Book a shoot"] },
     { id: "quick", k: ["hurry", "hurry up", "need it fast", "need it quick", "asap", "urgent please", "right now", "immediately", "jaldi", "tondaraga"],
@@ -976,7 +980,7 @@
     { id: "aboutlrl", k: ["what is living room labs", "about living room labs", "about you guys", "about your company", "who are you guys", "tell me about your company", "why the name", "why living room", "name meaning", "living room labs meaning", "what is lrl", "is this a company", "is this a studio"],
       r: ["Living Room Labs is a visual collective from Hyderabad, built on curiosity. Every niche, every frame, uncompromisingly real.", "We're a small photography collective in Hyderabad: four photographers who started with a shared love of real moments. Like great ideas, it began in a living room."], c: ["Meet the team ↗", "What do you shoot?"] },
     { id: "trustworthy", k: ["are you legit", "is this legit", "is this real", "is this a scam", "scam", "fake", "can i trust you", "trustworthy", "genuine", "verified", "reviews online", "google reviews"],
-      r: ["Completely legit! Real photographers, real work. Check our Instagram @fromlivingroomlabs or email the team directly to say hi.", "Fair question to ask online. Every photo here is our own work, and you can talk to the team by email before deciding anything."], c: ["Instagram ↗", "Talk to a human"] },
+      r: ["Completely legit! Real photographers, real work. Check our Instagram @fromlivingroomlabs or email the team directly to say hi.", "Fair question to ask online. Every photo here is our own work, and you can talk to the team by email before deciding anything."], get c() { return hasStories() ? ["Client stories ↗", "Instagram ↗"] : ["Instagram ↗", "Talk to a human"]; } },
     { id: "response", k: ["when will you reply", "how long to reply", "no reply", "didnt get a reply", "still waiting", "waiting for reply", "did you get my enquiry", "did you receive my message", "follow up", "following up", "any update"],
       r: function () { return ["Sorry for the wait! The team usually replies soon. If it's been a while, email " + siteEmail() + " and mention your enquiry.", "Messages go straight to the team's inbox. Check your spam folder too, and feel free to nudge them at " + siteEmail() + "."]; }, c: ["Talk to a human"] },
     { id: "complaint", k: ["complaint", "not happy", "unhappy with", "disappointed", "bad experience", "poor service", "worst service", "refund", "money back", "photos are bad", "didnt like the photos", "not satisfied"],
@@ -1395,6 +1399,9 @@
     return "The collective is " + list + ". Different eyes, one team.";
   }
   function go(url) { closeChat(true); flushStats(); window.location.href = url; }
+  function hasStories() {
+    return (Array.isArray(SITE.testimonials) ? SITE.testimonials : []).some(function (t) { return t && String(t.quote || "").trim(); });
+  }
 
   fetch("/content.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (d) {
     SITE = d || {};
