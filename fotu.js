@@ -1479,10 +1479,12 @@
     "#fotu-bot .zz i{position:absolute;left:0;bottom:0;font-style:normal;opacity:0;animation:fotuZz 2.6s ease-out infinite}",
     "#fotu-bot .zz i:nth-child(1){font-size:10px}#fotu-bot .zz i:nth-child(2){font-size:13px;animation-delay:.85s}#fotu-bot .zz i:nth-child(3){font-size:16px;animation-delay:1.7s}",
     "#fotu-bot.sleep .zz{display:block}",
-    "#fotu-bot.peek .zz{right:auto;left:0;top:-20px;width:24px}",
-    "#fotu-bot.peek .zz i{animation-name:fotuZzL}",
-    "@keyframes fotuZzL{0%{opacity:0;transform:translate(2px,4px) rotate(8deg)}20%{opacity:1}100%{opacity:0;transform:translate(-2px,-14px) rotate(-8deg)}}",
-    "#fotu-bot.peek .fb{transform-origin:0 100%}",
+    /* docked: when the corner is busy (photos, banners), Fotu sits on a small round badge there
+       instead of hiding, so it is always visible and one tap away */
+    "#fotu-bot.peek{width:52px;height:52px}",
+    "#fotu-bot.peek::before{content:'';position:absolute;inset:-9px;border-radius:50%;background:var(--f-paper);border:1px solid var(--f-line);box-shadow:0 6px 22px rgba(0,0,0,.18);z-index:-1}",
+    "#fotu-bot.peek .zz{right:-14px;top:-18px}",
+    "#fotu-bot.peek .fb{animation-duration:3.4s}",
     "@keyframes fotuZz{0%{opacity:0;transform:translate(0,4px) rotate(-10deg)}20%{opacity:1}100%{opacity:0;transform:translate(14px,-16px) rotate(12deg)}}",
     "#fotu-bot .snore{display:none;transform-box:fill-box;transform-origin:50% 50%}",
     "#fotu-bot.sleep .snore{display:block;animation:fotuMouth 2.6s ease-in-out infinite}",
@@ -1534,7 +1536,7 @@
     "#fotu-back:hover,#fotu-back:focus-visible{opacity:1}",
     "#fotu-root.paused #fotu-bot,#fotu-root.paused #fotu-bub,#fotu-root.paused #fotu-back{opacity:0;pointer-events:none}",
     "@media (max-width:640px){#fotu-chips{flex-wrap:nowrap;overflow-x:auto;max-height:none;padding-bottom:4px;scrollbar-width:none}#fotu-chips::-webkit-scrollbar{display:none}#fotu-chips button{flex:none}}",
-    "@media (max-width:640px){#fotu-bot{width:56px;height:56px}#fotu-panel{left:8px!important;right:8px;width:auto!important;top:auto!important;bottom:calc(8px + env(safe-area-inset-bottom,0px));height:min(480px,72vh)}#fotu-bub{max-width:200px;font-size:13px}}",
+    "@media (max-width:640px){#fotu-bot{width:56px;height:56px}#fotu-bot.peek{width:44px;height:44px}#fotu-bot.peek::before{inset:-8px}#fotu-panel{left:8px!important;right:8px;width:auto!important;top:auto!important;bottom:calc(8px + env(safe-area-inset-bottom,0px));height:min(480px,72vh)}#fotu-bub{max-width:200px;font-size:13px}}",
     "@media (prefers-reduced-motion:reduce){#fotu-bot .fb,#fotu-bot .zz i,.fotu-m{animation:none!important}}"
   ].join("\n");
   var styleEl = document.createElement("style");
@@ -1624,7 +1626,7 @@
   /* ---- clear-space finder ---- */
   var CONTENT_SEL = "img,video,canvas,picture,svg,iframe,object,embed,a,button,input,select,textarea,label,summary,[role='button'],[role='link']";
   var BACKDROP = { CANVAS: 1, SVG: 1, IFRAME: 1, OBJECT: 1, EMBED: 1 };
-  var TEXT_MARGIN = 8, PEEK = 24, peeking = false;
+  var TEXT_MARGIN = 8, PEEK = 24, peeking = false, bubbleMayCover = false;
   var stackAt = document.elementsFromPoint
     ? function (x, y) { return document.elementsFromPoint(x, y); }
     : function (x, y) { var e = document.elementFromPoint(x, y); return e ? [e] : []; };
@@ -1719,18 +1721,55 @@
     });
   }
   function footprintFree() {
-    if (peeking) return peekFree();
+    if (peeking) return true;
     var s = size();
     return withProbe(function (cache) { return rectFreeIn(pos.x - 4, pos.y - HEAD, s + 8, s + HEAD, 10, cache); });
   }
-  /* "peek" spot: when the whole bottom edge is busy (common on phones), Fotu hides behind the
-     right edge of the screen with just its side and one eye showing, in the page's empty margin. */
-  function peekFree() {
-    var s = size(), W = window.innerWidth, saved = TEXT_MARGIN;
-    TEXT_MARGIN = 2;
-    try { return withProbe(function (cache) { return rectFreeIn(W - PEEK, laneY(s) - 22, PEEK - 2, s + 22, 8, cache); }); }
-    finally { TEXT_MARGIN = saved; }
+  /* Fotu's home is the bottom-right corner, always. If the corner is clear it stands there
+     (and may stroll along the clear stretch on desktop). If it isn't - photos, banners, a full
+     grid - it sits there "docked" on a small round badge instead of disappearing, so everyone
+     can always see it and tap it. The badge steps up out of the way of any small button that
+     lives in that corner (Spotlight switch, slideshow pause...). */
+  var DOCK_PAD = 9, DOCK_EDGE = 12, DOCK_LIFT = 10;
+  var CONTROL_SEL = "a,button,input,select,textarea,label,summary,[role='button'],[role='link']";
+  function freeSize() { return window.matchMedia("(max-width:640px)").matches ? 56 : 72; }
+  function cornerX(s) { return window.innerWidth - s - (window.innerWidth <= 640 ? 12 : 18); }
+  function cornerFree() {
+    var s = freeSize(), x = cornerX(s), y = laneY(s);
+    return withProbe(function (cache) { return rectFreeIn(x - 4, y - HEAD, s + 8, s + HEAD, 10, cache); });
   }
+  /* true when no small control (button, link...) sits under this rectangle; big clickable
+     cards like photo tiles don't count - the badge may overlap those a little */
+  function controlsFreeIn(l, t, w, h) {
+    return withProbe(function () {
+      for (var y = t; ; y += 10) {
+        var yy = Math.min(y, t + h);
+        for (var x = l; ; x += 10) {
+          var xx = Math.min(x, l + w), st = stackAt(xx, yy);
+          for (var i = 0; i < st.length; i++) {
+            var el = st[i];
+            if (el === document.documentElement || el === document.body || root.contains(el)) continue;
+            var c = el.closest ? el.closest(CONTROL_SEL) : null;
+            if (!c) continue;
+            var r = c.getBoundingClientRect();
+            if (r.width * r.height <= 170 * 170) return false;
+          }
+          if (xx >= l + w) break;
+        }
+        if (yy >= t + h) break;
+      }
+      return true;
+    });
+  }
+  function dockSpot() {
+    var s = size(), x = window.innerWidth - s - DOCK_PAD - DOCK_EDGE, base = laneY(s) - DOCK_LIFT;
+    var top = Math.max(bounds().minY, base - 280);
+    for (var y = base; y >= top; y -= 16) {
+      if (controlsFreeIn(x - DOCK_PAD, y - DOCK_PAD, s + 2 * DOCK_PAD, s + 2 * DOCK_PAD)) return { x: x, y: y };
+    }
+    return { x: x, y: base };
+  }
+  function peekFree() { return true; } /* the docked badge is always allowed */
   function segmentFor(x, segs) {
     for (var i = 0; i < segs.length; i++) if (x >= segs[i].lo - 1 && x <= segs[i].hi + 1) return segs[i];
     return null;
@@ -1786,43 +1825,39 @@
       poofing = false; refreshVis();
     }, 260);
   }
-  /* make sure Fotu is standing somewhere clear (or out of sight if nowhere is).
-     It only moves if its current spot is no longer clear, and then only to the nearest clear spot. */
+  /* make sure Fotu is somewhere sensible: where it stands if that's still clear, otherwise
+     the bottom-right corner - standing if the corner is clear, docked on its badge if not. */
   function enterPeek() {
     if (walking) stopWalk();
-    var wasAway = away;
-    peeking = true; bot.classList.add("peek"); dir = 1;
-    pos.x = window.innerWidth - PEEK; pos.y = bounds().maxY; bot.style.transition = NOMOVE; place();
-    if (wasAway) { away = false; refreshVis(); }
+    peeking = true; bot.classList.add("peek"); dir = -1;
+    var d = dockSpot(); pos.x = d.x; pos.y = d.y; bot.style.transition = NOMOVE; place();
+    if (away) { away = false; refreshVis(); }
   }
   function exitPeek() { peeking = false; bot.classList.remove("peek"); }
+  function standAtCorner() {
+    if (walking) stopWalk();
+    exitPeek();
+    pos.x = cornerX(size()); pos.y = bounds().maxY; dir = -1; bot.style.transition = NOMOVE; place();
+    if (away) { away = false; refreshVis(); }
+  }
   function settle() {
     if (hidden) { placeBack(); return; }
-    var segs = scanSegments();
-    /* on phones, a Fotu that is already peeking stays put as long as its spot is clear */
-    if (peeking && (isPhone() || !segs.length) && peekFree()) {
-      pos.x = window.innerWidth - PEEK; pos.y = bounds().maxY; bot.style.transition = NOMOVE; place();
+    if (!peeking && !away && footprintFree()) return;           /* still on clear ground: stay */
+    if (cornerFree()) {
+      if (peeking || away || shy) standAtCorner();
+      else { poofing = true; refreshVis(); hideBubble(); if (walking) stopWalk();
+             setTimeout(function () { poofing = false; standAtCorner(); refreshVis(); }, 260); }
+      return;
+    }
+    if (peeking) {                                               /* already docked: just keep the spot right */
+      var d = dockSpot();
+      if (Math.abs(d.x - pos.x) > 1 || Math.abs(d.y - pos.y) > 1) { pos.x = d.x; pos.y = d.y; bot.style.transition = NOMOVE; place(); }
       if (away) { away = false; refreshVis(); }
       return;
     }
-    if (!segs.length) {
-      if (peekFree()) {
-        if (peeking || away) enterPeek();
-        else { poofing = true; refreshVis(); hideBubble(); setTimeout(function () { poofing = false; enterPeek(); refreshVis(); }, 260); }
-        return;
-      }
-      if (!away) { away = true; refreshVis(); hideBubble(); if (walking) stopWalk(); }
-      return;
-    }
-    var cur = peeking ? null : segmentFor(pos.x, segs);
-    if (cur && !away) return;
-    var seg = cur || nearestSegment(pos.x, segs), x = clamp(pos.x, seg.lo, seg.hi);
-    if (away || peeking) {
-      if (walking) stopWalk();
-      exitPeek();
-      pos.x = x; pos.y = bounds().maxY; bot.style.transition = NOMOVE; place();
-      away = false; refreshVis();
-    } else jumpTo(x);
+    if (away || shy) { enterPeek(); return; }
+    poofing = true; refreshVis(); hideBubble(); if (walking) stopWalk();
+    setTimeout(function () { poofing = false; enterPeek(); refreshVis(); }, 260);
   }
   function anim(cls, ms) {
     if (reduceMotion) return;
@@ -1881,6 +1916,12 @@
       }
       return null;
     });
+    if (!c && peeking && bubbleMayCover) {
+      for (var q = 0; q < cands.length && !c; q++) {
+        var k2 = cands[q];
+        if (k2.t >= 8 && k2.l >= 8 && k2.l + k2.w <= W - 8 && k2.t + k2.h <= H - 4) c = k2;
+      }
+    }
     if (!c) return false;
     bub.style.maxWidth = c.mw + "px"; bub.style.left = Math.round(c.l) + "px"; bub.style.top = Math.round(c.t) + "px";
     return true;
@@ -1892,7 +1933,10 @@
     var now = Date.now();
     if (opt.force) { if (now - lastPop < 5000) return false; }
     else if (popCount >= MAX_POPS || now - lastPop < POP_GAP) return false;
-    if (!placeBubble(text)) return false;
+    bubbleMayCover = !!opt.force;
+    var placedOk = placeBubble(text);
+    bubbleMayCover = false;
+    if (!placedOk) return false;
     clearTimeout(bubTimer);
     bub.classList.remove("on"); void bub.offsetWidth; bub.classList.add("on");
     bubTimer = setTimeout(hideBubble, ms || 3500);
@@ -2006,7 +2050,7 @@
     if (hidden) return;
     if (!placed) { start(); return; }
     if (isOpen || walking || poofing) return;
-    if (away) { settle(); return; }
+    if (away || peeking) { settle(); return; }
     var lane = bounds().maxY;
     if (Math.abs(pos.y - lane) > 1) { pos.y = lane; bot.style.transition = NOMOVE; place(); }
     if (!footprintFree()) settle();
@@ -2046,6 +2090,11 @@
   function onMove() {
     if (isOpen) { placePanel(); return; }
     if (!placed) return;
+    if (peeking) {
+      clearTimeout(shyTimer);
+      shyTimer = setTimeout(function () { settle(); consumeFast(); }, 280);
+      return;
+    }
     if (!shy) {
       shy = true; refreshVis();
       if (walking) stopWalk();
@@ -2563,13 +2612,8 @@
   /* ================= start: asleep, in a clear spot, no walking ================= */
   function start() {
     if (placed || hidden || paused) return;
-    var segs = scanSegments();
-    if (segs.length) {
-      var seg = segs[segs.length - 1];
-      pos.x = seg.hi; pos.y = bounds().maxY; bot.style.transition = NOMOVE; place();
-      away = false;
-    } else if (peekFree()) enterPeek();
-    else return; /* nowhere clear yet: the 0.7s check tries again */
+    if (cornerFree()) standAtCorner();
+    else enterPeek();
     placed = true; refreshVis();
     if (!quiet && !sread(SS_HINT)) {
       setTimeout(function () {

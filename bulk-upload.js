@@ -1,7 +1,9 @@
 /* Living Room Labs - bulk photo uploader.
    Lives inside the Content Editor (/admin/) as the "Bulk Upload" panel and uses the editor's own
    GitHub login. Everything is prepared locally; nothing reaches the live site until you press
-   "Commit all photos", and then every photo + the updated photo list go up as ONE commit. */
+   "Commit all photos", and then every photo + the updated photo list go up as ONE commit.
+   "Already Uploaded" works the same way: edits, replaced images and deletes wait in a queue
+   and go live together as ONE commit when you press "Commit changes". */
 (function(){
   "use strict";
   var REPO = "Chandur-95/livingroomlabs";
@@ -21,6 +23,13 @@
   var photos = [];              /* the batch being prepared */
   var seq = 0;
   var uploading = false;
+  /* Changes to already-uploaded photos wait here until "Commit changes". Keyed by the photo's
+     current src. { action:"edit", changes:{only the fields you changed}, replace:{file,url,ratio}|null }
+     or { action:"delete" }. */
+  var pendingEdits = {};
+  var committingEdits = false;
+  /* never deleted, whatever happens: the fallback banner photo */
+  var PROTECTED_FILES = ["dsc05175.jpg"];
 
   function $(s, r){ return (r || document).querySelector(s); }
   function $all(s, r){ return Array.prototype.slice.call((r || document).querySelectorAll(s)); }
@@ -93,6 +102,7 @@
     $("#gate").style.display = "none";
     $("#app").style.display = "block";
     updateUploadButton();
+    renderPendingBar();
     if (refresh) loadFromRepo();
   }
 
@@ -223,8 +233,10 @@
       .then(function(tree){
         var contentEntry = null;
         state.uploadNames = [];
+        state.paths = {};
         (tree.tree || []).forEach(function(t){
           if (t.path === "content.json") contentEntry = t;
+          if (t.type === "blob" && t.path.indexOf("images/") === 0) state.paths[t.path] = true;
           var m = /^images\/uploads\/([^\/]+)$/.exec(t.path);
           if (m && t.type === "blob") state.uploadNames.push(m[1]);
         });
@@ -258,22 +270,45 @@
       return true;
     });
     $("#existingCountLabel").textContent = list.length + " of " + existingPhotos.length + " photos live";
+    renderPendingBar();
     if (!list.length) {
       grid.innerHTML = '<div class="existing-empty">' + (existingPhotos.length ? "No photos match." : "No photos yet.") + '</div>';
       return;
     }
     grid.innerHTML = list.map(function(p){
+      var q = pendingEdits[p.src];
+      var v = q && q.action === "edit" ? Object.assign({}, p, q.changes) : p;
       /* just-committed photos show from the local copy until the site finishes building them */
-      var src = p.__preview || thumbFor(p.src);
-      return '<div class="existing-card">' +
+      var src = (q && q.replace && q.replace.url) || p.__preview || thumbFor(p.src);
+      var badge = !q ? "" : q.action === "delete" ? '<span class="ec-badge del">Will delete</span>'
+        : '<span class="ec-badge">' + (q.replace ? "New image" : "Edited") + '</span>';
+      return '<div class="existing-card' + (q ? " is-queued" : "") + (q && q.action === "delete" ? " is-deleting" : "") +
+          '" role="button" tabindex="0" data-edit-src="'+esc(p.src)+'" aria-label="Edit '+esc(v.title || "photo")+'">' +
+        badge +
         '<img src="'+esc(src)+'" data-full="'+esc(p.src)+'" alt="" loading="lazy">' +
         '<div class="ec-body">' +
-          '<div class="ec-title">' + (p.__justAdded ? '<span class="ec-new">NEW</span> ' : '') + esc(p.title || "Untitled") + '</div>' +
-          '<div class="ec-meta">' + esc(p.category || "") + ((p.eventTypes && p.eventTypes.length) ? " · " + esc(p.eventTypes.join(", ")) : "") + '</div>' +
-          (p.client ? '<div class="ec-meta">' + esc(p.client) + '</div>' : '') +
+          '<div class="ec-title">' + (p.__justAdded ? '<span class="ec-new">NEW</span> ' : '') + esc(v.title || "Untitled") + '</div>' +
+          '<div class="ec-meta">' + esc(v.category || "") + ((v.eventTypes && v.eventTypes.length) ? " · " + esc(v.eventTypes.join(", ")) : "") + '</div>' +
+          (v.client ? '<div class="ec-meta">' + esc(v.client) + '</div>' : '') +
+          (q && q.action === "delete" ? '<button type="button" class="btn small ec-restore" data-restore-src="'+esc(p.src)+'">Restore</button>' : '') +
         '</div>' +
       '</div>';
     }).join("");
+    $all("[data-edit-src]", grid).forEach(function(card){
+      function open(e){
+        if (e.target.closest("[data-restore-src]")) return;
+        openEdit(card.getAttribute("data-edit-src"));
+      }
+      card.addEventListener("click", open);
+      card.addEventListener("keydown", function(e){ if (e.key === "Enter" || e.key === " ") { e.preventDefault(); open(e); } });
+    });
+    $all("[data-restore-src]", grid).forEach(function(btn){
+      btn.addEventListener("click", function(e){
+        e.stopPropagation();
+        delete pendingEdits[btn.getAttribute("data-restore-src")];
+        renderExistingGrid();
+      });
+    });
     /* no thumbnail yet (new or unprocessed photo)? fall back to the original file */
     $all("img[data-full]", grid).forEach(function(img){
       img.addEventListener("error", function onErr(){
@@ -329,7 +364,7 @@
 
   function addFiles(fileList){
     if (uploading) return;
-    var files = Array.prototype.filter.call(fileList || [], function(f){ return /^image\//.test(f.type); });
+    var files = Array.prototype.filter.call(fileList || [], looksLikeImage);
     var room = MAX_BATCH - photos.length;
     if (room <= 0) {
       alert("This batch already has " + MAX_BATCH + " photos. Commit these first, then add the rest in a new batch.");
@@ -340,6 +375,22 @@
       files = files.slice(0, room);
     }
     clearResult();
+    if (!files.length) return;
+    setProgress(10, "Checking " + files.length + " photo(s)…");
+    Promise.all(files.map(function(f){
+      return prepareImage(f).then(function(ok){ return { file: ok }; }, function(err){ return { bad: f.name, why: err.message }; });
+    })).then(function(results){
+      hideProgress();
+      var bad = results.filter(function(r){ return r.bad; });
+      addPreparedFiles(results.filter(function(r){ return r.file; }).map(function(r){ return r.file; }));
+      if (bad.length) {
+        showResult(false, bad.length + " file(s) couldn't be read and were left out: " +
+          bad.map(function(b){ return b.bad; }).join(", ") + ". Export them as JPEG and add them again.");
+      }
+    });
+  }
+
+  function addPreparedFiles(files){
     files.forEach(function(file){
       var id = "p" + (seq++);
       var previewUrl = URL.createObjectURL(file);
@@ -669,6 +720,477 @@
         console.error(err);
       });
   }
+
+  /* ================= preparing image files ================= */
+  /* Phones and cameras hand over HEIC / TIFF / BMP files that most browsers (and the website)
+     can't show. Anything that isn't JPEG / PNG / WebP / GIF is turned into a JPEG here, in the
+     browser; anything that can't be opened at all is rejected so nothing broken goes live. */
+  var WEB_TYPES = /^image\/(jpeg|png|webp|gif)$/;
+  var IMG_EXT = /\.(jpe?g|png|webp|gif|heic|heif|tiff?|bmp|avif)$/i;
+  var HEIC2ANY_URL = "https://cdn.jsdelivr.net/npm/heic2any@0.0.4/dist/heic2any.min.js";
+  var heicLib = null;
+
+  function looksLikeImage(f){ return /^image\//.test(f.type || "") || IMG_EXT.test(f.name || ""); }
+
+  function decodeTest(blob){
+    return new Promise(function(resolve, reject){
+      var url = URL.createObjectURL(blob), img = new Image();
+      img.onload = function(){ resolve({ img: img, url: url }); };
+      img.onerror = function(){ URL.revokeObjectURL(url); reject(new Error("unreadable")); };
+      img.src = url;
+    });
+  }
+  function toJpeg(img, name){
+    return new Promise(function(resolve, reject){
+      var c = document.createElement("canvas");
+      c.width = img.naturalWidth; c.height = img.naturalHeight;
+      var ctx = c.getContext("2d");
+      ctx.fillStyle = "#fff"; ctx.fillRect(0, 0, c.width, c.height);
+      ctx.drawImage(img, 0, 0);
+      c.toBlob(function(b){
+        if (!b) { reject(new Error("could not convert")); return; }
+        resolve(new File([b], name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" }));
+      }, "image/jpeg", 0.92);
+    });
+  }
+  function loadHeicLib(){
+    if (window.heic2any) return Promise.resolve(window.heic2any);
+    if (heicLib) return heicLib;
+    heicLib = new Promise(function(resolve, reject){
+      var s = document.createElement("script");
+      s.src = HEIC2ANY_URL;
+      s.onload = function(){ window.heic2any ? resolve(window.heic2any) : reject(new Error("HEIC converter missing")); };
+      s.onerror = function(){ heicLib = null; reject(new Error("HEIC converter could not load")); };
+      document.head.appendChild(s);
+    });
+    return heicLib;
+  }
+  function prepareImage(file){
+    var isHeic = /hei[cf]/i.test(file.type || "") || /\.hei[cf]$/i.test(file.name || "");
+    return decodeTest(file).then(function(r){
+      if (WEB_TYPES.test(file.type || "") && !isHeic) { URL.revokeObjectURL(r.url); return file; }
+      return toJpeg(r.img, file.name).then(function(j){ URL.revokeObjectURL(r.url); return j; });
+    }, function(){
+      if (!isHeic) throw new Error("This file can't be opened");
+      /* Chrome/Edge/Firefox can't open HEIC themselves - use a converter, loaded only when needed */
+      return loadHeicLib()
+        .then(function(lib){ return lib({ blob: file, toType: "image/jpeg", quality: 0.92 }); })
+        .then(function(out){
+          var b = Array.isArray(out) ? out[0] : out;
+          return new File([b], file.name.replace(/\.[^.]+$/, "") + ".jpg", { type: "image/jpeg" });
+        })
+        .then(function(j){ return decodeTest(j).then(function(r){ URL.revokeObjectURL(r.url); return j; }); })
+        .catch(function(){ throw new Error("This HEIC file can't be converted here"); });
+    });
+  }
+
+  /* ================= editing already-uploaded photos ================= */
+  var editSrc = null, editOriginal = null, editReplace = null, altFollowsTitle = false;
+
+  function photoBySrc(src){
+    for (var i = 0; i < existingPhotos.length; i++) if (existingPhotos[i].src === src) return existingPhotos[i];
+    return null;
+  }
+  function pendingCount(){ return Object.keys(pendingEdits).length; }
+  window.__bulkPendingCount = pendingCount;
+
+  function buildEditPanel(){
+    if (document.getElementById("bulkEdit")) return document.getElementById("bulkEdit");
+    var el = document.createElement("div");
+    el.id = "bulkEdit";
+    el.className = "be-overlay";
+    el.setAttribute("role", "dialog");
+    el.setAttribute("aria-modal", "true");
+    el.setAttribute("aria-labelledby", "beHeading");
+    el.innerHTML =
+      '<div class="be-card">' +
+        '<div class="be-media">' +
+          '<div class="be-img-wrap"><img id="beImg" alt=""><span class="be-img-tag" id="beImgTag" hidden>New image</span></div>' +
+          '<div class="be-media-actions">' +
+            '<button type="button" class="btn small" id="beReplaceBtn">Replace image…</button>' +
+            '<button type="button" class="btn small" id="beUndoReplace" hidden>Keep the original</button>' +
+            '<input type="file" id="beReplaceInput" accept="image/*,.heic,.heif,.tif,.tiff" hidden>' +
+          '</div>' +
+          '<p class="be-note" id="beReplaceNote">Replacing gives the photo a new file name, so nobody sees the old one from their browser cache.</p>' +
+        '</div>' +
+        '<div class="be-fields card-body">' +
+          '<h2 id="beHeading">Edit photo</h2>' +
+          '<div><label for="beTitle">Title</label><input type="text" id="beTitle"></div>' +
+          '<div class="card-row">' +
+            '<div><label for="beCategory">Category</label><select id="beCategory"></select></div>' +
+            '<div><label for="beClient">Shoot / Client</label><input type="text" id="beClient"></div>' +
+          '</div>' +
+          '<div class="event-field"><label for="beEvents">Event Type <span class="opt">(optional - several? separate with commas)</span></label>' +
+            '<input type="text" id="beEvents" list="eventTypeSuggestions"></div>' +
+          '<div><label for="beCaption">Caption</label><textarea id="beCaption"></textarea></div>' +
+          '<div><label for="beAlt">Alt text <span class="opt">(describe what is in the photo)</span></label><input type="text" id="beAlt"></div>' +
+          '<div class="card-row">' +
+            '<div><label for="bePos">Image Position</label><select id="bePos"></select></div>' +
+            '<div><label for="beRatio">Aspect Ratio</label><select id="beRatio"></select></div>' +
+          '</div>' +
+          '<div class="card-toggles">' +
+            '<label><input type="checkbox" id="beShowAll"> Show in All</label>' +
+            '<label><input type="checkbox" id="beFeatured"> Featured</label>' +
+          '</div>' +
+          '<div class="be-msg" id="beMsg" role="status"></div>' +
+          '<div class="be-actions">' +
+            '<button type="button" class="btn danger small" id="beDelete">Delete photo</button>' +
+            '<span class="be-fill"></span>' +
+            '<button type="button" class="btn" id="beCancel">Cancel</button>' +
+            '<button type="button" class="btn primary" id="beSave">Save change</button>' +
+          '</div>' +
+        '</div>' +
+      '</div>';
+    ($("#bulkOverlay") || document.body).appendChild(el);
+
+    $("#beCategory", el).addEventListener("change", function(){
+      $(".be-card", el).classList.toggle("is-events", this.value === "Events");
+    });
+    $("#beTitle", el).addEventListener("input", function(){ if (altFollowsTitle) $("#beAlt", el).value = this.value; });
+    $("#beAlt", el).addEventListener("input", function(){ altFollowsTitle = false; });
+    $("#beReplaceBtn", el).addEventListener("click", function(){ $("#beReplaceInput", el).click(); });
+    $("#beReplaceInput", el).addEventListener("change", function(){
+      var f = this.files && this.files[0];
+      this.value = "";
+      if (f) chooseReplacement(f);
+    });
+    $("#beUndoReplace", el).addEventListener("click", function(){
+      if (editReplace && editReplace.url && !isQueuedReplaceUrl(editReplace.url)) URL.revokeObjectURL(editReplace.url);
+      editReplace = null;
+      showEditImage();
+    });
+    $("#beCancel", el).addEventListener("click", closeEdit);
+    $("#beSave", el).addEventListener("click", saveEdit);
+    $("#beDelete", el).addEventListener("click", toggleDelete);
+    el.addEventListener("click", function(e){ if (e.target === el) closeEdit(); });
+    document.addEventListener("keydown", function(e){ if (e.key === "Escape" && el.classList.contains("on")) closeEdit(); });
+    return el;
+  }
+
+  function isQueuedReplaceUrl(url){
+    return Object.keys(pendingEdits).some(function(k){ var q = pendingEdits[k]; return q.replace && q.replace.url === url; });
+  }
+  function setEditMsg(text, isErr){
+    var m = $("#beMsg");
+    m.textContent = text || "";
+    m.className = "be-msg" + (isErr ? " err" : "");
+  }
+  function showEditImage(){
+    var el = $("#bulkEdit"), p = editOriginal;
+    var img = $("#beImg", el);
+    img.onerror = function(){ img.onerror = null; img.src = p.src; };
+    img.src = editReplace ? editReplace.url : (p.__preview || thumbFor(p.src));
+    $("#beImgTag", el).hidden = !editReplace;
+    $("#beUndoReplace", el).hidden = !editReplace;
+    $("#beReplaceBtn", el).textContent = editReplace ? "Choose a different image…" : "Replace image…";
+  }
+
+  function openEdit(src){
+    var p = photoBySrc(src);
+    if (!p) return;
+    if (committingEdits) return;
+    var el = buildEditPanel();
+    var q = pendingEdits[src];
+    editSrc = src;
+    editOriginal = p;
+    editReplace = q && q.replace ? q.replace : null;
+    var v = q && q.action === "edit" ? Object.assign({}, p, q.changes) : p;
+    var cats = CATEGORIES.indexOf(v.category) === -1 && v.category ? CATEGORIES.concat([v.category]) : CATEGORIES;
+    $("#beCategory", el).innerHTML = optionList(cats, v.category || CATEGORIES[0]);
+    $("#bePos", el).innerHTML = optionList(POSITIONS, v.imagePosition || "Center");
+    var ratios = RATIOS.indexOf(v.ratio) === -1 && v.ratio ? RATIOS.concat([v.ratio]) : RATIOS;
+    $("#beRatio", el).innerHTML = optionList(ratios, v.ratio || "4/5");
+    $("#beTitle", el).value = v.title || "";
+    $("#beClient", el).value = v.client || "";
+    $("#beEvents", el).value = (v.eventTypes || []).join(", ");
+    $("#beCaption", el).value = v.caption || "";
+    $("#beAlt", el).value = v.alt || "";
+    altFollowsTitle = !!(v.alt && v.alt === v.title);
+    $("#beShowAll", el).checked = v.showInAll !== false;
+    $("#beFeatured", el).checked = !!v.featured;
+    $(".be-card", el).classList.toggle("is-events", (v.category || "") === "Events");
+    var deleting = q && q.action === "delete";
+    $(".be-card", el).classList.toggle("is-deleting", !!deleting);
+    $("#beDelete", el).textContent = deleting ? "Restore photo" : "Delete photo";
+    $("#beSave", el).disabled = !!deleting;
+    $("#beHeading", el).textContent = deleting ? "Will be deleted when you commit" : "Edit photo";
+    setEditMsg(deleting ? "This photo is queued for deletion. Restore it to edit it again." :
+      (q ? "This photo already has a change waiting - saving here updates it." : ""), false);
+    showEditImage();
+    el.classList.add("on");
+    setTimeout(function(){ try { $("#beTitle", el).focus({ preventScroll: true }); } catch(e){} }, 30);
+  }
+
+  function closeEdit(){
+    var el = $("#bulkEdit");
+    if (!el) return;
+    if (editReplace && editReplace.url && !isQueuedReplaceUrl(editReplace.url)) URL.revokeObjectURL(editReplace.url);
+    el.classList.remove("on");
+    editSrc = null; editOriginal = null; editReplace = null;
+  }
+
+  function chooseReplacement(file){
+    setEditMsg("Checking the new image…", false);
+    prepareImage(file).then(function(ready){
+      var url = URL.createObjectURL(ready);
+      var probe = new Image();
+      probe.onload = function(){
+        if (editReplace && editReplace.url && !isQueuedReplaceUrl(editReplace.url)) URL.revokeObjectURL(editReplace.url);
+        var ratio = closestPresetRatio(probe.naturalWidth, probe.naturalHeight);
+        editReplace = { file: ready, url: url, ratio: ratio };
+        $("#beRatio").innerHTML = optionList(RATIOS, ratio);
+        showEditImage();
+        setEditMsg("New image ready (" + ratio + "). Press Save change to add it to the list.", false);
+      };
+      probe.onerror = function(){ URL.revokeObjectURL(url); setEditMsg("That image couldn't be opened.", true); };
+      probe.src = url;
+    }, function(err){
+      setEditMsg(err.message + ". Export it as JPEG and try again.", true);
+    });
+  }
+
+  var EDIT_FIELDS = ["title", "client", "category", "eventTypes", "caption", "alt", "imagePosition", "ratio", "featured", "showInAll"];
+  function sameValue(a, b){ return JSON.stringify(a == null ? "" : a) === JSON.stringify(b == null ? "" : b); }
+
+  function saveEdit(){
+    if (!editSrc) return;
+    var el = $("#bulkEdit");
+    var title = $("#beTitle", el).value.trim();
+    if (!title) { setEditMsg("Please give the photo a title.", true); $("#beTitle", el).focus(); return; }
+    var category = $("#beCategory", el).value;
+    var form = {
+      title: title,
+      client: $("#beClient", el).value.trim() || "Studio",
+      category: category,
+      eventTypes: category === "Events" ? uniq(splitList($("#beEvents", el).value)) : [],
+      caption: $("#beCaption", el).value.trim(),
+      alt: $("#beAlt", el).value.trim(),
+      imagePosition: $("#bePos", el).value || "Center",
+      ratio: $("#beRatio", el).value || "4/5",
+      featured: $("#beFeatured", el).checked,
+      showInAll: $("#beShowAll", el).checked
+    };
+    /* only the fields you actually changed are sent, so a change someone else made to another
+       field in the Content Editor in the meantime is never overwritten */
+    var changes = {}, p = editOriginal;
+    EDIT_FIELDS.forEach(function(k){
+      var before = p[k];
+      if (k === "showInAll") before = p.showInAll !== false;
+      if (k === "featured") before = !!p.featured;
+      if (k === "eventTypes") before = p.eventTypes || [];
+      if (k === "client") before = p.client || "Studio";
+      if (!sameValue(before, form[k])) changes[k] = form[k];
+    });
+    if (!Object.keys(changes).length && !editReplace) {
+      delete pendingEdits[editSrc];
+      closeEdit();
+      renderExistingGrid();
+      return;
+    }
+    pendingEdits[editSrc] = { action: "edit", changes: changes, replace: editReplace };
+    editReplace = null; /* now owned by the queue (keeps its preview) */
+    closeEdit();
+    renderExistingGrid();
+  }
+
+  function toggleDelete(){
+    if (!editSrc) return;
+    var src = editSrc, q = pendingEdits[src];
+    if (q && q.action === "delete") { delete pendingEdits[src]; openEdit(src); renderExistingGrid(); return; }
+    var label = (editOriginal && editOriginal.title) || uploadName(src) || "this photo";
+    if (!confirm('Delete "' + label + '"?\n\nNothing is removed yet - it happens when you press "Commit changes". You can Restore it until then.')) return;
+    if (q && q.replace && q.replace.url) URL.revokeObjectURL(q.replace.url);
+    pendingEdits[src] = { action: "delete" };
+    closeEdit();
+    renderExistingGrid();
+  }
+
+  /* ================= the waiting list + one commit ================= */
+  function renderPendingBar(){
+    var bar = $("#pendingBar");
+    if (!bar) return;
+    var keys = Object.keys(pendingEdits), n = keys.length;
+    var tab = document.querySelector('.tab-btn[data-tab="existing"]');
+    if (tab) tab.textContent = "Already Uploaded" + (n ? " (" + n + " waiting)" : "");
+    bar.hidden = !n;
+    if (!n) return;
+    var del = 0, rep = 0, ed = 0;
+    keys.forEach(function(k){ var q = pendingEdits[k]; if (q.action === "delete") del++; else if (q.replace) rep++; else ed++; });
+    var parts = [];
+    if (ed) parts.push(ed + " edited");
+    if (rep) parts.push(rep + " new image" + (rep > 1 ? "s" : ""));
+    if (del) parts.push(del + " to delete");
+    $("#pendingText").textContent = n + (n === 1 ? " change" : " changes") + " waiting (" + parts.join(", ") + ") - not live yet.";
+    $("#btnCommitPending").disabled = committingEdits || !token;
+    $("#btnDiscardPending").disabled = committingEdits;
+  }
+
+  function showExistingResult(ok, message){
+    var el = $("#existingResult");
+    if (!el) return;
+    el.className = "result-banner " + (ok ? "ok" : "err");
+    el.textContent = message;
+  }
+
+  var discardBtn = $("#btnDiscardPending");
+  if (discardBtn) discardBtn.addEventListener("click", function(){
+    var n = pendingCount();
+    if (!n || committingEdits) return;
+    if (!confirm("Throw away all " + n + " waiting change(s)? Nothing has gone live, so the site stays exactly as it is.")) return;
+    Object.keys(pendingEdits).forEach(function(k){ var q = pendingEdits[k]; if (q.replace && q.replace.url) URL.revokeObjectURL(q.replace.url); });
+    pendingEdits = {};
+    renderExistingGrid();
+  });
+  var commitBtn = $("#btnCommitPending");
+  if (commitBtn) commitBtn.addEventListener("click", function(){
+    var n = pendingCount();
+    if (!n || committingEdits || !token) return;
+    if (!confirm("Publish " + n + " change(s) to livingroomlabs.in now? They go live in about a minute.")) return;
+    commitPending();
+  });
+
+  /* every place a file in images/uploads can be in use */
+  function filesInUse(content){
+    var used = {};
+    function add(src){ var n = uploadName(src); if (n) used[n.toLowerCase()] = true; }
+    (content.photos || []).forEach(function(p){ if (p) add(p.src); });
+    (content.bandSlides || []).forEach(function(s){ if (s) add(s.src); });
+    add(content.bandImg); add(content.teamHeroImg); add(content.logo);
+    (content.team || []).forEach(function(m){ if (m) { add(m.photo); add(m.photo2); } });
+    PROTECTED_FILES.forEach(function(n){ used[n.toLowerCase()] = true; });
+    return used;
+  }
+  /* the original + every small copy the photo robot made of it */
+  function copiesOf(name){
+    return ["images/uploads/" + name, "images/thumbs/" + name + ".webp", "images/thumbs/" + name + ".jpg",
+      "images/full/" + name + ".webp"].concat([800, 1280, 1920, 2400].map(function(w){ return "images/hero/" + name + "-" + w + ".webp"; }));
+  }
+
+  function commitPending(){
+    var queue = pendingEdits, keys = Object.keys(queue), total = keys.length;
+    var base, treeEntries = [], newSrcFor = {};
+    committingEdits = true;
+    renderPendingBar();
+    setProgress(4, "Reading the latest version of the site…");
+    readRepoState()
+      .then(function(state){
+        base = state;
+        state.uploadNames.forEach(function(n){ knownUploadNames[n.toLowerCase()] = true; });
+        var list = state.content.photos;
+        var gone = keys.filter(function(src){ return !list.some(function(p){ return p && p.src === src; }); });
+        if (gone.length) {
+          throw new Error(gone.length + " of these photos are no longer on the site (removed in the Content Editor?): " +
+            gone.map(function(s){ return uploadName(s) || s; }).join(", ") + ". Restore or discard those, then try again.");
+        }
+        var reserved = {};
+        var chain = Promise.resolve(), done = 0;
+        keys.forEach(function(src){
+          var q = queue[src];
+          if (q.action !== "edit" || !q.replace) return;
+          chain = chain.then(function(){
+            done++;
+            setProgress(8 + Math.round((done / total) * 60), "Uploading new image " + done + "…");
+            /* new file name (never the old one) so browsers and Cloudflare can't keep showing the old image */
+            var name = uniqueFilename(q.replace.file.name, null), n = 2, parts = slugParts(q.replace.file.name);
+            while (reserved[name.toLowerCase()] || name.toLowerCase() === (uploadName(src) || "").toLowerCase()) {
+              name = parts.slug + "-" + n + parts.ext; n++;
+              while (knownUploadNames[name.toLowerCase()]) { name = parts.slug + "-" + n + parts.ext; n++; }
+            }
+            reserved[name.toLowerCase()] = true;
+            return fileToBase64(q.replace.file)
+              .then(function(b64){ return ghFetch("/repos/" + REPO + "/git/blobs", { method: "POST", body: JSON.stringify({ content: b64, encoding: "base64" }) }); })
+              .then(function(blob){
+                treeEntries.push({ path: "images/uploads/" + name, mode: "100644", type: "blob", sha: blob.sha });
+                newSrcFor[src] = "/images/uploads/" + name;
+              });
+          });
+        });
+        return chain;
+      })
+      .then(function(){
+        setProgress(74, "Updating the photo list…");
+        var content = base.content, removedNames = [];
+        keys.forEach(function(src){
+          var q = queue[src];
+          var idx = -1;
+          content.photos.forEach(function(p, i){ if (idx === -1 && p && p.src === src) idx = i; });
+          if (q.action === "delete") {
+            content.photos.splice(idx, 1);
+            if (uploadName(src)) removedNames.push(uploadName(src));
+            return;
+          }
+          var photo = content.photos[idx];
+          Object.keys(q.changes).forEach(function(k){ photo[k] = q.changes[k]; });
+          if (newSrcFor[src]) {
+            photo.src = newSrcFor[src];
+            if (!("ratio" in q.changes) && q.replace.ratio) photo.ratio = q.replace.ratio;
+            if (uploadName(src)) removedNames.push(uploadName(src));
+          }
+        });
+        /* remove old files only when nothing else (banner, team photo, another photo) still uses them */
+        var used = filesInUse(content);
+        removedNames.forEach(function(name){
+          if (used[name.toLowerCase()]) return;
+          copiesOf(name).forEach(function(path){
+            if (base.paths[path]) treeEntries.push({ path: path, mode: "100644", type: "blob", sha: null });
+          });
+        });
+        return ghFetch("/repos/" + REPO + "/git/blobs", {
+          method: "POST",
+          body: JSON.stringify({ content: utf8ToBase64(JSON.stringify(content, null, 2) + "\n"), encoding: "base64" })
+        });
+      })
+      .then(function(blob){
+        treeEntries.push({ path: "content.json", mode: "100644", type: "blob", sha: blob.sha });
+        setProgress(84, "Building the commit…");
+        return ghFetch("/repos/" + REPO + "/git/trees", { method: "POST", body: JSON.stringify({ base_tree: base.treeSha, tree: treeEntries }) });
+      })
+      .then(function(tree){
+        var del = keys.filter(function(k){ return queue[k].action === "delete"; }).length;
+        var msg = "Edit " + total + " photo(s) via bulk uploader" + (del ? " (" + del + " deleted)" : "");
+        return ghFetch("/repos/" + REPO + "/git/commits", { method: "POST", body: JSON.stringify({ message: msg, tree: tree.sha, parents: [base.commitSha] }) });
+      })
+      .then(function(commit){
+        setProgress(94, "Publishing to livingroomlabs.in…");
+        return ghFetch("/repos/" + REPO + "/git/refs/heads/" + BRANCH, { method: "PATCH", body: JSON.stringify({ sha: commit.sha, force: false }) })
+          .then(function(){ return commit; });
+      })
+      .then(function(commit){
+        setProgress(100, "Done!");
+        /* show the new images from the local copy until the site has made its small copies */
+        var previews = {};
+        keys.forEach(function(src){ var q = queue[src]; if (newSrcFor[src] && q.replace) previews[newSrcFor[src]] = q.replace.url; });
+        var oldNew = {};
+        existingPhotos.forEach(function(p){ if (p.__justAdded) oldNew[p.src] = p.__preview || true; });
+        applyContent(base.content);
+        existingPhotos.forEach(function(p){
+          if (previews[p.src]) p.__preview = previews[p.src];
+          else if (oldNew[p.src]) { p.__justAdded = true; if (oldNew[p.src] !== true) p.__preview = oldNew[p.src]; }
+        });
+        Object.keys(newSrcFor).forEach(function(k){ knownUploadNames[(uploadName(newSrcFor[k]) || "").toLowerCase()] = true; });
+        pendingEdits = {};
+        committingEdits = false;
+        window.__bulkCommitted = true;
+        renderExistingGrid();
+        showExistingResult(true, "✓ " + total + " change(s) published (" + commit.sha.slice(0, 7) + "). The site updates in about a minute; new images get their small copies a minute or two after that.");
+        setTimeout(hideProgress, 1500);
+      })
+      .catch(function(err){
+        committingEdits = false;
+        hideProgress();
+        renderPendingBar();
+        var msg = String(err && err.message || err);
+        if (/GitHub 422/.test(msg) && /fast.?forward/i.test(msg)) {
+          msg = "Someone saved a change on the site at the same moment. Nothing was published - just press \"Commit changes\" again.";
+        }
+        showExistingResult(false, "Nothing went live - the site is unchanged and your changes are still waiting. " + msg);
+        console.error(err);
+      });
+  }
+
+  window.addEventListener("beforeunload", function(e){
+    if (pendingCount() || committingEdits) { e.preventDefault(); e.returnValue = ""; }
+  });
 
   /* first check happens now; the Content Editor page calls __bulkRecheck() each time the panel opens */
   tryAutoLogin();

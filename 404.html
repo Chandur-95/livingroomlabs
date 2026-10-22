@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex">
+<title>Page not found | Living Room Labs</title>
+<link rel="icon" href="/logo.png">
+<meta name="theme-color" content="#FFFFFF" id="themeColorMeta">
+<script>
+  /* same light/dark choice as the rest of the site (the lamp cord) */
+  (function(){ try { var t = localStorage.getItem("lrl_theme");
+    if (t === "dark" || t === "light") document.documentElement.setAttribute("data-theme", t);
+    if (t === "dark") document.getElementById("themeColorMeta").setAttribute("content", "#080808");
+  } catch(e){} })();
+</script>
+<style>
+@font-face{font-family:'Inter';font-style:normal;font-weight:400 800;font-display:swap;src:url(/fonts/inter-latin-normal.woff2) format('woff2')}
+@font-face{font-family:'JetBrains Mono';font-style:normal;font-weight:400 500;font-display:swap;src:url(/fonts/jetbrains-mono-latin-normal.woff2) format('woff2')}
+:root{
+  --paper:#FFFFFF; --ink:#000000; --rule:rgba(0,0,0,.15); --glow:#FFC24B;
+  --print:#FBFAF7; --print-edge:rgba(0,0,0,.08); --murk:#5b5148;
+  --pad:clamp(18px, 4vw, 56px);
+}
+html[data-theme="dark"]{ --paper:#080808; --ink:#FFFFFF; --rule:rgba(255,255,255,.22); --print:#EDEBE6; --print-edge:rgba(255,255,255,.06); }
+*,*::before,*::after{box-sizing:border-box}
+html,body{margin:0;min-height:100%}
+body{
+  background:var(--paper);color:var(--ink);
+  font-family:"Inter",system-ui,-apple-system,BlinkMacSystemFont,sans-serif;
+  line-height:1.55;-webkit-font-smoothing:antialiased;
+  min-height:100vh;min-height:100svh;display:flex;flex-direction:column;
+  padding:calc(env(safe-area-inset-top,0px) + 18px) var(--pad) calc(env(safe-area-inset-bottom,0px) + 24px);
+}
+a{color:inherit;text-decoration:none}
+:focus-visible{outline:2px solid var(--ink);outline-offset:3px;box-shadow:0 0 0 5px var(--glow)}
+
+.top{display:flex;align-items:center}
+.brand{display:inline-flex;align-items:center;gap:12px}
+.brand img{width:56px;height:56px;object-fit:contain}
+html[data-theme="dark"] .brand img{filter:brightness(0) invert(1)}
+.brand span{font-weight:700;font-size:.95rem;letter-spacing:-.01em}
+
+main{
+  flex:1;display:grid;align-items:center;gap:clamp(28px, 6vw, 88px);
+  grid-template-columns:minmax(0, 360px) minmax(0, 1fr);
+  max-width:1080px;width:100%;margin:0 auto;padding-block:clamp(24px, 6vh, 72px);
+}
+
+/* the instant print: thick bottom border like real instant film */
+.print{
+  display:block;background:var(--print);padding:14px 14px 0;
+  box-shadow:0 1px 0 var(--print-edge), 0 18px 40px rgba(0,0,0,.14), 0 3px 8px rgba(0,0,0,.08);
+  transform:rotate(-2.2deg);transition:transform .4s cubic-bezier(.16,1,.3,1);
+  width:100%;max-width:360px;justify-self:center;
+}
+.print:hover,.print:focus-visible{transform:rotate(0deg) translateY(-3px)}
+.frame{position:relative;aspect-ratio:1/1;overflow:hidden;background:var(--murk)}
+.frame img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0}
+/* "developing": starts murky brown-grey, clears to the real photo, once */
+.frame.dev img{animation:develop 4.2s cubic-bezier(.4,0,.2,1) .5s forwards}
+@keyframes develop{
+  0%  {opacity:1;filter:brightness(.35) sepia(.9) contrast(.6) blur(2px)}
+  45% {opacity:1;filter:brightness(.75) sepia(.45) contrast(.85) blur(.6px)}
+  100%{opacity:1;filter:none}
+}
+.strip{
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  height:clamp(64px, 18%, 84px);padding:0 4px;color:#222;
+  font-family:"JetBrains Mono",monospace;font-size:.78rem;letter-spacing:.08em;
+}
+.strip b{font-weight:500;font-size:1.05rem;letter-spacing:.14em}
+.strip span{opacity:.55;text-align:right;line-height:1.35;max-width:60%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.copy h1{
+  margin:0 0 14px;font-size:clamp(2rem, 4.6vw, 3.6rem);line-height:1.04;
+  font-weight:800;letter-spacing:-.035em;max-width:14ch;
+}
+.copy p{margin:0 0 30px;max-width:44ch;font-size:clamp(.98rem, .3vw + .92rem, 1.08rem);opacity:.72}
+.actions{display:flex;flex-wrap:wrap;gap:12px}
+.btn{
+  display:inline-flex;align-items:center;justify-content:center;min-height:46px;
+  padding:0 24px;border-radius:999px;border:1px solid var(--ink);
+  font-size:.86rem;font-weight:600;letter-spacing:.01em;
+  transition:background .2s ease, color .2s ease;
+}
+.btn.solid{background:var(--ink);color:var(--paper)}
+.btn:hover{background:var(--ink);color:var(--paper)}
+.btn.solid:hover{opacity:.85}
+.copy .small{margin:26px 0 0;font-size:.84rem;opacity:.6}
+.copy .small a{background-image:linear-gradient(var(--glow),var(--glow));background-repeat:no-repeat;background-position:0 100%;background-size:100% 2px}
+
+@media (max-width:760px){
+  main{grid-template-columns:1fr;align-content:center;text-align:left}
+  .print{max-width:min(300px, 78vw)}
+  .copy h1{max-width:none}
+}
+@media (prefers-reduced-motion:reduce){
+  .frame.dev img{animation:none;opacity:1}
+  .print,.print:hover{transition:none;transform:rotate(-2.2deg)}
+}
+</style>
+</head>
+<body>
+  <header class="top">
+    <a class="brand" href="/" aria-label="Living Room Labs home">
+      <img src="/logo.png" width="600" height="600" alt="">
+      <span>Living Room Labs</span>
+    </a>
+  </header>
+
+  <main>
+    <a class="print" id="print" href="/capture.html" aria-label="See our work in What We Capture">
+      <div class="frame" id="frame"><img id="photo" alt=""></div>
+      <div class="strip"><b>404</b><span id="photoTitle">still developing…</span></div>
+    </a>
+
+    <div class="copy">
+      <h1>This page didn't develop.</h1>
+      <p>The link may be old or mistyped. Everything we shoot is still on the site, starting with this photo.</p>
+      <div class="actions">
+        <a class="btn solid" href="/">Go to the home page</a>
+        <a class="btn" href="/capture.html">See What We Capture</a>
+      </div>
+      <p class="small">Looking for something specific? Write to <a id="mail" href="mailto:hello@livingroomlabs.in">hello@livingroomlabs.in</a></p>
+    </div>
+  </main>
+
+<script>
+  /* one random featured photo develops in the print */
+  (function(){
+    var frame = document.getElementById("frame"), img = document.getElementById("photo"), cap = document.getElementById("photoTitle");
+    fetch("/content.json", { cache: "no-cache" }).then(function(r){ return r.json(); }).then(function(d){
+      if (d.email) { var m = document.getElementById("mail"); m.textContent = d.email; m.href = "mailto:" + d.email; }
+      var list = (d.photos || []).filter(function(p){ return p && p.src && p.featured !== false && p.featured !== "false"; });
+      if (!list.length) list = (d.photos || []).filter(function(p){ return p && p.src; });
+      if (!list.length) return;
+      var p = list[Math.floor(Math.random() * list.length)];
+      var name = (/^\/?images\/uploads\/([^\/?#]+)$/.exec(p.src) || [])[1];
+      var tries = name ? ["/images/thumbs/" + name + ".webp", "/images/thumbs/" + name + ".jpg", p.src] : [p.src];
+      img.alt = p.alt || p.title || "";
+      img.onerror = function(){ tries.shift(); if (tries.length) img.src = tries[0]; };
+      img.onload = function(){ frame.classList.add("dev"); cap.textContent = p.title || ""; };
+      img.src = tries[0];
+    }).catch(function(){ cap.textContent = "page not found"; });
+  })();
+</script>
+<script>
+  /* Fotu loads about 2 seconds after the page, same as the rest of the site */
+  (function(){
+    function go(){ var s = document.createElement("script"); s.src = "/fotu.js"; s.async = true; document.body.appendChild(s); }
+    function later(){ setTimeout(function(){ if ("requestIdleCallback" in window) requestIdleCallback(go, { timeout: 1500 }); else go(); }, 2000); }
+    if (document.readyState === "complete") later(); else window.addEventListener("load", later, { once: true });
+  })();
+</script>
+</body>
+</html>

@@ -3,10 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>What We Capture — Living Room Labs</title>
+<title>What We Capture | Photography in Hyderabad | Living Room Labs</title>
 <meta name="description" content="Browse Living Room Labs by category: food, pets, real estate, products, events, portraits and travel photography from Hyderabad.">
 <link rel="icon" type="image/png" href="/logo.png">
-<link rel="canonical" href="https://livingroomlabs.in/capture.html">
+<!-- each category gets its own title, description and address; functions/capture.js writes them
+     into this page before it's sent, and the script below keeps them right while you browse -->
+<link rel="canonical" href="https://livingroomlabs.in/capture">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Living Room Labs">
+<meta property="og:title" content="What We Capture | Photography in Hyderabad | Living Room Labs">
+<meta property="og:description" content="Browse Living Room Labs by category: food, pets, real estate, products, events, portraits and travel photography from Hyderabad.">
+<meta property="og:url" content="https://livingroomlabs.in/capture">
+<meta property="og:image" content="https://livingroomlabs.in/og-image.jpg">
+<meta property="og:locale" content="en_IN">
+<meta name="twitter:card" content="summary_large_image">
 <!-- Sync theme from home page localStorage - defaults to light unless the user explicitly picked dark before -->
 <script>
   (function(){
@@ -211,6 +221,21 @@ html[data-theme="dark"] #catview{background:#080808;color:#fff}
 }
 .cat-head h1{font-size:clamp(1.6rem,4vw,2.4rem);margin:0 0 6px;font-weight:600}
 .cat-head p{margin:0;opacity:.6;font-size:.9rem;max-width:56ch}
+.cat-head .cat-price{margin-top:8px;opacity:1;font-weight:600;font-size:.92rem}
+.cat-head .cat-price span{font-weight:400;opacity:.6}
+.cat-price[hidden],#capWhatsApp[hidden],.btn-cap-foot-wa[hidden]{display:none !important}
+.btn-cap-foot-wa{
+  display:inline-flex;align-items:center;gap:7px;flex:none;white-space:nowrap;
+  border:1px solid var(--ink);color:var(--ink);border-radius:999px;text-decoration:none;
+  padding:9px 18px;font-size:.74rem;letter-spacing:.06em;text-transform:uppercase;
+}
+.btn-cap-foot-wa:hover{background:var(--ink);color:var(--paper)}
+@media (max-width:640px){
+  .btn-cap-foot-wa{padding:0;width:38px;height:38px;justify-content:center}
+  .btn-cap-foot-wa span{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+}
+/* very small phones: with two buttons in the footer, the tagline gives way so the bar stays one line */
+@media (max-width:370px){ .cap-foot.has-wa .cap-foot-text p{display:none} }
 .cat-chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
 .cat-chip{
   border:1px solid var(--line);background:none;color:var(--ink);border-radius:999px;
@@ -361,6 +386,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
         <button type="button" id="capCollective" class="cap-mobile-hide">The Collective ↗</button>
         <a href="#" id="capElsewhere" class="cap-mobile-hide" target="_blank" rel="noopener">Elsewhere ↗</a>
         <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the lamp on">☾ Lamp</button>
+        <a href="#" id="capWhatsApp" class="cap-mobile-hide" target="_blank" rel="noopener" hidden>WhatsApp ↗</a>
         <button type="button" id="capEnquire" class="cap-enquire">Enquire ↗</button>
       </div>
     </div>
@@ -388,6 +414,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   <div class="cat-head">
     <h1 id="catTitle"></h1>
     <p id="catLine"></p>
+    <p id="catPrice" class="cat-price" hidden></p>
     <div class="cat-chips" id="catChips"></div>
   </div>
   <div class="cat-grid" id="catGrid"></div>
@@ -400,6 +427,10 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     <b class="mono" id="capFootHeading">Enquiry</b>
     <p class="mono" id="capFootTagline">Every frame begins with a conversation</p>
   </div>
+  <a class="btn-cap-foot-wa mono" id="capFootWa" href="#" target="_blank" rel="noopener" hidden aria-label="WhatsApp us">
+    <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 19.5l1.2-3.6A8 8 0 1 1 8.4 18.6z"/><path d="M9 10.2c.3 1.9 2.4 4 4.8 4.6l1.2-1.2"/></svg>
+    <span>WhatsApp</span>
+  </a>
   <button type="button" class="btn-cap-foot-enquire mono" id="capFootEnquire">Enquire ↗</button>
 </footer>
 
@@ -628,6 +659,54 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     window.__isDark = isDark;
   }
 
+  /* ---------------- page title + share details per category (Google, WhatsApp previews) ---------------- */
+  var SITE_URL = "https://livingroomlabs.in";
+  /* fixed text, not read from the page: on a category link the server has already swapped these */
+  var BASE_TITLE = "What We Capture | Photography in Hyderabad | Living Room Labs";
+  var BASE_DESC = "Browse Living Room Labs by category: food, pets, real estate, products, events, portraits and travel photography from Hyderabad.";
+  function catLabel(name){
+    var m = { "Events": "Event", "Pets": "Pet", "Products": "Product", "Portraits": "Portrait" };
+    return m[name] || name;
+  }
+  function priceText(v){
+    var t = String(v || "").trim();
+    if (!t) return "";
+    if (/^[0-9][0-9,]*$/.test(t)) t = "₹" + Number(t.replace(/,/g, "")).toLocaleString("en-IN");
+    return t;
+  }
+  function setMeta(sel, attr, val){ var el = document.querySelector(sel); if (el) el.setAttribute(attr, val); }
+  function setHead(name){
+    var n = name ? (NICHES.find(function(x){ return ((x && x.name) || x) === name; }) || {}) : null;
+    var title = name ? catLabel(name) + " Photography in Hyderabad | Living Room Labs" : BASE_TITLE;
+    var desc = name ? (catLabel(name) + " photography in Hyderabad by Living Room Labs. " + (n.line || "") +
+      (priceText(n.startingFrom) ? " Starting from " + priceText(n.startingFrom) + "." : "")).trim() : BASE_DESC;
+    var url = SITE_URL + "/capture" + (name ? "?category=" + encodeURIComponent(name) : "");
+    document.title = title;
+    setMeta('meta[name="description"]', "content", desc);
+    setMeta('link[rel="canonical"]', "href", url);
+    setMeta('meta[property="og:title"]', "content", title);
+    setMeta('meta[property="og:description"]', "content", desc);
+    setMeta('meta[property="og:url"]', "content", url);
+  }
+  function waLink(text){
+    var num = String((DATA && DATA.whatsapp) || "").replace(/[^0-9]/g, "");
+    if (num.length === 10) num = "91" + num;
+    if (num.length < 11) return "";
+    return "https://wa.me/" + num + "?text=" + encodeURIComponent(text);
+  }
+  function setWhatsApp(cat){
+    var msg = cat ? "Hi Living Room Labs! I'd like to enquire about " + catLabel(cat).toLowerCase() + " photography."
+                  : "Hi Living Room Labs! I'd like to enquire about a shoot.";
+    var url = waLink(msg);
+    ["#capWhatsApp", "#capFootWa"].forEach(function(sel){
+      var a = $(sel); if (!a) return;
+      a.hidden = !url;
+      if (url) a.href = url;
+    });
+    var foot = $("#capFoot");
+    if (foot) { foot.classList.toggle("has-wa", !!url); syncHeaderHeight(); }
+  }
+
   function buildHeader(){
     var catsHost = $("#capCats");
     catsHost.innerHTML = "";
@@ -649,6 +728,7 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     var ig = socials.find(function(s){ return /instagram/i.test(s.name||""); }) || socials[0];
     if (ig && ig.url) $("#capElsewhere").href = ig.url;
     else $("#capElsewhere").style.display = "none";
+    setWhatsApp(null);
 
     syncHeaderHeight();
   }
@@ -911,6 +991,11 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     var nicheInfo = NICHES.find(function(n){ return (n.name||n) === name; }) || {};
     $("#catTitle").textContent = name;
     $("#catLine").textContent = nicheInfo.line || "";
+    var price = priceText(nicheInfo.startingFrom);
+    $("#catPrice").hidden = !price;
+    if (price) $("#catPrice").innerHTML = "<span>Starting from</span> " + esc(price);
+    setHead(name);
+    setWhatsApp(name);
 
     var catPhotos = PHOTOS.filter(function(p){ return p.category === name; });
 
@@ -967,6 +1052,8 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
 
   function backToDiscover(mode){
     currentCat = null; currentEvent = null;
+    setHead(null);
+    setWhatsApp(null);
     document.documentElement.classList.remove("cat-open");
     $("#catview").classList.remove("on");
     $("#catBack").style.display = "none";
@@ -1184,6 +1271,13 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
   }
 })();
 </script>
-<script src="/fotu.js" defer></script>
+<script>
+  /* Fotu loads about 2 seconds after the page has finished loading, so it never competes with the photos */
+  (function(){
+    function go(){ var s = document.createElement("script"); s.src = "/fotu.js"; s.async = true; document.body.appendChild(s); }
+    function later(){ setTimeout(function(){ if ("requestIdleCallback" in window) requestIdleCallback(go, { timeout: 1500 }); else go(); }, 2000); }
+    if (document.readyState === "complete") later(); else window.addEventListener("load", later, { once: true });
+  })();
+</script>
 </body>
 </html>

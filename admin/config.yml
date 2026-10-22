@@ -21,6 +21,7 @@ collections:
           - { label: "Studio Logo", name: "logo", widget: "image", required: false, default: "/logo.png" }
           - { label: "City", name: "city", widget: "string", required: false, default: "Hyderabad, India" }
           - { label: "Email", name: "email", widget: "string", required: false, default: "hello@livingroomlabs.in" }
+          - { label: "WhatsApp Number", name: "whatsapp", widget: "string", required: false, hint: "The number people should message, e.g. 9876543210 (Indian numbers) or with country code, e.g. 919876543210. Leave empty to hide the WhatsApp buttons." }
           - { label: "Formspree Form ID", name: "formspreeId", widget: "string", required: false, default: "xjykvnoz" }
           - { label: "Body Font", name: "bodyFont", widget: "string", required: false, default: "Inter" }
 
@@ -62,6 +63,35 @@ collections:
             fields:
               - { label: "Category Name", name: "name", widget: "string" }
               - { label: "Description / Tagline", name: "line", widget: "string" }
+              - { label: "Starting From (price)", name: "startingFrom", widget: "string", required: false, hint: "Shown on this category's page as \"Starting from ₹4,999\". Type just the number (4999) or the text you want. Leave empty to hide it." }
+
+          - label: "How It Works (home page steps)"
+            name: "howItWorks"
+            widget: "list"
+            required: false
+            summary: "{{fields.title}}"
+            hint: "The steps shown above Contact on the home page, in this order. Remove all of them to hide the section."
+            fields:
+              - { label: "Step title", name: "title", widget: "string" }
+              - { label: "Step text", name: "text", widget: "text", required: false }
+
+          - label: "Testimonials (Kind words)"
+            name: "testimonials"
+            widget: "list"
+            required: false
+            summary: "{{fields.name}}"
+            hint: "Only real quotes from real clients, with their permission. The section stays hidden until you add one."
+            fields:
+              - { label: "Quote", name: "quote", widget: "text" }
+              - { label: "Client name", name: "name", widget: "string", required: false }
+              - { label: "Context", name: "context", widget: "string", required: false, hint: "e.g. Birthday shoot, Jubilee Hills or Restaurant owner" }
+
+          - label: "Worked With (client names)"
+            name: "workedWith"
+            widget: "list"
+            required: false
+            hint: "Brands, venues or events you've shot for. Shown as a strip on the home page; hidden while empty."
+            field: { label: "Client or brand", name: "name", widget: "string" }
 
           - { label: "Contact Note", name: "contactNote", widget: "text", required: false }
           - { label: "Mobile Shoot Note", name: "mobileShootNote", widget: "string", required: false }

@@ -451,7 +451,7 @@
       "src": "/images/uploads/dsc09773.jpg",
       "imagePosition": "Center",
       "caption": "Bold green stones meet pearls and ruby-red beads.",
-      "alt": "DSC09773",
+      "alt": "Two-strand necklace of green stones, seed pearls and ruby-red beads on a display bust",
       "ratio": "3/4",
       "client": "Studio",
       "featured": false,
@@ -502,7 +502,7 @@
     {
       "src": "/images/uploads/dsc09705.jpg",
       "imagePosition": "Center",
-      "caption": "Deep violet layers ",
+      "caption": "Deep violet layers",
       "alt": "Amethyst Hour",
       "ratio": "3/4",
       "client": "Studio",
@@ -554,12 +554,12 @@
     {
       "src": "/images/uploads/dsc07137.jpg",
       "imagePosition": "Center",
-      "caption": "noodles tossed with fresh peppers and scallions, shot against warm orange light.",
-      "alt": "Noodle & Pepper:",
+      "caption": "Noodles tossed with fresh peppers and scallions, shot against warm orange light.",
+      "alt": "Noodle & Pepper",
       "ratio": "16/10",
       "client": "Restaurant",
       "featured": false,
-      "title": "Noodle & Pepper:",
+      "title": "Noodle & Pepper",
       "category": "Food",
       "showInAll": false,
       "eventTypes": []
@@ -594,11 +594,11 @@
       "src": "/images/uploads/img-0844.jpg",
       "imagePosition": "Center",
       "caption": "Three grilled meatball skewers on a hot cast iron, styled with fresh herbs.",
-      "alt": "Kebab Platter:",
+      "alt": "Kebab Platter",
       "ratio": "4/3",
       "client": "Restaurant",
       "featured": true,
-      "title": "Kebab Platter:",
+      "title": "Kebab Platter",
       "category": "Food",
       "showInAll": false,
       "eventTypes": []
@@ -658,7 +658,7 @@
     {
       "src": "/images/uploads/dsc07305.jpg",
       "imagePosition": "Center",
-      "caption": "Two classic cocktails — a mojito and a margarit  captured with shallow focus and evening ambiance",
+      "caption": "Two classic cocktails, a mojito and a margarita, captured with shallow focus and evening ambiance.",
       "alt": "Bar Moment",
       "ratio": "16/10",
       "client": "Restaurant",
@@ -667,51 +667,6 @@
       "category": "Food",
       "showInAll": true,
       "eventTypes": []
-    },
-    {
-      "src": "/images/uploads/dsc06776.jpg",
-      "imagePosition": "Center",
-      "caption": "",
-      "alt": "DSC06776",
-      "ratio": "3/4",
-      "client": "Studio",
-      "featured": true,
-      "title": "DSC06776",
-      "category": "Events",
-      "showInAll": true,
-      "eventTypes": [
-        "Sports"
-      ]
-    },
-    {
-      "src": "/images/uploads/dsc01779.jpg",
-      "imagePosition": "Center",
-      "caption": "",
-      "alt": "DSC01779",
-      "ratio": "1/1",
-      "client": "Studio",
-      "featured": true,
-      "title": "DSC01779",
-      "category": "Events",
-      "showInAll": true,
-      "eventTypes": [
-        "Sports"
-      ]
-    },
-    {
-      "src": "/images/uploads/dsc06745.jpg",
-      "imagePosition": "Center",
-      "caption": "",
-      "alt": "DSC06745",
-      "ratio": "4/5",
-      "client": "Studio",
-      "featured": true,
-      "title": "DSC06745",
-      "category": "Events",
-      "showInAll": true,
-      "eventTypes": [
-        "Sports"
-      ]
     },
     {
       "src": "/images/uploads/dsc07144.jpg",
@@ -735,10 +690,10 @@
       "alt": "We Did It",
       "ratio": "3/4",
       "client": "Vikings PC",
-      "featured": false,
+      "featured": true,
       "title": "We Did It",
       "category": "Events",
-      "showInAll": false,
+      "showInAll": true,
       "eventTypes": [
         "Sports"
       ]
@@ -750,10 +705,10 @@
       "alt": "Respect at the Net",
       "ratio": "1/1",
       "client": "Vikings PC",
-      "featured": false,
+      "featured": true,
       "title": "Respect at the Net",
       "category": "Events",
-      "showInAll": false,
+      "showInAll": true,
       "eventTypes": [
         "Sports"
       ]
@@ -768,7 +723,7 @@
       "featured": true,
       "title": "Dig Deep",
       "category": "Events",
-      "showInAll": false,
+      "showInAll": true,
       "eventTypes": [
         "Sports"
       ]
@@ -779,7 +734,7 @@
       "caption": "A coach dials in the fundamentals, one small correction at a time.",
       "alt": "Fixing the Grip",
       "ratio": "16/10",
-      "client": "Privare",
+      "client": "Private",
       "featured": false,
       "title": "Fixing the Grip",
       "category": "Events",
@@ -822,11 +777,11 @@
       "src": "/images/uploads/dsc04948.jpg",
       "imagePosition": "Center",
       "caption": "Yellow-lit motion captures a player mid-serve on an outdoor court at dusk.",
-      "alt": "Serve & Strid",
+      "alt": "Serve & Stride",
       "ratio": "1/1",
       "client": "Vikings PC",
       "featured": false,
-      "title": "Serve & Strid",
+      "title": "Serve & Stride",
       "category": "Events",
       "showInAll": false,
       "eventTypes": [
@@ -950,7 +905,7 @@
     {
       "src": "/images/uploads/dsc09409.jpg",
       "imagePosition": "Center",
-      "caption": "mid-adventure.",
+      "caption": "Mid-adventure.",
       "alt": "Full Throttle",
       "ratio": "3/4",
       "client": "Private",
@@ -1002,7 +957,7 @@
     {
       "src": "/images/uploads/1.jpg",
       "imagePosition": "Center",
-      "caption": "quiet outdoor afternoon.",
+      "caption": "A quiet outdoor afternoon.",
       "alt": "Pages & Daydreams",
       "ratio": "3/4",
       "client": "Private",
@@ -1223,7 +1178,7 @@
     {
       "src": "/images/uploads/dsc06514.jpg",
       "imagePosition": "Center",
-      "caption": " When they thought the camera wasn’t looking.",
+      "caption": "When they thought the camera wasn’t looking.",
       "alt": "Sweet Teasing",
       "ratio": "3/4",
       "client": "Private",
@@ -1391,10 +1346,6 @@
     {
       "name": "Instagram",
       "url": "https://www.instagram.com/fromlivingroomlabs/"
-    },
-    {
-      "name": "Behance",
-      "url": "https://www.behance.net/"
     }
   ],
   "city": "Hyderabad/India",
@@ -1444,27 +1395,27 @@
     {
       "imagePosition": "Center",
       "src": "/images/uploads/dsc05175.jpg",
-      "alt": "Portland Head Light, Rhode Island"
+      "alt": "Portland Head Light on the rocky coast of Maine"
     },
     {
       "imagePosition": "Center",
       "src": "/images/uploads/dsc09341.jpg",
-      "alt": "Chicago, IL"
+      "alt": "Downtown Dallas skyline at golden hour"
     },
     {
       "imagePosition": "Center",
       "src": "/images/uploads/mink.png",
-      "alt": "Mink"
+      "alt": "Mink, a calico cat, resting her head on her paw"
     },
     {
       "imagePosition": "Center",
       "src": "/images/uploads/new-york-city.jpeg",
-      "alt": "NYC"
+      "alt": "Lower Manhattan skyline behind the Manhattan Bridge, seen from a ferry on the East River"
     },
     {
       "imagePosition": "Center",
       "src": "/images/uploads/the-view.jpg",
-      "alt": "The View-NYC"
+      "alt": "Brooklyn Bridge through a rain-covered window, in black and white"
     }
   ],
   "hero": [
@@ -1480,7 +1431,7 @@
       "role": "Lead / Photographer",
       "photo": "/images/uploads/pooja.jpeg",
       "imagePosition": "Center",
-      "bio": "Hello folks! I am a photographer who finds little stories in everyday moments. Always curious of exploring new ideas to capture images that feel alive.",
+      "bio": "Hello folks! I am a photographer who finds little stories in everyday moments. I'm always curious to explore new ideas and capture images that feel alive.",
       "instagram": "https://www.instagram.com/pooja.and.hachi",
       "portfolio": ""
     },
@@ -1489,7 +1440,7 @@
       "role": "Photographer / Creative Head",
       "photo": "/images/uploads/whatsapp-image-2026-09-16-at-9.25.07-pm.jpeg",
       "imagePosition": "Center",
-      "bio": "I am a photographer and creative collaborator who brings fresh ideas to every shoot. I don't just capture moments, I help shape the vision behind them to bring your stories to life.",
+      "bio": "I am a photographer and creative collaborator who brings fresh ideas to every shoot. I don't just capture moments; I help shape the vision behind them and bring your stories to life.",
       "instagram": "https://www.instagram.com/m._.chikita",
       "portfolio": ""
     },
@@ -1498,7 +1449,7 @@
       "role": "DOP / Filmmaker",
       "photo": "/images/uploads/whatsapp-image-2026-09-16-at-1.52.56-pm.jpeg",
       "imagePosition": "Center",
-      "bio": "Specializing in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
+      "bio": "I specialise in dynamic lighting rigs, cinema-grade camera work, and architectural spatial geometry.",
       "instagram": "https://www.instagram.com/documentarian_",
       "portfolio": ""
     },
@@ -1507,10 +1458,28 @@
       "role": "Photographer",
       "photo": "/images/uploads/chandu01.jpg",
       "imagePosition": "Center",
-      "bio": "Software engineer by day, Photographer by night. I like to turn fleeting moments into timeless stories.",
+      "bio": "Software engineer by day, photographer by night. I like to turn fleeting moments into timeless stories.",
       "instagram": "https://www.instagram.com/chandu_r25/",
       "portfolio": "https://unsplash.com/@cr029",
       "photo2": "/images/uploads/chandu02.jpg"
+    }
+  ],
+  "howItWorks": [
+    {
+      "title": "Enquire",
+      "text": "Tell us what you'd like photographed, and when and where. The enquiry form, email or Fotu all reach us."
+    },
+    {
+      "title": "Plan",
+      "text": "We talk through the brief and send a quote. It depends on the type of shoot, hours, location and number of photos."
+    },
+    {
+      "title": "Shoot",
+      "text": "We arrive prepared, direct where it helps and stay out of the way where it doesn't."
+    },
+    {
+      "title": "Delivery",
+      "text": "You get the edited photos, ready to download and share."
     }
   ]
 }
