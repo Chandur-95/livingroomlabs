@@ -1348,10 +1348,28 @@
       "url": "https://www.instagram.com/fromlivingroomlabs/"
     }
   ],
+  "howItWorks": [
+    {
+      "title": "Enquire",
+      "text": "Tell us what you'd like photographed, and when and where. The enquiry form, email or Fotu all reach us."
+    },
+    {
+      "title": "Plan",
+      "text": "We talk through the brief and send a quote. It depends on the type of shoot, hours, location and number of photos."
+    },
+    {
+      "title": "Shoot",
+      "text": "We arrive prepared, direct where it helps and stay out of the way where it doesn't."
+    },
+    {
+      "title": "Delivery",
+      "text": "You get the edited photos, ready to download and share."
+    }
+  ],
   "city": "Hyderabad/India",
   "logo": "/images/uploads/logo.png",
   "name": "Living Room Labs",
-  "teamHeroImg": "/images/uploads/dsc08939.jpeg",
+  "teamHeroImg": "/images/uploads/dsc09093.jpg",
   "niches": [
     {
       "name": "Food",
@@ -1462,24 +1480,6 @@
       "instagram": "https://www.instagram.com/chandu_r25/",
       "portfolio": "https://unsplash.com/@cr029",
       "photo2": "/images/uploads/chandu02.jpg"
-    }
-  ],
-  "howItWorks": [
-    {
-      "title": "Enquire",
-      "text": "Tell us what you'd like photographed, and when and where. The enquiry form, email or Fotu all reach us."
-    },
-    {
-      "title": "Plan",
-      "text": "We talk through the brief and send a quote. It depends on the type of shoot, hours, location and number of photos."
-    },
-    {
-      "title": "Shoot",
-      "text": "We arrive prepared, direct where it helps and stay out of the way where it doesn't."
-    },
-    {
-      "title": "Delivery",
-      "text": "You get the edited photos, ready to download and share."
     }
   ]
 }
