@@ -388,9 +388,8 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
         <button type="button" id="capCollective" class="cap-mobile-hide">The Collective ↗</button>
         <a href="/testimonials" class="cap-mobile-hide">Stories ↗</a>
         <a href="#" id="capElsewhere" class="cap-mobile-hide" target="_blank" rel="noopener">Elsewhere ↗</a>
-        <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the lamp on">☾ Lamp</button>
         <a href="#" id="capWhatsApp" class="cap-mobile-hide" target="_blank" rel="noopener" hidden>WhatsApp ↗</a>
-        <button type="button" id="capEnquire" class="cap-enquire">Enquire ↗</button>
+        <button type="button" id="capLampToggle" class="mono" aria-pressed="false" aria-label="Turn the spotlight on">☾ Spotlight</button>
       </div>
     </div>
   </div>
@@ -641,16 +640,16 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
       var nowDark = !isDark();
       document.documentElement.setAttribute("data-theme", nowDark ? "dark" : "light");
       toggle.setAttribute("aria-pressed", String(nowDark));
-      toggle.setAttribute("aria-label", nowDark ? "Turn the lamp off" : "Turn the lamp on");
-      toggle.textContent = nowDark ? "☀ Lamp" : "☾ Lamp";
+      toggle.setAttribute("aria-label", nowDark ? "Turn the spotlight off" : "Turn the spotlight on");
+      toggle.textContent = nowDark ? "☀ Spotlight" : "☾ Spotlight";
       try { localStorage.setItem("lrl_theme", nowDark ? "dark" : "light"); } catch(e){}
       updateLampVisibility();
     });
 
     if (isDark()) {
       toggle.setAttribute("aria-pressed", "true");
-      toggle.setAttribute("aria-label", "Turn the lamp off");
-      toggle.textContent = "☀ Lamp";
+      toggle.setAttribute("aria-label", "Turn the spotlight off");
+      toggle.textContent = "☀ Spotlight";
     }
     updateLampVisibility();
 
@@ -1173,7 +1172,6 @@ html[data-theme="dark"] .cap-foot-logo{filter:brightness(0) invert(1);opacity:.8
     setTimeout(function(){ $("#enqName").focus(); }, 80);
   }
 
-  $("#capEnquire").addEventListener("click", openEnquiry);
   $("#capFootEnquire").addEventListener("click", openEnquiry);
   $("#capBrand").addEventListener("click", function(){ window.location.href = "/"; });
   $("#enqClose").addEventListener("click", function(){ closeOverlay("enq"); });

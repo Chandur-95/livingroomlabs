@@ -84,16 +84,16 @@ main a{background-image:linear-gradient(var(--glow),var(--glow));background-repe
     <a href="/capture" class="hide-sm">What We Capture</a>
     <a href="/#collective" class="hide-sm">The Collective</a>
     <a href="/testimonials" class="hide-sm">Stories</a>
-    <button type="button" class="lamp mono" id="lamp" aria-pressed="false">☾ Lamp</button>
+    <button type="button" class="lamp mono" id="lamp" aria-pressed="false">☾ Spotlight</button>
     <button type="button" class="pill" id="enq">Enquire ↗</button>
   </nav>
 </header>
 
 <main id="main">
   <h1>Privacy Policy</h1>
-  <p class="updated mono">Last updated: 22 October 2026</p>
+  <p class="updated mono">Last updated: 23 October 2026</p>
 
-  <p>Living Room Labs is a photography and film collective based in Hyderabad, India. This page explains what information this website collects, why, and what you can ask us to do with it. If anything here is unclear, write to us at <a class="mail" href="mailto:hello@livingroomlabs.in">hello@livingroomlabs.in</a>.</p>
+  <p>Living Room Labs is a photography and film collective based in Hyderabad, India. This page explains what information this website collects and why. If anything here is unclear, write to us at <a class="mail" href="mailto:hello@livingroomlabs.in">hello@livingroomlabs.in</a>.</p>
 
   <h2>When you send us an enquiry</h2>
   <p>The enquiry form (and booking through our chat helper, Fotu) asks for your name, your email address, the kind of shoot and the details you choose to write. This reaches our inbox through Formspree, the service that delivers our website forms. We use it only to reply to you and to plan your shoot. We don't sell it, and we don't add you to mailing lists.</p>
@@ -104,27 +104,11 @@ main a{background-image:linear-gradient(var(--glow),var(--glow));background-repe
   <h2>Settings saved in your browser</h2>
   <p>The site remembers a few small choices on your own device, such as light or dark mode, whether you've already seen the opening screen, and whether you've hidden Fotu. They stay on your device and are never sent to us. We don't use advertising or tracking cookies.</p>
 
-  <h2>Visit statistics</h2>
-  <p>We may use Cloudflare Web Analytics to count visits to pages. It works without cookies and doesn't follow you across other websites.</p>
-
-  <h2>Who else is involved</h2>
-  <ul>
-    <li><b>Cloudflare</b> hosts and protects this website.</li>
-    <li><b>Formspree</b> delivers enquiry forms to our inbox.</li>
-    <li>Links to <b>Instagram</b> take you to Instagram, where their own privacy policy applies.</li>
-  </ul>
-
   <h2>How long we keep things</h2>
   <p>We keep enquiry emails for as long as we need them to deal with your enquiry and any booking that follows, and for any records we have to keep. Fotu's daily counts are deleted automatically after about 400 days, and only the most recent unanswered questions are kept.</p>
 
   <h2>Photos of people on this site</h2>
   <p>If you appear in a photo on this site and would like it taken down, email us and we'll remove it.</p>
-
-  <h2>Your choices and rights</h2>
-  <p>You can ask us to show you the personal information we hold about you, to correct it, or to delete it, and you can withdraw your consent at any time, as provided for under India's Digital Personal Data Protection Act, 2023. Email <a class="mail" href="mailto:hello@livingroomlabs.in">hello@livingroomlabs.in</a> and we'll respond as soon as we can.</p>
-
-  <h2>Children</h2>
-  <p>Our enquiry form is meant for adults. If a shoot involves children, a parent or guardian should get in touch with us.</p>
 
   <h2>Changes to this policy</h2>
   <p>If we change how we handle information, we'll update this page and the date at the top.</p>
@@ -150,8 +134,8 @@ main a{background-image:linear-gradient(var(--glow),var(--glow));background-repe
   function syncLamp(){
     var dark = document.documentElement.getAttribute("data-theme") === "dark";
     $("lamp").setAttribute("aria-pressed", dark ? "true" : "false");
-    $("lamp").textContent = dark ? "☀ Lamp" : "☾ Lamp";
-    $("lamp").setAttribute("aria-label", dark ? "Turn the lamp on (light mode)" : "Turn the lamp off (dark mode)");
+    $("lamp").textContent = dark ? "☀ Spotlight" : "☾ Spotlight";
+    $("lamp").setAttribute("aria-label", dark ? "Turn the spotlight off (light mode)" : "Turn the spotlight on (dark mode)");
   }
   $("lamp").addEventListener("click", function(){
     var dark = document.documentElement.getAttribute("data-theme") !== "dark";

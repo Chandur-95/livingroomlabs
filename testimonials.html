@@ -152,7 +152,7 @@ main{max-width:1320px;margin:0 auto;padding:0 var(--pad)}
     <a href="/capture" class="hide-sm">What We Capture</a>
     <a href="/#collective" class="hide-sm">The Collective</a>
     <a href="/testimonials" class="hide-sm" aria-current="page">Stories</a>
-    <button type="button" class="lamp mono" id="lamp" aria-pressed="false">☾ Lamp</button>
+    <button type="button" class="lamp mono" id="lamp" aria-pressed="false">☾ Spotlight</button>
     <button type="button" class="pill" id="enq">Enquire ↗</button>
   </nav>
 </header>
@@ -204,8 +204,8 @@ main{max-width:1320px;margin:0 auto;padding:0 var(--pad)}
   function syncLamp(){
     var dark = document.documentElement.getAttribute("data-theme") === "dark";
     $("lamp").setAttribute("aria-pressed", dark ? "true" : "false");
-    $("lamp").textContent = dark ? "☀ Lamp" : "☾ Lamp";
-    $("lamp").setAttribute("aria-label", dark ? "Turn the lamp on (light mode)" : "Turn the lamp off (dark mode)");
+    $("lamp").textContent = dark ? "☀ Spotlight" : "☾ Spotlight";
+    $("lamp").setAttribute("aria-label", dark ? "Turn the spotlight off (light mode)" : "Turn the spotlight on (dark mode)");
   }
   $("lamp").addEventListener("click", function(){
     var dark = document.documentElement.getAttribute("data-theme") !== "dark";

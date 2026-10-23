@@ -2256,7 +2256,7 @@ footer.wrap{overflow-x:clip}
       <a href="/testimonials" class="nav-desktop-only">Stories</a>
       <button type="button" class="nav-collective-link-mob nav-mobile-only" style="display:none;">The Collective</button>
     </div>
-    <button class="pull" id="theme" aria-pressed="false" aria-label="Turn the lamp off">
+    <button class="pull" id="theme" aria-pressed="false" aria-label="Switch to dark mode">
       <span class="cord" aria-hidden="true"></span>
       <span class="bead" aria-hidden="true"></span>
     </button>
@@ -4214,7 +4214,7 @@ function applyTheme(isDark) {
   document.documentElement.setAttribute("data-theme", isDark ? "dark" : "light");
   if(pull) {
     pull.setAttribute("aria-pressed", String(isDark));
-    pull.setAttribute("aria-label", isDark ? "Turn the lamp on" : "Turn the lamp off");
+    pull.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
   }
   var tcm = document.getElementById("themeColorMeta");
   if (tcm) tcm.setAttribute("content", isDark ? "#080808" : "#FFFFFF");
@@ -4246,7 +4246,7 @@ if(pull) {
   var isDark = document.documentElement.getAttribute("data-theme") === "dark";
   if(pull){
     pull.setAttribute("aria-pressed", String(isDark));
-    pull.setAttribute("aria-label", isDark ? "Turn the lamp on" : "Turn the lamp off");
+    pull.setAttribute("aria-label", isDark ? "Switch to light mode" : "Switch to dark mode");
   }
 })();
 
