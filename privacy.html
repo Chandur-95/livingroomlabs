@@ -84,8 +84,7 @@ main a{background-image:linear-gradient(var(--glow),var(--glow));background-repe
     <a href="/capture" class="hide-sm">What We Capture</a>
     <a href="/#collective" class="hide-sm">The Collective</a>
     <a href="/testimonials" class="hide-sm">Stories</a>
-    <button type="button" class="lamp mono" id="lamp" aria-pressed="false">☾ Spotlight</button>
-    <button type="button" class="pill" id="enq">Enquire ↗</button>
+        <button type="button" class="pill" id="enq">Enquire ↗</button>
   </nav>
 </header>
 
@@ -130,21 +129,6 @@ main a{background-image:linear-gradient(var(--glow),var(--glow));background-repe
   "use strict";
   var $ = function(id){ return document.getElementById(id); };
   $("yr").textContent = new Date().getFullYear();
-  /* ---- lamp (light / dark), remembered like the rest of the site ---- */
-  function syncLamp(){
-    var dark = document.documentElement.getAttribute("data-theme") === "dark";
-    $("lamp").setAttribute("aria-pressed", dark ? "true" : "false");
-    $("lamp").textContent = dark ? "☀ Spotlight" : "☾ Spotlight";
-    $("lamp").setAttribute("aria-label", dark ? "Turn the spotlight off (light mode)" : "Turn the spotlight on (dark mode)");
-  }
-  $("lamp").addEventListener("click", function(){
-    var dark = document.documentElement.getAttribute("data-theme") !== "dark";
-    document.documentElement.setAttribute("data-theme", dark ? "dark" : "light");
-    try { localStorage.setItem("lrl_theme", dark ? "dark" : "light"); } catch(e){}
-    var m = $("themeColorMeta"); if (m) m.setAttribute("content", dark ? "#080808" : "#FFFFFF");
-    syncLamp();
-  });
-  syncLamp();
 
   $("enq").addEventListener("click", function(){
     if (window.LRL && window.LRL.enquiry) window.LRL.enquiry.open({ category: "General Enquiry" });

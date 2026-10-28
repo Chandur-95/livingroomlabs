@@ -2122,6 +2122,7 @@ html.spot-float-on footer.wrap::after{content:"";display:block;height:calc(64px 
   .foot-links-group { display: contents !important; }
   /* columns may shrink (and wrap a long link onto two lines) rather than ever running off the screen */
   .foot-col-index, .foot-col-elsewhere { flex: 0 1 auto; min-width: 0; margin: 0 !important; padding: 0 !important; }
+  .idx-hide-sm{ display: none !important; }
   .foot-col-events { display: none !important; }
   .foot-col-team { display: none !important; }
 
@@ -2156,7 +2157,8 @@ html.spot-float-on footer.wrap::after{content:"";display:block;height:calc(64px 
     justify-content: center !important;
     padding-right: 0 !important;
   }
-  .collective-about-logo img{max-width:200px !important}
+  .collective-about-logo img{max-width:clamp(96px, 30vw, 132px) !important}
+  .collective-about-wrap{ gap: 20px !important; margin-top: clamp(28px,6vw,48px) !important; }
 
   .lb-frame img{max-width:calc(100vw - 24px);max-height:calc(100vh - 140px)}
   .lb-cap{grid-template-columns:1fr}
@@ -4466,9 +4468,9 @@ function renderContent(){
   if(idxList){
     idxList.innerHTML =
       '<li><button type="button" class="nav-niches-link" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">What We Capture</button></li>' +
-      '<li><button type="button" id="btn-foot-enquire" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">Enquire</button></li>' +
+      '<li class="idx-hide-sm"><button type="button" id="btn-foot-enquire" style="border:0;background:none;padding:0;cursor:pointer;font:inherit;text-align:left;">Enquire</button></li>' +
       '<li><a href="/testimonials">Stories</a></li>' +
-      '<li><a href="/privacy">Privacy</a></li>';
+      '<li class="idx-hide-sm"><a href="/privacy">Privacy</a></li>';
   }
 
   var socList = $("[data-foot-social]");
